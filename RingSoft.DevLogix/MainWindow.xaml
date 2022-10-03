@@ -8,10 +8,65 @@
                   xmlns:ac="clr-namespace:RingSoft.App.Controls;assembly=RingSoft.App.Controls"
                   xmlns:sp="clr-namespace:ScottPlot;assembly=ScottPlot.WPF"
               mc:Ignorable="d"
-                  Style="{StaticResource BaseWindowStyle}"
-                  CloseOnEscape="False"
-                  Title="HomeLogix" WindowState="Maximized">
-    <Grid>
 
-    </Grid>
+                  Style="{StaticResource BaseWindowStyle}"
+                  Width="500"
+                  Height="500"
+                  CloseOnEscape="False"
+                  Title="DevLogix" WindowState="Maximized">
+    <Window.Resources>
+        <BitmapImage x:Key="ErrorsImage" UriSource="/RingSoft.DevLogix;component/Resources/bug_edit32.png" />
+
+        <Style TargetType="ac:DbMaintenanceButton" BasedOn="{StaticResource {x:Type ac:DbMaintenanceButton}}">
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ac:DbMaintenanceButton}">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                                <Image x:Name="Image" Height="64" Width="64"/>
+                                <ContentPresenter Content="{Binding Path=Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" RecognizesAccessKey="True"
+                                                  TextBlock.FontSize="12">
+                                    <ContentPresenter.Resources>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="TextAlignment" Value="Center"/>
+                                            <Setter Property="Margin" Value="5"/>
+                                        </Style>
+                                    </ContentPresenter.Resources>
+                                </ContentPresenter>
+                            </StackPanel>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+
+        </Style>
+    </Window.Resources>
+    <DockPanel>
+        <DockPanel>
+            <Menu DockPanel.Dock="Top">
+                <MenuItem Header="Exit..."/>
+                <MenuItem Header="Quality Assurance">
+                    <MenuItem Header="Error Statuses..."/>
+                </MenuItem>
+            </Menu>
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                <StackPanel.Background>
+                    <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                        <GradientStop Color="IndianRed" Offset="0.15"/>
+                        <GradientStop Color="Red" Offset="0.5"/>
+                        <GradientStop Color="IndianRed" Offset="0.85"/>
+                    </LinearGradientBrush>
+                </StackPanel.Background>
+
+                <ac:DbMaintenanceButton x:Name="ExitButton"  Content="E_xit" ImageSource="{StaticResource ExitImage}" />
+
+            </StackPanel>
+            <Grid>
+                <Label Content="Hello"/>
+            </Grid>
+        </DockPanel>
+    </DockPanel>
 </ac:AppMainWindow>

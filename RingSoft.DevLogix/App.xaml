@@ -16,9 +16,6 @@
                     Source="pack://application:,,,/RingSoft.App.Controls;component/Themes/AppStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
-            <Style TargetType="dec:DecimalReadOnlyBox" BasedOn="{StaticResource {x:Type dec:ReadOnlyBox}}" x:Key="{x:Type dec:DecimalReadOnlyBox}">
-                <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource Self}, Path=Value, Converter={StaticResource ValueToForeground}}"/>
-            </Style>
 
 
             <LinearGradientBrush x:Key="WindowBackgroundBrush" StartPoint="0.5,0" EndPoint="0.5,1">
@@ -29,25 +26,6 @@
             <Style TargetType="Window" x:Key="BaseWindowStyle">
                 <Setter Property="Background" Value="{StaticResource WindowBackgroundBrush}"/>
             </Style>
-
-            <Style TargetType="TabControl">
-                <Setter Property="Background" Value="{StaticResource WindowBackgroundBrush}"/>
-                <Setter Property="BorderBrush" Value="Black"/>
-                <Setter Property="BorderThickness" Value="1"/>
-            </Style>
-
-            <Style TargetType="lc:LookupWindow" BasedOn="{StaticResource BaseWindowStyle}"/>
-
-            <Style TargetType="af:AdvancedFindWindow" BasedOn="{StaticResource BaseWindowStyle}"/>
-
-            <Style TargetType="af:AdvancedFindFormulaColumnWindow" BasedOn="{StaticResource BaseWindowStyle}"/>
-
-            <Style TargetType="deg:DataEntryGridMemoEditor" BasedOn="{StaticResource BaseWindowStyle}"/>
-
-            <Style TargetType="af:AdvancedFilterWindow" BasedOn="{StaticResource BaseWindowStyle}"/>
-
-            <Style TargetType="af:AdvancedFindRefreshRateWindow" BasedOn="{StaticResource BaseWindowStyle}"/>
-
 
 
         </ResourceDictionary>
