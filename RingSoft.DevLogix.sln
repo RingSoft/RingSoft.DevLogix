@@ -5,15 +5,15 @@ VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.DevLogix", "RingSoft.DevLogix\RingSoft.DevLogix.csproj", "{FDEAF6D2-37C2-47A4-8D80-D8B0C1ABF1B4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RingSoft.DevLogix.Library", "RingSoft.DevLogix.Library\RingSoft.DevLogix.Library.csproj", "{D93F0326-8275-4938-9404-E6A02B4C8344}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.DevLogix.Library", "RingSoft.DevLogix.Library\RingSoft.DevLogix.Library.csproj", "{D93F0326-8275-4938-9404-E6A02B4C8344}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RingSoft.DevLogix.MasterData", "RingSoft.DevLogix.MasterData\RingSoft.DevLogix.MasterData.csproj", "{E5252CE7-A217-4E53-9075-D749613E3D5F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.DevLogix.MasterData", "RingSoft.DevLogix.MasterData\RingSoft.DevLogix.MasterData.csproj", "{E5252CE7-A217-4E53-9075-D749613E3D5F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RingSoft.DevLogix.DataAccess", "RingSoft.DevLogix.DataAccess\RingSoft.DevLogix.DataAccess.csproj", "{29AC0817-A4B0-4075-AEC0-E2488DDFA93E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.DevLogix.DataAccess", "RingSoft.DevLogix.DataAccess\RingSoft.DevLogix.DataAccess.csproj", "{29AC0817-A4B0-4075-AEC0-E2488DDFA93E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RingSoft.DevLogix.Sqlite", "RingSoft.DevLogix.Sqlite\RingSoft.DevLogix.Sqlite.csproj", "{364EA620-355F-4C6E-B5E3-38697F593048}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.DevLogix.Sqlite", "RingSoft.DevLogix.Sqlite\RingSoft.DevLogix.Sqlite.csproj", "{364EA620-355F-4C6E-B5E3-38697F593048}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RingSoft.DevLogix.DbPlatform", "RingSoft.DevLogix.DbPlatform\RingSoft.DevLogix.DbPlatform.csproj", "{24A110A9-08FE-4AD6-A2D0-00925FE44D1C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.DevLogix.DbPlatform", "RingSoft.DevLogix.DbPlatform\RingSoft.DevLogix.DbPlatform.csproj", "{24A110A9-08FE-4AD6-A2D0-00925FE44D1C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -6,10 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="RingSoft.App.Library" Version="1.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\RingSoft.DevLogix.DataAccess\RingSoft.DevLogix.DataAccess.csproj" />
     <ProjectReference Include="..\RingSoft.DevLogix.Sqlite\RingSoft.DevLogix.Sqlite.csproj" />
   </ItemGroup>

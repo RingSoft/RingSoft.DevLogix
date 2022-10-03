@@ -5,10 +5,18 @@
     <TargetFramework>net5.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>Resources\gears.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="Resources\bug_edit32.png" />
+    <None Remove="Resources\gears.ico" />
+    <None Remove="Resources\RedAlert.ico" />
+    <None Remove="Resources\YellowAlert.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\gears.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,6 +34,9 @@
 
   <ItemGroup>
     <Resource Include="Resources\bug_edit32.png" />
+    <Resource Include="Resources\gears.ico" />
+    <Resource Include="Resources\RedAlert.ico" />
+    <Resource Include="Resources\YellowAlert.ico" />
   </ItemGroup>
 
 </Project>
