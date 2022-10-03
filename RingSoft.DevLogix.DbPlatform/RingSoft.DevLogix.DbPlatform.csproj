@@ -7,13 +7,11 @@
 
   <ItemGroup>
     <PackageReference Include="RingSoft.App.Library" Version="1.0.0" />
-    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.116" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\RingSoft.DevLogix.DataAccess\RingSoft.DevLogix.DataAccess.csproj" />
-    <ProjectReference Include="..\RingSoft.DevLogix.DbPlatform\RingSoft.DevLogix.DbPlatform.csproj" />
-    <ProjectReference Include="..\RingSoft.DevLogix.MasterData\RingSoft.DevLogix.MasterData.csproj" />
+    <ProjectReference Include="..\RingSoft.DevLogix.Sqlite\RingSoft.DevLogix.Sqlite.csproj" />
   </ItemGroup>
 
 </Project>

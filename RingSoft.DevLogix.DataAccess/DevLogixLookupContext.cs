@@ -14,21 +14,43 @@ namespace RingSoft.DevLogix.DataAccess
     public class DevLogixLookupContext : LookupContext, IAdvancedFindLookupContext
     {
         public override DbDataProcessor DataProcessor { get; }
-        protected override DbContext DbContext { get; }
+        protected override DbContext DbContext => _dbContext;
         public LookupContextBase Context { get; }
         public TableDefinition<AdvancedFind> AdvancedFinds { get; set; }
         public TableDefinition<AdvancedFindColumn> AdvancedFindColumns { get; set; }
         public TableDefinition<AdvancedFindFilter> AdvancedFindFilters { get; set; }
         public LookupDefinition<AdvancedFindLookup, AdvancedFind> AdvancedFindLookup { get; set; }
 
+        public SqliteDataProcessor SqliteDataProcessor { get; }
+
+        
+
+        private DbContext _dbContext;
+
+
+        public DevLogixLookupContext()
+        {
+            SqliteDataProcessor = new SqliteDataProcessor();
+        }
+
+        public void Initialize(IDevLogixDbContext dbContext)
+        {
+            _dbContext = dbContext.DbContext;
+            SystemGlobals.AdvancedFindLookupContext = this;
+            var configuration = new AdvancedFindLookupConfiguration(SystemGlobals.AdvancedFindLookupContext);
+            configuration.InitializeModel();
+            configuration.ConfigureLookups();
+
+            Initialize();
+        }
         protected override void InitializeLookupDefinitions()
         {
-            throw new NotImplementedException();
+            
         }
 
         protected override void SetupModel()
         {
-            throw new NotImplementedException();
+            
         }
     }
 }

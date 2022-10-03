@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="RingSoft.App.Library" Version="1.0.0" />
+    <ProjectReference Include="..\RingSoft.DevLogix.DataAccess\RingSoft.DevLogix.DataAccess.csproj" />
   </ItemGroup>
 
 </Project>
