@@ -2,6 +2,7 @@
 using System.Threading;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.App.Library;
+using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DevLogix.DataAccess;
 using RingSoft.DevLogix.DbPlatform;
 using RingSoft.DevLogix.MasterData;
@@ -48,13 +49,16 @@ namespace RingSoft.DevLogix.Library
 
             DbPlatform = new DbPlatform.DbPlatform();
 
-            LookupContext.Initialize(DbPlatform.GetNewDbContext(LookupContext));
+            LookupContext.Initialize(DbPlatform.GetNewDbContext(LookupContext), DevLogix.DbPlatform.DbPlatform.DevLogixPlatform);
 
             LookupContext.SqliteDataProcessor.FilePath = "C:\\Temp\\";
             LookupContext.SqliteDataProcessor.FileName = "Temp.sqlite";
 
             var context = DbPlatform.GetNewDbContext();
             context.DbContext.Database.Migrate();
+
+            var selectQuery = new SelectQuery(LookupContext.AdvancedFinds.TableName);
+            LookupContext.SqliteDataProcessor.GetData(selectQuery, false);
 
         }
 

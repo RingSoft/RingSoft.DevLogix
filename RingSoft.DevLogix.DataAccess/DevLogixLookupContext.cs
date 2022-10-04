@@ -11,9 +11,15 @@ using RingSoft.DbLookup.ModelDefinition;
 
 namespace RingSoft.DevLogix.DataAccess
 {
+    public enum DbPlatforms
+    {
+        Sqlite = 0,
+        SqlServer = 1
+    }
+
     public class DevLogixLookupContext : LookupContext, IAdvancedFindLookupContext
     {
-        public override DbDataProcessor DataProcessor { get; }
+        public override DbDataProcessor DataProcessor => _dbDataProcessor;
         protected override DbContext DbContext => _dbContext;
         public LookupContextBase Context { get; }
         public TableDefinition<AdvancedFind> AdvancedFinds { get; set; }
@@ -22,18 +28,34 @@ namespace RingSoft.DevLogix.DataAccess
         public LookupDefinition<AdvancedFindLookup, AdvancedFind> AdvancedFindLookup { get; set; }
 
         public SqliteDataProcessor SqliteDataProcessor { get; }
-
+        public SqlServerDataProcessor SqlServerDataProcessor { get; }
         
 
         private DbContext _dbContext;
-
+        private DbDataProcessor _dbDataProcessor;
 
         public DevLogixLookupContext()
         {
             SqliteDataProcessor = new SqliteDataProcessor();
+            SqlServerDataProcessor = new SqlServerDataProcessor();
         }
 
-        public void Initialize(IDevLogixDbContext dbContext)
+        public void SetProcessor(DbPlatforms platform)
+        {
+            switch (platform)
+            {
+                case DbPlatforms.Sqlite:
+                    _dbDataProcessor = SqliteDataProcessor;
+                    break;
+                case DbPlatforms.SqlServer:
+                    _dbDataProcessor = SqlServerDataProcessor;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(platform), platform, null);
+            }
+        }
+
+        public void Initialize(IDevLogixDbContext dbContext, DbPlatforms dbPlatform)
         {
             _dbContext = dbContext.DbContext;
             SystemGlobals.AdvancedFindLookupContext = this;
@@ -41,6 +63,7 @@ namespace RingSoft.DevLogix.DataAccess
             configuration.InitializeModel();
             configuration.ConfigureLookups();
 
+            SetProcessor(dbPlatform);
             Initialize();
         }
         protected override void InitializeLookupDefinitions()

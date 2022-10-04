@@ -20,6 +20,7 @@
 
         <Style TargetType="ac:DbMaintenanceButton" BasedOn="{StaticResource {x:Type ac:DbMaintenanceButton}}">
             <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground" Value="White"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ac:DbMaintenanceButton}">
@@ -57,8 +58,13 @@
                 </MenuItem>
             </Menu>
             <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
-                <StackPanel Background="{StaticResource DbMaintenanceBarButtonBrush}"/>
-
+                <StackPanel.Background>
+                    <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                        <GradientStop Color="Black" Offset="0.15"/>
+                        <GradientStop Color="DarkGray" Offset="0.5"/>
+                        <GradientStop Color="Black" Offset="0.85"/>
+                    </LinearGradientBrush>
+                </StackPanel.Background>
                 <ac:DbMaintenanceButton x:Name="ExitButton"  Content="E_xit" Command="{Binding ExitCommand }" ImageSource="{StaticResource ExitImage}" />
 
                 <ac:DbMaintenanceButton x:Name="AdvancedFindButton" Content="_Advanced Find" ImageSource="{StaticResource FindImage}" Command="{Binding AdvancedFindCommand}"/>

@@ -1,4 +1,6 @@
 ﻿using System.Windows;
+using RingSoft.DbLookup;
+using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Controls.WPF.AdvancedFind;
 using RingSoft.DevLogix.Library;
 
@@ -15,10 +17,6 @@ namespace RingSoft.DevLogix
             Loaded += (sender, args) =>
             {
                 ViewModel.Initialize(this);
-                ExitButton.Click += (o, eventArgs) =>
-                {
-
-                };
             };
         }
 

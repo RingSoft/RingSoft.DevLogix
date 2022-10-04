@@ -2,16 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
+using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DevLogix.DataAccess;
 using RingSoft.DevLogix.Sqlite;
 
 namespace RingSoft.DevLogix.DbPlatform
 {
-    public enum DbPlatforms
-    {
-        Sqlite = 0,
-        SqlServer = 1
-    }
     public class DbPlatform
     {
         public DevLogixSqliteDbContext SqliteDbContext { get; private set; }
