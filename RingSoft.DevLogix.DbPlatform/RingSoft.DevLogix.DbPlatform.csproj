@@ -8,6 +8,7 @@
   <ItemGroup>
     <ProjectReference Include="..\RingSoft.DevLogix.DataAccess\RingSoft.DevLogix.DataAccess.csproj" />
     <ProjectReference Include="..\RingSoft.DevLogix.Sqlite\RingSoft.DevLogix.Sqlite.csproj" />
+    <ProjectReference Include="..\RingSoft.DevLogix.SqlServer\RingSoft.DevLogix.SqlServer.csproj" />
   </ItemGroup>
 
 </Project>

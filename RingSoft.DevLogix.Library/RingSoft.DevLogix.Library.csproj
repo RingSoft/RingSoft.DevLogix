@@ -11,8 +11,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RingSoft.DevLogix.DataAccess\RingSoft.DevLogix.DataAccess.csproj" />
-    <ProjectReference Include="..\RingSoft.DevLogix.DbPlatform\RingSoft.DevLogix.DbPlatform.csproj" />
     <ProjectReference Include="..\RingSoft.DevLogix.MasterData\RingSoft.DevLogix.MasterData.csproj" />
+    <ProjectReference Include="..\RingSoft.DevLogix.Sqlite\RingSoft.DevLogix.Sqlite.csproj" />
+    <ProjectReference Include="..\RingSoft.DevLogix.SqlServer\RingSoft.DevLogix.SqlServer.csproj" />
   </ItemGroup>
 
 </Project>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
+using RingSoft.App.Library;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AdvancedFind;
 using RingSoft.DbLookup.DataProcessor;
@@ -11,11 +12,6 @@ using RingSoft.DbLookup.ModelDefinition;
 
 namespace RingSoft.DevLogix.DataAccess
 {
-    public enum DbPlatforms
-    {
-        Sqlite = 0,
-        SqlServer = 1
-    }
 
     public class DevLogixLookupContext : LookupContext, IAdvancedFindLookupContext
     {
@@ -33,6 +29,7 @@ namespace RingSoft.DevLogix.DataAccess
 
         private DbContext _dbContext;
         private DbDataProcessor _dbDataProcessor;
+        private bool _initialized;
 
         public DevLogixLookupContext()
         {
@@ -59,12 +56,17 @@ namespace RingSoft.DevLogix.DataAccess
         {
             _dbContext = dbContext.DbContext;
             SystemGlobals.AdvancedFindLookupContext = this;
+
+            SetProcessor(dbPlatform);
+            if (_initialized)
+            {
+                return;
+            }
             var configuration = new AdvancedFindLookupConfiguration(SystemGlobals.AdvancedFindLookupContext);
             configuration.InitializeModel();
             configuration.ConfigureLookups();
-
-            SetProcessor(dbPlatform);
             Initialize();
+            _initialized = true;
         }
         protected override void InitializeLookupDefinitions()
         {

@@ -2,10 +2,13 @@
 using System.Threading;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.App.Library;
+using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DevLogix.DataAccess;
-using RingSoft.DevLogix.DbPlatform;
 using RingSoft.DevLogix.MasterData;
+using RingSoft.DevLogix.Sqlite;
+using RingSoft.DevLogix.SqlServer;
+using DbPlatforms = RingSoft.App.Library.DbPlatforms;
 
 namespace RingSoft.DevLogix.Library
 {
@@ -26,7 +29,7 @@ namespace RingSoft.DevLogix.Library
 
         public static IDataRepository DataRepository { get; set; }
 
-        public static DbPlatform.DbPlatform DbPlatform { get; private set; }
+        public static DbPlatforms DbPlatform { get; private set; }
 
         public static event EventHandler<AppProgressArgs> AppSplashProgress;
 
@@ -47,20 +50,51 @@ namespace RingSoft.DevLogix.Library
             LookupContext.SqliteDataProcessor.FilePath = MasterDbContext.ProgramDataFolder;
             LookupContext.SqliteDataProcessor.FileName = MasterDbContext.DemoDataFileName;
 
-            DbPlatform = new DbPlatform.DbPlatform();
+            DbPlatform = DbPlatforms.SqlServer;
+            //DbPlatform = DbPlatforms.Sqlite;
+            var context = GetNewDbContext();
+            context.SetLookupContext(LookupContext);
 
-            LookupContext.Initialize(DbPlatform.GetNewDbContext(LookupContext), DevLogix.DbPlatform.DbPlatform.DevLogixPlatform);
-
+            
             LookupContext.SqliteDataProcessor.FilePath = "C:\\Temp\\";
             LookupContext.SqliteDataProcessor.FileName = "Temp.sqlite";
 
-            var context = DbPlatform.GetNewDbContext();
+            LookupContext.SqlServerDataProcessor.Server = "localhost\\SQLEXPRESS";
+            LookupContext.SqlServerDataProcessor.Database = "RingSoftDevLogixTemp";
+            LookupContext.SqlServerDataProcessor.SecurityType = SecurityTypes.WindowsAuthentication;
+
+            LookupContext.Initialize(context, DbPlatform);
+
             context.DbContext.Database.Migrate();
 
             var selectQuery = new SelectQuery(LookupContext.AdvancedFinds.TableName);
             LookupContext.SqliteDataProcessor.GetData(selectQuery, false);
 
         }
+
+        public static IDevLogixDbContext GetNewDbContext(DbPlatforms? platform = null)
+        {
+            if (platform == null)
+            {
+                platform = DbPlatform;
+            }
+            switch (platform)
+            {
+                case DbPlatforms.Sqlite:
+                    var sqliteResult = new DevLogixSqliteDbContext();
+                    sqliteResult.SetLookupContext(AppGlobals.LookupContext);
+                    return sqliteResult;
+                case DbPlatforms.SqlServer:
+                    var result = new DevLogixSqlServerDbContext();
+                    result.SetLookupContext(AppGlobals.LookupContext);
+                    return result;
+                //case DbPlatforms.MySql:
+                //    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
 
     }
 }

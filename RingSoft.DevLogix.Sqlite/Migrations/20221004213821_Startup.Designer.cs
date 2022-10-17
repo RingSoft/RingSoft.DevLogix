@@ -9,8 +9,8 @@ using RingSoft.DevLogix.Sqlite;
 namespace RingSoft.DevLogix.Sqlite.Migrations
 {
     [DbContext(typeof(DevLogixSqliteDbContext))]
-    [Migration("20221003205156_startup")]
-    partial class startup
+    [Migration("20221004213821_Startup")]
+    partial class Startup
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -32,6 +32,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
                     b.Property<int?>("RedAlert")
@@ -48,6 +49,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.Property<string>("Table")
                         .IsRequired()
+                        .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
                     b.Property<int?>("YellowAlert")
@@ -67,6 +69,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("Caption")
+                        .HasMaxLength(250)
                         .HasColumnType("nvarchar");
 
                     b.Property<byte>("DecimalFormatType")
@@ -76,6 +79,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<string>("FieldName")
+                        .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
                     b.Property<string>("Formula")
@@ -85,12 +89,15 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .HasColumnType("numeric");
 
                     b.Property<string>("PrimaryFieldName")
+                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PrimaryTableName")
+                        .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
                     b.Property<string>("TableName")
+                        .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
                     b.HasKey("AdvancedFindId", "ColumnId");
@@ -113,6 +120,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<string>("FieldName")
+                        .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
                     b.Property<string>("Formula")
@@ -131,9 +139,11 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<string>("PrimaryFieldName")
+                        .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
                     b.Property<string>("PrimaryTableName")
+                        .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
                     b.Property<byte>("RightParentheses")
@@ -143,9 +153,11 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("SearchForValue")
+                        .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
                     b.Property<string>("TableName")
+                        .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
                     b.HasKey("AdvancedFindId", "FilterId");
@@ -171,13 +183,13 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.HasOne("RingSoft.DbLookup.AdvancedFind.AdvancedFind", "AdvancedFind")
                         .WithMany("Filters")
                         .HasForeignKey("AdvancedFindId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("RingSoft.DbLookup.AdvancedFind.AdvancedFind", "SearchForAdvancedFind")
                         .WithMany("SearchForAdvancedFindFilters")
                         .HasForeignKey("SearchForAdvancedFindId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("AdvancedFind");
 

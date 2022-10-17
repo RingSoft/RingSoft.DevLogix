@@ -2,25 +2,29 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using RingSoft.DevLogix.Sqlite;
+using RingSoft.DevLogix.SqlServer;
 
-namespace RingSoft.DevLogix.Sqlite.Migrations
+namespace RingSoft.DevLogix.SqlServer.Migrations
 {
-    [DbContext(typeof(DevLogixSqliteDbContext))]
-    partial class DevLogixSqliteDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(DevLogixSqlServerDbContext))]
+    partial class DevLogixSqlServerDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "5.0.17");
+                .HasAnnotation("Relational:MaxIdentifierLength", 128)
+                .HasAnnotation("ProductVersion", "5.0.17")
+                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("RingSoft.DbLookup.AdvancedFind.AdvancedFind", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<bool?>("Disabled")
                         .HasColumnType("bit");
@@ -31,16 +35,16 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int?>("RedAlert")
                         .HasColumnType("integer");
 
                     b.Property<byte?>("RefreshCondition")
-                        .HasColumnType("smallint");
+                        .HasColumnType("tinyint");
 
                     b.Property<byte?>("RefreshRate")
-                        .HasColumnType("smallint");
+                        .HasColumnType("tinyint");
 
                     b.Property<int?>("RefreshValue")
                         .HasColumnType("integer");
@@ -48,7 +52,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<string>("Table")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int?>("YellowAlert")
                         .HasColumnType("integer");
@@ -68,35 +72,35 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.Property<string>("Caption")
                         .HasMaxLength(250)
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<byte>("DecimalFormatType")
-                        .HasColumnType("smallint");
+                        .HasColumnType("tinyint");
 
                     b.Property<byte>("FieldDataType")
-                        .HasColumnType("smallint");
+                        .HasColumnType("tinyint");
 
                     b.Property<string>("FieldName")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Formula")
                         .HasColumnType("ntext");
 
-                    b.Property<double>("PercentWidth")
-                        .HasColumnType("numeric");
+                    b.Property<decimal>("PercentWidth")
+                        .HasColumnType("numeric(38,17)");
 
                     b.Property<string>("PrimaryFieldName")
                         .HasMaxLength(50)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("PrimaryTableName")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("TableName")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("AdvancedFindId", "ColumnId");
 
@@ -115,48 +119,48 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .HasColumnType("bit");
 
                     b.Property<byte>("EndLogic")
-                        .HasColumnType("smallint");
+                        .HasColumnType("tinyint");
 
                     b.Property<string>("FieldName")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Formula")
                         .HasColumnType("ntext");
 
                     b.Property<byte>("FormulaDataType")
-                        .HasColumnType("smallint");
+                        .HasColumnType("tinyint");
 
                     b.Property<string>("FormulaDisplayValue")
                         .HasColumnType("nvarchar");
 
                     b.Property<byte>("LeftParentheses")
-                        .HasColumnType("smallint");
+                        .HasColumnType("tinyint");
 
                     b.Property<byte>("Operand")
-                        .HasColumnType("smallint");
+                        .HasColumnType("tinyint");
 
                     b.Property<string>("PrimaryFieldName")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("PrimaryTableName")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<byte>("RightParentheses")
-                        .HasColumnType("smallint");
+                        .HasColumnType("tinyint");
 
                     b.Property<int?>("SearchForAdvancedFindId")
                         .HasColumnType("integer");
 
                     b.Property<string>("SearchForValue")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("TableName")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("AdvancedFindId", "FilterId");
 

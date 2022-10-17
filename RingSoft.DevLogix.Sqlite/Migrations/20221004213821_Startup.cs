@@ -2,7 +2,7 @@
 
 namespace RingSoft.DevLogix.Sqlite.Migrations
 {
-    public partial class startup : Migration
+    public partial class Startup : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -12,8 +12,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "nvarchar", nullable: false),
-                    Table = table.Column<string>(type: "nvarchar", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar", maxLength: 50, nullable: false),
+                    Table = table.Column<string>(type: "nvarchar", maxLength: 50, nullable: false),
                     FromFormula = table.Column<string>(type: "ntext", nullable: true),
                     RefreshRate = table.Column<byte>(type: "smallint", nullable: true),
                     RefreshValue = table.Column<int>(type: "integer", nullable: true),
@@ -33,11 +33,11 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                 {
                     AdvancedFindId = table.Column<int>(type: "integer", nullable: false),
                     ColumnId = table.Column<int>(type: "integer", nullable: false),
-                    TableName = table.Column<string>(type: "nvarchar", nullable: true),
-                    FieldName = table.Column<string>(type: "nvarchar", nullable: true),
-                    PrimaryTableName = table.Column<string>(type: "nvarchar", nullable: true),
-                    PrimaryFieldName = table.Column<string>(type: "TEXT", nullable: true),
-                    Caption = table.Column<string>(type: "nvarchar", nullable: true),
+                    TableName = table.Column<string>(type: "nvarchar", maxLength: 50, nullable: true),
+                    FieldName = table.Column<string>(type: "nvarchar", maxLength: 50, nullable: true),
+                    PrimaryTableName = table.Column<string>(type: "nvarchar", maxLength: 50, nullable: true),
+                    PrimaryFieldName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
+                    Caption = table.Column<string>(type: "nvarchar", maxLength: 250, nullable: true),
                     PercentWidth = table.Column<double>(type: "numeric", nullable: false),
                     Formula = table.Column<string>(type: "ntext", nullable: true),
                     FieldDataType = table.Column<byte>(type: "smallint", nullable: false),
@@ -61,12 +61,12 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     AdvancedFindId = table.Column<int>(type: "integer", nullable: false),
                     FilterId = table.Column<int>(type: "integer", nullable: false),
                     LeftParentheses = table.Column<byte>(type: "smallint", nullable: false),
-                    TableName = table.Column<string>(type: "nvarchar", nullable: true),
-                    FieldName = table.Column<string>(type: "nvarchar", nullable: true),
-                    PrimaryTableName = table.Column<string>(type: "nvarchar", nullable: true),
-                    PrimaryFieldName = table.Column<string>(type: "nvarchar", nullable: true),
+                    TableName = table.Column<string>(type: "nvarchar", maxLength: 50, nullable: true),
+                    FieldName = table.Column<string>(type: "nvarchar", maxLength: 50, nullable: true),
+                    PrimaryTableName = table.Column<string>(type: "nvarchar", maxLength: 50, nullable: true),
+                    PrimaryFieldName = table.Column<string>(type: "nvarchar", maxLength: 50, nullable: true),
                     Operand = table.Column<byte>(type: "smallint", nullable: false),
-                    SearchForValue = table.Column<string>(type: "nvarchar", nullable: true),
+                    SearchForValue = table.Column<string>(type: "nvarchar", maxLength: 50, nullable: true),
                     Formula = table.Column<string>(type: "ntext", nullable: true),
                     FormulaDataType = table.Column<byte>(type: "smallint", nullable: false),
                     FormulaDisplayValue = table.Column<string>(type: "nvarchar", nullable: true),
@@ -82,14 +82,12 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         name: "FK_AdvancedFindFilters_AdvancedFinds_AdvancedFindId",
                         column: x => x.AdvancedFindId,
                         principalTable: "AdvancedFinds",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_AdvancedFindFilters_AdvancedFinds_SearchForAdvancedFindId",
                         column: x => x.SearchForAdvancedFindId,
                         principalTable: "AdvancedFinds",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(

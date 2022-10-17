@@ -15,6 +15,7 @@ namespace RingSoft.DevLogix.Sqlite
         public DbSet<AdvancedFindColumn> AdvancedFindColumns { get; set; }
         public DbSet<AdvancedFindFilter> AdvancedFindFilters { get; set; }
         public DbContext DbContext => this;
+
         public bool IsDesignTime { get; set; }
 
         private static DevLogixLookupContext _lookupContext;
@@ -51,6 +52,12 @@ namespace RingSoft.DevLogix.Sqlite
                 optionsBuilder.UseSqlite(_lookupContext.SqliteDataProcessor.ConnectionString);
 
             base.OnConfiguring(optionsBuilder);
+        }
+
+        public void SetLookupContext(DevLogixLookupContext lookupContext)
+        {
+            _lookupContext = lookupContext;
+            DbConstants.ConstantGenerator = new SqliteDbConstants();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

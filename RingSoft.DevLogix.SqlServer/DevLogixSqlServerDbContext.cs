@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AdvancedFind;
+using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.EfCore;
 using RingSoft.DevLogix.DataAccess;
 
@@ -12,6 +13,7 @@ namespace RingSoft.DevLogix.SqlServer
         public DbSet<AdvancedFindColumn> AdvancedFindColumns { get; set; }
         public DbSet<AdvancedFindFilter> AdvancedFindFilters { get; set; }
         public DbContext DbContext => this;
+
         public bool IsDesignTime { get; set; }
 
         private static DevLogixLookupContext _lookupContext;
@@ -45,10 +47,14 @@ namespace RingSoft.DevLogix.SqlServer
         {
             if (IsDesignTime)
             {
-                optionsBuilder.UseSqlServer()
+                var sqlProcessor = new SqlServerDataProcessor();
+                sqlProcessor.Server = "localhost\\SQLEXPRESS";
+                sqlProcessor.Database = "RSDevLogixTemp";
+                sqlProcessor.SecurityType = SecurityTypes.WindowsAuthentication;
+                optionsBuilder.UseSqlServer(sqlProcessor.ConnectionString);
             }
             else
-                optionsBuilder.UseSqlite(_lookupContext.SqliteDataProcessor.ConnectionString);
+                optionsBuilder.UseSqlServer(_lookupContext.SqlServerDataProcessor.ConnectionString);
 
             base.OnConfiguring(optionsBuilder);
         }
@@ -58,6 +64,12 @@ namespace RingSoft.DevLogix.SqlServer
             DataAccessGlobals.ConfigureModel(modelBuilder);
 
             base.OnModelCreating(modelBuilder);
+        }
+
+        public void SetLookupContext(DevLogixLookupContext lookupContext)
+        {
+            _lookupContext = lookupContext;
+            DbConstants.ConstantGenerator = new SqlServerDbConstants();
         }
 
     }

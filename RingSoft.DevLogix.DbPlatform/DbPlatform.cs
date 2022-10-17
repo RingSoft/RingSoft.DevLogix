@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DevLogix.DataAccess;
 using RingSoft.DevLogix.Sqlite;
+using RingSoft.DevLogix.SqlServer;
 
 namespace RingSoft.DevLogix.DbPlatform
 {
@@ -22,8 +23,7 @@ namespace RingSoft.DevLogix.DbPlatform
                     return new DevLogixSqliteDbContext(lookupContext);
                 
                 case DbPlatforms.SqlServer:
-                    throw new ArgumentOutOfRangeException();
-                    break;
+                    return new DevLogixSqlServerDbContext(lookupContext);
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -37,7 +37,7 @@ namespace RingSoft.DevLogix.DbPlatform
                     return new DevLogixSqliteDbContext();
 
                 case DbPlatforms.SqlServer:
-                    throw new ArgumentOutOfRangeException();
+                    return new DevLogixSqlServerDbContext();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
