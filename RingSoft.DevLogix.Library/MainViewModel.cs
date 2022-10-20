@@ -1,9 +1,12 @@
-﻿using RingSoft.DataEntryControls.Engine;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using RingSoft.DataEntryControls.Engine;
 
 namespace RingSoft.DevLogix.Library
 {
     public interface IMainView
     {
+        bool ChangeOrganization();
+
         void CloseWindow();
 
         void ShowAdvancedFind();
@@ -25,6 +28,12 @@ namespace RingSoft.DevLogix.Library
         public void Initialize(IMainView view)
         {
             MainView = view;
+            AppGlobals.MainViewModel = this;
+
+            var loadVm = true;
+            if (AppGlobals.LoggedInOrganization == null)
+                loadVm = view.ChangeOrganization();
+
         }
 
         private void Exit()

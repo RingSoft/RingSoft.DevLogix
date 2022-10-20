@@ -9,6 +9,7 @@ using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.EfCore;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition;
+using RingSoft.DevLogix.DataAccess.Model;
 
 namespace RingSoft.DevLogix.DataAccess
 {
@@ -18,6 +19,8 @@ namespace RingSoft.DevLogix.DataAccess
         public override DbDataProcessor DataProcessor => _dbDataProcessor;
         protected override DbContext DbContext => _dbContext;
         public LookupContextBase Context { get; }
+
+        public TableDefinition<SystemMaster> SystemMaster { get; set; }
         public TableDefinition<AdvancedFind> AdvancedFinds { get; set; }
         public TableDefinition<AdvancedFindColumn> AdvancedFindColumns { get; set; }
         public TableDefinition<AdvancedFindFilter> AdvancedFindFilters { get; set; }
@@ -54,6 +57,7 @@ namespace RingSoft.DevLogix.DataAccess
 
         public void Initialize(IDevLogixDbContext dbContext, DbPlatforms dbPlatform)
         {
+            dbContext.SetLookupContext(this);
             _dbContext = dbContext.DbContext;
             SystemGlobals.AdvancedFindLookupContext = this;
 

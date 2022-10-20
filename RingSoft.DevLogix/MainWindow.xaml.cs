@@ -14,10 +14,24 @@ namespace RingSoft.DevLogix
         public MainWindow()
         {
             InitializeComponent();
-            Loaded += (sender, args) =>
+            ContentRendered += (sender, args) =>
             {
                 ViewModel.Initialize(this);
             };
+        }
+
+        public bool ChangeOrganization()
+        {
+            //var loginWindow = new LoginWindow { Owner = this };
+
+            //var result = false;
+            //var loginResult = loginWindow.ShowDialog();
+
+            //if (loginResult != null && loginResult.Value == true)
+            //    result = (bool)loginResult;
+
+            //return result;
+            return true;
         }
 
         public void CloseWindow()

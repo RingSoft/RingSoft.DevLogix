@@ -1,10 +1,15 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
 using System.Threading;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.App.Library;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup.DataProcessor;
+using RingSoft.DbLookup.EfCore;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DevLogix.DataAccess;
+using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.MasterData;
 using RingSoft.DevLogix.Sqlite;
 using RingSoft.DevLogix.SqlServer;
@@ -29,7 +34,13 @@ namespace RingSoft.DevLogix.Library
 
         public static IDataRepository DataRepository { get; set; }
 
+        public static bool UnitTesting { get; set; }
+
+        public static Organization LoggedInOrganization { get; set; }
+
         public static DbPlatforms DbPlatform { get; private set; }
+
+        public static MainViewModel MainViewModel { get; set; }
 
         public static event EventHandler<AppProgressArgs> AppSplashProgress;
 
@@ -50,25 +61,38 @@ namespace RingSoft.DevLogix.Library
             LookupContext.SqliteDataProcessor.FilePath = MasterDbContext.ProgramDataFolder;
             LookupContext.SqliteDataProcessor.FileName = MasterDbContext.DemoDataFileName;
 
-            DbPlatform = DbPlatforms.SqlServer;
-            //DbPlatform = DbPlatforms.Sqlite;
-            var context = GetNewDbContext();
-            context.SetLookupContext(LookupContext);
+            if (!UnitTesting)
+            {
+                AppSplashProgress?.Invoke(null, new AppProgressArgs("Connecting to the Master Database."));
+
+                MasterDbContext.ConnectToMaster();
+
+                var defaultOrganization = MasterDbContext.GetDefaultOrganization();
+                if (defaultOrganization != null)
+                {
+                    if (LoginToOrganization(defaultOrganization).IsNullOrEmpty())
+                        LoggedInOrganization = defaultOrganization;
+                }
+            }
+                //DbPlatform = DbPlatforms.SqlServer;
+                //DbPlatform = DbPlatforms.Sqlite;
+                //var context = GetNewDbContext();
+            //context.SetLookupContext(LookupContext);
 
             
-            LookupContext.SqliteDataProcessor.FilePath = "C:\\Temp\\";
-            LookupContext.SqliteDataProcessor.FileName = "Temp.sqlite";
+            //LookupContext.SqliteDataProcessor.FilePath = "C:\\Temp\\";
+            //LookupContext.SqliteDataProcessor.FileName = "Temp.sqlite";
 
-            LookupContext.SqlServerDataProcessor.Server = "localhost\\SQLEXPRESS";
-            LookupContext.SqlServerDataProcessor.Database = "RingSoftDevLogixTemp";
-            LookupContext.SqlServerDataProcessor.SecurityType = SecurityTypes.WindowsAuthentication;
+            //LookupContext.SqlServerDataProcessor.Server = "localhost\\SQLEXPRESS";
+            //LookupContext.SqlServerDataProcessor.Database = "RingSoftDevLogixTemp";
+            //LookupContext.SqlServerDataProcessor.SecurityType = SecurityTypes.WindowsAuthentication;
 
-            LookupContext.Initialize(context, DbPlatform);
+            //LookupContext.Initialize(context, DbPlatform);
 
-            context.DbContext.Database.Migrate();
+            //context.DbContext.Database.Migrate();
 
-            var selectQuery = new SelectQuery(LookupContext.AdvancedFinds.TableName);
-            LookupContext.SqliteDataProcessor.GetData(selectQuery, false);
+            //var selectQuery = new SelectQuery(LookupContext.AdvancedFinds.TableName);
+            //LookupContext.SqliteDataProcessor.GetData(selectQuery, false);
 
         }
 
@@ -95,6 +119,105 @@ namespace RingSoft.DevLogix.Library
             }
         }
 
+        public static string LoginToOrganization(Organization organization)
+        {
+            AppSplashProgress?.Invoke(null, new AppProgressArgs($"Migrating the {organization.Name} Database."));
+            DbPlatform = (DbPlatforms)organization.Platform;
+            LookupContext.SetProcessor(DbPlatform);
+            var context = GetNewDbContext();
+            context.SetLookupContext(LookupContext);
+            LoadDataProcessor(organization);
+            switch ((DbPlatforms)organization.Platform)
+            {
+                case DbPlatforms.Sqlite:
+                    if (!organization.FilePath.EndsWith('\\'))
+                        organization.FilePath += "\\";
+
+                    LookupContext.Initialize(context, DbPlatform);
+
+                    var newFile = !File.Exists($"{organization.FilePath}{organization.FileName}");
+
+                    if (newFile == false)
+                    {
+                        try
+                        {
+                            var file = new FileInfo($"{organization.FilePath}{organization.FileName}");
+                            file.IsReadOnly = false;
+                        }
+                        catch (Exception e)
+                        {
+                            var message = $"Can't access Organization file path: {organization.FilePath} ";
+                            return message;
+                        }
+                        context.DbContext.Database.Migrate();
+                        var systemMaster = context.SystemMaster.FirstOrDefault();
+                        organization.Name = systemMaster?.OrganizationName;
+                    }
+                    else
+                    {
+                        context.DbContext.Database.Migrate();
+                        var systemMaster = new SystemMaster { OrganizationName = organization.Name };
+                        context.DbContext.AddNewEntity(context.SystemMaster, systemMaster, "Saving SystemMaster");
+
+                    }
+
+                    break;
+                case DbPlatforms.SqlServer:
+
+                    context.DbContext.Database.Migrate();
+                    var databases = RingSoftAppGlobals.GetSqlServerDatabaseList(organization.Server);
+
+                    if (databases.IndexOf(organization.Database) >= 0)
+                    {
+                        var systemMaster = context.SystemMaster.FirstOrDefault();
+                        organization.Name = systemMaster?.OrganizationName;
+                    }
+                    else
+                    {
+                        var systemMaster = new SystemMaster { OrganizationName = organization.Name };
+                        context.DbContext.AddNewEntity(context.SystemMaster, systemMaster, "Saving SystemMaster");
+                    }
+                    LookupContext.Initialize(context, DbPlatform);
+
+                    break;
+                case DbPlatforms.MySql:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+
+            AppSplashProgress?.Invoke(null, new AppProgressArgs($"Connecting to the {organization.Name} Database."));
+            var selectQuery = new SelectQuery(LookupContext.SystemMaster.TableName);
+            LookupContext.SqliteDataProcessor.GetData(selectQuery, false);
+
+            return string.Empty;
+        }
+
+        public static void LoadDataProcessor(Organization organization, DbPlatforms? platform = null)
+        {
+            if (platform == null)
+            {
+                platform = (DbPlatforms)organization.Platform;
+            }
+
+            switch (platform)
+            {
+                case DbPlatforms.Sqlite:
+                    LookupContext.SqliteDataProcessor.FilePath = organization.FilePath;
+                    LookupContext.SqliteDataProcessor.FileName = organization.FileName;
+                    break;
+                case DbPlatforms.SqlServer:
+                    LookupContext.SqlServerDataProcessor.Server = organization.Server;
+                    LookupContext.SqlServerDataProcessor.Database = organization.Database;
+                    LookupContext.SqlServerDataProcessor.SecurityType = (SecurityTypes)organization.AuthenticationType;
+                    LookupContext.SqlServerDataProcessor.UserName = organization.Username;
+                    LookupContext.SqlServerDataProcessor.Password = organization.Password;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
 
     }
 }

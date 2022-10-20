@@ -22,9 +22,16 @@ namespace RingSoft.DevLogix
 
             AppGlobals.Initialize();
 
+            AppGlobals.LookupContext.LookupAddView += LookupContext_LookupAddView;
+
             AppGlobals.AppSplashProgress -= AppGlobals_AppSplashProgress;
 
             return base.DoProcess();
+        }
+
+        private void LookupContext_LookupAddView(object? sender, DbLookup.Lookup.LookupAddViewArgs e)
+        {
+            //throw new System.NotImplementedException();
         }
 
         private void AppGlobals_AppSplashProgress(object? sender, AppProgressArgs e)

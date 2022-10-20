@@ -4,6 +4,7 @@ using RingSoft.DbLookup.AdvancedFind;
 using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.EfCore;
 using RingSoft.DevLogix.DataAccess;
+using RingSoft.DevLogix.DataAccess.Model;
 
 namespace RingSoft.DevLogix.SqlServer
 {
@@ -13,6 +14,7 @@ namespace RingSoft.DevLogix.SqlServer
         public DbSet<AdvancedFindColumn> AdvancedFindColumns { get; set; }
         public DbSet<AdvancedFindFilter> AdvancedFindFilters { get; set; }
         public DbContext DbContext => this;
+        public DbSet<SystemMaster> SystemMaster { get; set; }
 
         public bool IsDesignTime { get; set; }
 

@@ -32,6 +32,33 @@
                 <GradientStop Color="WhiteSmoke" Offset="0.85"/>
             </LinearGradientBrush>
 
+            <LinearGradientBrush x:Key="ControlBackgroundBrush" StartPoint="0.5,0" EndPoint="0.5,1">
+                <GradientStop Color="#FF81D8D8" Offset="0"/>
+                <GradientStop Color="Aquamarine" Offset="1"/>
+            </LinearGradientBrush>
+
+            <Style TargetType="ListView">
+                <Setter Property="Background" Value="{StaticResource ControlBackgroundBrush}"/>
+            </Style>
+
+            <Style TargetType="TextBox" x:Key="{x:Type TextBox}">
+                <Setter Property="Background" Value="{StaticResource ControlBackgroundBrush}"/>
+            </Style>
+
+            <Style TargetType="TextBox" x:Key="AppTextBoxStyle" BasedOn="{StaticResource {x:Type TextBox}}">
+                <Setter Property="Height" Value="20" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+            </Style>
+
+            <!--<Style TargetType="TextBox" BasedOn="{StaticResource GlobalTextBoxStyle}" />-->
+
+            <Style TargetType="dec:StringEditControl" x:Key="GlobalStringEditControlStyle"
+                   BasedOn="{StaticResource AppTextBoxStyle}">
+                <Setter Property="SelectAllOnGotFocus" Value="True" />
+            </Style>
+
+            <Style TargetType="dec:StringEditControl" BasedOn="{StaticResource GlobalStringEditControlStyle}" />
+
             <Style TargetType="ac:DbMaintenanceTopHeaderControl">
                 <Setter Property="Background" Value="{StaticResource DbMaintenanceBarButtonBrush}"/>
             </Style>
