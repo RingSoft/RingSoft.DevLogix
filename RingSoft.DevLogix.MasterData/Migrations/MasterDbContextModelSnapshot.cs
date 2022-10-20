@@ -26,17 +26,14 @@ namespace RingSoft.DevLogix.MasterData.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<string>("Database")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
                     b.Property<string>("FileName")
-                        .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar");
 
                     b.Property<string>("FilePath")
-                        .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar");
 
@@ -49,7 +46,6 @@ namespace RingSoft.DevLogix.MasterData.Migrations
                         .HasColumnType("nvarchar");
 
                     b.Property<string>("Password")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
@@ -57,12 +53,10 @@ namespace RingSoft.DevLogix.MasterData.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<string>("Server")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
                     b.Property<string>("Username")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 

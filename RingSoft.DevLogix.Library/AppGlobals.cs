@@ -74,26 +74,6 @@ namespace RingSoft.DevLogix.Library
                         LoggedInOrganization = defaultOrganization;
                 }
             }
-                //DbPlatform = DbPlatforms.SqlServer;
-                //DbPlatform = DbPlatforms.Sqlite;
-                //var context = GetNewDbContext();
-            //context.SetLookupContext(LookupContext);
-
-            
-            //LookupContext.SqliteDataProcessor.FilePath = "C:\\Temp\\";
-            //LookupContext.SqliteDataProcessor.FileName = "Temp.sqlite";
-
-            //LookupContext.SqlServerDataProcessor.Server = "localhost\\SQLEXPRESS";
-            //LookupContext.SqlServerDataProcessor.Database = "RingSoftDevLogixTemp";
-            //LookupContext.SqlServerDataProcessor.SecurityType = SecurityTypes.WindowsAuthentication;
-
-            //LookupContext.Initialize(context, DbPlatform);
-
-            //context.DbContext.Database.Migrate();
-
-            //var selectQuery = new SelectQuery(LookupContext.AdvancedFinds.TableName);
-            //LookupContext.SqliteDataProcessor.GetData(selectQuery, false);
-
         }
 
         public static IDevLogixDbContext GetNewDbContext(DbPlatforms? platform = null)

@@ -9,8 +9,8 @@ using RingSoft.DevLogix.MasterData;
 namespace RingSoft.DevLogix.MasterData.Migrations
 {
     [DbContext(typeof(MasterDbContext))]
-    [Migration("20221019201425_Startup")]
-    partial class Startup
+    [Migration("20221020192104_SystemMaster")]
+    partial class SystemMaster
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -70,7 +70,7 @@ namespace RingSoft.DevLogix.MasterData.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Organization");
+                    b.ToTable("Organizations");
                 });
 #pragma warning restore 612, 618
         }

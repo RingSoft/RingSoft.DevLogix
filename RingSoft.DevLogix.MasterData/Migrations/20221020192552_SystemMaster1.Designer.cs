@@ -9,8 +9,8 @@ using RingSoft.DevLogix.MasterData;
 namespace RingSoft.DevLogix.MasterData.Migrations
 {
     [DbContext(typeof(MasterDbContext))]
-    [Migration("20221019202653_Startup1")]
-    partial class Startup1
+    [Migration("20221020192552_SystemMaster1")]
+    partial class SystemMaster1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -28,17 +28,14 @@ namespace RingSoft.DevLogix.MasterData.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<string>("Database")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
                     b.Property<string>("FileName")
-                        .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar");
 
                     b.Property<string>("FilePath")
-                        .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar");
 
@@ -51,7 +48,6 @@ namespace RingSoft.DevLogix.MasterData.Migrations
                         .HasColumnType("nvarchar");
 
                     b.Property<string>("Password")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
@@ -59,12 +55,10 @@ namespace RingSoft.DevLogix.MasterData.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<string>("Server")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
                     b.Property<string>("Username")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 

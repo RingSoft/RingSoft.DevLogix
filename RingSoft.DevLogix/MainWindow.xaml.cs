@@ -22,16 +22,15 @@ namespace RingSoft.DevLogix
 
         public bool ChangeOrganization()
         {
-            //var loginWindow = new LoginWindow { Owner = this };
+            var loginWindow = new LoginWindow { Owner = this };
 
-            //var result = false;
-            //var loginResult = loginWindow.ShowDialog();
+            var result = false;
+            var loginResult = loginWindow.ShowDialog();
 
-            //if (loginResult != null && loginResult.Value == true)
-            //    result = (bool)loginResult;
+            if (loginResult != null && loginResult.Value == true)
+                result = (bool)loginResult;
 
-            //return result;
-            return true;
+            return result;
         }
 
         public void CloseWindow()

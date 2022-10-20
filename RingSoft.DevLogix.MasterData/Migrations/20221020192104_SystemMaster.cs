@@ -2,12 +2,12 @@
 
 namespace RingSoft.DevLogix.MasterData.Migrations
 {
-    public partial class Startup : Migration
+    public partial class SystemMaster : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Organization",
+                name: "Organizations",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -25,14 +25,14 @@ namespace RingSoft.DevLogix.MasterData.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Organization", x => x.Id);
+                    table.PrimaryKey("PK_Organizations", x => x.Id);
                 });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Organization");
+                name: "Organizations");
         }
     }
 }

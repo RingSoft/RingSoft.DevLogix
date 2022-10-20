@@ -13,10 +13,10 @@ namespace RingSoft.DevLogix.MasterData
         public string Name { get; set; }
 
         [MaxLength(250)]
-        public string FilePath { get; set; }
+        public string? FilePath { get; set; }
 
         [MaxLength(250)]
-        public string FileName { get; set; }
+        public string? FileName { get; set; }
 
         [Required]
         public bool IsDefault { get; set; }
@@ -26,18 +26,18 @@ namespace RingSoft.DevLogix.MasterData
         public byte Platform { get; set; }
 
         [MaxLength(50)]
-        public string Server { get; set; }
+        public string? Server { get; set; }
 
         [MaxLength(50)]
-        public string Database { get; set; }
+        public string? Database { get; set; }
 
         public byte? AuthenticationType { get; set; }
 
         [MaxLength(50)]
-        public string Username { get; set; }
+        public string? Username { get; set; }
 
         [MaxLength(50)]
-        public string Password { get; set; }
+        public string? Password { get; set; }
     }
 }
 

@@ -11,11 +11,11 @@ namespace RingSoft.DevLogix.Library
 {
     public interface ILoginView
     {
-        bool LoginToOrganization(Organization Organization);
+        bool LoginToOrganization(Organization organization);
 
         Organization ShowAddOrganization();
 
-        bool EditOrganization(ref Organization Organization);
+        bool EditOrganization(ref Organization organization);
 
         AddEditOrganizationViewModel GetOrganizationConnection();
 
