@@ -7,7 +7,7 @@ using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DevLogix.MasterData;
 
-namespace RingSoft.DevLogix.Library
+namespace RingSoft.DevLogix.Library.ViewModels
 {
     public interface ILoginView
     {
@@ -134,7 +134,7 @@ namespace RingSoft.DevLogix.Library
         {
             Items = new ObservableCollection<LoginListBoxItem>();
             var dbOrganizations = MasterDbContext.GetOrganizations();
-            
+
             foreach (var organization in dbOrganizations)
             {
                 var listBoxItem = new LoginListBoxItem

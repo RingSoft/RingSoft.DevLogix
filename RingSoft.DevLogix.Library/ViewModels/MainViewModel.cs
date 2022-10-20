@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using RingSoft.DataEntryControls.Engine;
 
-namespace RingSoft.DevLogix.Library
+namespace RingSoft.DevLogix.Library.ViewModels
 {
     public interface IMainView
     {

@@ -10,6 +10,7 @@ using RingSoft.DbLookup.EfCore;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DevLogix.DataAccess;
 using RingSoft.DevLogix.DataAccess.Model;
+using RingSoft.DevLogix.Library.ViewModels;
 using RingSoft.DevLogix.MasterData;
 using RingSoft.DevLogix.Sqlite;
 using RingSoft.DevLogix.SqlServer;

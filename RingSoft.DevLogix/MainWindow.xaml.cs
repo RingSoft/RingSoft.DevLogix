@@ -2,7 +2,7 @@
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Controls.WPF.AdvancedFind;
-using RingSoft.DevLogix.Library;
+using RingSoft.DevLogix.Library.ViewModels;
 
 namespace RingSoft.DevLogix
 {

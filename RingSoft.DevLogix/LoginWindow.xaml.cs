@@ -15,7 +15,9 @@ using System.Windows.Shapes;
 using Microsoft.Win32;
 using RingSoft.App.Library;
 using RingSoft.DevLogix.Library;
+using RingSoft.DevLogix.Library.ViewModels;
 using RingSoft.DevLogix.MasterData;
+using AddEditOrganizationViewModel = RingSoft.DevLogix.Library.ViewModels.AddEditOrganizationViewModel;
 
 namespace RingSoft.DevLogix
 {

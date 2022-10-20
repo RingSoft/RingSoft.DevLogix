@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
-        xmlns:vm="clr-namespace:RingSoft.DevLogix.Library;assembly=RingSoft.DevLogix.Library"
+        xmlns:vm="clr-namespace:RingSoft.DevLogix.Library.ViewModels;assembly=RingSoft.DevLogix.Library"
         mc:Ignorable="d"
         ShowInTaskbar="False"
         Style="{StaticResource BaseWindowStyle}"
