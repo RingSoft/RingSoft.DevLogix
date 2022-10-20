@@ -35,9 +35,8 @@ namespace RingSoft.DevLogix
 
         public bool LoginToOrganization(Organization organization)
         {
-            //var loginProcedure = new LoginProcedure(organization);
-            //return loginProcedure.Start();
-            return true;
+            var loginProcedure = new LoginProcedure(organization);
+            return loginProcedure.Start();
         }
 
         public Organization ShowAddOrganization()

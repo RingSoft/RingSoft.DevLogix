@@ -60,6 +60,7 @@ namespace RingSoft.DevLogix.Library
             LookupContext = new DevLogixLookupContext();
             LookupContext.SqliteDataProcessor.FilePath = MasterDbContext.ProgramDataFolder;
             LookupContext.SqliteDataProcessor.FileName = MasterDbContext.DemoDataFileName;
+            
 
             if (!UnitTesting)
             {
@@ -126,7 +127,7 @@ namespace RingSoft.DevLogix.Library
                         }
                         catch (Exception e)
                         {
-                            var message = $"Can't access Organization file path: {organization.FilePath} ";
+                            var message = $"Can't access Organization file path: {organization.FilePath}.  You must run this program as administrator.";
                             return message;
                         }
                         context.DbContext.Database.Migrate();

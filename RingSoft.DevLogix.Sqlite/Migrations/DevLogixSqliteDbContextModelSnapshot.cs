@@ -128,6 +128,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<string>("FormulaDisplayValue")
+                        .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
                     b.Property<byte>("LeftParentheses")
@@ -163,6 +164,17 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.HasIndex("SearchForAdvancedFindId");
 
                     b.ToTable("AdvancedFindFilters");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.SystemMaster", b =>
+                {
+                    b.Property<string>("OrganizationName")
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("OrganizationName");
+
+                    b.ToTable("SystemMaster");
                 });
 
             modelBuilder.Entity("RingSoft.DbLookup.AdvancedFind.AdvancedFindColumn", b =>
