@@ -33,7 +33,8 @@ namespace RingSoft.DevLogix
         {
             var addEditOrganizationWindow = new AddEditOrganizationWindow(DbLoginProcesses.Add)
             {
-                Owner = this
+                Owner = this,
+                ShowInTaskbar = false
             };
             addEditOrganizationWindow.ShowDialog();
             return addEditOrganizationWindow.ViewModel.Object;
@@ -44,6 +45,7 @@ namespace RingSoft.DevLogix
             var addEditOrganizationWindow = new AddEditOrganizationWindow(DbLoginProcesses.Edit, organization)
             {
                 Owner = this,
+                ShowInTaskbar = false
             };
             addEditOrganizationWindow.ShowDialog();
             if (addEditOrganizationWindow.DataCopied)
@@ -67,7 +69,8 @@ namespace RingSoft.DevLogix
         {
             var addEditOrganizationWindow = new AddEditOrganizationWindow(DbLoginProcesses.Connect)
             {
-                Owner = this
+                Owner = this,
+                ShowInTaskbar = false
             };
             addEditOrganizationWindow.ShowDialog();
             return addEditOrganizationWindow.ViewModel;
