@@ -216,79 +216,79 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         private void ConnectToDataFile()
         {
-            //var connection = View.GetOrganizationConnection();
-            //if (connection.DialogResult)
-            //{
-            //    var currentPlatform = AppGlobals.DbPlatform;
-            //    AppGlobals.LookupContext.DbPlatform = connection.DbPlatform;
-            //    AppGlobals.DbPlatform = connection.DbPlatform;
+            var connection = View.GetOrganizationConnection();
+            if (connection.DialogResult)
+            {
+                var currentPlatform = AppGlobals.DbPlatform;
+                AppGlobals.LookupContext.SetProcessor(connection.DbPlatform);
+                AppGlobals.DbPlatform = connection.DbPlatform;
 
-            //    switch (connection.DbPlatform)
-            //    {
-            //        case DbPlatforms.Sqlite:
-            //            var currentFilePath = AppGlobals.LookupContext.SqliteDataProcessor.FilePath;
-            //            var currentFileName = AppGlobals.LookupContext.SqliteDataProcessor.FileName;
+                switch (connection.DbPlatform)
+                {
+                    case DbPlatforms.Sqlite:
+                        var currentFilePath = AppGlobals.LookupContext.SqliteDataProcessor.FilePath;
+                        var currentFileName = AppGlobals.LookupContext.SqliteDataProcessor.FileName;
 
-            //            AppGlobals.LookupContext.SqliteDataProcessor.FilePath = connection.SqliteLoginViewModel.FilePath;
-            //            AppGlobals.LookupContext.SqliteDataProcessor.FileName = connection.SqliteLoginViewModel.FileName;
+                        AppGlobals.LookupContext.SqliteDataProcessor.FilePath = connection.SqliteLoginViewModel.FilePath;
+                        AppGlobals.LookupContext.SqliteDataProcessor.FileName = connection.SqliteLoginViewModel.FileName;
 
-            //            ConnectToOrganization(connection);
+                        ConnectToOrganization(connection);
 
-            //            AppGlobals.LookupContext.SqliteDataProcessor.FilePath = currentFilePath;
-            //            AppGlobals.LookupContext.SqliteDataProcessor.FileName = currentFileName;
-            //            break;
-            //        case DbPlatforms.SqlServer:
-            //            var currentServer = AppGlobals.LookupContext.SqlServerDataProcessor.Server;
-            //            var currentDatabase = AppGlobals.LookupContext.SqlServerDataProcessor.Database;
-            //            var currentSecurityType = AppGlobals.LookupContext.SqlServerDataProcessor.SecurityType;
-            //            var currentUserName = AppGlobals.LookupContext.SqlServerDataProcessor.UserName;
-            //            var currentPassword = AppGlobals.LookupContext.SqlServerDataProcessor.Password;
+                        AppGlobals.LookupContext.SqliteDataProcessor.FilePath = currentFilePath;
+                        AppGlobals.LookupContext.SqliteDataProcessor.FileName = currentFileName;
+                        break;
+                    case DbPlatforms.SqlServer:
+                        var currentServer = AppGlobals.LookupContext.SqlServerDataProcessor.Server;
+                        var currentDatabase = AppGlobals.LookupContext.SqlServerDataProcessor.Database;
+                        var currentSecurityType = AppGlobals.LookupContext.SqlServerDataProcessor.SecurityType;
+                        var currentUserName = AppGlobals.LookupContext.SqlServerDataProcessor.UserName;
+                        var currentPassword = AppGlobals.LookupContext.SqlServerDataProcessor.Password;
 
-            //            AppGlobals.LookupContext.SqlServerDataProcessor.Server = connection.SqlServerLoginViewModel.Server;
-            //            AppGlobals.LookupContext.SqlServerDataProcessor.Database = connection.SqlServerLoginViewModel.Database;
-            //            AppGlobals.LookupContext.SqlServerDataProcessor.SecurityType = connection.SqlServerLoginViewModel.SecurityType;
-            //            AppGlobals.LookupContext.SqlServerDataProcessor.UserName = connection.SqlServerLoginViewModel.UserName;
-            //            AppGlobals.LookupContext.SqlServerDataProcessor.Password = connection.SqlServerLoginViewModel.Password;
+                        AppGlobals.LookupContext.SqlServerDataProcessor.Server = connection.SqlServerLoginViewModel.Server;
+                        AppGlobals.LookupContext.SqlServerDataProcessor.Database = connection.SqlServerLoginViewModel.Database;
+                        AppGlobals.LookupContext.SqlServerDataProcessor.SecurityType = connection.SqlServerLoginViewModel.SecurityType;
+                        AppGlobals.LookupContext.SqlServerDataProcessor.UserName = connection.SqlServerLoginViewModel.UserName;
+                        AppGlobals.LookupContext.SqlServerDataProcessor.Password = connection.SqlServerLoginViewModel.Password;
 
-            //            ConnectToOrganization(connection);
+                        ConnectToOrganization(connection);
 
-            //            AppGlobals.LookupContext.SqlServerDataProcessor.Server = currentServer;
-            //            AppGlobals.LookupContext.SqlServerDataProcessor.Database = currentDatabase;
-            //            AppGlobals.LookupContext.SqlServerDataProcessor.SecurityType = currentSecurityType;
-            //            AppGlobals.LookupContext.SqlServerDataProcessor.UserName = currentUserName;
-            //            AppGlobals.LookupContext.SqlServerDataProcessor.Password = currentPassword;
+                        AppGlobals.LookupContext.SqlServerDataProcessor.Server = currentServer;
+                        AppGlobals.LookupContext.SqlServerDataProcessor.Database = currentDatabase;
+                        AppGlobals.LookupContext.SqlServerDataProcessor.SecurityType = currentSecurityType;
+                        AppGlobals.LookupContext.SqlServerDataProcessor.UserName = currentUserName;
+                        AppGlobals.LookupContext.SqlServerDataProcessor.Password = currentPassword;
 
-            //            break;
-            //        case DbPlatforms.MySql:
-            //            break;
-            //        default:
-            //            throw new ArgumentOutOfRangeException();
-            //    }
+                        break;
+                    case DbPlatforms.MySql:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
 
-            //    AppGlobals.LookupContext.DbPlatform = currentPlatform;
-            //    AppGlobals.DbPlatform = currentPlatform;
-            //}
+                AppGlobals.LookupContext.SetProcessor(currentPlatform);
+                AppGlobals.DbPlatform = currentPlatform;
+            }
         }
 
         private void ConnectToOrganization(AddEditOrganizationViewModel connection)
         {
-            //var systemMaster = AppGlobals.DataRepository.GetSystemMaster();
-            //if (systemMaster != null)
-            //{
-            //    var organization = new Organization
-            //    {
-            //        Name = systemMaster.OrganizationName,
-            //        Platform = (byte)connection.DbPlatform,
-            //        FileName = connection.SqliteLoginViewModel.FileName,
-            //        FilePath = connection.SqliteLoginViewModel.FilePath,
-            //        Server = connection.SqlServerLoginViewModel.Server,
-            //        Database = connection.SqlServerLoginViewModel.Database,
-            //        AuthenticationType = (byte)connection.SqlServerLoginViewModel.SecurityType,
-            //        Username = connection.SqlServerLoginViewModel.UserName,
-            //        Password = connection.SqlServerLoginViewModel.Password
-            //    };
-            //    AddNewOrganization(Organization);
-            //}
+            var systemMaster = AppGlobals.DataRepository.GetSystemMaster();
+            if (systemMaster != null)
+            {
+                var organization = new Organization
+                {
+                    Name = systemMaster.OrganizationName,
+                    Platform = (byte)connection.DbPlatform,
+                    FileName = connection.SqliteLoginViewModel.FileName,
+                    FilePath = connection.SqliteLoginViewModel.FilePath,
+                    Server = connection.SqlServerLoginViewModel.Server,
+                    Database = connection.SqlServerLoginViewModel.Database,
+                    AuthenticationType = (byte)connection.SqlServerLoginViewModel.SecurityType,
+                    Username = connection.SqlServerLoginViewModel.UserName,
+                    Password = connection.SqlServerLoginViewModel.Password
+                };
+                AddNewOrganization(organization);
+            }
         }
 
         private void DeleteOrganization()

@@ -39,7 +39,7 @@ namespace RingSoft.DevLogix.Library
 
         public static Organization LoggedInOrganization { get; set; }
 
-        public static DbPlatforms DbPlatform { get; private set; }
+        public static DbPlatforms DbPlatform { get; set; }
 
         public static MainViewModel MainViewModel { get; set; }
 
@@ -109,6 +109,7 @@ namespace RingSoft.DevLogix.Library
             var context = GetNewDbContext();
             context.SetLookupContext(LookupContext);
             LoadDataProcessor(organization);
+            SystemMaster systemMaster = null;
             switch ((DbPlatforms)organization.Platform)
             {
                 case DbPlatforms.Sqlite:
@@ -132,13 +133,13 @@ namespace RingSoft.DevLogix.Library
                             return message;
                         }
                         context.DbContext.Database.Migrate();
-                        var systemMaster = context.SystemMaster.FirstOrDefault();
-                        organization.Name = systemMaster?.OrganizationName;
+                        systemMaster = context.SystemMaster.FirstOrDefault();
+                        if (systemMaster != null) organization.Name = systemMaster.OrganizationName;
                     }
                     else
                     {
                         context.DbContext.Database.Migrate();
-                        var systemMaster = new SystemMaster { OrganizationName = organization.Name };
+                        systemMaster = new SystemMaster { OrganizationName = organization.Name };
                         context.DbContext.AddNewEntity(context.SystemMaster, systemMaster, "Saving SystemMaster");
 
                     }
@@ -151,12 +152,13 @@ namespace RingSoft.DevLogix.Library
 
                     if (databases.IndexOf(organization.Database) >= 0)
                     {
-                        var systemMaster = context.SystemMaster.FirstOrDefault();
-                        organization.Name = systemMaster?.OrganizationName;
+                        systemMaster = context.SystemMaster.FirstOrDefault();
+                        if (systemMaster != null) organization.Name = systemMaster.OrganizationName;
                     }
-                    else
+
+                    if (systemMaster == null)
                     {
-                        var systemMaster = new SystemMaster { OrganizationName = organization.Name };
+                        systemMaster = new SystemMaster { OrganizationName = organization.Name };
                         context.DbContext.AddNewEntity(context.SystemMaster, systemMaster, "Saving SystemMaster");
                     }
                     LookupContext.Initialize(context, DbPlatform);
@@ -171,7 +173,7 @@ namespace RingSoft.DevLogix.Library
 
             AppSplashProgress?.Invoke(null, new AppProgressArgs($"Connecting to the {organization.Name} Database."));
             var selectQuery = new SelectQuery(LookupContext.SystemMaster.TableName);
-            LookupContext.SqliteDataProcessor.GetData(selectQuery, false);
+            LookupContext.DataProcessor.GetData(selectQuery, false);
 
             return string.Empty;
         }

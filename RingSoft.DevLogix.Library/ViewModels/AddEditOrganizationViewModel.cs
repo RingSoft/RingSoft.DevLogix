@@ -41,12 +41,18 @@ namespace RingSoft.DevLogix.Library.ViewModels
         protected override string TestTable => "SystemMaster";
         public AddEditOrganizationViewModel()
         {
-            DbName = "HomeLogix";
+            DbName = "DevLogix";
         }
 
         public override void Initialize(IDbLoginView view, DbLoginProcesses loginProcess, SqliteLoginViewModel sqliteLoginViewModel,
             SqlServerLoginViewModel sqlServerLoginViewModel, Organization entity)
         {
+            if (view is IAddEditOrganizationView addEditOrganizationView)
+            {
+                View = addEditOrganizationView;
+            }
+
+            base.Initialize(view, loginProcess, sqliteLoginViewModel, sqlServerLoginViewModel, entity);
 
             base.Initialize(view, loginProcess, sqliteLoginViewModel, sqlServerLoginViewModel, entity);
         }
