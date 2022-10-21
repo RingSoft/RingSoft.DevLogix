@@ -110,6 +110,9 @@ namespace RingSoft.DevLogix.Library
             context.SetLookupContext(LookupContext);
             LoadDataProcessor(organization);
             SystemMaster systemMaster = null;
+            DbContext migrateContext = context.DbContext;
+            var migrateResult = string.Empty;
+
             switch ((DbPlatforms)organization.Platform)
             {
                 case DbPlatforms.Sqlite:
@@ -132,12 +135,23 @@ namespace RingSoft.DevLogix.Library
                             var message = $"Can't access Organization file path: {organization.FilePath}.  You must run this program as administrator.";
                             return message;
                         }
-                        context.DbContext.Database.Migrate();
+                        migrateResult = MigrateContext(migrateContext);
+                        if (!migrateResult.IsNullOrEmpty())
+                        {
+                            return migrateResult;
+                        }
+
                         systemMaster = context.SystemMaster.FirstOrDefault();
                         if (systemMaster != null) organization.Name = systemMaster.OrganizationName;
                     }
                     else
                     {
+                        migrateResult = MigrateContext(migrateContext);
+                        if (!migrateResult.IsNullOrEmpty())
+                        {
+                            return migrateResult;
+                        }
+
                         context.DbContext.Database.Migrate();
                         systemMaster = new SystemMaster { OrganizationName = organization.Name };
                         context.DbContext.AddNewEntity(context.SystemMaster, systemMaster, "Saving SystemMaster");
@@ -147,7 +161,13 @@ namespace RingSoft.DevLogix.Library
                     break;
                 case DbPlatforms.SqlServer:
 
-                    context.DbContext.Database.Migrate();
+                    //context.DbContext.Database.Migrate();
+                    migrateResult = MigrateContext(migrateContext);
+                    if (!migrateResult.IsNullOrEmpty())
+                    {
+                        return migrateResult;
+                    }
+
                     var databases = RingSoftAppGlobals.GetSqlServerDatabaseList(organization.Server);
 
                     if (databases.IndexOf(organization.Database) >= 0)
@@ -178,6 +198,20 @@ namespace RingSoft.DevLogix.Library
             return string.Empty;
         }
 
+        public static string MigrateContext(DbContext migrateContext)
+        {
+            try
+            {
+                migrateContext.Database.Migrate();
+            }
+            catch (Exception e)
+            {
+                return e.Message;
+            }
+
+            return string.Empty;
+        }
+
         public static void LoadDataProcessor(Organization organization, DbPlatforms? platform = null)
         {
             if (platform == null)
@@ -196,7 +230,7 @@ namespace RingSoft.DevLogix.Library
                     LookupContext.SqlServerDataProcessor.Database = organization.Database;
                     LookupContext.SqlServerDataProcessor.SecurityType = (SecurityTypes)organization.AuthenticationType;
                     LookupContext.SqlServerDataProcessor.UserName = organization.Username;
-                    LookupContext.SqlServerDataProcessor.Password = organization.Password;
+                    LookupContext.SqlServerDataProcessor.Password = organization.Password.Decrypt();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
