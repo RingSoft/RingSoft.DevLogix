@@ -9,6 +9,7 @@ using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.EfCore;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition;
+using RingSoft.DevLogix.DataAccess.LookupModel;
 using RingSoft.DevLogix.DataAccess.Model;
 
 namespace RingSoft.DevLogix.DataAccess
@@ -21,9 +22,14 @@ namespace RingSoft.DevLogix.DataAccess
         public LookupContextBase Context { get; }
 
         public TableDefinition<SystemMaster> SystemMaster { get; set; }
+        public TableDefinition<User> Users { get; set; }
+
         public TableDefinition<AdvancedFind> AdvancedFinds { get; set; }
         public TableDefinition<AdvancedFindColumn> AdvancedFindColumns { get; set; }
         public TableDefinition<AdvancedFindFilter> AdvancedFindFilters { get; set; }
+
+        public LookupDefinition<UserLookup, User> UserLookup { get; set; }
+
         public LookupDefinition<AdvancedFindLookup, AdvancedFind> AdvancedFindLookup { get; set; }
 
         public SqliteDataProcessor SqliteDataProcessor { get; }
@@ -74,7 +80,10 @@ namespace RingSoft.DevLogix.DataAccess
         }
         protected override void InitializeLookupDefinitions()
         {
-            
+            UserLookup = new LookupDefinition<UserLookup, User>(Users);
+            UserLookup.AddVisibleColumnDefinition(p => p.UserName, "Name", p => p.Name, 70);
+            UserLookup.AddVisibleColumnDefinition(p => p.Type, "Type", p => p.Type, 30);
+            Users.HasLookupDefinition(UserLookup);
         }
 
         protected override void SetupModel()

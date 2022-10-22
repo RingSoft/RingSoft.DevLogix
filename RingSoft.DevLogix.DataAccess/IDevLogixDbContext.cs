@@ -10,6 +10,8 @@ namespace RingSoft.DevLogix.DataAccess
 
         DbSet<SystemMaster> SystemMaster { get; set; }
 
+        DbSet<User> Users { get; set; }
+
         void SetLookupContext(DevLogixLookupContext lookupContext);
     }
 }

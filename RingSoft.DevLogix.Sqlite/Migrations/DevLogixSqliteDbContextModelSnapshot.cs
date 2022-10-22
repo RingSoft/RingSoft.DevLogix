@@ -177,6 +177,33 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.ToTable("SystemMaster");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("Password")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("Rights")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<byte>("Type")
+                        .HasColumnType("smallint");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
+                });
+
             modelBuilder.Entity("RingSoft.DbLookup.AdvancedFind.AdvancedFindColumn", b =>
                 {
                     b.HasOne("RingSoft.DbLookup.AdvancedFind.AdvancedFind", "AdvancedFind")

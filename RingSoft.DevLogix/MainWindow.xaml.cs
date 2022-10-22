@@ -3,6 +3,7 @@ using RingSoft.DbLookup;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Controls.WPF.AdvancedFind;
 using RingSoft.DevLogix.Library.ViewModels;
+using RingSoft.DevLogix.UserManagement;
 
 namespace RingSoft.DevLogix
 {
@@ -44,6 +45,18 @@ namespace RingSoft.DevLogix
             window.Owner = this;
             window.Closed += (sender, args) => Activate();
 
+            window.Show();
+        }
+
+        public void ShowUserMaintenance()
+        {
+            var window = new UserMaintenanceWindow
+            {
+                Owner = this,
+                ShowInTaskbar = true
+            };
+
+            window.Closed += (sender, args) => Activate();
             window.Show();
         }
     }
