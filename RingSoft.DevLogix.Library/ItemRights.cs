@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DevLogix.DataAccess.Model;
 
@@ -182,6 +183,11 @@ namespace RingSoft.DevLogix.Library
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Advanced Finds", AppGlobals.LookupContext.AdvancedFinds));
             Categories.Add(category);
 
+            Initialize();
+        }
+
+        private void Initialize()
+        {
             Rights = new ObservableCollection<Right>();
             var tables = AppGlobals.LookupContext.TableDefinitions
                 .OrderByDescending(p => p.IsAdvancedFind).ToList();
@@ -194,6 +200,14 @@ namespace RingSoft.DevLogix.Library
                         TableDefinition = tableDefinition
                     });
                 }
+            }
+        }
+
+        public void Reset()
+        {
+            foreach (var right in Rights)
+            {
+                right.AllowDelete = true;
             }
         }
 
@@ -218,6 +232,83 @@ namespace RingSoft.DevLogix.Library
                     return right.AllowDelete;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(rightType), rightType, null);
+            }
+        }
+
+        public string GetRightsString()
+        {
+            var result = string.Empty;
+
+            foreach (var right in Rights)
+            {
+                var rightBit = "0";
+                if (right.AllowDelete)
+                {
+                    rightBit = "1";
+                }
+                result += rightBit;
+
+                rightBit = "0";
+                if (right.AllowAdd)
+                {
+                    rightBit = "1";
+                }
+                result += rightBit;
+
+                rightBit = "0";
+                if (right.AllowEdit)
+                {
+                    rightBit = "1";
+                }
+                result += rightBit;
+
+                rightBit = "0";
+                if (right.AllowView)
+                {
+                    rightBit = "1";
+                }
+                result += rightBit;
+
+            }
+
+            return result;
+        }
+
+        public void LoadRights(string rightsString)
+        {
+            Reset();
+            foreach (var right in Rights)
+            {
+                var rightIndex = Rights.IndexOf(right);
+                var rightStringIndex = 0;
+                if (rightIndex > 0)
+                {
+                    rightStringIndex = rightIndex * 4;
+                }
+                var counter = 0;
+                while (counter < 4)
+                {
+                    var rightBit = rightsString[rightStringIndex].ToString();
+                    if (counter == 0)
+                    {
+                        right.AllowDelete = rightBit.ToBool();
+                    }
+                    else if (counter == 1)
+                    {
+                        right.AllowAdd = rightBit.ToBool();
+                    }
+                    else if (counter == 2)
+                    {
+                        right.AllowEdit = rightBit.ToBool();
+                    }
+                    else if (counter == 3)
+                    {
+                        right.AllowView = rightBit.ToBool();
+                    }
+
+                    counter++;
+                    rightStringIndex++;
+                }
             }
         }
     }

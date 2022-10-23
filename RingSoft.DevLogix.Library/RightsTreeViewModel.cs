@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using RingSoft.DbLookup.ModelDefinition;
 
 namespace RingSoft.DevLogix.Library
 {
@@ -14,6 +15,10 @@ namespace RingSoft.DevLogix.Library
         public string Text { get; set; }
 
         public bool SettingCheck { get; private set; }
+
+        public RightTypes RightType { get; set; }
+
+        public TableDefinitionBase TableDefinition { get; set; }
 
         private bool? _isChecked;
 
@@ -139,72 +144,86 @@ namespace RingSoft.DevLogix.Library
             }
         }
 
-        private ItemRights _rights = new ItemRights();
+        private List<TreeViewItem> _rightsItems = new List<TreeViewItem>();
+
+        public ItemRights Rights { get; private set; } = new ItemRights();
 
         public void Initialize()
         {
             TreeRoot = new ObservableCollection<TreeViewItem>();
-            foreach (var category in _rights.Categories)
+            foreach (var category in Rights.Categories)
             {
                 var categoryItem = new TreeViewItem(category.Category, false, null);
                 TreeRoot.Add(categoryItem);
 
                 foreach (var rightCategoryItem in category.Items)
                 {
-                    var right = _rights.GetRight(rightCategoryItem.TableDefinition);
+                    var right = Rights.GetRight(rightCategoryItem.TableDefinition);
                     var item = new TreeViewItem(rightCategoryItem.Description, false, categoryItem);
                     categoryItem.Items.Add(item);
 
                     //var item = new TreeViewItem(right.TableDefinition.Description, right.AllowView, tableItem);
-                    
-                    var viewItem = new TreeViewItem("Allow View", right.AllowView, item);
+
+                    var viewItem = new TreeViewItem("Allow View", right.AllowView, item)
+                        {RightType = RightTypes.AllowView, TableDefinition = right.TableDefinition};
                     viewItem.CheckChanged += (sender, args) => right.AllowView = viewItem.IsChecked.Value;
                     right.AllowViewChanged += (sender, args) => viewItem.IsChecked = right.AllowView;
+                    _rightsItems.Add(viewItem);
                     item.Items.Add(viewItem);
 
-                    var editItem = new TreeViewItem("Allow Edit", right.AllowEdit, item);
+                    var editItem = new TreeViewItem("Allow Edit", right.AllowEdit, item)
+                        {RightType = RightTypes.AllowEdit, TableDefinition = right.TableDefinition};
                     editItem.CheckChanged += (sender, args) => right.AllowEdit = editItem.IsChecked.Value;
                     right.AllowEditChanged += (sender, args) => editItem.IsChecked = right.AllowEdit;
+                    _rightsItems.Add(editItem);
                     item.Items.Add(editItem);
 
-                    var addItem = new TreeViewItem("Allow Add", right.AllowAdd, item);
+                    var addItem = new TreeViewItem("Allow Add", right.AllowAdd, item) 
+                        {RightType = RightTypes.AllowAdd, TableDefinition = right.TableDefinition};
                     addItem.CheckChanged += (sender, args) => right.AllowAdd = addItem.IsChecked.Value;
                     right.AllowAddChanged += (sender, args) => addItem.IsChecked = right.AllowAdd;
+                    _rightsItems.Add(addItem);
                     item.Items.Add(addItem);
 
-                    var deleteItem = new TreeViewItem("Allow Delete", right.AllowDelete, item);
+                    var deleteItem = new TreeViewItem("Allow Delete", right.AllowDelete, item)
+                        {RightType = RightTypes.AllowDelete, TableDefinition = right.TableDefinition};
                     deleteItem.CheckChanged += (sender, args) => right.AllowDelete = deleteItem.IsChecked.Value;
                     right.AllowDeleteChanged += (sender, args) => deleteItem.IsChecked = right.AllowDelete;
+                    _rightsItems.Add(deleteItem);
                     item.Items.Add(deleteItem);
                 }
             }
-            //var item = new TreeViewItem
-            //{
-            //    Text = "First",
-            //    IsChecked = false
-            //};
-            //item.Items = new ObservableCollection<TreeViewItem>();
-            //item.Items.Add(new TreeViewItem(text: "Testing 1", isChecked: false, parent: item));
-            //var newItem = new TreeViewItem(text: "Testing 2", isChecked: true, parent: item);
-            //item.Items.Add(newItem);
-            //newItem.CheckParent();
+        }
 
-            //newItem.Items.Add(new TreeViewItem(text: "Testing 1", isChecked: false, parent: newItem));
-            //var secondNew = new TreeViewItem(text: "Testing 1", isChecked: true, parent: newItem);
-            //newItem.Items.Add(secondNew);
-            //secondNew.CheckParent();
-            
-            //TreeRoot.Add(item);
-            //TreeRoot.Add(new TreeViewItem
-            //{
-            //    Text = "Second",
-            //    IsChecked = false
-            //});
-            //TreeRoot.Add(new TreeViewItem
-            //{
-            //    Text = "Third",
-            //    IsChecked = true
-            //});
+        public void Reset() => Rights.Reset();
+
+        public void LoadRights(string rightsString)
+        {
+            Rights.LoadRights(rightsString);
+            foreach (var rightsRight in Rights.Rights)
+            {
+                var tableRights = _rightsItems.Where(p => p.TableDefinition == rightsRight.TableDefinition);
+                foreach (var tableRight in tableRights)
+                {
+                    switch (tableRight.RightType)
+                    {
+                        case RightTypes.AllowView:
+                            tableRight.IsChecked = rightsRight.AllowView;
+                            break;
+                        case RightTypes.AllowAdd:
+                            tableRight.IsChecked = rightsRight.AllowAdd;
+                            break;
+                        case RightTypes.AllowEdit:
+                            tableRight.IsChecked = rightsRight.AllowEdit;
+                            break;
+                        case RightTypes.AllowDelete:
+                            tableRight.IsChecked = rightsRight.AllowDelete;
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                }
+            }
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

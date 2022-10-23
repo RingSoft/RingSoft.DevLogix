@@ -1,11 +1,21 @@
-﻿using RingSoft.App.Library;
+﻿using System;
+using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.ModelDefinition;
+using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model;
 
 namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 {
+    public interface IUserView : IDbMaintenanceView
+    {
+        public string GetRights();
+
+        public void LoadRights(string rightsString);
+
+        public void ResetRights();
+    }
     public class UserMaintenanceViewModel : AppDbMaintenanceViewModel<User>
     {
         public override TableDefinition<User> TableDefinition => AppGlobals.LookupContext.Users;
@@ -85,8 +95,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             set => TypeComboboxValue = TypeComboboxSetup.GetItem((byte) value);
         }
 
+        public new IUserView View { get; private set; }
+
         protected override void Initialize()
         {
+            View = base.View as IUserView;
+            if (View == null)
+                throw new Exception($"User View interface must be of type '{nameof(IUserView)}'.");
+
             TypeComboboxSetup = new TextComboBoxControlSetup();
             TypeComboboxSetup.LoadFromEnum<UserTypes>();
 
@@ -104,6 +120,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         protected override void LoadFromEntity(User entity)
         {
             UserType = (UserTypes) entity.Type;
+            View.LoadRights(entity.Rights.Decrypt());
         }
 
         protected override User GetEntityData()
@@ -113,6 +130,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 Id = Id,
                 Name = KeyAutoFillValue.Text,
                 Type = (byte) UserType,
+                Rights = View.GetRights().Encrypt()
             };
 
             return user;
@@ -123,6 +141,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             Id = 0;
             KeyAutoFillValue = null;
             UserType = UserTypes.Miscellaneous;
+            View.ResetRights();
         }
 
         protected override bool SaveEntity(User entity)

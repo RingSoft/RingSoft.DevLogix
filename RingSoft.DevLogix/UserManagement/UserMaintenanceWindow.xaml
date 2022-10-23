@@ -49,7 +49,7 @@
 
                     <DockPanel Height="300">
 
-                        <local:RightsTree/>
+                        <local:RightsTree x:Name="RightsTree"/>
 
                     </DockPanel>
 
