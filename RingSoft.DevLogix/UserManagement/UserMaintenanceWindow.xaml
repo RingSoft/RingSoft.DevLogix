@@ -3,7 +3,7 @@
                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                          xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                         xmlns:local="clr-namespace:RingSoft.DevLogix.UserManagement"
+                         xmlns:local="clr-namespace:RingSoft.DevLogix"
                          xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
                          xmlns:lc="clr-namespace:RingSoft.DbLookup.Controls.WPF;assembly=RingSoft.DbLookup.Controls.WPF"
                          xmlns:ac="clr-namespace:RingSoft.App.Controls;assembly=RingSoft.App.Controls"
@@ -21,6 +21,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
             <Grid.ColumnDefinitions>
@@ -42,6 +43,19 @@
 
             <dec:TextComboBoxControl Grid.Row="1" Grid.Column="1" Setup="{Binding TypeComboboxSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding TypeComboboxValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" HorizontalAlignment="Left"/>
 
+            <TabControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4">
+
+                <TabItem Header="Rights">
+
+                    <DockPanel Height="300">
+
+                        <local:RightsTree/>
+
+                    </DockPanel>
+
+                </TabItem>
+
+            </TabControl>
         </Grid>
     </DockPanel>
 </ac:DbMaintenanceWindow>
