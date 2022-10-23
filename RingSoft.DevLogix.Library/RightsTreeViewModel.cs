@@ -26,6 +26,7 @@ namespace RingSoft.DevLogix.Library
                 {
                     return;
                 }
+
                 ThreeState = value == null;
                 _isChecked = value;
                 OnPropertyChanged();
@@ -143,30 +144,39 @@ namespace RingSoft.DevLogix.Library
         public void Initialize()
         {
             TreeRoot = new ObservableCollection<TreeViewItem>();
-            foreach (var right in _rights.Rights)
+            foreach (var category in _rights.Categories)
             {
-                var item = new TreeViewItem(right.TableDefinition.Description, right.AllowView, null);
-                TreeRoot.Add(item);
+                var categoryItem = new TreeViewItem(category.Category, false, null);
+                TreeRoot.Add(categoryItem);
 
-                var viewItem = new TreeViewItem("Allow View", right.AllowView, item);
-                viewItem.CheckChanged += (sender, args) => right.AllowView = viewItem.IsChecked.Value;
-                right.AllowViewChanged += (sender, args) => viewItem.IsChecked = right.AllowView;
-                item.Items.Add(viewItem);
+                foreach (var rightCategoryItem in category.Items)
+                {
+                    var right = _rights.GetRight(rightCategoryItem.TableDefinition);
+                    var item = new TreeViewItem(rightCategoryItem.Description, false, categoryItem);
+                    categoryItem.Items.Add(item);
 
-                var editItem = new TreeViewItem("Allow Edit", right.AllowEdit, item);
-                editItem.CheckChanged += (sender, args) => right.AllowEdit = editItem.IsChecked.Value;
-                right.AllowEditChanged += (sender, args) => editItem.IsChecked = right.AllowEdit;
-                item.Items.Add(editItem);
+                    //var item = new TreeViewItem(right.TableDefinition.Description, right.AllowView, tableItem);
+                    
+                    var viewItem = new TreeViewItem("Allow View", right.AllowView, item);
+                    viewItem.CheckChanged += (sender, args) => right.AllowView = viewItem.IsChecked.Value;
+                    right.AllowViewChanged += (sender, args) => viewItem.IsChecked = right.AllowView;
+                    item.Items.Add(viewItem);
 
-                var addItem = new TreeViewItem("Allow Add", right.AllowAdd, item);
-                addItem.CheckChanged += (sender, args) => right.AllowAdd = addItem.IsChecked.Value;
-                right.AllowAddChanged += (sender, args) => addItem.IsChecked = right.AllowAdd;
-                item.Items.Add(addItem);
+                    var editItem = new TreeViewItem("Allow Edit", right.AllowEdit, item);
+                    editItem.CheckChanged += (sender, args) => right.AllowEdit = editItem.IsChecked.Value;
+                    right.AllowEditChanged += (sender, args) => editItem.IsChecked = right.AllowEdit;
+                    item.Items.Add(editItem);
 
-                var deleteItem = new TreeViewItem("Allow Delete", right.AllowDelete, item);
-                deleteItem.CheckChanged += (sender, args) => right.AllowDelete = deleteItem.IsChecked.Value;
-                right.AllowDeleteChanged += (sender, args) => deleteItem.IsChecked = right.AllowDelete;
-                item.Items.Add(deleteItem);
+                    var addItem = new TreeViewItem("Allow Add", right.AllowAdd, item);
+                    addItem.CheckChanged += (sender, args) => right.AllowAdd = addItem.IsChecked.Value;
+                    right.AllowAddChanged += (sender, args) => addItem.IsChecked = right.AllowAdd;
+                    item.Items.Add(addItem);
+
+                    var deleteItem = new TreeViewItem("Allow Delete", right.AllowDelete, item);
+                    deleteItem.CheckChanged += (sender, args) => right.AllowDelete = deleteItem.IsChecked.Value;
+                    right.AllowDeleteChanged += (sender, args) => deleteItem.IsChecked = right.AllowDelete;
+                    item.Items.Add(deleteItem);
+                }
             }
             //var item = new TreeViewItem
             //{
