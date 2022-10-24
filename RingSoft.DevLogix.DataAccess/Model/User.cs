@@ -1,5 +1,8 @@
-﻿using System.ComponentModel;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using Org.BouncyCastle.Utilities.Collections;
 
 namespace RingSoft.DevLogix.DataAccess.Model
 {
@@ -34,5 +37,12 @@ namespace RingSoft.DevLogix.DataAccess.Model
 
         [MaxLength(255)]
         public string? Rights { get; set; }
+
+        public virtual ICollection<UsersGroup>  UserGroups { get; set; }
+
+        public User()
+        {
+            UserGroups = new HashSet<UsersGroup>();
+        }
     }
 }

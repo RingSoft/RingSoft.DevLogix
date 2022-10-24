@@ -166,6 +166,26 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.ToTable("AdvancedFindFilters");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Group", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("Rights")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Group");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.SystemMaster", b =>
                 {
                     b.Property<string>("OrganizationName")
@@ -204,6 +224,21 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.UsersGroup", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("GroupId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("UserId", "GroupId");
+
+                    b.HasIndex("GroupId");
+
+                    b.ToTable("UsersGroup");
+                });
+
             modelBuilder.Entity("RingSoft.DbLookup.AdvancedFind.AdvancedFindColumn", b =>
                 {
                     b.HasOne("RingSoft.DbLookup.AdvancedFind.AdvancedFind", "AdvancedFind")
@@ -233,6 +268,25 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("SearchForAdvancedFind");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.UsersGroup", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.Group", "Group")
+                        .WithMany("UserGroups")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "User")
+                        .WithMany("UserGroups")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Group");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("RingSoft.DbLookup.AdvancedFind.AdvancedFind", b =>
                 {
                     b.Navigation("Columns");
@@ -240,6 +294,16 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("Filters");
 
                     b.Navigation("SearchForAdvancedFindFilters");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Group", b =>
+                {
+                    b.Navigation("UserGroups");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.User", b =>
+                {
+                    b.Navigation("UserGroups");
                 });
 #pragma warning restore 612, 618
         }
