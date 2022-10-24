@@ -16,7 +16,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         public void ResetRights();
     }
-    public class UserMaintenanceViewModel : AppDbMaintenanceViewModel<User>
+    public class UserMaintenanceViewModel : DevLogixDbMaintenanceViewModel<User>
     {
         public override TableDefinition<User> TableDefinition => AppGlobals.LookupContext.Users;
 

@@ -13,7 +13,6 @@ namespace RingSoft.DevLogix
 
             LookupControlsGlobals.LookupControlContentTemplateFactory =
                 new AppLookupContentTemplateFactory(application);
-
         }
 
         protected override bool DoProcess()
@@ -25,6 +24,8 @@ namespace RingSoft.DevLogix
             AppGlobals.LookupContext.LookupAddView += LookupContext_LookupAddView;
 
             AppGlobals.AppSplashProgress -= AppGlobals_AppSplashProgress;
+
+            LookupControlsGlobals.DbMaintenanceProcessorFactory = new DevLogixDbMaintenanceFactory();
 
             return base.DoProcess();
         }

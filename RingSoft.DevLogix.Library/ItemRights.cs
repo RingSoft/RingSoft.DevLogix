@@ -277,6 +277,10 @@ namespace RingSoft.DevLogix.Library
         public void LoadRights(string rightsString)
         {
             Reset();
+            if (rightsString.IsNullOrEmpty())
+            {
+                return;
+            }
             foreach (var right in Rights)
             {
                 var rightIndex = Rights.IndexOf(right);
@@ -284,6 +288,11 @@ namespace RingSoft.DevLogix.Library
                 if (rightIndex > 0)
                 {
                     rightStringIndex = rightIndex * 4;
+                }
+
+                if (rightStringIndex > rightsString.Length - 1)
+                {
+                    return;
                 }
                 var counter = 0;
                 while (counter < 4)

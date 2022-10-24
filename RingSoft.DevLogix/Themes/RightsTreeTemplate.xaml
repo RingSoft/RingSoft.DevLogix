@@ -24,7 +24,7 @@
 
                                     <HierarchicalDataTemplate DataType="dllib:TreeViewItem" ItemsSource="{Binding Items}">
                                         <StackPanel Orientation="Horizontal">
-                                            <CheckBox IsThreeState="{Binding ThreeState}" IsChecked="{Binding Path=IsChecked}"/>
+                                            <CheckBox IsThreeState="{Binding ThreeState}" IsChecked="{Binding Path=IsChecked}" IsEnabled="{Binding AllowsEdit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                                             <TextBlock Text="{Binding Text}"/>
                                         </StackPanel>
                                     </HierarchicalDataTemplate>

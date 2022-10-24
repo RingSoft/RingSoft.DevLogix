@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using RingSoft.DataEntryControls.WPF;
 using RingSoft.DevLogix.Library;
 
 namespace RingSoft.DevLogix
@@ -34,7 +35,7 @@ namespace RingSoft.DevLogix
     ///     <MyNamespace:RightsTree/>
     ///
     /// </summary>
-    public class RightsTree : Control
+    public class RightsTree : Control, IReadOnlyControl
     {
         public Border Border { get; set; }
 
@@ -65,6 +66,11 @@ namespace RingSoft.DevLogix
             ViewModel = Border.TryFindResource("RightsViewModel") as RightsTreeViewModel;
             
             base.OnApplyTemplate();
+        }
+
+        public void SetReadOnlyMode(bool readOnlyValue)
+        {
+            ViewModel.SetReadOnlyMode(readOnlyValue);
         }
     }
 }

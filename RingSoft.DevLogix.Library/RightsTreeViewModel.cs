@@ -86,6 +86,23 @@ namespace RingSoft.DevLogix.Library
             }
         }
 
+        private bool _allowsEdit;
+
+        public bool AllowsEdit
+        {
+            get => _allowsEdit;
+            set
+            {
+                if (_allowsEdit == value)
+                {
+                    return;
+                }
+                _allowsEdit = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         public event EventHandler CheckChanged;
 
         public TreeViewItem(string text, bool? isChecked, TreeViewItem parent)
@@ -113,6 +130,15 @@ namespace RingSoft.DevLogix.Library
             else
             {
                 Parent.IsChecked = false;
+            }
+        }
+
+        public void SetReadOnlyMode(bool readOnlyMode)
+        {
+            AllowsEdit = !readOnlyMode;
+            foreach (var treeViewItem in Items)
+            {
+                treeViewItem.SetReadOnlyMode(readOnlyMode);
             }
         }
 
@@ -145,6 +171,7 @@ namespace RingSoft.DevLogix.Library
         }
 
         private List<TreeViewItem> _rightsItems = new List<TreeViewItem>();
+        private bool _readOnlyMode;
 
         public ItemRights Rights { get; private set; } = new ItemRights();
 
@@ -192,6 +219,23 @@ namespace RingSoft.DevLogix.Library
                     _rightsItems.Add(deleteItem);
                     item.Items.Add(deleteItem);
                 }
+            }
+            if (_readOnlyMode)
+            {
+                SetReadOnlyMode(_readOnlyMode);
+            }
+        }
+
+        public void SetReadOnlyMode(bool readOnlyValue = true)
+        {
+            if (TreeRoot == null)
+            {
+                _readOnlyMode = readOnlyValue;
+                return;
+            }
+            foreach (var treeViewItem in TreeRoot)
+            {
+                treeViewItem.SetReadOnlyMode(readOnlyValue);
             }
         }
 
