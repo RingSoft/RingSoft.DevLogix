@@ -177,6 +177,7 @@ namespace RingSoft.DevLogix.Library
 
             var category = new RightCategory("User Management");
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Users", AppGlobals.LookupContext.Users));
+            category.Items.Add(new RightCategoryItem(item: "Add/Edit Groups", AppGlobals.LookupContext.Groups));
             Categories.Add(category);
 
             category = new RightCategory("Miscellaneous");

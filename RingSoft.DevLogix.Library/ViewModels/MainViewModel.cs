@@ -14,12 +14,15 @@ namespace RingSoft.DevLogix.Library.ViewModels
         void ShowAdvancedFind();
 
         void ShowUserMaintenance();
+
+        void ShowGroupMaintenance();
     }
     public class MainViewModel
     {
         public IMainView MainView { get; set; }
 
         public RelayCommand UserMaintenanceCommand { get; }
+        public RelayCommand GroupsMaintenanceCommand { get; }
         public RelayCommand ExitCommand { get; }
         public RelayCommand AdvancedFindCommand { get; }
 
@@ -28,6 +31,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
             ExitCommand = new RelayCommand(Exit);
 
             UserMaintenanceCommand = new RelayCommand(ShowUserManagement);
+            GroupsMaintenanceCommand = new RelayCommand(ShowGroupsManagement);
             AdvancedFindCommand = new RelayCommand(ShowAdvancedFind);
 
         }
@@ -76,6 +80,11 @@ namespace RingSoft.DevLogix.Library.ViewModels
         private void ShowUserManagement()
         {
             MainView.ShowUserMaintenance();
+        }
+
+        private void ShowGroupsManagement()
+        {
+            MainView.ShowGroupMaintenance();
         }
         private void ShowAdvancedFind()
         {

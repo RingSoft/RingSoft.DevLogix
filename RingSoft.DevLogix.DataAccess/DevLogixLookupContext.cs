@@ -23,12 +23,15 @@ namespace RingSoft.DevLogix.DataAccess
 
         public TableDefinition<SystemMaster> SystemMaster { get; set; }
         public TableDefinition<User> Users { get; set; }
+        public TableDefinition<Group> Groups { get; set; }
+        public TableDefinition<UsersGroup> UsersGroups { get; set; }
 
         public TableDefinition<AdvancedFind> AdvancedFinds { get; set; }
         public TableDefinition<AdvancedFindColumn> AdvancedFindColumns { get; set; }
         public TableDefinition<AdvancedFindFilter> AdvancedFindFilters { get; set; }
 
         public LookupDefinition<UserLookup, User> UserLookup { get; set; }
+        public LookupDefinition<GroupLookup, Group> GroupLookup { get; set; }
 
         public LookupDefinition<AdvancedFindLookup, AdvancedFind> AdvancedFindLookup { get; set; }
 
@@ -84,6 +87,10 @@ namespace RingSoft.DevLogix.DataAccess
             UserLookup.AddVisibleColumnDefinition(p => p.UserName, "Name", p => p.Name, 70);
             UserLookup.AddVisibleColumnDefinition(p => p.Type, "Type", p => p.Type, 30);
             Users.HasLookupDefinition(UserLookup);
+
+            GroupLookup = new LookupDefinition<GroupLookup, Group>(Groups);
+            GroupLookup.AddVisibleColumnDefinition(p => p.Group, "Name", p => p.Name, 100);
+            Groups.HasLookupDefinition(GroupLookup);
         }
 
         protected override void SetupModel()

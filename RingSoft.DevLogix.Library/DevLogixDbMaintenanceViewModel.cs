@@ -11,8 +11,10 @@ namespace RingSoft.DevLogix.Library
         {
             if (Processor is IAppDbMaintenanceProcessor appDbMaintenanceProcessor)
             {
-                appDbMaintenanceProcessor.WindowReadOnlyMode = true;
-                ReadOnlyMode = true;
+                if (!TableDefinitionBase.HasRight(RightTypes.AllowEdit))
+                {
+                    ReadOnlyMode = true;
+                }
             }
             base.Initialize();
         }

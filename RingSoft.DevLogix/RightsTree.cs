@@ -64,6 +64,7 @@ namespace RingSoft.DevLogix
             }
 
             ViewModel = Border.TryFindResource("RightsViewModel") as RightsTreeViewModel;
+            SetReadOnlyMode(false);
             
             base.OnApplyTemplate();
         }

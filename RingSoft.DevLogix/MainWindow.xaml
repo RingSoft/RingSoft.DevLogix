@@ -55,6 +55,7 @@
                 <MenuItem Header="E_xit..."/>
                 <MenuItem Header="_User Management">
                     <MenuItem Header="Add/Edit _Users..." Command="{Binding UserMaintenanceCommand}"/>
+                    <MenuItem Header="Add/Edit _Groups..." Command="{Binding GroupsMaintenanceCommand}"/>
                 </MenuItem>
                 <MenuItem Header="Quality Assurance">
                     <MenuItem Header="Error Statuses..."/>

@@ -67,5 +67,17 @@ namespace RingSoft.DevLogix
             window.Closed += (sender, args) => Activate();
             window.Show();
         }
+
+        public void ShowGroupMaintenance()
+        {
+            var window = new GroupsMaintenanceWindow()
+            {
+                Owner = this,
+                ShowInTaskbar = true
+            };
+
+            window.Closed += (sender, args) => Activate();
+            window.Show();
+        }
     }
 }

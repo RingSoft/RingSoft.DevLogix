@@ -42,7 +42,18 @@ namespace RingSoft.DevLogix
 
             if (!ViewModel.TableDefinitionBase.HasRight(RightTypes.AllowEdit))
             {
+                if (SelectButton.Visibility == Visibility.Collapsed)
+                {
+                    if (MaintenanceButtonsControl is DbMaintenanceTopHeaderControl topHeaderControl)
+                    {
+                        topHeaderControl.SetWindowReadOnlyMode();
+                    }
+                }
                 View.SetReadOnlyMode(true);
+            }
+            else
+            {
+                SaveButton.Visibility = Visibility.Collapsed;
             }
         }
     }
