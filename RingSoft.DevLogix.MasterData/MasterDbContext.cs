@@ -98,6 +98,8 @@ namespace RingSoft.DevLogix.MasterData
                 entity.Property(p => p.Username).HasColumnType(DbConstants.StringColumnType);
 
                 entity.Property(p => p.Password).HasColumnType(DbConstants.StringColumnType);
+
+                entity.Property(p => p.DefaultUser).HasColumnType(DbConstants.IntegerColumnType);
             });
 
             base.OnModelCreating(modelBuilder);

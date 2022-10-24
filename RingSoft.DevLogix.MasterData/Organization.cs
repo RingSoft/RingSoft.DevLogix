@@ -38,6 +38,8 @@ namespace RingSoft.DevLogix.MasterData
 
         [MaxLength(50)]
         public string? Password { get; set; }
+
+        public int? DefaultUser { get; set; }
     }
 }
 

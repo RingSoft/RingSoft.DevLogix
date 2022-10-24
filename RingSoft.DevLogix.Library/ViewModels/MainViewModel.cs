@@ -7,6 +7,8 @@ namespace RingSoft.DevLogix.Library.ViewModels
     {
         bool ChangeOrganization();
 
+        bool LoginUser();
+
         void CloseWindow();
 
         void ShowAdvancedFind();
@@ -38,6 +40,32 @@ namespace RingSoft.DevLogix.Library.ViewModels
             if (AppGlobals.LoggedInOrganization == null)
                 loadVm = view.ChangeOrganization();
 
+            if (loadVm)
+            {
+                if (AppGlobals.DataRepository.UsersExist())
+                {
+                    loadVm = view.LoginUser();
+                    if (!loadVm)
+                    {
+                        var message =
+                            "If you don't login a user, the application will shut down. Are you sure this is what you want to do?";
+                        var caption = "User Login Failed";
+                        if (ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, caption) ==
+                            MessageBoxButtonsResult.Yes)
+                        {
+                            AppGlobals.LoggedInOrganization = null;
+                            loadVm = view.ChangeOrganization();
+                        }
+                        else
+                        {
+                            while (!loadVm)
+                            {
+                                loadVm = view.LoginUser();
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         private void Exit()

@@ -34,6 +34,14 @@ namespace RingSoft.DevLogix
             return result;
         }
 
+        public bool LoginUser()
+        {
+            var userLoginWindow = new UserLoginWindow { Owner = this };
+            userLoginWindow.ShowDialog();
+            return userLoginWindow.ViewModel.DialogResult;
+        }
+
+
         public void CloseWindow()
         {
             Close();

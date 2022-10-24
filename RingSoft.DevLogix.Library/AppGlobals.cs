@@ -45,6 +45,8 @@ namespace RingSoft.DevLogix.Library
 
         public static AppRights Rights { get; set; }
 
+        public static User LoggedInUser { get; set; }
+
         public static event EventHandler<AppProgressArgs> AppSplashProgress;
 
         public static void InitSettings()

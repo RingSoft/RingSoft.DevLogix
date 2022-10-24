@@ -9,6 +9,8 @@ namespace RingSoft.DevLogix.Library
     {
         [CanBeNull] SystemMaster GetSystemMaster();
 
+        bool UsersExist();
+
         User GetUser(int userId);
 
         bool SaveUser(User user);
@@ -22,6 +24,12 @@ namespace RingSoft.DevLogix.Library
         {
             var context = AppGlobals.GetNewDbContext();
             return context.SystemMaster.FirstOrDefault();
+        }
+
+        public bool UsersExist()
+        {
+            var context = AppGlobals.GetNewDbContext();
+            return context.Users.Any();
         }
 
         public User GetUser(int userId)
