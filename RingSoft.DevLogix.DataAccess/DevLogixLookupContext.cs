@@ -47,6 +47,7 @@ namespace RingSoft.DevLogix.DataAccess
         {
             SqliteDataProcessor = new SqliteDataProcessor();
             SqlServerDataProcessor = new SqlServerDataProcessor();
+
         }
 
         public void SetProcessor(DbPlatforms platform)

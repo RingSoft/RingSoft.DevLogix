@@ -24,6 +24,13 @@ namespace RingSoft.DevLogix
             AppGlobals.Initialize();
 
             AppGlobals.LookupContext.LookupAddView += LookupContext_LookupAddView;
+            AppGlobals.LookupContext.CanViewTableEvent += (sender, args) =>
+            {
+                if (!args.TableDefinition.HasRight(RightTypes.AllowView))
+                {
+                    args.AllowView = false;
+                }
+            };
 
             AppGlobals.AppSplashProgress -= AppGlobals_AppSplashProgress;
 

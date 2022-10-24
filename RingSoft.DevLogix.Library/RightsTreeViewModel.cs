@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup.ModelDefinition;
 
 namespace RingSoft.DevLogix.Library
@@ -177,6 +178,8 @@ namespace RingSoft.DevLogix.Library
 
         private List<TreeViewItem> _rightsItems = new List<TreeViewItem>();
         private bool? _readOnlyMode;
+        private bool _initialized;
+        private string _loadedRights;
 
         public ItemRights Rights { get; private set; } = new ItemRights();
 
@@ -229,6 +232,11 @@ namespace RingSoft.DevLogix.Library
             {
                 SetReadOnlyMode(_readOnlyMode.Value);
             }
+            _initialized = true;
+            if (!_loadedRights.IsNullOrEmpty())
+            {
+                LoadRights(_loadedRights);
+            }
         }
 
         public void SetReadOnlyMode(bool readOnlyValue = true)
@@ -248,6 +256,11 @@ namespace RingSoft.DevLogix.Library
 
         public void LoadRights(string rightsString)
         {
+            if (!_initialized)
+            {
+                _loadedRights = rightsString;
+                return;
+            }
             Rights.LoadRights(rightsString);
             foreach (var rightsRight in Rights.Rights)
             {

@@ -220,6 +220,10 @@ namespace RingSoft.DevLogix.Library
 
         public bool HasRight(TableDefinitionBase tableDefinition, RightTypes rightType)
         {
+            if (tableDefinition.PrimaryKeyFields[0].ParentJoinForeignKeyDefinition != null)
+            {
+                tableDefinition = tableDefinition.PrimaryKeyFields[0].ParentJoinForeignKeyDefinition.PrimaryTable;
+            }
             var right = GetRight(tableDefinition);
             switch (rightType)
             {

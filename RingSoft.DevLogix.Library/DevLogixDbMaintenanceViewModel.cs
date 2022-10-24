@@ -9,14 +9,15 @@ namespace RingSoft.DevLogix.Library
     {
         protected override void Initialize()
         {
+            base.Initialize();
             if (Processor is IAppDbMaintenanceProcessor appDbMaintenanceProcessor)
             {
                 if (!TableDefinitionBase.HasRight(RightTypes.AllowEdit))
                 {
+                    appDbMaintenanceProcessor.WindowReadOnlyMode = true;
                     ReadOnlyMode = true;
                 }
             }
-            base.Initialize();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using RingSoft.App.Controls;
+using RingSoft.DbLookup;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbMaintenance;
@@ -21,10 +22,27 @@ namespace RingSoft.DevLogix
 
     public class DevLogixDbMaintenanceWindowProcessor : AppDbMaintenanceWindowProcessor
     {
+        private bool _rightsSet;
         public override void SetupControl(IDbMaintenanceView view)
         {
             base.SetupControl(view);
+            MaintenanceButtonsControl.Loaded += (sender, args) =>
+            {
+                if (!_rightsSet)
+                {
+                    _rightsSet = true;
+                    SetRights();
+                }
+            };
+            if (DeleteButton != null)
+            {
+                _rightsSet = true;
+                SetRights();
+            }
+        }
 
+        private void SetRights()
+        {
             if (!ViewModel.TableDefinitionBase.HasRight(RightTypes.AllowDelete))
             {
                 DeleteButton.Visibility = Visibility.Collapsed;
@@ -38,22 +56,6 @@ namespace RingSoft.DevLogix
                 {
                     ViewModel.OnGotoNextButton();
                 }
-            }
-
-            if (!ViewModel.TableDefinitionBase.HasRight(RightTypes.AllowEdit))
-            {
-                if (SelectButton.Visibility == Visibility.Collapsed)
-                {
-                    if (MaintenanceButtonsControl is DbMaintenanceTopHeaderControl topHeaderControl)
-                    {
-                        topHeaderControl.SetWindowReadOnlyMode();
-                    }
-                }
-                View.SetReadOnlyMode(true);
-            }
-            else
-            {
-                SaveButton.Visibility = Visibility.Collapsed;
             }
         }
     }
