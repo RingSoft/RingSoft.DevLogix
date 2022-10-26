@@ -15,6 +15,8 @@ namespace RingSoft.DevLogix.Library
 
         User GetUser(int userId);
 
+        User GetUser(string username);
+
         bool SaveUser(User user);
 
         bool DeleteUser(int userId);
@@ -44,6 +46,13 @@ namespace RingSoft.DevLogix.Library
         {
             var context = AppGlobals.GetNewDbContext();
             return  context.Users.FirstOrDefault(p => p.Id == userId);
+        }
+
+        public User GetUser(string username)
+        {
+            var context = AppGlobals.GetNewDbContext();
+            return context.Users.FirstOrDefault(p => p.Name == username);
+
         }
 
         public bool SaveUser(User user)

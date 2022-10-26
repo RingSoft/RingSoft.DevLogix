@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AdvancedFind;
 using RingSoft.DbLookup.EfCore;
+using RingSoft.DbLookup.RecordLocking;
 using RingSoft.DevLogix.DataAccess;
 using RingSoft.DevLogix.DataAccess.Model;
 
@@ -48,6 +49,8 @@ namespace RingSoft.DevLogix.Sqlite
         {
             return new DevLogixSqliteDbContext();
         }
+
+        public DbSet<RecordLock> RecordLocks { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

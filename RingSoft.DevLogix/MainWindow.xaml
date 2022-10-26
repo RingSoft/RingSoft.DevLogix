@@ -51,15 +51,15 @@
     </Window.DataContext>
     <DockPanel>
         <DockPanel>
-            <Menu DockPanel.Dock="Top">
+            <Menu x:Name="MainMenu" DockPanel.Dock="Top">
                 <MenuItem Header="E_xit..."/>
-                <MenuItem Header="_User Management">
+                <!--<MenuItem Header="_User Management">
                     <MenuItem Header="Add/Edit _Users..." Command="{Binding UserMaintenanceCommand}"/>
                     <MenuItem Header="Add/Edit _Groups..." Command="{Binding GroupsMaintenanceCommand}"/>
                 </MenuItem>
                 <MenuItem Header="Quality Assurance">
                     <MenuItem Header="Error Statuses..."/>
-                </MenuItem>
+                </MenuItem>-->
             </Menu>
             <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
                 <StackPanel.Background>

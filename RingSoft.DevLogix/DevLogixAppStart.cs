@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using RingSoft.App.Controls;
+using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DevLogix.Library;
@@ -32,6 +33,16 @@ namespace RingSoft.DevLogix
                 }
             };
 
+            AppGlobals.LookupContext.GetUserAutoFillEvent += (sender, fill) =>
+            {
+                fill.UserAutoFill.AutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.UserLookup);
+                var user = AppGlobals.DataRepository.GetUser(fill.UserName);
+                if (user != null)
+                {
+                    fill.UserAutoFill.AutoFillValue =
+                        AppGlobals.LookupContext.OnAutoFillTextRequest(AppGlobals.LookupContext.Users, user.Id.ToString());
+                }
+            };
             AppGlobals.AppSplashProgress -= AppGlobals_AppSplashProgress;
 
             LookupControlsGlobals.DbMaintenanceProcessorFactory = new DevLogixDbMaintenanceFactory();

@@ -10,6 +10,11 @@ using RingSoft.DevLogix.DataAccess.Model;
 
 namespace RingSoft.DevLogix.Library
 {
+    public enum MenuCategories
+    {
+        UserManagement = 0,
+        Tools = 1,
+    }
     public enum RightTypes
     {
         AllowView = 0,
@@ -142,12 +147,15 @@ namespace RingSoft.DevLogix.Library
 
     public class RightCategory
     {
-        public string Category { get; set; }
+        public string Category { get; private set; }
+
+        public MenuCategories MenuCategory { get; private set; }
 
         public List<RightCategoryItem> Items { get; private set; } = new List<RightCategoryItem>();
 
-        public RightCategory(string name)
+        public RightCategory(string name, MenuCategories menuCategory)
         {
+            MenuCategory = menuCategory;
             Category = name;
         }
     }
@@ -175,12 +183,12 @@ namespace RingSoft.DevLogix.Library
         {
             Categories = new List<RightCategory>();
 
-            var category = new RightCategory("User Management");
+            var category = new RightCategory("User Management", MenuCategories.UserManagement);
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Users", AppGlobals.LookupContext.Users));
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Groups", AppGlobals.LookupContext.Groups));
             Categories.Add(category);
 
-            category = new RightCategory("Miscellaneous");
+            category = new RightCategory("Miscellaneous", MenuCategories.Tools);
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Advanced Finds", AppGlobals.LookupContext.AdvancedFinds));
             Categories.Add(category);
 

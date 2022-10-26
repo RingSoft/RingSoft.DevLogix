@@ -3,6 +3,7 @@ using RingSoft.DbLookup;
 using RingSoft.DbLookup.AdvancedFind;
 using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.EfCore;
+using RingSoft.DbLookup.RecordLocking;
 using RingSoft.DevLogix.DataAccess;
 using RingSoft.DevLogix.DataAccess.Model;
 
@@ -47,6 +48,8 @@ namespace RingSoft.DevLogix.SqlServer
         {
             return new DevLogixSqlServerDbContext();
         }
+
+        public DbSet<RecordLock> RecordLocks { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

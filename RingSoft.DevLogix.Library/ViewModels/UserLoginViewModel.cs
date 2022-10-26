@@ -77,6 +77,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
             user = AppGlobals.DataRepository.GetUser(user.Id);
 
             AppGlobals.LoggedInUser = user;
+            SystemGlobals.UserName = user.Name;
             AppGlobals.Rights.UserRights.LoadRights(user.Rights.Decrypt());
 
             DialogResult = true;

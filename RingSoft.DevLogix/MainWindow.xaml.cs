@@ -1,7 +1,10 @@
-﻿using System.Windows;
+﻿using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Controls.WPF.AdvancedFind;
+using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels;
 using RingSoft.DevLogix.UserManagement;
 
@@ -21,6 +24,42 @@ namespace RingSoft.DevLogix
             };
         }
 
+        private void MakeUserMenu()
+        {
+            var userCategory =
+                AppGlobals.Rights.UserRights.Categories.FirstOrDefault(p =>
+                    p.MenuCategory == MenuCategories.UserManagement);
+
+            var items = userCategory.Items.Where(p => p.TableDefinition.HasRight(RightTypes.AllowView));
+            if (items.Any())
+            {
+                var menuItem = new MenuItem() {Header = "_User Management"};
+                MainMenu.Items.Add(menuItem);
+
+                if (AppGlobals.LookupContext.Users.HasRight(RightTypes.AllowView))
+                {
+                    var categoryItem =
+                        userCategory.Items.FirstOrDefault(p => p.TableDefinition == AppGlobals.LookupContext.Users);
+                    menuItem.Items.Add(new MenuItem()
+                    {
+                        Header = $"{categoryItem.Description}...",
+                        Command = ViewModel.UserMaintenanceCommand
+                    });
+                }
+
+                if (AppGlobals.LookupContext.Groups.HasRight(RightTypes.AllowView))
+                {
+                    var categoryItem =
+                        userCategory.Items.FirstOrDefault(p => p.TableDefinition == AppGlobals.LookupContext.Groups);
+                    menuItem.Items.Add(new MenuItem()
+                    {
+                        Header = $"{categoryItem.Description}...",
+                        Command = ViewModel.GroupsMaintenanceCommand
+                    });
+                }
+            }
+        }
+
         public bool ChangeOrganization()
         {
             var loginWindow = new LoginWindow { Owner = this };
@@ -38,6 +77,11 @@ namespace RingSoft.DevLogix
         {
             var userLoginWindow = new UserLoginWindow { Owner = this };
             userLoginWindow.ShowDialog();
+            if (userLoginWindow.ViewModel.DialogResult)
+            {
+                MainMenu.Items.Clear();
+                MakeUserMenu();
+            }
             return userLoginWindow.ViewModel.DialogResult;
         }
 

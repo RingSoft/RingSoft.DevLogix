@@ -125,7 +125,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         protected override bool SaveEntity(Group entity)
         {
-            return AppGlobals.DataRepository.SaveGroup(entity, UsersManager.GetEntityList());
+            return AppGlobals.DataRepository.SaveGroup(entity, new List<UsersGroup>());
         }
 
         protected override bool DeleteEntity()

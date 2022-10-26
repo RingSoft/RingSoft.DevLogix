@@ -170,6 +170,28 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.ToTable("AdvancedFindFilters");
                 });
 
+            modelBuilder.Entity("RingSoft.DbLookup.RecordLocking.RecordLock", b =>
+                {
+                    b.Property<string>("Table")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("PrimaryKey")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("LockDateTime")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("User")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Table", "PrimaryKey");
+
+                    b.ToTable("RecordLocks");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Group", b =>
                 {
                     b.Property<int>("Id")
@@ -188,7 +210,7 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Group");
+                    b.ToTable("Groups");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.SystemMaster", b =>
@@ -242,7 +264,7 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("UsersGroup");
+                    b.ToTable("UsersGroups");
                 });
 
             modelBuilder.Entity("RingSoft.DbLookup.AdvancedFind.AdvancedFindColumn", b =>

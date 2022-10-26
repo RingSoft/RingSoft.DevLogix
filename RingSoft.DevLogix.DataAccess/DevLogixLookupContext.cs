@@ -9,17 +9,25 @@ using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.EfCore;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition;
+using RingSoft.DbLookup.RecordLocking;
 using RingSoft.DevLogix.DataAccess.LookupModel;
 using RingSoft.DevLogix.DataAccess.Model;
 
 namespace RingSoft.DevLogix.DataAccess
 {
 
+    public class UserAutoFillArgs
+    {
+        public string UserName { get; set; }
+
+        public UserAutoFill UserAutoFill { get; set; }
+    }
     public class DevLogixLookupContext : LookupContext, IAdvancedFindLookupContext
     {
         public override DbDataProcessor DataProcessor => _dbDataProcessor;
         protected override DbContext DbContext => _dbContext;
         public LookupContextBase Context { get; }
+        public TableDefinition<RecordLock> RecordLocks { get; set; }
 
         public TableDefinition<SystemMaster> SystemMaster { get; set; }
         public TableDefinition<User> Users { get; set; }
@@ -34,10 +42,13 @@ namespace RingSoft.DevLogix.DataAccess
         public LookupDefinition<GroupLookup, Group> GroupLookup { get; set; }
 
         public LookupDefinition<AdvancedFindLookup, AdvancedFind> AdvancedFindLookup { get; set; }
+        public LookupDefinition<RecordLockingLookup, RecordLock> RecordLockingLookup { get; set; }
 
         public SqliteDataProcessor SqliteDataProcessor { get; }
         public SqlServerDataProcessor SqlServerDataProcessor { get; }
-        
+
+        public event EventHandler<UserAutoFillArgs> GetUserAutoFillEvent;
+
 
         private DbContext _dbContext;
         private DbDataProcessor _dbDataProcessor;
@@ -97,6 +108,19 @@ namespace RingSoft.DevLogix.DataAccess
         protected override void SetupModel()
         {
             
+        }
+
+        public override UserAutoFill GetUserAutoFill(string userName)
+        {
+            var userAutoFill = new UserAutoFillArgs();
+            userAutoFill.UserAutoFill = new UserAutoFill();
+            userAutoFill.UserName = userName;
+            GetUserAutoFillEvent?.Invoke(this, userAutoFill);
+            if (userAutoFill.UserAutoFill.AutoFillSetup != null)
+            {
+                return userAutoFill.UserAutoFill;
+            }
+            return base.GetUserAutoFill(userName);
         }
     }
 }
