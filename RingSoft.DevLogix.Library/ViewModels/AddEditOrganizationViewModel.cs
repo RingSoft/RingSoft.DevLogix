@@ -73,7 +73,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
             if (entity.AuthenticationType != null)
                 SqlServerLoginViewModel.SecurityType = (SecurityTypes)entity.AuthenticationType.Value;
             SqlServerLoginViewModel.UserName = entity.Username;
-            SqlServerLoginViewModel.Password = entity.Password.Decrypt();
+            SqlServerLoginViewModel.Password = entity.Password.DecryptDatabasePassword();
         }
 
         protected override void ShowEntityNameFailure()
@@ -98,7 +98,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
             entity.Database = SqlServerLoginViewModel.Database;
             entity.AuthenticationType = (byte)SqlServerLoginViewModel.SecurityType;
             entity.Username = SqlServerLoginViewModel.UserName;
-            entity.Password = SqlServerLoginViewModel.Password.Encrypt();
+            entity.Password = SqlServerLoginViewModel.Password.EncryptDatabasePassword();
 
         }
 

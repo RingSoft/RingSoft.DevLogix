@@ -235,7 +235,7 @@ namespace RingSoft.DevLogix.Library
                     LookupContext.SqlServerDataProcessor.Database = organization.Database;
                     LookupContext.SqlServerDataProcessor.SecurityType = (SecurityTypes)organization.AuthenticationType;
                     LookupContext.SqlServerDataProcessor.UserName = organization.Username;
-                    LookupContext.SqlServerDataProcessor.Password = organization.Password.Decrypt();
+                    LookupContext.SqlServerDataProcessor.Password = organization.Password.DecryptDatabasePassword();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

@@ -285,7 +285,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
                     Database = connection.SqlServerLoginViewModel.Database,
                     AuthenticationType = (byte)connection.SqlServerLoginViewModel.SecurityType,
                     Username = connection.SqlServerLoginViewModel.UserName,
-                    Password = connection.SqlServerLoginViewModel.Password
+                    Password = connection.SqlServerLoginViewModel.Password.EncryptDatabasePassword()
                 };
                 AddNewOrganization(organization);
             }
