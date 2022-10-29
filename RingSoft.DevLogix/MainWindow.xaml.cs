@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using RingSoft.DbLookup;
@@ -20,8 +21,20 @@ namespace RingSoft.DevLogix
             InitializeComponent();
             ContentRendered += (sender, args) =>
             {
+#if DEBUG
                 ViewModel.Initialize(this);
+#else
+                try
+                {
+                    ViewModel.Initialize(this);
+                }
+                catch (Exception e)
+                {
+                    RingSoft.App.Library.RingSoftAppGlobals.HandleError(e);
+                }
+#endif
             };
+
         }
 
         private void MakeUserMenu()
@@ -79,10 +92,15 @@ namespace RingSoft.DevLogix
             userLoginWindow.ShowDialog();
             if (userLoginWindow.ViewModel.DialogResult)
             {
-                MainMenu.Items.Clear();
-                MakeUserMenu();
+                MakeMenu();
             }
             return userLoginWindow.ViewModel.DialogResult;
+        }
+
+        public void MakeMenu()
+        {
+            MainMenu.Items.Clear();
+            MakeUserMenu();
         }
 
 

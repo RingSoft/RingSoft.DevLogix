@@ -16,6 +16,8 @@ namespace RingSoft.DevLogix.Library.ViewModels
         void ShowUserMaintenance();
 
         void ShowGroupMaintenance();
+
+        void MakeMenu();
     }
     public class MainViewModel
     {
@@ -68,6 +70,10 @@ namespace RingSoft.DevLogix.Library.ViewModels
                             }
                         }
                     }
+                }
+                else
+                {
+                    MainView.MakeMenu();
                 }
             }
         }

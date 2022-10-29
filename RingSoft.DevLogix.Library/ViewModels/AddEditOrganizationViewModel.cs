@@ -4,6 +4,8 @@ using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.EfCore;
+using RingSoft.DevLogix.DataAccess;
+using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.MasterData;
 using RingSoft.DevLogix.Sqlite;
 using RingSoft.DevLogix.SqlServer;
@@ -62,7 +64,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
             EntityName = entity.Name;
             DbPlatform = (DbPlatforms)entity.Platform;
             var directory = entity.FilePath;
-            if (!directory.EndsWith("\\"))
+            if (!directory.IsNullOrEmpty() && !directory.EndsWith("\\"))
             {
                 directory += "\\";
             }
@@ -104,7 +106,8 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         protected override bool PreDataCopy(ref LookupContext context, ref DbDataProcessor destinationProcessor, ITwoTierProcedure procedure)
         {
-            DbContext dbContext = null;
+            DbContext destinationDbContext = null;
+            IDevLogixDbContext sourceDbContext = null;
             context = AppGlobals.LookupContext;
             switch (DbPlatform)
             {
@@ -113,7 +116,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
                     LoadDbDataProcessor(destinationProcessor);
                     var sqliteHomeLogixDbContext = new DevLogixSqliteDbContext();
                     sqliteHomeLogixDbContext.SetLookupContext(AppGlobals.LookupContext);
-                    dbContext = sqliteHomeLogixDbContext;
+                    destinationDbContext = sqliteHomeLogixDbContext;
                     break;
                 case DbPlatforms.SqlServer:
                     var sqlServerProcessor = AppGlobals.LookupContext.SqlServerDataProcessor;
@@ -121,13 +124,36 @@ namespace RingSoft.DevLogix.Library.ViewModels
                     LoadDbDataProcessor(destinationProcessor);
                     var sqlServerContext = new DevLogixSqlServerDbContext();
                     sqlServerContext.SetLookupContext(AppGlobals.LookupContext);
-                    dbContext = sqlServerContext;
+                    destinationDbContext = sqlServerContext;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
 
             }
+
+            switch (OriginalDbPlatform)
+            {
+                case DbPlatforms.Sqlite:
+                    sourceDbContext = new DevLogixSqliteDbContext(AppGlobals.LookupContext);
+                    break;
+                case DbPlatforms.SqlServer:
+                    sourceDbContext = new DevLogixSqlServerDbContext(AppGlobals.LookupContext);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
             AppGlobals.LoadDataProcessor(Object, OriginalDbPlatform);
+            var systemMaster = new SystemMaster() { OrganizationName = Object.Name + "1" };
+            sourceDbContext.SystemMaster.Add(systemMaster);
+            try
+            {
+                sourceDbContext.DbContext.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
             var dropResult = destinationProcessor.DropDatabase();
             if (dropResult.ResultCode != GetDataResultCodes.Success)
             {
@@ -135,8 +161,10 @@ namespace RingSoft.DevLogix.Library.ViewModels
                 return false;
             }
 
-            AppGlobals.GetNewDbContext().SetLookupContext(AppGlobals.LookupContext);
-            AppGlobals.LookupContext.Initialize(AppGlobals.GetNewDbContext(), OriginalDbPlatform);
+            sourceDbContext = AppGlobals.GetNewDbContext();
+            sourceDbContext.SetLookupContext(AppGlobals.LookupContext);
+            AppGlobals.LookupContext.Initialize(sourceDbContext, OriginalDbPlatform);
+
 
             var result = AppGlobals.MigrateContext(AppGlobals.GetNewDbContext().DbContext);
             if (!result.IsNullOrEmpty())
@@ -145,7 +173,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
                 return false;
             }
 
-            result = AppGlobals.MigrateContext(dbContext);
+            result = AppGlobals.MigrateContext(destinationDbContext);
             if (!result.IsNullOrEmpty())
             {
                 procedure.ShowError(result, "File Access Error");

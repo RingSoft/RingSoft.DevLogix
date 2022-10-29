@@ -165,14 +165,42 @@ namespace RingSoft.DevLogix.Library
                     break;
                 case DbPlatforms.SqlServer:
 
-                    //context.DbContext.Database.Migrate();
-                    migrateResult = MigrateContext(migrateContext);
-                    if (!migrateResult.IsNullOrEmpty())
-                    {
-                        return migrateResult;
-                    }
-
                     var databases = RingSoftAppGlobals.GetSqlServerDatabaseList(organization.Server);
+                    {
+                        if (databases.IndexOf(organization.Database) < 0)
+                        {
+                            migrateResult = MigrateContext(migrateContext);
+                            if (!migrateResult.IsNullOrEmpty())
+                            {
+                                return migrateResult;
+                            }
+                        }
+                        else
+                        {
+                            var migrate = true;
+                            var migrateSystemMaster = new SystemMaster { OrganizationName = organization.Name + "1" };
+                            try
+                            {
+                                context.SystemMaster.Add(migrateSystemMaster);
+                                context.DbContext.SaveChanges();
+                                context.SystemMaster.Remove(migrateSystemMaster);
+                                context.DbContext.SaveChanges();
+                            }
+                            catch (Exception e)
+                            {
+                                migrate = false;
+                            }
+
+                            if (migrate)
+                            {
+                                migrateResult = MigrateContext(migrateContext);
+                                if (!migrateResult.IsNullOrEmpty())
+                                {
+                                    return migrateResult;
+                                }
+                            }
+                        }
+                    }
 
                     if (databases.IndexOf(organization.Database) >= 0)
                     {

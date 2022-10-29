@@ -40,6 +40,8 @@ namespace RingSoft.DevLogix.MasterData
         public string? Password { get; set; }
 
         public int? DefaultUser { get; set; }
+
+        public bool MigrateDb { get; set; }
     }
 }
 
