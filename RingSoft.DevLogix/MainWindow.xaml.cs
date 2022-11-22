@@ -1,13 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using Google.Protobuf.WellKnownTypes;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Controls.WPF.AdvancedFind;
 using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels;
 using RingSoft.DevLogix.UserManagement;
+using ScottPlot;
+using ScottPlot.Plottable;
+using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace RingSoft.DevLogix
 {
@@ -34,7 +42,61 @@ namespace RingSoft.DevLogix
                 }
 #endif
             };
+            WpfPlot.Visibility = Visibility.Collapsed;
+            //var bars = RedrawBars();
+            //var barPlot = WpfPlot.Plot.AddBarSeries(bars);
+            //WpfPlot.Plot.AxisAutoY();
+            //WpfPlot.Refresh();
+            //var timer = new Timer(1000);
+            //Closing += (sender, args) =>
+            //{
+            //    timer.Stop();
+            //    timer.Enabled = false;
+            //    timer.Dispose();
+            //};
+            //timer.Start();
+            //timer.Elapsed += (sender, args) =>
+            //{
+            //    Dispatcher.Invoke(() =>
+            //    {
+            //        WpfPlot.Reset();
+            //        bars = RedrawBars();
+            //        barPlot = WpfPlot.Plot.AddBarSeries(bars);
+            //        WpfPlot.Refresh();
+            //    });
+            //};
 
+            //WpfPlot.LeftClicked += (sender, args) =>
+            //{
+            //    (double mouseCoordX, double mouseCoordY) = WpfPlot.GetMouseCoordinates();
+            //    var newBar = barPlot.GetBar(new Coordinate(mouseCoordX, mouseCoordY));
+
+            //    if (newBar != null)
+            //    {
+            //        MessageBox.Show(newBar.Position.ToString(), "");
+            //    }
+            //};
+            
+        }
+
+        private static List<Bar> RedrawBars()
+        {
+            List<ScottPlot.Plottable.Bar> bars = new();
+            for (int i = 0; i < 10; i++)
+            {
+                ScottPlot.Plottable.Bar bar = new()
+                {
+                    // Each bar can be extensively customized
+                    Value = new Random().Next(),
+                    Position = i,
+                    FillColor = ScottPlot.Palette.Category10.GetColor(i),
+                    Label = i.ToString(),
+                    LineWidth = 2,
+                };
+                bars.Add(bar);
+            }
+
+            return bars;
         }
 
         private void MakeUserMenu()
