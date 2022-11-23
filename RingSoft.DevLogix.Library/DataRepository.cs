@@ -32,6 +32,12 @@ namespace RingSoft.DevLogix.Library
         bool SaveErrorStatus(ErrorStatus errorStatus);
 
         bool DeleteErrorStatus(int errorStatusId);
+
+        ErrorPriority GetErrorPriority(int errorPriorityId);
+
+        bool SaveErrorPriority(ErrorPriority errorPriority);
+
+        bool DeleteErrorPriority(int errorPriorityId);
     }
     public class DataRepository : IDataRepository
     {
@@ -134,6 +140,30 @@ namespace RingSoft.DevLogix.Library
             var errorStatus = context.ErrorStatuses.FirstOrDefault(f => f.Id == errorStatusId);
             return errorStatus != null && context.DbContext.DeleteEntity(context.ErrorStatuses, errorStatus,
                 $"Deleting Error Status '{errorStatus.Description}'");
+        }
+
+        public ErrorPriority GetErrorPriority(int errorPriorityId)
+        {
+            var context = AppGlobals.GetNewDbContext();
+            return context.ErrorPriorities.FirstOrDefault(p => p.Id == errorPriorityId);
+
+        }
+
+        public bool SaveErrorPriority(ErrorPriority errorPriority)
+        {
+            var context = AppGlobals.GetNewDbContext();
+            return context.DbContext.SaveEntity(context.ErrorPriorities, errorPriority,
+                $"Saving Error Priority '{errorPriority.Description}.'");
+
+        }
+
+        public bool DeleteErrorPriority(int errorPriorityId)
+        {
+            var context = AppGlobals.GetNewDbContext();
+            var errorPriority = context.ErrorPriorities.FirstOrDefault(f => f.Id == errorPriorityId);
+            return errorPriority != null && context.DbContext.DeleteEntity(context.ErrorPriorities, errorPriority,
+                $"Deleting Error Priority '{errorPriority.Description}'");
+
         }
     }
 }

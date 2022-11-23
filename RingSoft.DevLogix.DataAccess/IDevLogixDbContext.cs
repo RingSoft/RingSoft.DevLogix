@@ -18,6 +18,8 @@ namespace RingSoft.DevLogix.DataAccess
 
         DbSet<ErrorStatus> ErrorStatuses { get; set; }
 
+        DbSet<ErrorPriority> ErrorPriorities { get; set; }
+
         void SetLookupContext(DevLogixLookupContext lookupContext);
     }
 }
