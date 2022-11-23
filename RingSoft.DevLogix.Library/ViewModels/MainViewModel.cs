@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using RingSoft.DataEntryControls.Engine;
+using RingSoft.DbLookup.ModelDefinition;
 
 namespace RingSoft.DevLogix.Library.ViewModels
 {
@@ -11,11 +12,9 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         void CloseWindow();
 
-        void ShowAdvancedFind();
+        void ShowDbMaintenanceWindow(TableDefinitionBase tableDefinition);
 
-        void ShowUserMaintenance();
-
-        void ShowGroupMaintenance();
+        void ShowAdvancedFindWindow();
 
         void MakeMenu();
     }
@@ -23,19 +22,18 @@ namespace RingSoft.DevLogix.Library.ViewModels
     {
         public IMainView MainView { get; set; }
 
-        public RelayCommand UserMaintenanceCommand { get; }
-        public RelayCommand GroupsMaintenanceCommand { get; }
+        public RelayCommand LogoutCommand { get; set; }
+        public RelayCommand<TableDefinitionBase> ShowMaintenanceWindowCommand { get; }
         public RelayCommand ExitCommand { get; }
         public RelayCommand AdvancedFindCommand { get; }
-
+        
         public MainViewModel()
         {
             ExitCommand = new RelayCommand(Exit);
+            LogoutCommand = new RelayCommand(Logout);
 
-            UserMaintenanceCommand = new RelayCommand(ShowUserManagement);
-            GroupsMaintenanceCommand = new RelayCommand(ShowGroupsManagement);
             AdvancedFindCommand = new RelayCommand(ShowAdvancedFind);
-
+            ShowMaintenanceWindowCommand = new RelayCommand<TableDefinitionBase>(ShowMaintenanceWindow);
         }
         public void Initialize(IMainView view)
         {
@@ -83,18 +81,22 @@ namespace RingSoft.DevLogix.Library.ViewModels
             MainView.CloseWindow();
         }
 
-        private void ShowUserManagement()
+        private void ShowMaintenanceWindow(TableDefinitionBase tableDefinition)
         {
-            MainView.ShowUserMaintenance();
+            MainView.ShowDbMaintenanceWindow(tableDefinition);
         }
 
-        private void ShowGroupsManagement()
-        {
-            MainView.ShowGroupMaintenance();
-        }
         private void ShowAdvancedFind()
         {
-            MainView.ShowAdvancedFind();
+            MainView.ShowAdvancedFindWindow();
+        }
+
+        private void Logout()
+        {
+            if (MainView.LoginUser())
+            {
+                MainView.MakeMenu();
+            }
         }
     }
 }

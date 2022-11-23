@@ -19,6 +19,7 @@ namespace RingSoft.DevLogix.SqlServer
         public DbSet<User> Users { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<UsersGroup> UsersGroups { get; set; }
+        public DbSet<ErrorStatus> ErrorStatuses { get; set; }
 
         public bool IsDesignTime { get; set; }
 

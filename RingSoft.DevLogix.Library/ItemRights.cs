@@ -14,6 +14,7 @@ namespace RingSoft.DevLogix.Library
     {
         UserManagement = 0,
         Tools = 1,
+        Qa = 2,
     }
     public enum RightTypes
     {
@@ -186,6 +187,10 @@ namespace RingSoft.DevLogix.Library
             var category = new RightCategory("User Management", MenuCategories.UserManagement);
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Users", AppGlobals.LookupContext.Users));
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Groups", AppGlobals.LookupContext.Groups));
+            Categories.Add(category);
+
+            category = new RightCategory("Quality Assurance" , MenuCategories.Qa);
+            category.Items.Add(new RightCategoryItem(item: "Add/Edit Error Statuses", AppGlobals.LookupContext.ErrorStatuses));
             Categories.Add(category);
 
             category = new RightCategory("Miscellaneous", MenuCategories.Tools);

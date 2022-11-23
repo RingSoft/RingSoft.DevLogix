@@ -1,13 +1,50 @@
-﻿using System.Windows;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows;
 using RingSoft.App.Controls;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.Controls.WPF;
+using RingSoft.DbLookup.Controls.WPF.AdvancedFind;
 using RingSoft.DbLookup.Lookup;
+using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DevLogix.Library;
+using RingSoft.DevLogix.QualityAssurance;
 using RingSoft.DevLogix.UserManagement;
 
 namespace RingSoft.DevLogix
 {
+    public class WindowRegistryItem
+    {
+        public TableDefinitionBase TableDefinition { get; set; }
+
+        public Type MaintenanceWindow { get; set; }
+    }
+    public static class WindowRegistry
+    {
+        public static List<WindowRegistryItem> Items  { get; private set; } = new List<WindowRegistryItem>();
+
+        public static void RegisterWindow<TWindow>(TableDefinitionBase tableDefinition) where TWindow : DbMaintenanceWindow, new()
+        {
+            Items.Add(new WindowRegistryItem
+            {
+                MaintenanceWindow = typeof(TWindow),
+                TableDefinition = tableDefinition
+            });
+        }
+
+        public static  DbMaintenanceWindow GetMaintenanceWindow(TableDefinitionBase tableDefinition)
+        {
+            var item = Items.FirstOrDefault(p => p.TableDefinition == tableDefinition);
+            if (item != null)
+            {
+                var window = (DbMaintenanceWindow)Activator.CreateInstance(item.MaintenanceWindow);
+                return window;
+            }
+
+            return null;
+        }
+    }
     public class DevLogixAppStart: AppStart
     {
         public DevLogixAppStart(Application application) : base(application, new MainWindow())
@@ -25,6 +62,12 @@ namespace RingSoft.DevLogix
             AppGlobals.Initialize();
 
             AppGlobals.LookupContext.LookupAddView += LookupContext_LookupAddView;
+
+            WindowRegistry.RegisterWindow<UserMaintenanceWindow>(AppGlobals.LookupContext.Users);
+            WindowRegistry.RegisterWindow<GroupsMaintenanceWindow>(AppGlobals.LookupContext.Groups);
+
+            WindowRegistry.RegisterWindow<ErrorStatusMaintenanceWindow>(AppGlobals.LookupContext.ErrorStatuses);
+
             AppGlobals.LookupContext.CanViewTableEvent += (sender, args) =>
             {
                 if (!args.TableDefinition.HasRight(RightTypes.AllowView))
@@ -52,11 +95,7 @@ namespace RingSoft.DevLogix
 
         private void LookupContext_LookupAddView(object? sender, DbLookup.Lookup.LookupAddViewArgs e)
         {
-            if (e.LookupData.LookupDefinition.TableDefinition == AppGlobals.LookupContext.Users)
-            {
-                ShowAddOnTheFlyWindow(new UserMaintenanceWindow(), e);
-            }
-
+            ShowAddOnTheFlyWindow(WindowRegistry.GetMaintenanceWindow(e.LookupData.LookupDefinition.TableDefinition), e);
         }
 
         public void ShowAddOnTheFlyWindow(DbMaintenanceWindow maintenanceWindow, LookupAddViewArgs e)
@@ -67,8 +106,12 @@ namespace RingSoft.DevLogix
                 ownWindow = ownerWindow;
                 maintenanceWindow.Owner = ownerWindow;
             }
+            else
+            {
+                maintenanceWindow.Owner = Application.Current.MainWindow;
+            }
 
-            maintenanceWindow.ShowInTaskbar = false;
+            //maintenanceWindow.ShowInTaskbar = false;
 
             maintenanceWindow.ViewModel.InitializeFromLookupData(e);
 

@@ -34,12 +34,16 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<Group> Groups { get; set; }
         public TableDefinition<UsersGroup> UsersGroups { get; set; }
 
+        public TableDefinition<ErrorStatus> ErrorStatuses { get; set; }
+
         public TableDefinition<AdvancedFind> AdvancedFinds { get; set; }
         public TableDefinition<AdvancedFindColumn> AdvancedFindColumns { get; set; }
         public TableDefinition<AdvancedFindFilter> AdvancedFindFilters { get; set; }
 
         public LookupDefinition<UserLookup, User> UserLookup { get; set; }
         public LookupDefinition<GroupLookup, Group> GroupLookup { get; set; }
+
+        public LookupDefinition<ErrorStatusLookup, ErrorStatus> ErrorStatusLookup { get; set; }
 
         public LookupDefinition<AdvancedFindLookup, AdvancedFind> AdvancedFindLookup { get; set; }
         public LookupDefinition<RecordLockingLookup, RecordLock> RecordLockingLookup { get; set; }
@@ -103,6 +107,10 @@ namespace RingSoft.DevLogix.DataAccess
             GroupLookup = new LookupDefinition<GroupLookup, Group>(Groups);
             GroupLookup.AddVisibleColumnDefinition(p => p.Group, "Name", p => p.Name, 100);
             Groups.HasLookupDefinition(GroupLookup);
+
+            ErrorStatusLookup = new LookupDefinition<ErrorStatusLookup, ErrorStatus>(ErrorStatuses);
+            ErrorStatusLookup.AddVisibleColumnDefinition(p => p.Description, "Description", p => p.Description, 100);
+            ErrorStatuses.HasLookupDefinition(ErrorStatusLookup);
         }
 
         protected override void SetupModel()

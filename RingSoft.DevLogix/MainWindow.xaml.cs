@@ -7,15 +7,19 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Google.Protobuf.WellKnownTypes;
+using RingSoft.App.Controls;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Controls.WPF.AdvancedFind;
+using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels;
 using RingSoft.DevLogix.UserManagement;
 using ScottPlot;
 using ScottPlot.Plottable;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using MessageBox = System.Windows.Forms.MessageBox;
+using Window = System.Windows.Window;
 
 namespace RingSoft.DevLogix
 {
@@ -108,7 +112,7 @@ namespace RingSoft.DevLogix
             var items = userCategory.Items.Where(p => p.TableDefinition.HasRight(RightTypes.AllowView));
             if (items.Any())
             {
-                var menuItem = new MenuItem() {Header = "_User Management"};
+                var menuItem = new MenuItem() { Header = "_User  Management" };
                 MainMenu.Items.Add(menuItem);
 
                 if (AppGlobals.LookupContext.Users.HasRight(RightTypes.AllowView))
@@ -118,7 +122,8 @@ namespace RingSoft.DevLogix
                     menuItem.Items.Add(new MenuItem()
                     {
                         Header = $"{categoryItem.Description}...",
-                        Command = ViewModel.UserMaintenanceCommand
+                        Command = ViewModel.ShowMaintenanceWindowCommand,
+                        CommandParameter = AppGlobals.LookupContext.Users,
                     });
                 }
 
@@ -129,10 +134,39 @@ namespace RingSoft.DevLogix
                     menuItem.Items.Add(new MenuItem()
                     {
                         Header = $"{categoryItem.Description}...",
-                        Command = ViewModel.GroupsMaintenanceCommand
+                        Command = ViewModel.ShowMaintenanceWindowCommand,
+                        CommandParameter = AppGlobals.LookupContext.Groups,
                     });
                 }
             }
+        }
+
+        private void MakeQaMenu()
+        {
+            var qaCategory =
+                AppGlobals.Rights.UserRights.Categories.FirstOrDefault(p =>
+                    p.MenuCategory == MenuCategories.Qa);
+
+            var items = qaCategory.Items.Where(p => p.TableDefinition.HasRight(RightTypes.AllowView));
+            if (items.Any())
+            {
+                var menuItem = new MenuItem() { Header = "_Quality Assurance" };
+                MainMenu.Items.Add(menuItem);
+
+                if (AppGlobals.LookupContext.ErrorStatuses.HasRight(RightTypes.AllowView))
+                {
+                    var categoryItem =
+                        qaCategory.Items.FirstOrDefault(
+                            p => p.TableDefinition == AppGlobals.LookupContext.ErrorStatuses);
+                    menuItem.Items.Add(new MenuItem()
+                    {
+                        Header = $"{categoryItem.Description}...",
+                        Command = ViewModel.ShowMaintenanceWindowCommand,
+                        CommandParameter = AppGlobals.LookupContext.ErrorStatuses,
+                    });
+                }
+            }
+
         }
 
         public bool ChangeOrganization()
@@ -159,10 +193,29 @@ namespace RingSoft.DevLogix
             return userLoginWindow.ViewModel.DialogResult;
         }
 
+        public void ShowAdvancedFindWindow()
+        {
+            ShowWindow(new AdvancedFindWindow());
+        }
+
         public void MakeMenu()
         {
             MainMenu.Items.Clear();
+            MainMenu.Items.Add(new MenuItem()
+            {
+                Header = $"E_xit",
+                Command = ViewModel.ExitCommand
+            });
+
+
+            MainMenu.Items.Add(new MenuItem()
+            {
+                Header = $"_Logout",
+                Command = ViewModel.LogoutCommand
+            });
+
             MakeUserMenu();
+            MakeQaMenu();
         }
 
 
@@ -171,37 +224,22 @@ namespace RingSoft.DevLogix
             Close();
         }
 
-        public void ShowAdvancedFind()
+        public void ShowWindow(Window window)
         {
-            var window = new AdvancedFindWindow();
             window.Owner = this;
+            window.ShowInTaskbar = false;
             window.Closed += (sender, args) => Activate();
-
             window.Show();
+
         }
 
-        public void ShowUserMaintenance()
+        public void ShowDbMaintenanceWindow(TableDefinitionBase tableDefinition)
         {
-            var window = new UserMaintenanceWindow
+            var dbMaintenanceWindow = WindowRegistry.GetMaintenanceWindow(tableDefinition);
+            if (dbMaintenanceWindow != null)
             {
-                Owner = this,
-                ShowInTaskbar = true
-            };
-
-            window.Closed += (sender, args) => Activate();
-            window.Show();
-        }
-
-        public void ShowGroupMaintenance()
-        {
-            var window = new GroupsMaintenanceWindow()
-            {
-                Owner = this,
-                ShowInTaskbar = true
-            };
-
-            window.Closed += (sender, args) => Activate();
-            window.Show();
+                ShowWindow(dbMaintenanceWindow);
+            }
         }
     }
 }

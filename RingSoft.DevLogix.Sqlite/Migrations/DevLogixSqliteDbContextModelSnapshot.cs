@@ -188,6 +188,22 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.ToTable("RecordLocks");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ErrorStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ErrorStatuses");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Group", b =>
                 {
                     b.Property<int>("Id")

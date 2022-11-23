@@ -16,6 +16,8 @@ namespace RingSoft.DevLogix.DataAccess
 
         DbSet<UsersGroup> UsersGroups { get; set; }
 
+        DbSet<ErrorStatus> ErrorStatuses { get; set; }
+
         void SetLookupContext(DevLogixLookupContext lookupContext);
     }
 }

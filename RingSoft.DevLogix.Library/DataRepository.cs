@@ -26,6 +26,12 @@ namespace RingSoft.DevLogix.Library
         bool SaveGroup(Group group, List<UsersGroup> usersGroups);
 
         bool DeleteGroup(int groupId);
+
+        ErrorStatus GetErrorStatus(int errorStatusId);
+
+        bool SaveErrorStatus(ErrorStatus errorStatus);
+
+        bool DeleteErrorStatus(int errorStatusId);
     }
     public class DataRepository : IDataRepository
     {
@@ -107,6 +113,27 @@ namespace RingSoft.DevLogix.Library
                 return context.DbContext.SaveEfChanges($"Deleting Group '{group.Name}'");
             }
             return false;
+        }
+
+        public ErrorStatus GetErrorStatus(int errorStatusId)
+        {
+            var context = AppGlobals.GetNewDbContext();
+            return context.ErrorStatuses.FirstOrDefault(p => p.Id == errorStatusId);
+        }
+
+        public bool SaveErrorStatus(ErrorStatus errorStatus)
+        {
+            var context = AppGlobals.GetNewDbContext();
+            return context.DbContext.SaveEntity(context.ErrorStatuses, errorStatus,
+                $"Saving Error Status '{errorStatus.Description}.'");
+        }
+
+        public bool DeleteErrorStatus(int errorStatusId)
+        {
+            var context = AppGlobals.GetNewDbContext();
+            var errorStatus = context.ErrorStatuses.FirstOrDefault(f => f.Id == errorStatusId);
+            return errorStatus != null && context.DbContext.DeleteEntity(context.ErrorStatuses, errorStatus,
+                $"Deleting Error Status '{errorStatus.Description}'");
         }
     }
 }
