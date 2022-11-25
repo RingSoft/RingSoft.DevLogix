@@ -67,6 +67,7 @@ namespace RingSoft.DevLogix
             WindowRegistry.RegisterWindow<GroupsMaintenanceWindow>(AppGlobals.LookupContext.Groups);
 
             WindowRegistry.RegisterWindow<ErrorStatusMaintenanceWindow>(AppGlobals.LookupContext.ErrorStatuses);
+            WindowRegistry.RegisterWindow<ErrorPriorityMaintenanceWindow>(AppGlobals.LookupContext.ErrorPriorities);
 
             AppGlobals.LookupContext.CanViewTableEvent += (sender, args) =>
             {

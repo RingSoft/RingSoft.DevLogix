@@ -4,7 +4,7 @@ using RingSoft.DevLogix.DataAccess.Model;
 
 namespace RingSoft.DevLogix.DataAccess
 {
-    public interface IDevLogixDbContext : IAdvancedFindDbContextEfCore
+    public interface IDevLogixDbContext : IAdvancedFindDbContextEfCore, IDbContext
     {
         DbContext DbContext { get; }
 

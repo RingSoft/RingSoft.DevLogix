@@ -33,7 +33,7 @@ namespace RingSoft.DevLogix.Sqlite
             DbConstants.ConstantGenerator = new SqliteDbConstants();
             EfCoreGlobals.DbAdvancedFindContextCore = this;
             SystemGlobals.AdvancedFindDbProcessor = new AdvancedFindDataProcessorEfCore();
-
+            DataAccessGlobals.DbContext = this;
         }
         public DevLogixSqliteDbContext(DevLogixLookupContext lookupContext)
         {
@@ -75,6 +75,41 @@ namespace RingSoft.DevLogix.Sqlite
             DataAccessGlobals.ConfigureModel(modelBuilder);
 
             base.OnModelCreating(modelBuilder);
+        }
+
+        public bool SaveNoCommitEntity<TEntity>(TEntity entity, string message) where TEntity : class
+        {
+            return DataAccessGlobals.SaveNoCommitEntity(entity, message);
+        }
+
+        public bool SaveEntity<TEntity>(TEntity entity, string message) where TEntity : class
+        {
+            return DataAccessGlobals.SaveEntity(entity, message);
+        }
+
+        public bool DeleteEntity<TEntity>(TEntity entity, string message) where TEntity : class
+        {
+            return DataAccessGlobals.DeleteEntity(entity, message);
+        }
+
+        public bool AddNewNoCommitEntity<TEntity>(TEntity entity, string message) where TEntity : class
+        {
+            return DataAccessGlobals.AddNewNoCommitEntity(entity, message);
+        }
+
+        public bool Commit(string message)
+        {
+            return DataAccessGlobals.Commit(message);
+        }
+
+        public void RemoveRange<TEntity>(List<TEntity> listToRemove) where TEntity : class
+        {
+            DataAccessGlobals.RemoveRange(listToRemove);
+        }
+
+        public void AddRange<TEntity>(List<TEntity> listToAdd) where TEntity : class
+        {
+            DataAccessGlobals.AddRange(listToAdd);
         }
     }
 }

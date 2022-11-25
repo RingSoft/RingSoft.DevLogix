@@ -1,15 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.DataEntryControls.Engine.Annotations;
 using RingSoft.DbLookup.EfCore;
+using RingSoft.DbLookup.Lookup;
+using RingSoft.DevLogix.DataAccess;
 using RingSoft.DevLogix.DataAccess.Model;
 
 namespace RingSoft.DevLogix.Library
 {
     public interface IDataRepository
     {
-        [CanBeNull] SystemMaster GetSystemMaster();
+        IDbContext GetDataContext();
+
+        [CanBeNull]
+        SystemMaster GetSystemMaster();
 
         bool UsersExist();
 
@@ -33,14 +40,18 @@ namespace RingSoft.DevLogix.Library
 
         bool DeleteErrorStatus(int errorStatusId);
 
-        ErrorPriority GetErrorPriority(int errorPriorityId);
-
-        bool SaveErrorPriority(ErrorPriority errorPriority);
-
         bool DeleteErrorPriority(int errorPriorityId);
+
+        IQueryable<TEntity> GetTable<TEntity>() where TEntity : class;
     }
+
     public class DataRepository : IDataRepository
     {
+        public IDbContext GetDataContext()
+        {
+            return AppGlobals.GetNewDbContext();
+        }
+
         [CanBeNull]
         public SystemMaster GetSystemMaster()
         {
@@ -142,21 +153,6 @@ namespace RingSoft.DevLogix.Library
                 $"Deleting Error Status '{errorStatus.Description}'");
         }
 
-        public ErrorPriority GetErrorPriority(int errorPriorityId)
-        {
-            var context = AppGlobals.GetNewDbContext();
-            return context.ErrorPriorities.FirstOrDefault(p => p.Id == errorPriorityId);
-
-        }
-
-        public bool SaveErrorPriority(ErrorPriority errorPriority)
-        {
-            var context = AppGlobals.GetNewDbContext();
-            return context.DbContext.SaveEntity(context.ErrorPriorities, errorPriority,
-                $"Saving Error Priority '{errorPriority.Description}.'");
-
-        }
-
         public bool DeleteErrorPriority(int errorPriorityId)
         {
             var context = AppGlobals.GetNewDbContext();
@@ -165,5 +161,13 @@ namespace RingSoft.DevLogix.Library
                 $"Deleting Error Priority '{errorPriority.Description}'");
 
         }
+
+        public IQueryable<TEntity> GetTable<TEntity>() where TEntity : class
+        {
+            var context = AppGlobals.GetNewDbContext();
+            var dbSet = context.DbContext.Set<TEntity>();
+            return dbSet;
+        }
+
     }
 }

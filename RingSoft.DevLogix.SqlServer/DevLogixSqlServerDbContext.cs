@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AdvancedFind;
 using RingSoft.DbLookup.DataProcessor;
@@ -31,7 +32,7 @@ namespace RingSoft.DevLogix.SqlServer
             DbConstants.ConstantGenerator = new SqlServerDbConstants();
             EfCoreGlobals.DbAdvancedFindContextCore = this;
             SystemGlobals.AdvancedFindDbProcessor = new AdvancedFindDataProcessorEfCore();
-
+            DataAccessGlobals.DbContext = this;
         }
 
         public DevLogixSqlServerDbContext(DevLogixLookupContext lookupContext)
@@ -82,5 +83,39 @@ namespace RingSoft.DevLogix.SqlServer
             DbConstants.ConstantGenerator = new SqlServerDbConstants();
         }
 
+        public bool SaveNoCommitEntity<TEntity>(TEntity entity, string message) where TEntity : class
+        {
+            return DataAccessGlobals.SaveNoCommitEntity(entity, message);
+        }
+
+        public bool SaveEntity<TEntity>(TEntity entity, string message) where TEntity : class
+        {
+            return DataAccessGlobals.SaveEntity(entity, message);
+        }
+
+        public bool DeleteEntity<TEntity>(TEntity entity, string message) where TEntity : class
+        {
+            return DataAccessGlobals.DeleteEntity(entity, message);
+        }
+
+        public bool AddNewNoCommitEntity<TEntity>(TEntity entity, string message) where TEntity : class
+        {
+            return DataAccessGlobals.AddNewNoCommitEntity(entity, message);
+        }
+
+        public bool Commit(string message)
+        {
+            return DataAccessGlobals.Commit(message);
+        }
+
+        public void RemoveRange<TEntity>(List<TEntity> listToRemove) where TEntity : class
+        {
+            DataAccessGlobals.RemoveRange(listToRemove);
+        }
+
+        public void AddRange<TEntity>(List<TEntity> listToAdd) where TEntity : class
+        {
+            DataAccessGlobals.AddRange(listToAdd);
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using RingSoft.DbLookup;
+﻿using System.Linq;
+using RingSoft.DbLookup;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DevLogix.DataAccess.Model;
 
@@ -42,7 +43,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         protected override ErrorPriority PopulatePrimaryKeyControls(ErrorPriority newEntity, PrimaryKeyValue primaryKeyValue)
         {
-            var result = AppGlobals.DataRepository.GetErrorPriority(newEntity.Id);
+            IQueryable<ErrorPriority> query = AppGlobals.DataRepository.GetTable<ErrorPriority>();
+            var result = query.FirstOrDefault(p => p.Id == newEntity.Id);
             Id = result.Id;
             KeyAutoFillValue = AppGlobals.LookupContext.OnAutoFillTextRequest(TableDefinition, Id.ToString());
             return result;
@@ -72,7 +74,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             {
                 var message = "Level must have a value";
                 var caption = "Validation Failure";
-                Processor.OnValidationFail(AppGlobals.LookupContext.ErrorPriorities.GetFieldDefinition(p => p.Level),
+                View.OnValidationFail(AppGlobals.LookupContext.ErrorPriorities.GetFieldDefinition(p => p.Level),
                     message, caption);
                 return false;
             }
@@ -88,12 +90,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         protected override bool SaveEntity(ErrorPriority entity)
         {
-            return AppGlobals.DataRepository.SaveErrorPriority(entity);
+            var context = AppGlobals.DataRepository.GetDataContext();
+            return context.SaveEntity(entity, $"'{entity.Description}' Error Priority");
         }
 
         protected override bool DeleteEntity()
         {
-            return AppGlobals.DataRepository.DeleteErrorPriority(Id);
+            var errorPrioritySet = AppGlobals.DataRepository.GetTable<ErrorPriority>();
+            var errorPriority = errorPrioritySet.FirstOrDefault(p => p.Id == Id);
+            var context = AppGlobals.DataRepository.GetDataContext();
+            return context.DeleteEntity(errorPriority, $"Deleting Error Priority '{errorPriority.Description}'");
         }
     }
 }

@@ -191,6 +191,7 @@ namespace RingSoft.DevLogix.Library
 
             category = new RightCategory("Quality Assurance" , MenuCategories.Qa);
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Error Statuses", AppGlobals.LookupContext.ErrorStatuses));
+            category.Items.Add(new RightCategoryItem(item: "Add/Edit Error Priorities", AppGlobals.LookupContext.ErrorPriorities));
             Categories.Add(category);
 
             category = new RightCategory("Miscellaneous", MenuCategories.Tools);

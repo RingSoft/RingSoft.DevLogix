@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
@@ -111,7 +113,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         protected override User PopulatePrimaryKeyControls(User newEntity, PrimaryKeyValue primaryKeyValue)
         {
-            var result = AppGlobals.DataRepository.GetUser(newEntity.Id);
+            IQueryable<User> query = AppGlobals.DataRepository.GetTable<User>();
+            query = query.Include(p => p.UserGroups);
+
+            var result = query.FirstOrDefault(p => p.Id == newEntity.Id);
             Id = result.Id;
             KeyAutoFillValue = AppGlobals.LookupContext.OnAutoFillTextRequest(TableDefinition, Id.ToString());
             return result;

@@ -165,6 +165,20 @@ namespace RingSoft.DevLogix
                         CommandParameter = AppGlobals.LookupContext.ErrorStatuses,
                     });
                 }
+
+                if (AppGlobals.LookupContext.ErrorPriorities.HasRight(RightTypes.AllowView))
+                {
+                    var categoryItem =
+                        qaCategory.Items.FirstOrDefault(
+                            p => p.TableDefinition == AppGlobals.LookupContext.ErrorPriorities);
+                    menuItem.Items.Add(new MenuItem()
+                    {
+                        Header = $"{categoryItem.Description}...",
+                        Command = ViewModel.ShowMaintenanceWindowCommand,
+                        CommandParameter = AppGlobals.LookupContext.ErrorPriorities,
+                    });
+                }
+
             }
 
         }
