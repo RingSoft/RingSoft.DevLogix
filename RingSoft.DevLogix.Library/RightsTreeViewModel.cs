@@ -21,6 +21,11 @@ namespace RingSoft.DevLogix.Library
 
         public TableDefinitionBase TableDefinition { get; set; }
 
+        public override string ToString()
+        {
+            return Text;
+        }
+
         private bool? _isChecked;
 
         public bool? IsChecked
@@ -46,20 +51,12 @@ namespace RingSoft.DevLogix.Library
                         {
                             treeViewItem.IsChecked = _isChecked;
                         }
-
-                        if (Parent != null)
-                        {
-                            CheckParent();
-                        }
-                        SettingCheck = false;
                     }
-                    else
+                    if (Parent != null && !Parent.SettingCheck)
                     {
-                        if (Parent != null && !Parent.SettingCheck)
-                        {
-                            CheckParent();
-                        }
+                        CheckParent();
                     }
+                    SettingCheck = false;
                 }
                 else
                 {

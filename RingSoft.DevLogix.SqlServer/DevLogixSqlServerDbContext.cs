@@ -98,6 +98,11 @@ namespace RingSoft.DevLogix.SqlServer
             return DataAccessGlobals.DeleteEntity(entity, message);
         }
 
+        public bool DeleteNoCommitEntity<TEntity>(TEntity entity, string message) where TEntity : class
+        {
+            return DataAccessGlobals.DeleteNoCommitEntity(entity, message);
+        }
+
         public bool AddNewNoCommitEntity<TEntity>(TEntity entity, string message) where TEntity : class
         {
             return DataAccessGlobals.AddNewNoCommitEntity(entity, message);

@@ -29,6 +29,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             return new DataEntryGridAutoFillCellProps(this, columnId, AutoFillSetup, AutoFillValue);
         }
 
+        public override void SetCellValue(DataEntryGridEditingCellProps value)
+        {
+            if (value is DataEntryGridAutoFillCellProps autoFillCellProps)
+            {
+                AutoFillValue = autoFillCellProps.AutoFillValue;
+            }
+            base.SetCellValue(value);
+        }
+
         public override void LoadFromEntity(UsersGroup entity)
         {
             AutoFillValue =
@@ -46,6 +55,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             entity.UserId = AppGlobals.LookupContext.Users.GetEntityFromPrimaryKeyValue(AutoFillValue.PrimaryKeyValue)
                 .Id;
             entity.GroupId = Manager.ViewModel.Id;
+
         }
     }
 }

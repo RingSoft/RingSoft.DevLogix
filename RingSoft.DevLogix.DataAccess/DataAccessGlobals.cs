@@ -64,5 +64,9 @@ namespace RingSoft.DevLogix.DataAccess
             dbSet.AddRange(listToAdd);
         }
 
+        public static bool DeleteNoCommitEntity<TEntity>(TEntity entity, string message) where TEntity : class
+        {
+            return DbContext.DeleteNoCommitEntity(DbContext.Set<TEntity>(), entity, message);
+        }
     }
 }

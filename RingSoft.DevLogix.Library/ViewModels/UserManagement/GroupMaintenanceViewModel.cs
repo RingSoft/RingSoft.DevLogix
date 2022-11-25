@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
+using RingSoft.DbLookup.EfCore;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model;
+using Group = RingSoft.DevLogix.DataAccess.Model.Group;
 
 namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 {
@@ -131,12 +134,41 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         protected override bool SaveEntity(Group entity)
         {
-            return AppGlobals.DataRepository.SaveGroup(entity, new List<UsersGroup>());
+            var context = AppGlobals.DataRepository.GetDataContext();
+            if (context.SaveEntity(entity, $"Saving Group '{entity .Name}.'"))
+            {
+                var ugQuery = AppGlobals.DataRepository.GetTable<UsersGroup>();
+                var userGroups = ugQuery.Where(p => p.GroupId == Id).ToList();
+                context.RemoveRange(userGroups);
+                userGroups = UsersManager.GetEntityList();
+                foreach (var userGroup in userGroups)
+                {
+                    userGroup.GroupId = entity.Id;
+                }
+                context.AddRange(userGroups);
+                return context.Commit("Saving UsersGroups");
+            }
+
+            return false;
+
         }
 
         protected override bool DeleteEntity()
         {
-            return AppGlobals.DataRepository.DeleteGroup(Id);
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var query = AppGlobals.DataRepository.GetTable<Group>();
+            var group = query.FirstOrDefault(f => f.Id == Id);
+            if (group != null)
+            {
+                var ugQuery = AppGlobals.DataRepository.GetTable<UsersGroup>();
+                var userGroups = ugQuery.Where(p => p.GroupId == Id).ToList();
+                context.RemoveRange(userGroups);
+                if (context.DeleteNoCommitEntity(group, $"Deleting Group '{group.Name}'"))
+                {
+                    return context.Commit($"Deleting Group '{group.Name}'");
+                }
+            }
+            return false;
         }
     }
 }

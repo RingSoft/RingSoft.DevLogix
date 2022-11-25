@@ -10,6 +10,8 @@ namespace RingSoft.DevLogix.DataAccess
 
         bool DeleteEntity<TEntity>(TEntity entity, string message) where TEntity : class;
 
+        bool DeleteNoCommitEntity<TEntity>(TEntity entity, string message) where TEntity : class;
+
         bool AddNewNoCommitEntity<TEntity>(TEntity entity, string message) where TEntity : class;
 
         bool Commit(string message);

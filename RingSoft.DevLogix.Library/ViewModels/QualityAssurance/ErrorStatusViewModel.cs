@@ -1,4 +1,5 @@
-﻿using RingSoft.DbLookup;
+﻿using System.Linq;
+using RingSoft.DbLookup;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DevLogix.DataAccess.Model;
 
@@ -26,7 +27,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         protected override ErrorStatus PopulatePrimaryKeyControls(ErrorStatus newEntity, PrimaryKeyValue primaryKeyValue)
         {
-            var result = AppGlobals.DataRepository.GetErrorStatus(newEntity.Id);
+            var query = AppGlobals.DataRepository.GetTable<ErrorStatus>();
+            var result = query.FirstOrDefault(p => p.Id == newEntity.Id);
             Id = result.Id;
             KeyAutoFillValue = AppGlobals.LookupContext.OnAutoFillTextRequest(TableDefinition, Id.ToString());
             return result;
@@ -55,12 +57,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         protected override bool SaveEntity(ErrorStatus entity)
         {
-            return AppGlobals.DataRepository.SaveErrorStatus(entity);
+            var context = AppGlobals.DataRepository.GetDataContext();
+            return context.SaveEntity(entity, $"Saving Error Status '{entity.Description}'");
         }
 
         protected override bool DeleteEntity()
         {
-            return AppGlobals.DataRepository.DeleteErrorStatus(Id);
+            var query = AppGlobals.DataRepository.GetTable<ErrorStatus>();
+            var entity = query.FirstOrDefault(p => p.Id == Id);
+            var context = AppGlobals.DataRepository.GetDataContext();
+            return entity != null && context.DeleteEntity(entity, $"Deleting Error Status '{entity.Description}'");
         }
     }
 }
