@@ -43,7 +43,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         protected override ErrorPriority PopulatePrimaryKeyControls(ErrorPriority newEntity, PrimaryKeyValue primaryKeyValue)
         {
-            IQueryable<ErrorPriority> query = AppGlobals.DataRepository.GetTable<ErrorPriority>();
+            var query = AppGlobals.DataRepository.GetTable<ErrorPriority>();
             var result = query.FirstOrDefault(p => p.Id == newEntity.Id);
             Id = result.Id;
             KeyAutoFillValue = AppGlobals.LookupContext.OnAutoFillTextRequest(TableDefinition, Id.ToString());
