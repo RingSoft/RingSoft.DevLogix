@@ -1,6 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿using System.Linq;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup.ModelDefinition;
+using RingSoft.DevLogix.DataAccess.Model;
 
 namespace RingSoft.DevLogix.Library.ViewModels
 {
@@ -46,7 +48,8 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
             if (loadVm)
             {
-                if (AppGlobals.DataRepository.UsersExist())
+                var query = AppGlobals.DataRepository.GetTable<User>();
+                if (query.Any())
                 {
                     loadVm = view.LoginUser();
                     if (!loadVm)

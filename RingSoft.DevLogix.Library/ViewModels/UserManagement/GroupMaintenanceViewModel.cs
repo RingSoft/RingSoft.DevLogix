@@ -141,11 +141,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 var userGroups = ugQuery.Where(p => p.GroupId == Id).ToList();
                 context.RemoveRange(userGroups);
                 userGroups = UsersManager.GetEntityList();
-                foreach (var userGroup in userGroups)
+                if (userGroups != null)
                 {
-                    userGroup.GroupId = entity.Id;
+                    foreach (var userGroup in userGroups)
+                    {
+                        userGroup.GroupId = entity.Id;
+                    }
+
+                    context.AddRange(userGroups);
                 }
-                context.AddRange(userGroups);
+
                 return context.Commit("Saving UsersGroups");
             }
 

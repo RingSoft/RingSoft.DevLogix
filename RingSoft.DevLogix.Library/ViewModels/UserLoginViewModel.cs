@@ -1,9 +1,11 @@
 ﻿using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
+using RingSoft.DevLogix.DataAccess.Model;
 
 namespace RingSoft.DevLogix.Library.ViewModels
 {
@@ -74,7 +76,8 @@ namespace RingSoft.DevLogix.Library.ViewModels
             }
 
             var user = AppGlobals.LookupContext.Users.GetEntityFromPrimaryKeyValue(UserAutoFillValue.PrimaryKeyValue);
-            user = AppGlobals.DataRepository.GetUser(user.Id);
+            var userTable = AppGlobals.DataRepository.GetTable<User>();
+            user = userTable.FirstOrDefault(p => p.Id == user.Id);
 
             AppGlobals.LoggedInUser = user;
             SystemGlobals.UserName = user.Name;

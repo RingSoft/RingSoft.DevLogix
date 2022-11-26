@@ -8,6 +8,7 @@ using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Controls.WPF.AdvancedFind;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition;
+using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.QualityAssurance;
 using RingSoft.DevLogix.UserManagement;
@@ -80,7 +81,8 @@ namespace RingSoft.DevLogix
             AppGlobals.LookupContext.GetUserAutoFillEvent += (sender, fill) =>
             {
                 fill.UserAutoFill.AutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.UserLookup);
-                var user = AppGlobals.DataRepository.GetUser(fill.UserName);
+                var query = AppGlobals.DataRepository.GetTable<User>();
+                var user = query.FirstOrDefault(p => p.Name == fill.UserName);
                 if (user != null)
                 {
                     fill.UserAutoFill.AutoFillValue =
@@ -96,7 +98,8 @@ namespace RingSoft.DevLogix
 
         private void LookupContext_LookupAddView(object? sender, DbLookup.Lookup.LookupAddViewArgs e)
         {
-            ShowAddOnTheFlyWindow(WindowRegistry.GetMaintenanceWindow(e.LookupData.LookupDefinition.TableDefinition), e);
+            var maintenanceWindow = WindowRegistry.GetMaintenanceWindow(e.LookupData.LookupDefinition.TableDefinition);
+            if (maintenanceWindow != null) ShowAddOnTheFlyWindow(maintenanceWindow, e);
         }
 
         public void ShowAddOnTheFlyWindow(DbMaintenanceWindow maintenanceWindow, LookupAddViewArgs e)

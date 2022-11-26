@@ -86,6 +86,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
         }
 
+        private UsersGroupsManager _groupsManager;
+
+        public UsersGroupsManager GroupsManager
+        {
+            get => _groupsManager;
+            set
+            {
+                if (_groupsManager == value)
+                {
+                    return;
+                }
+                _groupsManager = value;
+                OnPropertyChanged();
+            }
+        }
+
         public UserTypes UserType
         {
             get
@@ -108,6 +124,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             TypeComboboxSetup = new TextComboBoxControlSetup();
             TypeComboboxSetup.LoadFromEnum<UserTypes>();
 
+            GroupsManager = new UsersGroupsManager( this);
+
             base.Initialize();
         }
 
@@ -126,6 +144,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         {
             UserType = (UserTypes) entity.Type;
             View.LoadRights(entity.Rights.Decrypt());
+            GroupsManager.LoadGrid(entity.UserGroups);
         }
 
         protected override User GetEntityData()
@@ -147,16 +166,53 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             KeyAutoFillValue = null;
             UserType = UserTypes.Miscellaneous;
             View.ResetRights();
+            GroupsManager.SetupForNewRecord();
         }
 
         protected override bool SaveEntity(User entity)
         {
-            return AppGlobals.DataRepository.SaveUser(entity);
+            var context = AppGlobals.DataRepository.GetDataContext();
+            if (context.SaveEntity(entity, $"Saving User '{entity.Name}.'"))
+            {
+                var ugQuery = AppGlobals.DataRepository.GetTable<UsersGroup>();
+                var userGroups = ugQuery.Where(p => p.UserId == Id).ToList();
+                context.RemoveRange(userGroups);
+                userGroups = GroupsManager.GetEntityList();
+                if (userGroups != null)
+                {
+                    foreach (var userGroup in userGroups)
+                    {
+                        userGroup.UserId = entity.Id;
+                    }
+
+                    context.AddRange(userGroups);
+                }
+
+                return context.Commit("Saving UsersGroups");
+            }
+
+            return false;
+
+
         }
 
         protected override bool DeleteEntity()
         {
-            return AppGlobals.DataRepository.DeleteUser(Id);
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var query = AppGlobals.DataRepository.GetTable<User>();
+            var user = query.FirstOrDefault(f => f.Id == Id);
+            if (user != null)
+            {
+                var ugQuery = AppGlobals.DataRepository.GetTable<UsersGroup>();
+                var userGroups = ugQuery.Where(p => p.UserId == Id).ToList();
+                context.RemoveRange(userGroups);
+                if (context.DeleteNoCommitEntity(user, $"Deleting User '{user.Name}'"))
+                {
+                    return context.Commit($"Deleting User '{user.Name}'");
+                }
+            }
+            return false;
+
         }
     }
 }

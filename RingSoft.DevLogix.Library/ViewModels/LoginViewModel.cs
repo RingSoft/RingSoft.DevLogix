@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
+using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.MasterData;
 
 namespace RingSoft.DevLogix.Library.ViewModels
@@ -272,7 +273,8 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         private void ConnectToOrganization(AddEditOrganizationViewModel connection)
         {
-            var systemMaster = AppGlobals.DataRepository.GetSystemMaster();
+            var query = AppGlobals.DataRepository.GetTable<SystemMaster>();
+            var systemMaster = query.FirstOrDefault();
             if (systemMaster != null)
             {
                 var organization = new Organization
