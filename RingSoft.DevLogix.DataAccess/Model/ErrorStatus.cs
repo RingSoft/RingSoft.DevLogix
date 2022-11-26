@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RingSoft.DevLogix.DataAccess.Model
@@ -13,5 +14,18 @@ namespace RingSoft.DevLogix.DataAccess.Model
         [Required]
         [MaxLength(50)]
         public string Description { get; set; }
+
+        public ICollection<Department> FixedDepartments { get; set; }
+
+        public ICollection<Department> PassedDepartments { get; set; }
+
+        public ICollection<Department> FailedDepartments { get; set; }
+
+        public ErrorStatus()
+        {
+            FixedDepartments = new HashSet<Department>();
+            PassedDepartments = new HashSet<Department>();
+            FailedDepartments = new HashSet<Department>();
+        }
     }
 }

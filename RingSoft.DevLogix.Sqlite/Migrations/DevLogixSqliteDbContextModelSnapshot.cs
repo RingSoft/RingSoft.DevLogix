@@ -188,6 +188,54 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.ToTable("RecordLocks");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Department", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<int?>("ErrorFailStatusId")
+                        .IsRequired()
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("ErrorFixStatusId")
+                        .IsRequired()
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("ErrorPassStatusId")
+                        .IsRequired()
+                        .HasColumnType("integer");
+
+                    b.Property<string>("FailText")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("FixText")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("PassText")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ErrorFailStatusId");
+
+                    b.HasIndex("ErrorFixStatusId");
+
+                    b.HasIndex("ErrorPassStatusId");
+
+                    b.ToTable("Departments");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ErrorPriority", b =>
                 {
                     b.Property<int>("Id")
@@ -325,6 +373,33 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("SearchForAdvancedFind");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Department", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.ErrorStatus", "ErrorFailStatus")
+                        .WithMany("FailedDepartments")
+                        .HasForeignKey("ErrorFailStatusId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.ErrorStatus", "ErrorFixStatus")
+                        .WithMany("FixedDepartments")
+                        .HasForeignKey("ErrorFixStatusId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.ErrorStatus", "ErrorPassStatus")
+                        .WithMany("PassedDepartments")
+                        .HasForeignKey("ErrorPassStatusId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("ErrorFailStatus");
+
+                    b.Navigation("ErrorFixStatus");
+
+                    b.Navigation("ErrorPassStatus");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.UsersGroup", b =>
                 {
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.Group", "Group")
@@ -351,6 +426,15 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("Filters");
 
                     b.Navigation("SearchForAdvancedFindFilters");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ErrorStatus", b =>
+                {
+                    b.Navigation("FailedDepartments");
+
+                    b.Navigation("FixedDepartments");
+
+                    b.Navigation("PassedDepartments");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Group", b =>

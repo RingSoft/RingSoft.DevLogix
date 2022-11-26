@@ -37,6 +37,8 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<ErrorStatus> ErrorStatuses { get; set; }
         public TableDefinition<ErrorPriority> ErrorPriorities { get; set; }
 
+        public TableDefinition<Department> Departments { get; set; }
+
         public TableDefinition<AdvancedFind> AdvancedFinds { get; set; }
         public TableDefinition<AdvancedFindColumn> AdvancedFindColumns { get; set; }
         public TableDefinition<AdvancedFindFilter> AdvancedFindFilters { get; set; }
@@ -46,6 +48,8 @@ namespace RingSoft.DevLogix.DataAccess
 
         public LookupDefinition<ErrorStatusLookup, ErrorStatus> ErrorStatusLookup { get; set; }
         public LookupDefinition<ErrorPriorityLookup, ErrorPriority> ErrorPriorityLookup { get; set; }
+
+        public LookupDefinition<DepartmentLookup, Department> DepartmentLookup { get; set; }
 
         public LookupDefinition<AdvancedFindLookup, AdvancedFind> AdvancedFindLookup { get; set; }
         public LookupDefinition<RecordLockingLookup, RecordLock> RecordLockingLookup { get; set; }
@@ -117,6 +121,10 @@ namespace RingSoft.DevLogix.DataAccess
             ErrorPriorityLookup = new LookupDefinition<ErrorPriorityLookup, ErrorPriority>(ErrorPriorities);
             ErrorPriorityLookup.AddVisibleColumnDefinition(p => p.Description, "Description", p => p.Description, 100);
             ErrorPriorities.HasLookupDefinition(ErrorPriorityLookup);
+
+            DepartmentLookup = new LookupDefinition<DepartmentLookup, Department>(Departments);
+            DepartmentLookup.AddVisibleColumnDefinition(p => p.Description, "Description", p => p.Description, 100);
+            Departments.HasLookupDefinition(DepartmentLookup);
         }
 
         protected override void SetupModel()

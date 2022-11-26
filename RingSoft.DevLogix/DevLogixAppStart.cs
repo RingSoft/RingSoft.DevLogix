@@ -66,6 +66,7 @@ namespace RingSoft.DevLogix
 
             WindowRegistry.RegisterWindow<UserMaintenanceWindow>(AppGlobals.LookupContext.Users);
             WindowRegistry.RegisterWindow<GroupsMaintenanceWindow>(AppGlobals.LookupContext.Groups);
+            WindowRegistry.RegisterWindow<DepartmentMaintenanceWindow>(AppGlobals.LookupContext.Departments);
 
             WindowRegistry.RegisterWindow<ErrorStatusMaintenanceWindow>(AppGlobals.LookupContext.ErrorStatuses);
             WindowRegistry.RegisterWindow<ErrorPriorityMaintenanceWindow>(AppGlobals.LookupContext.ErrorPriorities);
