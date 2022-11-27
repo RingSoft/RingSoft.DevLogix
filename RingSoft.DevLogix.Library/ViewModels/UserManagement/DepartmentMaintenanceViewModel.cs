@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
+using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DevLogix.DataAccess.Model;
 
@@ -161,6 +162,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             PassStatusAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ErrorPassStatusId));
             FailStatusAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ErrorFailStatusId));
             var test = this;
+            
             base.Initialize();
         }
 
