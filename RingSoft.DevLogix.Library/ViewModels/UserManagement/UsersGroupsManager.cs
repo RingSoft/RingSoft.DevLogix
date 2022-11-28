@@ -1,4 +1,6 @@
-﻿using RingSoft.DataEntryControls.Engine.DataEntryGrid;
+﻿using System.Collections.Generic;
+using System.Linq;
+using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model;
 
@@ -23,5 +25,18 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             return new UsersGroupsRow(this);
         }
 
+        public List<UsersGroup> GetList()
+        {
+            var result = new List<UsersGroup>();
+
+            var rows = Rows.OfType<UsersGroupsRow>();
+            foreach (var row in rows)
+            {
+                var item = new UsersGroup();
+                row.SaveToEntity(item, 0);
+                result.Add(item);
+            }
+            return result;
+        }
     }
 }

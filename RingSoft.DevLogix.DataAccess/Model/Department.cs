@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace RingSoft.DevLogix.DataAccess.Model
 {
@@ -23,8 +24,7 @@ namespace RingSoft.DevLogix.DataAccess.Model
         public int? ErrorFailStatusId { get; set; }
 
         public virtual ErrorStatus ErrorFailStatus { get; set; }
-
-
+        
         [MaxLength(50)]
         public string? FixText { get; set; }
 
@@ -35,5 +35,12 @@ namespace RingSoft.DevLogix.DataAccess.Model
         [Required]
         [MaxLength(50)]
         public string FailText { get; set; }
+
+        public virtual ICollection<User> Users { get; set; }
+
+        public Department()
+        {
+            Users = new HashSet<User>();
+        }
     }
 }

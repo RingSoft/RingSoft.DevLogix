@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
+using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model;
@@ -17,6 +19,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         public void LoadRights(string rightsString);
 
         public void ResetRights();
+
+        public void RefreshView();
     }
     public class UserMaintenanceViewModel : DevLogixDbMaintenanceViewModel<User>
     {
@@ -38,50 +42,66 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
         }
 
-        private string _name;
-
-        public string Name
+        private AutoFillSetup _departmentAutoFillSetup;
+        
+        public AutoFillSetup DepartmentAutoFillSetup
         {
-            get => _name;
+            get => _departmentAutoFillSetup;
             set
             {
-                if (_name == value)
+                if (_departmentAutoFillSetup == value)
                 {
                     return;
                 }
-                _name = value;
+                _departmentAutoFillSetup = value;
                 OnPropertyChanged();
             }
         }
 
-        private TextComboBoxControlSetup _typeComboboxSetup;
-
-        public TextComboBoxControlSetup TypeComboboxSetup
+        private AutoFillValue _departmentAutoFillValue;
+        public AutoFillValue DepartmentAutoFillValue
         {
-            get => _typeComboboxSetup;
+            get => _departmentAutoFillValue;
             set
             {
-                if (_typeComboboxSetup == value)
+                if (_departmentAutoFillValue == value)
                 {
                     return;
                 }
-                _typeComboboxSetup = value;
+                _departmentAutoFillValue = value;
                 OnPropertyChanged();
             }
         }
 
-        private TextComboBoxItem _typeComboboxValue;
+        private string? _emailAddress;
 
-        public TextComboBoxItem TypeComboboxValue
+        public string? EmailAddress
         {
-            get => _typeComboboxValue;
+            get => _emailAddress;
             set
             {
-                if (_typeComboboxValue == value)
+                if (_emailAddress == value)
                 {
                     return;
                 }
-                _typeComboboxValue = value;
+                _emailAddress = value;
+                OnPropertyChanged();
+                View.RefreshView();
+            }
+        }
+
+        private string? _phoneNumber;
+
+        public string? PhoneNumber
+        {
+            get => _phoneNumber;
+            set
+            {
+                if (_phoneNumber == value)
+                {
+                    return;
+                }
+                _phoneNumber = value;
                 OnPropertyChanged();
             }
         }
@@ -102,17 +122,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
         }
 
-        public UserTypes UserType
-        {
-            get
-            {
-                if (TypeComboboxValue != null) return (UserTypes) TypeComboboxValue.NumericValue;
-                return UserTypes.Miscellaneous;
-            }
-
-            set => TypeComboboxValue = TypeComboboxSetup.GetItem((byte) value);
-        }
-
         public new IUserView View { get; private set; }
 
         protected override void Initialize()
@@ -121,9 +130,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             if (View == null)
                 throw new Exception($"User View interface must be of type '{nameof(IUserView)}'.");
 
-            TypeComboboxSetup = new TextComboBoxControlSetup();
-            TypeComboboxSetup.LoadFromEnum<UserTypes>();
-
+            DepartmentAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.DepartmentId));
             GroupsManager = new UsersGroupsManager( this);
 
             base.Initialize();
@@ -137,13 +144,17 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             var result = query.FirstOrDefault(p => p.Id == newEntity.Id);
             Id = result.Id;
             KeyAutoFillValue = AppGlobals.LookupContext.OnAutoFillTextRequest(TableDefinition, Id.ToString());
+            View.RefreshView();
             return result;
         }
 
         protected override void LoadFromEntity(User entity)
         {
-            UserType = (UserTypes) entity.Type;
+            DepartmentAutoFillValue = AppGlobals.LookupContext.OnAutoFillTextRequest(
+                AppGlobals.LookupContext.Departments, entity.DepartmentId.ToString());
             View.LoadRights(entity.Rights.Decrypt());
+            EmailAddress = entity.Email;
+            PhoneNumber = entity.PhoneNumber;
             GroupsManager.LoadGrid(entity.UserGroups);
         }
 
@@ -153,9 +164,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             {
                 Id = Id,
                 Name = KeyAutoFillValue.Text,
-                Type = (byte) UserType,
+                Email = EmailAddress,
+                PhoneNumber = PhoneNumber,
                 Rights = View.GetRights().Encrypt()
             };
+            if (DepartmentAutoFillValue.IsValid())
+            {
+                user.DepartmentId = AppGlobals.LookupContext.Departments
+                    .GetEntityFromPrimaryKeyValue(DepartmentAutoFillValue.PrimaryKeyValue).Id;
+            }
 
             return user;
         }
@@ -164,7 +181,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         {
             Id = 0;
             KeyAutoFillValue = null;
-            UserType = UserTypes.Miscellaneous;
+            DepartmentAutoFillValue = null;
+            EmailAddress = null;
+            PhoneNumber = null;
             View.ResetRights();
             GroupsManager.SetupForNewRecord();
         }
@@ -177,7 +196,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 var ugQuery = AppGlobals.DataRepository.GetTable<UsersGroup>();
                 var userGroups = ugQuery.Where(p => p.UserId == Id).ToList();
                 context.RemoveRange(userGroups);
-                userGroups = GroupsManager.GetEntityList();
+                userGroups = GroupsManager.GetList();
                 if (userGroups != null)
                 {
                     foreach (var userGroup in userGroups)

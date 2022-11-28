@@ -107,7 +107,9 @@ namespace RingSoft.DevLogix.DataAccess
         {
             UserLookup = new LookupDefinition<UserLookup, User>(Users);
             UserLookup.AddVisibleColumnDefinition(p => p.UserName, "Name", p => p.Name, 70);
-            UserLookup.AddVisibleColumnDefinition(p => p.Type, "Type", p => p.Type, 30);
+            UserLookup.Include(p => p.Department)
+                .AddVisibleColumnDefinition(p => p.Department, "Department", 
+                    p => p.Description, 30);
             Users.HasLookupDefinition(UserLookup);
 
             GroupLookup = new LookupDefinition<GroupLookup, Group>(Groups);

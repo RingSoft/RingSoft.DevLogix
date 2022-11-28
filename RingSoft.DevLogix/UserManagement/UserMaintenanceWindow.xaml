@@ -22,6 +22,9 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
@@ -40,11 +43,21 @@
 
             <lc:AutoFillControl Grid.Row="0" Grid.Column="3" x:Name="NameControl" Setup="{Binding KeyAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding KeyAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left"/>
 
-            <Label Grid.Row="1" Grid.Column="0" Content="Type"/>
+            <Label Grid.Row="1" Grid.Column="0" Content="Department"/>
 
-            <dec:TextComboBoxControl Grid.Row="1" Grid.Column="1" Setup="{Binding TypeComboboxSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding TypeComboboxValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" HorizontalAlignment="Left"/>
+            <lc:AutoFillControl Grid.Row="1" Grid.Column="1" x:Name="DepartmentControl" Setup="{Binding DepartmentAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding DepartmentAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left"/>
 
-            <TabControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4">
+            <Label Grid.Row="2" Grid.Column="0" Content="Email Address"/>
+
+            <dec:StringEditControl Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left" Text="{Binding EmailAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
+
+            <TextBlock Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2" x:Name="SendEmailControl" Text="Send Email" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"/>
+
+            <Label Grid.Row="3" Grid.Column="0" Content="Phone Number"/>
+
+            <dec:StringEditControl Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left" Text="{Binding PhoneNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
+
+            <TabControl Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4">
 
                 <TabItem Header="Rights">
 
@@ -56,7 +69,7 @@
 
                 </TabItem>
 
-                <TabItem Header="Groups">
+                <TabItem Header="Groups" x:Name="GroupsTab">
 
                     <DockPanel Height="300">
 

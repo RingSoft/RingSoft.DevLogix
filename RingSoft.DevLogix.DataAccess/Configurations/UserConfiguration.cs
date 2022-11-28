@@ -11,10 +11,18 @@ namespace RingSoft.DevLogix.DataAccess.Configurations
         {
             builder.Property(p => p.Id).HasColumnType(DbConstants.IntegerColumnType);
             builder.Property(p => p.Name).HasColumnType(DbConstants.StringColumnType);
-            builder.Property(p => p.Type).HasColumnType(DbConstants.ByteColumnType);
+            builder.Property(p => p.DepartmentId).HasColumnType(DbConstants.IntegerColumnType);
             builder.Property(p => p.Password).HasColumnType(DbConstants.StringColumnType);
             builder.Property(p => p.Rights).HasColumnType(DbConstants.StringColumnType);
+            builder.Property(p => p.Email).HasColumnType(DbConstants.StringColumnType);
+            builder.Property(p => p.PhoneNumber).HasColumnType(DbConstants.StringColumnType);
+
             builder.HasKey(p => p.Id);
+
+            builder.HasOne(p => p.Department)
+                .WithMany(p => p.Users)
+                .HasForeignKey(p => p.DepartmentId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

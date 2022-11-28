@@ -317,6 +317,13 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -326,14 +333,17 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
+                    b.Property<string>("PhoneNumber")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
                     b.Property<string>("Rights")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<byte>("Type")
-                        .HasColumnType("tinyint");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("DepartmentId");
 
                     b.ToTable("Users");
                 });
@@ -409,6 +419,17 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("ErrorPassStatus");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.User", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.Department", "Department")
+                        .WithMany("Users")
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Department");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.UsersGroup", b =>
                 {
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.Group", "Group")
@@ -435,6 +456,11 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("Filters");
 
                     b.Navigation("SearchForAdvancedFindFilters");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Department", b =>
+                {
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ErrorStatus", b =>

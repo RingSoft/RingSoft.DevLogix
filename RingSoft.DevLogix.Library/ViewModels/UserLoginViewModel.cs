@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Microsoft.EntityFrameworkCore;
 using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
@@ -76,12 +77,22 @@ namespace RingSoft.DevLogix.Library.ViewModels
             }
 
             var user = AppGlobals.LookupContext.Users.GetEntityFromPrimaryKeyValue(UserAutoFillValue.PrimaryKeyValue);
-            var userTable = AppGlobals.DataRepository.GetTable<User>();
+            IQueryable<User> userTable = AppGlobals.DataRepository.GetTable<User>();
+            userTable = userTable.Include(p => p.UserGroups).ThenInclude(p => p.Group);
+            
             user = userTable.FirstOrDefault(p => p.Id == user.Id);
 
             AppGlobals.LoggedInUser = user;
             SystemGlobals.UserName = user.Name;
             AppGlobals.Rights.UserRights.LoadRights(user.Rights.Decrypt());
+
+            AppGlobals.Rights.GroupRights.Clear();
+            foreach (var userUserGroup in user.UserGroups)
+            {
+                var rights = new ItemRights();
+                rights.LoadRights(userUserGroup.Group.Rights.Decrypt());
+                AppGlobals.Rights.GroupRights.Add(rights);
+            }
 
             DialogResult = true;
             View.CloseWindow();
