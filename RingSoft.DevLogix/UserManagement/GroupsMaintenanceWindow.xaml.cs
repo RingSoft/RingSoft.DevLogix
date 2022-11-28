@@ -59,5 +59,9 @@ namespace RingSoft.DevLogix.UserManagement
             RightsTree.ViewModel.Reset();
         }
 
+        public void OnValGridFail()
+        {
+            TabControl.SelectedItem = UsersTab;
+        }
     }
 }

@@ -98,6 +98,12 @@ namespace RingSoft.DevLogix.UserManagement
             GroupsTab.Visibility = !AppGlobals.LookupContext.Groups.HasRight(RightTypes.AllowView) ? Visibility.Collapsed : Visibility.Visible;
         }
 
+        public void OnValGridFail()
+        {
+            TabControl.SelectedItem = GroupsTab;
+        }
+
+
         public override void OnValidationFail(FieldDefinition fieldDefinition, string text, string caption)
         {
             if (fieldDefinition == UserMaintenanceViewModel.TableDefinition.GetFieldDefinition(p => p.DepartmentId))

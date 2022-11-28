@@ -57,7 +57,7 @@
 
             <dec:StringEditControl Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left" Text="{Binding PhoneNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
 
-            <TabControl Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4">
+            <TabControl Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" x:Name="TabControl">
 
                 <TabItem Header="Rights">
 

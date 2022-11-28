@@ -3,6 +3,7 @@ using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DbMaintenance;
+using RingSoft.DataEntryControls.Engine;
 
 namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 {
@@ -47,6 +48,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         public override bool ValidateRow()
         {
+            if (!AutoFillValue.IsValid())
+            {
+                Manager.ViewModel.View.OnValGridFail();
+
+                var message = "Group contains an invalid value.";
+                var caption = "Validation Fail";
+                ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
+                Manager.Grid?.GotoCell(this, 0);
+                return false;
+            }
             return true;
         }
 

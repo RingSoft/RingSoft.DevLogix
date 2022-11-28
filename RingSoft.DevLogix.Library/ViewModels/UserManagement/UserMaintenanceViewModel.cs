@@ -21,6 +21,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         public void ResetRights();
 
         public void RefreshView();
+
+        public void OnValGridFail();
     }
     public class UserMaintenanceViewModel : DevLogixDbMaintenanceViewModel<User>
     {
@@ -186,6 +188,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             PhoneNumber = null;
             View.ResetRights();
             GroupsManager.SetupForNewRecord();
+        }
+
+        protected override bool ValidateEntity(User entity)
+        {
+            if (!GroupsManager.ValidateGrid())
+            {
+                return false;
+            }
+            return base.ValidateEntity(entity);
         }
 
         protected override bool SaveEntity(User entity)

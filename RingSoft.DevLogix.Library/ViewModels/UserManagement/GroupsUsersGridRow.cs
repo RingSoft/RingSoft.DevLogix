@@ -1,4 +1,5 @@
-﻿using RingSoft.DataEntryControls.Engine.DataEntryGrid;
+﻿using RingSoft.DataEntryControls.Engine;
+using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbMaintenance;
@@ -47,6 +48,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         public override bool ValidateRow()
         {
+            if (!AutoFillValue.IsValid())
+            {
+                Manager.ViewModel.View.OnValGridFail();
+                
+                var message = "User contains an invalid value.";
+                var caption = "Validation Fail";
+                ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
+                Manager.Grid?.GotoCell(this, 0);
+                return false;
+            }
             return true;
         }
 

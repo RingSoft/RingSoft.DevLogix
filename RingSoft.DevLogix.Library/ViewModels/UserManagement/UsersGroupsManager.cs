@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
+using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model;
 
@@ -23,6 +25,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         protected override DbMaintenanceDataEntryGridRow<UsersGroup> ConstructNewRowFromEntity(UsersGroup entity)
         {
             return new UsersGroupsRow(this);
+        }
+
+        public override bool ValidateGrid()
+        {
+            var rows = Rows.OfType<GroupsUsersGridRow>();
+            foreach (var row in rows)
+            {
+                if (!row.IsNew)
+                {
+                    if (!row.ValidateRow())
+                    {
+                        return false;
+                    }
+                }
+            }
+            return base.ValidateGrid();
         }
 
         public List<UsersGroup> GetList()

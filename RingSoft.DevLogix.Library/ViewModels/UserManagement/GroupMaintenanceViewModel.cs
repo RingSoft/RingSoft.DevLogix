@@ -22,6 +22,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         public void LoadRights(string rightsString);
 
         public void ResetRights();
+
+        public void OnValGridFail();
     }
 
     public class GroupMaintenanceViewModel : DevLogixDbMaintenanceViewModel<Group>
@@ -79,8 +81,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         public new IGroupView View { get; private set; }
 
-        //public GroupsUsersManager UsersManager { get; private set; }
-
         protected override void Initialize()
         {
             View = base.View as IGroupView;
@@ -132,6 +132,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             UsersManager.SetupForNewRecord();
         }
 
+        protected override bool ValidateEntity(Group entity)
+        {
+            if (!UsersManager.ValidateGrid())
+            {
+                return false;
+            }
+            return base.ValidateEntity(entity);
+        }
+
         protected override bool SaveEntity(Group entity)
         {
             var context = AppGlobals.DataRepository.GetDataContext();
@@ -140,7 +149,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 var ugQuery = AppGlobals.DataRepository.GetTable<UsersGroup>();
                 var userGroups = ugQuery.Where(p => p.GroupId == Id).ToList();
                 context.RemoveRange(userGroups);
-                userGroups = UsersManager.GetEntityList();
+                userGroups = UsersManager.GetList();
                 if (userGroups != null)
                 {
                     foreach (var userGroup in userGroups)
