@@ -1,8 +1,13 @@
 ﻿using System.Linq;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.DataProcessor;
+using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition;
+using RingSoft.DbLookup.QueryBuilder;
+using RingSoft.DbMaintenance;
+using RingSoft.DevLogix.DataAccess.LookupModel;
 using RingSoft.DevLogix.DataAccess.Model;
 
 namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
@@ -156,11 +161,64 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
         }
 
+        private LookupDefinition<UserLookup, User> _userLookupDefinition;
+
+        public LookupDefinition<UserLookup, User> UserLookupDefinition
+        {
+            get => _userLookupDefinition;
+            set
+            {
+                if (_userLookupDefinition == value) return;
+
+                _userLookupDefinition = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private LookupCommand _userLookupCommand;
+
+        public LookupCommand UserLookupCommand
+        {
+            get => _userLookupCommand;
+            set
+            {
+                if (_userLookupCommand == value) return;
+                _userLookupCommand = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+        private string? _notes;
+
+        public string? Notes
+        {
+            get => _notes;
+            set
+            {
+                if (_notes == value)
+                {
+                    return;
+                }
+                _notes = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public RelayCommand AddModifyUserLookupCommand { get; set; }
+
+        public DepartmentMaintenanceViewModel()
+        {
+            AddModifyUserLookupCommand = new RelayCommand(AddViewUser);
+        }
+
         protected override void Initialize()
         {
             FixStatusAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ErrorFixStatusId));
             PassStatusAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ErrorPassStatusId));
             FailStatusAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ErrorFailStatusId));
+            UserLookupDefinition = AppGlobals.LookupContext.UserLookup.Clone();
+
             var test = this;
             
             base.Initialize();
@@ -175,6 +233,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 Id = result.Id;
                 KeyAutoFillValue = AppGlobals.LookupContext.OnAutoFillTextRequest(TableDefinition, Id.ToString());
             }
+
+            UserLookupDefinition.FilterDefinition.ClearFixedFilters();
+            UserLookupDefinition.FilterDefinition.AddFixedFilter(p => p.DepartmentId, Conditions.Equals, Id);
+            UserLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
 
             return result;
         }
@@ -196,6 +258,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             FixStatusText = entity.FixText;
             PassStatusText = entity.PassText;
             FailStatusText = entity.FailText;
+            Notes = entity.Notes;
         }
 
         protected override Department GetEntityData()
@@ -207,6 +270,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 FixText = FixStatusText,
                 PassText = PassStatusText,
                 FailText = FailStatusText,
+                Notes = Notes
             };
 
             if (FixStatusAutoFillValue.IsValid())
@@ -237,6 +301,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             PassStatusAutoFillValue = null;
             FailStatusAutoFillValue = null;
             FixStatusText = PassStatusText = FailStatusText = string.Empty;
+            UserLookupCommand = GetLookupCommand(LookupCommands.Clear);
+            Notes = null;
         }
 
         protected override bool SaveEntity(Department entity)
@@ -262,6 +328,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 }
             }
             return false;
+
+        }
+
+        private void AddViewUser()
+        {
+            if (ExecuteAddModifyCommand() == DbMaintenanceResults.Success)
+                UserLookupCommand = GetLookupCommand(LookupCommands.AddModify);
 
         }
     }

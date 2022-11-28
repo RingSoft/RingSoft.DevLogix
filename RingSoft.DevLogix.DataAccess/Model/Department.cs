@@ -36,6 +36,8 @@ namespace RingSoft.DevLogix.DataAccess.Model
         [MaxLength(50)]
         public string FailText { get; set; }
 
+        public string? Notes { get; set; }
+
         public virtual ICollection<User> Users { get; set; }
 
         public Department()

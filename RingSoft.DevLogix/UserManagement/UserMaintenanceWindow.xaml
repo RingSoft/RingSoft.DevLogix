@@ -11,7 +11,7 @@
                          xmlns:dataEntryGrid="clr-namespace:RingSoft.DataEntryControls.WPF.DataEntryGrid;assembly=RingSoft.DataEntryControls.WPF"
                          mc:Ignorable="d"
                          Style="{StaticResource BaseWindowStyle}"
-                         Title="User Maintenance" SizeToContent="WidthAndHeight">
+                         Title="User Maintenance" SizeToContent="WidthAndHeight" MinWidth="600" MinHeight="500">
     <Window.DataContext>
         <vm:UserMaintenanceViewModel x:Name="UserMaintenanceViewModel"/>
     </Window.DataContext>
@@ -33,6 +33,7 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
             <Label Grid.Row="0" Grid.Column="0" Content="User ID"/>
@@ -57,11 +58,11 @@
 
             <dec:StringEditControl Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left" Text="{Binding PhoneNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
 
-            <TabControl Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" x:Name="TabControl">
+            <TabControl Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="5" x:Name="TabControl" VerticalAlignment="Stretch" >
 
-                <TabItem Header="Rights">
+                <TabItem Header="Rights" VerticalAlignment="Stretch">
 
-                    <DockPanel Height="300">
+                    <DockPanel>
 
                         <local:RightsTree x:Name="RightsTree"/>
 
@@ -69,9 +70,9 @@
 
                 </TabItem>
 
-                <TabItem Header="Groups" x:Name="GroupsTab">
+                <TabItem Header="Groups" x:Name="GroupsTab" VerticalAlignment="Stretch">
 
-                    <DockPanel Height="300">
+                    <DockPanel>
 
                         <dataEntryGrid:DataEntryGrid Manager="{Binding GroupsManager}">
 
@@ -86,6 +87,14 @@
                     </DockPanel>
 
                 </TabItem>
+
+                <dec:DataEntryMemoTabItem Header="Notes" VerticalAlignment="Stretch">
+                    <DockPanel>
+
+                        <dec:DataEntryMemoEditor Text="{Binding Path=Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    </DockPanel>
+                </dec:DataEntryMemoTabItem>
 
             </TabControl>
         </Grid>

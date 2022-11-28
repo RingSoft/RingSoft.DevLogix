@@ -225,6 +225,9 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("Notes")
+                        .HasColumnType("ntext");
+
                     b.Property<string>("PassText")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -328,6 +331,9 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("ntext");
 
                     b.Property<string>("Password")
                         .HasMaxLength(255)

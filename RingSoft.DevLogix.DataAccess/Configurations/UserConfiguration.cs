@@ -16,6 +16,7 @@ namespace RingSoft.DevLogix.DataAccess.Configurations
             builder.Property(p => p.Rights).HasColumnType(DbConstants.StringColumnType);
             builder.Property(p => p.Email).HasColumnType(DbConstants.StringColumnType);
             builder.Property(p => p.PhoneNumber).HasColumnType(DbConstants.StringColumnType);
+            builder.Property(p => p.Notes).HasColumnType(DbConstants.MemoColumnType);
 
             builder.HasKey(p => p.Id);
 

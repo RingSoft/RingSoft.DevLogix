@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using RingSoft.App.Controls;
 using RingSoft.DbMaintenance;
+using RingSoft.DevLogix.Library;
 
 namespace RingSoft.DevLogix.UserManagement
 {
@@ -33,6 +34,10 @@ namespace RingSoft.DevLogix.UserManagement
         protected override void OnLoaded()
         {
             RegisterFormKeyControl(DescriptionControl);
+            if (!AppGlobals.LookupContext.Users.HasRight(RightTypes.AllowView))
+            {
+                AddModifyUserButton.Visibility = Visibility.Collapsed;
+            }
             base.OnLoaded();
         }
 

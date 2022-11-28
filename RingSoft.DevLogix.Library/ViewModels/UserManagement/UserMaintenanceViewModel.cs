@@ -124,6 +124,23 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
         }
 
+        private string? _notes;
+
+        public string? Notes
+        {
+            get => _notes;
+            set
+            {
+                if (_notes == value)
+                {
+                    return;
+                }
+                _notes = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         public new IUserView View { get; private set; }
 
         protected override void Initialize()
@@ -158,6 +175,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             EmailAddress = entity.Email;
             PhoneNumber = entity.PhoneNumber;
             GroupsManager.LoadGrid(entity.UserGroups);
+            Notes = entity.Notes;
         }
 
         protected override User GetEntityData()
@@ -168,7 +186,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 Name = KeyAutoFillValue.Text,
                 Email = EmailAddress,
                 PhoneNumber = PhoneNumber,
-                Rights = View.GetRights().Encrypt()
+                Rights = View.GetRights().Encrypt(),
+                Notes = Notes
             };
             if (DepartmentAutoFillValue.IsValid())
             {
@@ -188,6 +207,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             PhoneNumber = null;
             View.ResetRights();
             GroupsManager.SetupForNewRecord();
+            Notes = null;
         }
 
         protected override bool ValidateEntity(User entity)

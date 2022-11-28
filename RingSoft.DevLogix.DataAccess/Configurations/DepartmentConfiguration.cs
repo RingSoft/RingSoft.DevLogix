@@ -17,6 +17,7 @@ namespace RingSoft.DevLogix.DataAccess.Configurations
             builder.Property(p => p.FixText).HasColumnType(DbConstants.StringColumnType);
             builder.Property(p => p.PassText).HasColumnType(DbConstants.StringColumnType);
             builder.Property(p => p.FailText).HasColumnType(DbConstants.StringColumnType);
+            builder.Property(p => p.Notes).HasColumnType(DbConstants.MemoColumnType);
 
             builder.HasOne(p => p.ErrorFixStatus)
                 .WithMany(p => p.FixedDepartments)

@@ -33,6 +33,8 @@ namespace RingSoft.DevLogix.DataAccess.Model
         [MaxLength(255)]
         public string? PhoneNumber { get; set; }
 
+        public string? Notes { get; set; }
+
         public virtual ICollection<UsersGroup>  UserGroups { get; set; }
 
         public User()
