@@ -22,17 +22,20 @@ namespace RingSoft.DevLogix.DataAccess.Configurations
             builder.HasOne(p => p.ErrorFixStatus)
                 .WithMany(p => p.FixedDepartments)
                 .HasForeignKey(p => p.ErrorFixStatusId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Restrict)
+                .IsRequired(false);
 
             builder.HasOne(p => p.ErrorPassStatus)
                 .WithMany(p => p.PassedDepartments)
                 .HasForeignKey(p => p.ErrorPassStatusId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Restrict)
+                .IsRequired(false);
 
             builder.HasOne(p => p.ErrorFailStatus)
                 .WithMany(p => p.FailedDepartments)
                 .HasForeignKey(p => p.ErrorFailStatusId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Restrict)
+                .IsRequired(false);
         }
     }
 }

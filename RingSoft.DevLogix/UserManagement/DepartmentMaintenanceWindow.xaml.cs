@@ -1,19 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using RingSoft.App.Controls;
+﻿using RingSoft.App.Controls;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.Library;
+using System.Windows;
+using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 
 namespace RingSoft.DevLogix.UserManagement
 {
@@ -34,7 +23,7 @@ namespace RingSoft.DevLogix.UserManagement
         protected override void OnLoaded()
         {
             RegisterFormKeyControl(DescriptionControl);
-            if (!AppGlobals.LookupContext.Users.HasRight(RightTypes.AllowView))
+            if (!AppGlobals.LookupContext.Users.HasRight(RightTypes.AllowAdd))
             {
                 AddModifyUserButton.Visibility = Visibility.Collapsed;
             }
@@ -45,6 +34,31 @@ namespace RingSoft.DevLogix.UserManagement
         {
             DescriptionControl.Focus();
             base.ResetViewForNewRecord();
+        }
+
+        public override void OnValidationFail(FieldDefinition fieldDefinition, string text, string caption)
+        {
+            if (fieldDefinition == AppGlobals.LookupContext.Departments.GetFieldDefinition(p => p.ErrorFixStatusId))
+            {
+                TabControl.SelectedIndex = 0;
+                TabControl.UpdateLayout();
+                FixStatusControl.Focus();
+            }
+
+            if (fieldDefinition == AppGlobals.LookupContext.Departments.GetFieldDefinition(p => p.ErrorPassStatusId))
+            {
+                TabControl.SelectedIndex = 0;
+                TabControl.UpdateLayout();
+                PassStatusControl.Focus();
+            }
+            if (fieldDefinition == AppGlobals.LookupContext.Departments.GetFieldDefinition(p => p.ErrorFailStatusId))
+            {
+                TabControl.SelectedIndex = 0;
+                TabControl.UpdateLayout();
+                FailStatusControl.Focus();
+            }
+
+            base.OnValidationFail(fieldDefinition, text, caption);
         }
     }
 }

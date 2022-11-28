@@ -200,15 +200,12 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .HasColumnType("nvarchar");
 
                     b.Property<int?>("ErrorFailStatusId")
-                        .IsRequired()
                         .HasColumnType("integer");
 
                     b.Property<int?>("ErrorFixStatusId")
-                        .IsRequired()
                         .HasColumnType("integer");
 
                     b.Property<int?>("ErrorPassStatusId")
-                        .IsRequired()
                         .HasColumnType("integer");
 
                     b.Property<string>("FailText")
@@ -394,20 +391,17 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.ErrorStatus", "ErrorFailStatus")
                         .WithMany("FailedDepartments")
                         .HasForeignKey("ErrorFailStatusId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.ErrorStatus", "ErrorFixStatus")
                         .WithMany("FixedDepartments")
                         .HasForeignKey("ErrorFixStatusId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.ErrorStatus", "ErrorPassStatus")
                         .WithMany("PassedDepartments")
                         .HasForeignKey("ErrorPassStatusId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("ErrorFailStatus");
 

@@ -5,6 +5,7 @@ using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition;
+using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.LookupModel;
@@ -219,8 +220,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             FailStatusAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ErrorFailStatusId));
             UserLookupDefinition = AppGlobals.LookupContext.UserLookup.Clone();
 
-            var test = this;
-            
             base.Initialize();
         }
 
@@ -243,17 +242,27 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         protected override void LoadFromEntity(Department entity)
         {
-            FixStatusAutoFillValue =
-                AppGlobals.LookupContext.OnAutoFillTextRequest(AppGlobals.LookupContext.ErrorStatuses,
-                    entity.ErrorFixStatusId.ToString());
+            if (entity.ErrorFixStatusId != null)
+            {
+                FixStatusAutoFillValue =
+                    AppGlobals.LookupContext.OnAutoFillTextRequest(AppGlobals.LookupContext.ErrorStatuses,
+                        entity.ErrorFixStatusId.ToString());
+            }
 
-            PassStatusAutoFillValue =
-                AppGlobals.LookupContext.OnAutoFillTextRequest(AppGlobals.LookupContext.ErrorStatuses,
-                    entity.ErrorPassStatusId.ToString());
+            if (entity.ErrorPassStatusId != null)
+            {
+                PassStatusAutoFillValue =
+                    AppGlobals.LookupContext.OnAutoFillTextRequest(AppGlobals.LookupContext.ErrorStatuses,
+                        entity.ErrorPassStatusId.ToString());
+            }
 
-            FailStatusAutoFillValue =
-                AppGlobals.LookupContext.OnAutoFillTextRequest(AppGlobals.LookupContext.ErrorStatuses,
-                    entity.ErrorFailStatusId.ToString());
+            if (entity.ErrorFailStatusId != null)
+            {
+                FailStatusAutoFillValue =
+                    AppGlobals.LookupContext.OnAutoFillTextRequest(AppGlobals.LookupContext.ErrorStatuses,
+                        entity.ErrorFailStatusId.ToString());
+            }
+
 
             FixStatusText = entity.FixText;
             PassStatusText = entity.PassText;
@@ -303,6 +312,26 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             FixStatusText = PassStatusText = FailStatusText = string.Empty;
             UserLookupCommand = GetLookupCommand(LookupCommands.Clear);
             Notes = null;
+        }
+
+        protected override AutoFillValue GetAutoFillValueForNullableForeignKeyField(FieldDefinition fieldDefinition)
+        {
+            if (fieldDefinition == TableDefinition.GetFieldDefinition(p => p.ErrorFixStatusId))
+            {
+                return FixStatusAutoFillValue;
+            }
+
+            if (fieldDefinition == TableDefinition.GetFieldDefinition(p => p.ErrorPassStatusId))
+            {
+                return PassStatusAutoFillValue;
+            }
+
+            if (fieldDefinition == TableDefinition.GetFieldDefinition(p => p.ErrorFailStatusId))
+            {
+                return FailStatusAutoFillValue;
+            }
+
+            return base.GetAutoFillValueForNullableForeignKeyField(fieldDefinition);
         }
 
         protected override bool SaveEntity(Department entity)

@@ -28,13 +28,11 @@ namespace RingSoft.DevLogix.DataAccess.Model
         [MaxLength(50)]
         public string? FixText { get; set; }
 
-        [Required]
         [MaxLength(50)]
-        public string PassText { get; set; }
+        public string? PassText { get; set; }
 
-        [Required]
         [MaxLength(50)]
-        public string FailText { get; set; }
+        public string? FailText { get; set; }
 
         public string? Notes { get; set; }
 
