@@ -23,6 +23,7 @@ namespace RingSoft.DevLogix.SqlServer
         public DbSet<ErrorStatus> ErrorStatuses { get; set; }
         public DbSet<ErrorPriority> ErrorPriorities { get; set; }
         public DbSet<Department> Departments { get; set; }
+        public DbSet<Product> Products { get; set; }
 
         public bool IsDesignTime { get; set; }
 

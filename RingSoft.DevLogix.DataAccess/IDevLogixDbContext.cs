@@ -22,6 +22,8 @@ namespace RingSoft.DevLogix.DataAccess
 
         DbSet<Department> Departments { get; set; }
 
+        DbSet<Product> Products { get; set; }
+
         void SetLookupContext(DevLogixLookupContext lookupContext);
     }
 }

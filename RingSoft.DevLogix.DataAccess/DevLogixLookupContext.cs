@@ -33,11 +33,11 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<User> Users { get; set; }
         public TableDefinition<Group> Groups { get; set; }
         public TableDefinition<UsersGroup> UsersGroups { get; set; }
+        public TableDefinition<Department> Departments { get; set; }
 
         public TableDefinition<ErrorStatus> ErrorStatuses { get; set; }
         public TableDefinition<ErrorPriority> ErrorPriorities { get; set; }
-
-        public TableDefinition<Department> Departments { get; set; }
+        public TableDefinition<Product> Products { get; set; }
 
         public TableDefinition<AdvancedFind> AdvancedFinds { get; set; }
         public TableDefinition<AdvancedFindColumn> AdvancedFindColumns { get; set; }
@@ -45,11 +45,11 @@ namespace RingSoft.DevLogix.DataAccess
 
         public LookupDefinition<UserLookup, User> UserLookup { get; set; }
         public LookupDefinition<GroupLookup, Group> GroupLookup { get; set; }
+        public LookupDefinition<DepartmentLookup, Department> DepartmentLookup { get; set; }
 
         public LookupDefinition<ErrorStatusLookup, ErrorStatus> ErrorStatusLookup { get; set; }
         public LookupDefinition<ErrorPriorityLookup, ErrorPriority> ErrorPriorityLookup { get; set; }
-
-        public LookupDefinition<DepartmentLookup, Department> DepartmentLookup { get; set; }
+        public LookupDefinition<ProductLookup, Product> ProductLookup { get; set; }
 
         public LookupDefinition<AdvancedFindLookup, AdvancedFind> AdvancedFindLookup { get; set; }
         public LookupDefinition<RecordLockingLookup, RecordLock> RecordLockingLookup { get; set; }
@@ -120,13 +120,18 @@ namespace RingSoft.DevLogix.DataAccess
             ErrorStatusLookup.AddVisibleColumnDefinition(p => p.Description, "Description", p => p.Description, 100);
             ErrorStatuses.HasLookupDefinition(ErrorStatusLookup);
 
+            DepartmentLookup = new LookupDefinition<DepartmentLookup, Department>(Departments);
+            DepartmentLookup.AddVisibleColumnDefinition(p => p.Description, "Description", p => p.Description, 100);
+            Departments.HasLookupDefinition(DepartmentLookup);
+
             ErrorPriorityLookup = new LookupDefinition<ErrorPriorityLookup, ErrorPriority>(ErrorPriorities);
             ErrorPriorityLookup.AddVisibleColumnDefinition(p => p.Description, "Description", p => p.Description, 100);
             ErrorPriorities.HasLookupDefinition(ErrorPriorityLookup);
 
-            DepartmentLookup = new LookupDefinition<DepartmentLookup, Department>(Departments);
-            DepartmentLookup.AddVisibleColumnDefinition(p => p.Description, "Description", p => p.Description, 100);
-            Departments.HasLookupDefinition(DepartmentLookup);
+            ProductLookup = new LookupDefinition<ProductLookup, Product>(Products);
+            ProductLookup.AddVisibleColumnDefinition(p => p.Description, "Description", p => p.Description, 100);
+            Products.HasLookupDefinition(ProductLookup);
+
         }
 
         protected override void SetupModel()
