@@ -135,9 +135,7 @@ namespace RingSoft.DevLogix.DataAccess
             Products.HasLookupDefinition(ProductLookup);
 
             ProductVersionLookup = new LookupDefinition<ProductVersionLookup, ProductVersion>(ProductVersions);
-            ProductVersionLookup.Include(p => p.Product)
-                .AddVisibleColumnDefinition(p => p.Product, "Product", p => p.Description, 50);
-            ProductVersionLookup.AddVisibleColumnDefinition(p => p.Description, "Version", p => p.Description, 50);
+            ProductVersionLookup.AddVisibleColumnDefinition(p => p.Description, "Version", p => p.Description, 100);
             ProductVersions.HasLookupDefinition(ProductVersionLookup);
 
         }
@@ -145,8 +143,10 @@ namespace RingSoft.DevLogix.DataAccess
         protected override void SetupModel()
         {
             Groups.PriorityLevel = 100;
+
             Products.PriorityLevel = 100;
             Products.GetFieldDefinition(p => p.Notes).IsMemo();
+
             ErrorStatuses.PriorityLevel = 100;
             ErrorPriorities.PriorityLevel = 100;
             
@@ -155,7 +155,9 @@ namespace RingSoft.DevLogix.DataAccess
             Users.PriorityLevel = 300;
 
             UsersGroups.PriorityLevel = 400;
+
             ProductVersions.PriorityLevel = 400;
+            ProductVersions.GetFieldDefinition(p => p.Notes).IsMemo();
         }
 
         public override UserAutoFill GetUserAutoFill(string userName)

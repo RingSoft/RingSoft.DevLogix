@@ -91,14 +91,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         protected override bool DeleteEntity()
         {
-            var query = AppGlobals.DataRepository.GetDataContext().GetTable<Product>();
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var query = context.GetTable<Product>();
             if (query != null)
             {
                 var entity = query.FirstOrDefault(p => p.Id == Id);
-                var context = AppGlobals.DataRepository.GetDataContext();
-                if (context != null && entity != null)
+
+                if (entity != null)
                 {
-                    return context.DeleteEntity(entity, $"Deleting Product '{entity.Description}'");
+                    return context.DeleteEntity(entity, $"Deleting Product Version '{entity.Description}'");
                 }
             }
             return false;
