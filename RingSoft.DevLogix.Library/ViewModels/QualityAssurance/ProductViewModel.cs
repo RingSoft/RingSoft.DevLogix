@@ -44,7 +44,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         protected override Product PopulatePrimaryKeyControls(Product newEntity, PrimaryKeyValue primaryKeyValue)
         {
-            var query = AppGlobals.DataRepository.GetTable<Product>();
+            var query = AppGlobals.DataRepository.GetDataContext().GetTable<Product>();
             var result = query.FirstOrDefault(p => p.Id == newEntity.Id);
             if (result != null)
             {
@@ -91,7 +91,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         protected override bool DeleteEntity()
         {
-            var query = AppGlobals.DataRepository.GetTable<Product>();
+            var query = AppGlobals.DataRepository.GetDataContext().GetTable<Product>();
             if (query != null)
             {
                 var entity = query.FirstOrDefault(p => p.Id == Id);

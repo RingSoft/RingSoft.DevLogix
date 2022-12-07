@@ -95,7 +95,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         protected override Group PopulatePrimaryKeyControls(Group newEntity, PrimaryKeyValue primaryKeyValue)
         {
-            IQueryable<Group> query = AppGlobals.DataRepository.GetTable<Group>();
+            IQueryable<Group> query = AppGlobals.DataRepository.GetDataContext().GetTable<Group>();
             query = query.Include(p => p.UserGroups);
             var result = query.FirstOrDefault(p => p.Id == newEntity.Id);
 
@@ -146,7 +146,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             var context = AppGlobals.DataRepository.GetDataContext();
             if (context.SaveEntity(entity, $"Saving Group '{entity .Name}.'"))
             {
-                var ugQuery = AppGlobals.DataRepository.GetTable<UsersGroup>();
+                var ugQuery = AppGlobals.DataRepository.GetDataContext().GetTable<UsersGroup>();
                 var userGroups = ugQuery.Where(p => p.GroupId == Id).ToList();
                 context.RemoveRange(userGroups);
                 userGroups = UsersManager.GetList();
@@ -170,11 +170,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         protected override bool DeleteEntity()
         {
             var context = AppGlobals.DataRepository.GetDataContext();
-            var query = AppGlobals.DataRepository.GetTable<Group>();
+            var query = context.GetTable<Group>();
             var group = query.FirstOrDefault(f => f.Id == Id);
             if (group != null)
             {
-                var ugQuery = AppGlobals.DataRepository.GetTable<UsersGroup>();
+                var ugQuery = context.GetTable<UsersGroup>();
                 var userGroups = ugQuery.Where(p => p.GroupId == Id).ToList();
                 context.RemoveRange(userGroups);
                 if (context.DeleteNoCommitEntity(group, $"Deleting Group '{group.Name}'"))

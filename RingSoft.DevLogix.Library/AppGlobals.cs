@@ -5,6 +5,7 @@ using System.Threading;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
+using RingSoft.DbLookup;
 using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.EfCore;
 using RingSoft.DbLookup.QueryBuilder;
@@ -59,6 +60,7 @@ namespace RingSoft.DevLogix.Library
         public static void Initialize()
         {
             DataRepository ??= new DataRepository();
+            SystemGlobals.DataRepository = DataRepository;
 
             AppSplashProgress?.Invoke(null, new AppProgressArgs("Initializing Database Structure."));
 

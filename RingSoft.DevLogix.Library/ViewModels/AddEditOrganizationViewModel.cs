@@ -55,8 +55,6 @@ namespace RingSoft.DevLogix.Library.ViewModels
             }
 
             base.Initialize(view, loginProcess, sqliteLoginViewModel, sqlServerLoginViewModel, entity);
-
-            base.Initialize(view, loginProcess, sqliteLoginViewModel, sqlServerLoginViewModel, entity);
         }
 
         public override void LoadFromEntity(Organization entity)
@@ -143,17 +141,17 @@ namespace RingSoft.DevLogix.Library.ViewModels
                     throw new ArgumentOutOfRangeException();
             }
             AppGlobals.LoadDataProcessor(Object, OriginalDbPlatform);
-            var systemMaster = new SystemMaster() { OrganizationName = Object.Name + "1" };
-            sourceDbContext.SystemMaster.Add(systemMaster);
-            try
-            {
-                sourceDbContext.DbContext.SaveChanges();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+            //var systemMaster = new SystemMaster() { OrganizationName = Object.Name + "1" };
+            //sourceDbContext.SystemMaster.Add(systemMaster);
+            //try
+            //{
+            //    sourceDbContext.DbContext.SaveChanges();
+            //}
+            //catch (Exception e)
+            //{
+            //    Console.WriteLine(e);
+            //    throw;
+            //}
             var dropResult = destinationProcessor.DropDatabase();
             if (dropResult.ResultCode != GetDataResultCodes.Success)
             {

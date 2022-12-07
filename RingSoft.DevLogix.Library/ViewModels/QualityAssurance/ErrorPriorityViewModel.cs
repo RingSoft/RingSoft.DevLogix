@@ -43,7 +43,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         protected override ErrorPriority PopulatePrimaryKeyControls(ErrorPriority newEntity, PrimaryKeyValue primaryKeyValue)
         {
-            var query = AppGlobals.DataRepository.GetTable<ErrorPriority>();
+            var query = AppGlobals.DataRepository.GetDataContext().GetTable<ErrorPriority>();
             var result = query.FirstOrDefault(p => p.Id == newEntity.Id);
             Id = result.Id;
             KeyAutoFillValue = AppGlobals.LookupContext.OnAutoFillTextRequest(TableDefinition, Id.ToString());
@@ -96,7 +96,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         protected override bool DeleteEntity()
         {
-            var errorPrioritySet = AppGlobals.DataRepository.GetTable<ErrorPriority>();
+            var errorPrioritySet = AppGlobals.DataRepository.GetDataContext().GetTable<ErrorPriority>();
             var errorPriority = errorPrioritySet.FirstOrDefault(p => p.Id == Id);
             var context = AppGlobals.DataRepository.GetDataContext();
             return context.DeleteEntity(errorPriority, $"Deleting Error Priority '{errorPriority.Description}'");

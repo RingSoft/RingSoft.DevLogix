@@ -273,7 +273,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         private void ConnectToOrganization(AddEditOrganizationViewModel connection)
         {
-            var query = AppGlobals.DataRepository.GetTable<SystemMaster>();
+            var query = AppGlobals.DataRepository.GetDataContext().GetTable<SystemMaster>();
             var systemMaster = query.FirstOrDefault();
             if (systemMaster != null)
             {

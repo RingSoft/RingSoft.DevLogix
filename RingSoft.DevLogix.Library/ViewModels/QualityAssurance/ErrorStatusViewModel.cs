@@ -27,7 +27,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         protected override ErrorStatus PopulatePrimaryKeyControls(ErrorStatus newEntity, PrimaryKeyValue primaryKeyValue)
         {
-            var query = AppGlobals.DataRepository.GetTable<ErrorStatus>();
+            var query = AppGlobals.DataRepository.GetDataContext().GetTable<ErrorStatus>();
             var result = query.FirstOrDefault(p => p.Id == newEntity.Id);
             Id = result.Id;
             KeyAutoFillValue = AppGlobals.LookupContext.OnAutoFillTextRequest(TableDefinition, Id.ToString());
@@ -63,7 +63,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         protected override bool DeleteEntity()
         {
-            var query = AppGlobals.DataRepository.GetTable<ErrorStatus>();
+            var query = AppGlobals.DataRepository.GetDataContext().GetTable<ErrorStatus>();
             var entity = query.FirstOrDefault(p => p.Id == Id);
             var context = AppGlobals.DataRepository.GetDataContext();
             return entity != null && context.DeleteEntity(entity, $"Deleting Error Status '{entity.Description}'");

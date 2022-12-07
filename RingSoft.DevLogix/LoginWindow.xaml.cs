@@ -48,13 +48,13 @@ namespace RingSoft.DevLogix
                 ShowInTaskbar = false
             };
             addEditOrganizationWindow.ShowDialog();
-            if (addEditOrganizationWindow.DataCopied)
-            {
-                var message = "You must restart the application in order to continue.";
-                var caption = "Restart Application";
-                MessageBox.Show(message, caption, MessageBoxButton.OK, MessageBoxImage.Information);
-                Application.Current.Shutdown();
-            }
+            //if (addEditOrganizationWindow.DataCopied)
+            //{
+            //    var message = "You must restart the application in order to continue.";
+            //    var caption = "Restart Application";
+            //    MessageBox.Show(message, caption, MessageBoxButton.OK, MessageBoxImage.Information);
+            //    Application.Current.Shutdown();
+            //}
 
             if (addEditOrganizationWindow.ViewModel.DialogResult)
             {

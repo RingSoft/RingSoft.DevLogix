@@ -83,12 +83,16 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<string>("Formula")
                         .HasColumnType("ntext");
 
+                    b.Property<string>("Path")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar");
+
                     b.Property<double>("PercentWidth")
                         .HasColumnType("numeric");
 
                     b.Property<string>("PrimaryFieldName")
                         .HasMaxLength(50)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar");
 
                     b.Property<string>("PrimaryTableName")
                         .HasMaxLength(50)
@@ -136,6 +140,10 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.Property<byte>("Operand")
                         .HasColumnType("smallint");
+
+                    b.Property<string>("Path")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar");
 
                     b.Property<string>("PrimaryFieldName")
                         .HasMaxLength(50)
@@ -308,6 +316,30 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.ToTable("Products");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProductVersion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("ntext");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductVersions");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.SystemMaster", b =>
                 {
                     b.Property<string>("OrganizationName")
@@ -379,7 +411,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.HasOne("RingSoft.DbLookup.AdvancedFind.AdvancedFind", "AdvancedFind")
                         .WithMany("Columns")
                         .HasForeignKey("AdvancedFindId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("AdvancedFind");
@@ -425,6 +457,17 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("ErrorFixStatus");
 
                     b.Navigation("ErrorPassStatus");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProductVersion", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.Product", "Product")
+                        .WithMany("Versions")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.User", b =>
@@ -483,6 +526,11 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Group", b =>
                 {
                     b.Navigation("UserGroups");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Product", b =>
+                {
+                    b.Navigation("Versions");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.User", b =>

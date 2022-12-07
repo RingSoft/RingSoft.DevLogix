@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AdvancedFind;
@@ -7,6 +8,7 @@ using RingSoft.DbLookup.EfCore;
 using RingSoft.DbLookup.RecordLocking;
 using RingSoft.DevLogix.DataAccess;
 using RingSoft.DevLogix.DataAccess.Model;
+using IDbContext = RingSoft.DbLookup.IDbContext;
 
 namespace RingSoft.DevLogix.SqlServer
 {
@@ -24,6 +26,7 @@ namespace RingSoft.DevLogix.SqlServer
         public DbSet<ErrorPriority> ErrorPriorities { get; set; }
         public DbSet<Department> Departments { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<ProductVersion> ProductVersions { get; set; }
 
         public bool IsDesignTime { get; set; }
 
@@ -33,7 +36,10 @@ namespace RingSoft.DevLogix.SqlServer
         {
             DbConstants.ConstantGenerator = new SqlServerDbConstants();
             EfCoreGlobals.DbAdvancedFindContextCore = this;
-            SystemGlobals.AdvancedFindDbProcessor = new AdvancedFindDataProcessorEfCore();
+            var processor = new AdvancedFindDataProcessorEfCore();
+            SystemGlobals.AdvancedFindDbProcessor = processor;
+            SystemGlobals.DataRepository = processor;
+
             DataAccessGlobals.DbContext = this;
         }
 
@@ -74,6 +80,7 @@ namespace RingSoft.DevLogix.SqlServer
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            DbConstants.ConstantGenerator = new SqlServerDbConstants();
             DataAccessGlobals.ConfigureModel(modelBuilder);
 
             base.OnModelCreating(modelBuilder);
@@ -115,7 +122,7 @@ namespace RingSoft.DevLogix.SqlServer
             return DataAccessGlobals.Commit(message);
         }
 
-        public void RemoveRange<TEntity>(List<TEntity> listToRemove) where TEntity : class
+        public void RemoveRange<TEntity>(IEnumerable<TEntity> listToRemove) where TEntity : class
         {
             DataAccessGlobals.RemoveRange(listToRemove);
         }
@@ -123,6 +130,16 @@ namespace RingSoft.DevLogix.SqlServer
         public void AddRange<TEntity>(List<TEntity> listToAdd) where TEntity : class
         {
             DataAccessGlobals.AddRange(listToAdd);
+        }
+
+        IQueryable<TEntity> DataAccess.IDbContext.GetTable<TEntity>()
+        {
+            return Set<TEntity>();
+        }
+
+        IQueryable<TEntity> IDbContext.GetTable<TEntity>()
+        {
+            return Set<TEntity>();
         }
     }
 }

@@ -48,7 +48,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
             if (loadVm)
             {
-                var query = AppGlobals.DataRepository.GetTable<User>();
+                var query = AppGlobals.DataRepository.GetDataContext().GetTable<User>();
                 if (query.Any())
                 {
                     loadVm = view.LoginUser();

@@ -38,6 +38,7 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<ErrorStatus> ErrorStatuses { get; set; }
         public TableDefinition<ErrorPriority> ErrorPriorities { get; set; }
         public TableDefinition<Product> Products { get; set; }
+        public TableDefinition<ProductVersion> ProductVersions { get; set; }
 
         public TableDefinition<AdvancedFind> AdvancedFinds { get; set; }
         public TableDefinition<AdvancedFindColumn> AdvancedFindColumns { get; set; }
@@ -50,6 +51,7 @@ namespace RingSoft.DevLogix.DataAccess
         public LookupDefinition<ErrorStatusLookup, ErrorStatus> ErrorStatusLookup { get; set; }
         public LookupDefinition<ErrorPriorityLookup, ErrorPriority> ErrorPriorityLookup { get; set; }
         public LookupDefinition<ProductLookup, Product> ProductLookup { get; set; }
+        public LookupDefinition<ProductVersionLookup, ProductVersion> ProductVersionLookup { get; set; }
 
         public LookupDefinition<AdvancedFindLookup, AdvancedFind> AdvancedFindLookup { get; set; }
         public LookupDefinition<RecordLockingLookup, RecordLock> RecordLockingLookup { get; set; }
@@ -132,11 +134,28 @@ namespace RingSoft.DevLogix.DataAccess
             ProductLookup.AddVisibleColumnDefinition(p => p.Description, "Description", p => p.Description, 100);
             Products.HasLookupDefinition(ProductLookup);
 
+            ProductVersionLookup = new LookupDefinition<ProductVersionLookup, ProductVersion>(ProductVersions);
+            ProductVersionLookup.Include(p => p.Product)
+                .AddVisibleColumnDefinition(p => p.Product, "Product", p => p.Description, 50);
+            ProductVersionLookup.AddVisibleColumnDefinition(p => p.Description, "Version", p => p.Description, 50);
+            ProductVersions.HasLookupDefinition(ProductVersionLookup);
+
         }
 
         protected override void SetupModel()
         {
+            Groups.PriorityLevel = 100;
+            Products.PriorityLevel = 100;
+            Products.GetFieldDefinition(p => p.Notes).IsMemo();
+            ErrorStatuses.PriorityLevel = 100;
+            ErrorPriorities.PriorityLevel = 100;
             
+            Departments.PriorityLevel = 200;
+
+            Users.PriorityLevel = 300;
+
+            UsersGroups.PriorityLevel = 400;
+            ProductVersions.PriorityLevel = 400;
         }
 
         public override UserAutoFill GetUserAutoFill(string userName)

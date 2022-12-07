@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RingSoft.DevLogix.SqlServer;
 
 namespace RingSoft.DevLogix.SqlServer.Migrations
 {
     [DbContext(typeof(DevLogixSqlServerDbContext))]
-    partial class DevLogixSqlServerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221204025515_LookupPath")]
+    partial class LookupPath
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -325,31 +327,6 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProductVersion", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Notes")
-                        .HasColumnType("ntext");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("ProductVersions");
-                });
-
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.SystemMaster", b =>
                 {
                     b.Property<string>("OrganizationName")
@@ -422,7 +399,7 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.HasOne("RingSoft.DbLookup.AdvancedFind.AdvancedFind", "AdvancedFind")
                         .WithMany("Columns")
                         .HasForeignKey("AdvancedFindId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("AdvancedFind");
@@ -468,17 +445,6 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("ErrorFixStatus");
 
                     b.Navigation("ErrorPassStatus");
-                });
-
-            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProductVersion", b =>
-                {
-                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.Product", "Product")
-                        .WithMany("Versions")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.User", b =>
@@ -537,11 +503,6 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Group", b =>
                 {
                     b.Navigation("UserGroups");
-                });
-
-            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Product", b =>
-                {
-                    b.Navigation("Versions");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.User", b =>

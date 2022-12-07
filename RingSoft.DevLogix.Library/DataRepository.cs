@@ -3,11 +3,9 @@ using System.Linq;
 
 namespace RingSoft.DevLogix.Library
 {
-    public interface IDataRepository
+    public interface IDataRepository : DbLookup.IDataRepository
     {
         IDbContext GetDataContext();
-
-        IQueryable<TEntity> GetTable<TEntity>() where TEntity : class;
     }
 
     public class DataRepository : IDataRepository
@@ -17,12 +15,9 @@ namespace RingSoft.DevLogix.Library
             return AppGlobals.GetNewDbContext();
         }
 
-        public IQueryable<TEntity> GetTable<TEntity>() where TEntity : class
+        DbLookup.IDbContext DbLookup.IDataRepository.GetDataContext()
         {
-            var context = AppGlobals.GetNewDbContext();
-            var dbSet = context.DbContext.Set<TEntity>();
-            return dbSet;
+            return AppGlobals.GetNewDbContext();
         }
-
     }
 }

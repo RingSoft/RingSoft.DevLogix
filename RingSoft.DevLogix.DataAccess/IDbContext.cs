@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace RingSoft.DevLogix.DataAccess
 {
@@ -16,8 +17,10 @@ namespace RingSoft.DevLogix.DataAccess
 
         bool Commit(string message);
 
-        void RemoveRange<TEntity>(List<TEntity> listToRemove) where TEntity : class;
+        void RemoveRange<TEntity>(IEnumerable<TEntity> listToRemove) where TEntity : class;
 
         void AddRange<TEntity>(List<TEntity> listToAdd) where TEntity : class;
+
+        IQueryable<TEntity> GetTable<TEntity>() where TEntity : class;
     }
 }

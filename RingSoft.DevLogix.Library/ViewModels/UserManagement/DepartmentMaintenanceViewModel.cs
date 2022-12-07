@@ -225,7 +225,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         protected override Department PopulatePrimaryKeyControls(Department newEntity, PrimaryKeyValue primaryKeyValue)
         {
-            var query = AppGlobals.DataRepository.GetTable<Department>();
+            var query = AppGlobals.DataRepository.GetDataContext().GetTable<Department>();
             var result = query.FirstOrDefault(p => p.Id == newEntity.Id);
             if (result != null)
             {
@@ -346,7 +346,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         protected override bool DeleteEntity()
         {
-            var query = AppGlobals.DataRepository.GetTable<Department>();
+            var query = AppGlobals.DataRepository.GetDataContext().GetTable<Department>();
             if (query != null)
             {
                 var department = query.FirstOrDefault(p => p.Id == Id);

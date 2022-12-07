@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.DbLookup;
@@ -25,6 +26,7 @@ namespace RingSoft.DevLogix.Sqlite
         public DbSet<ErrorPriority> ErrorPriorities { get; set; }
         public DbSet<Department> Departments { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<ProductVersion> ProductVersions { get; set; }
 
         public bool IsDesignTime { get; set; }
 
@@ -74,6 +76,7 @@ namespace RingSoft.DevLogix.Sqlite
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            DbConstants.ConstantGenerator = new SqliteDbConstants();
             DataAccessGlobals.ConfigureModel(modelBuilder);
 
             base.OnModelCreating(modelBuilder);
@@ -109,7 +112,7 @@ namespace RingSoft.DevLogix.Sqlite
             return DataAccessGlobals.Commit(message);
         }
 
-        public void RemoveRange<TEntity>(List<TEntity> listToRemove) where TEntity : class
+        public void RemoveRange<TEntity>(IEnumerable<TEntity> listToRemove) where TEntity : class
         {
             DataAccessGlobals.RemoveRange(listToRemove);
         }
@@ -117,6 +120,11 @@ namespace RingSoft.DevLogix.Sqlite
         public void AddRange<TEntity>(List<TEntity> listToAdd) where TEntity : class
         {
             DataAccessGlobals.AddRange(listToAdd);
+        }
+
+        public IQueryable<TEntity> GetTable<TEntity>() where TEntity : class
+        {
+            return Set<TEntity>();
         }
     }
 }

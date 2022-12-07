@@ -47,7 +47,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         {
             var result = new List<UsersGroup>();
 
-            var rows = Rows.OfType<UsersGroupsRow>();
+            var rows = Rows.OfType<UsersGroupsRow>().Where(p => p.IsNew == false);
             foreach (var row in rows)
             {
                 var item = new UsersGroup();

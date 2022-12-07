@@ -18,6 +18,7 @@ namespace RingSoft.DevLogix.DataAccess
             modelBuilder.ApplyConfiguration(new ErrorPriorityConfiguration());
             modelBuilder.ApplyConfiguration(new DepartmentConfiguration());
             modelBuilder.ApplyConfiguration(new ProductConfiguration());
+            modelBuilder.ApplyConfiguration(new ProductVersionConfiguration());
 
             AdvancedFindDataProcessorEfCore.ConfigureAdvancedFind(modelBuilder);
         }
@@ -52,7 +53,7 @@ namespace RingSoft.DevLogix.DataAccess
             return result;
         }
 
-        public static void RemoveRange<TEntity>(List<TEntity> listToRemove) where TEntity : class
+        public static void RemoveRange<TEntity>(IEnumerable<TEntity> listToRemove) where TEntity : class
         {
             var dbSet = DbContext.Set<TEntity>();
 

@@ -83,7 +83,7 @@ namespace RingSoft.DevLogix
             AppGlobals.LookupContext.GetUserAutoFillEvent += (sender, fill) =>
             {
                 fill.UserAutoFill.AutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.UserLookup);
-                var query = AppGlobals.DataRepository.GetTable<User>();
+                var query = AppGlobals.DataRepository.GetDataContext().GetTable<User>();
                 var user = query.FirstOrDefault(p => p.Name == fill.UserName);
                 if (user != null)
                 {
