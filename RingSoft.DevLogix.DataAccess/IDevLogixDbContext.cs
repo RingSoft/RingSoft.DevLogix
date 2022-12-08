@@ -11,20 +11,15 @@ namespace RingSoft.DevLogix.DataAccess
         DbSet<SystemMaster> SystemMaster { get; set; }
 
         DbSet<User> Users { get; set; }
-
         DbSet<Group> Groups { get; set; }
-
         DbSet<UsersGroup> UsersGroups { get; set; }
-
-        DbSet<ErrorStatus> ErrorStatuses { get; set; }
-
-        DbSet<ErrorPriority> ErrorPriorities { get; set; }
-
         DbSet<Department> Departments { get; set; }
 
+        DbSet<ErrorStatus> ErrorStatuses { get; set; }
+        DbSet<ErrorPriority> ErrorPriorities { get; set; }
         DbSet<Product> Products { get; set; }
-
         DbSet<ProductVersion> ProductVersions { get; set; }
+        DbSet<ProductVersionDepartment> ProductVersionDepartments { get; set; }
 
         void SetLookupContext(DevLogixLookupContext lookupContext);
     }

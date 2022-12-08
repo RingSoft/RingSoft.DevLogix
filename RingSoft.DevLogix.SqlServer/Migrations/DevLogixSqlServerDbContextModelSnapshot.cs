@@ -350,6 +350,24 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.ToTable("ProductVersions");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.ProductVersionDepartment", b =>
+                {
+                    b.Property<int>("VersionId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("ReleaseDateTime")
+                        .HasColumnType("datetime");
+
+                    b.HasKey("VersionId", "DepartmentId");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.ToTable("ProductVersionDepartments");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.SystemMaster", b =>
                 {
                     b.Property<string>("OrganizationName")
@@ -481,6 +499,25 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.ProductVersionDepartment", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.Department", "Department")
+                        .WithMany("ProductVersionDepartments")
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.ProductVersion", "ProductVersion")
+                        .WithMany("ProductVersionDepartments")
+                        .HasForeignKey("VersionId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Department");
+
+                    b.Navigation("ProductVersion");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.User", b =>
                 {
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.Department", "Department")
@@ -522,6 +559,8 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Department", b =>
                 {
+                    b.Navigation("ProductVersionDepartments");
+
                     b.Navigation("Users");
                 });
 
@@ -542,6 +581,11 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Product", b =>
                 {
                     b.Navigation("Versions");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProductVersion", b =>
+                {
+                    b.Navigation("ProductVersionDepartments");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.User", b =>

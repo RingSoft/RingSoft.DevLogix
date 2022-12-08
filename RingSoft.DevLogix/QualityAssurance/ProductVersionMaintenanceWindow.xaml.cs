@@ -32,13 +32,13 @@ namespace RingSoft.DevLogix.QualityAssurance
 
         protected override void OnLoaded()
         {
-            //RegisterFormKeyControl(DescriptionControl);
+            RegisterFormKeyControl(DescriptionControl);
             base.OnLoaded();
         }
 
         public override void ResetViewForNewRecord()
         {
-            //DescriptionControl.Focus();
+            DescriptionControl.Focus();
             base.ResetViewForNewRecord();
         }
 

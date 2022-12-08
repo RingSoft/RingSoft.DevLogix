@@ -37,10 +37,12 @@ namespace RingSoft.DevLogix.DataAccess.Model
         public string? Notes { get; set; }
 
         public virtual ICollection<User> Users { get; set; }
+        public virtual ICollection<ProductVersionDepartment> ProductVersionDepartments { get; set; }
 
         public Department()
         {
             Users = new HashSet<User>();
+            ProductVersionDepartments = new HashSet<ProductVersionDepartment>();
         }
     }
 }

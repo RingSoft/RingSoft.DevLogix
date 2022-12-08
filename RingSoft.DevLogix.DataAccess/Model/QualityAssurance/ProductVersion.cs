@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace RingSoft.DevLogix.DataAccess.Model
 {
@@ -18,5 +19,12 @@ namespace RingSoft.DevLogix.DataAccess.Model
         public Product Product { get; set; }
 
         public string? Notes { get; set; }
+
+        public virtual ICollection<ProductVersionDepartment> ProductVersionDepartments { get; set; }
+
+        public ProductVersion()
+        {
+            ProductVersionDepartments = new HashSet<ProductVersionDepartment>();
+        }
     }
 }

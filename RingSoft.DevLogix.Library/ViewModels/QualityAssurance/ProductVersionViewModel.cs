@@ -56,6 +56,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             }
         }
 
+        private ProductVersionDepartmentsManager _departmentsManager;
+
+        public ProductVersionDepartmentsManager DepartmentsManager
+        {
+            get => _departmentsManager;
+            set
+            {
+                if (_departmentsManager == value)
+                {
+                    return;
+                }
+                _departmentsManager = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         private string? _notes;
 
@@ -77,6 +93,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         {
             ProductAutoFillSetup =
                 new AutoFillSetup(AppGlobals.LookupContext.ProductVersions.GetFieldDefinition(p => p.ProductId));
+            DepartmentsManager = new ProductVersionDepartmentsManager(this);
             base.Initialize();
         }
 

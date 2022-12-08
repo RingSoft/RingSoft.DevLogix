@@ -9,6 +9,7 @@ using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.EfCore;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition;
+using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbLookup.RecordLocking;
 using RingSoft.DevLogix.DataAccess.LookupModel;
 using RingSoft.DevLogix.DataAccess.Model;
@@ -39,6 +40,7 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<ErrorPriority> ErrorPriorities { get; set; }
         public TableDefinition<Product> Products { get; set; }
         public TableDefinition<ProductVersion> ProductVersions { get; set; }
+        public TableDefinition<ProductVersionDepartment> ProductVersionDepartments { get; set; }
 
         public TableDefinition<AdvancedFind> AdvancedFinds { get; set; }
         public TableDefinition<AdvancedFindColumn> AdvancedFindColumns { get; set; }
@@ -158,6 +160,10 @@ namespace RingSoft.DevLogix.DataAccess
 
             ProductVersions.PriorityLevel = 400;
             ProductVersions.GetFieldDefinition(p => p.Notes).IsMemo();
+
+            ProductVersionDepartments.PriorityLevel = 500;
+            ProductVersionDepartments.GetFieldDefinition(p => p.ReleaseDateTime)
+                .HasDateType(DbDateTypes.DateTime);
         }
 
         public override UserAutoFill GetUserAutoFill(string userName)
