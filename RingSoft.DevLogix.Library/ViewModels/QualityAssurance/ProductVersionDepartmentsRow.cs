@@ -77,7 +77,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         public override void LoadFromEntity(ProductVersionDepartment entity)
         {
-            throw new System.NotImplementedException();
+            DepartmentAutoFillValue =
+                AppGlobals.LookupContext.OnAutoFillTextRequest(AppGlobals.LookupContext.Departments,
+                    entity.DepartmentId.ToString());
+            ReleaseDateTime = entity.ReleaseDateTime.ToLocalTime();
         }
 
         public override bool ValidateRow()
@@ -110,7 +113,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                     .PrimaryKeyValue);
 
             entity.DepartmentId = department.Id;
-            entity.ReleaseDateTime = ReleaseDateTime.Value;
+            entity.ReleaseDateTime = ReleaseDateTime.Value.ToUniversalTime();
         }
     }
 }

@@ -3,6 +3,7 @@ using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DevLogix.DataAccess.Model;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 {
@@ -100,7 +101,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         protected override ProductVersion PopulatePrimaryKeyControls(ProductVersion newEntity, PrimaryKeyValue primaryKeyValue)
         {
             var query = AppGlobals.DataRepository.GetDataContext().GetTable<ProductVersion>();
-            var result = query.FirstOrDefault(p => p.Id == newEntity.Id);
+            var result = query
+                .Include(p => p.ProductVersionDepartments)
+                .FirstOrDefault(p => p.Id == newEntity.Id);
             if (result != null)
             {
                 Id = result.Id;
@@ -117,6 +120,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                     entity.ProductId.ToString());
 
             Notes = entity.Notes;
+            DepartmentsManager.LoadGrid(entity.ProductVersionDepartments);
         }
 
         protected override ProductVersion GetEntityData()
@@ -141,6 +145,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             Id = 0;
             ProductAutoFillValue = null;
             Notes = null;
+            DepartmentsManager.SetupForNewRecord();
         }
 
         protected override bool SaveEntity(ProductVersion entity)
@@ -148,7 +153,21 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             var context = AppGlobals.DataRepository.GetDataContext();
             if (context != null)
             {
-                return context.SaveEntity(entity, $"Saving Product Version '{entity.Description}'");
+                if (context.SaveEntity(entity, $"Saving Product Version '{entity.Description}'"))
+                {
+                    var departmentsToAdd = DepartmentsManager.GetEntityList();
+                    var departmentsToRemove = context.GetTable<ProductVersionDepartment>()
+                        .Where(p => p.VersionId == entity.Id);
+
+                    foreach (var productVersionDepartment in departmentsToAdd)
+                    {
+                        productVersionDepartment.VersionId = entity.Id;
+                    }
+                    context.RemoveRange(departmentsToRemove);
+                    context.AddRange(departmentsToAdd);
+
+                    return context.Commit("Saving Product Version Details");
+                }
             }
             return false;
 
@@ -160,6 +179,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             var query = context.GetTable<ProductVersion>();
             if (query != null)
             {
+                var departmentsToRemove = context.GetTable<ProductVersionDepartment>()
+                    .Where(p => p.VersionId == Id);
+
+                context.RemoveRange(departmentsToRemove);
                 var entity = query.FirstOrDefault(p => p.Id == Id);
                 
                 if (entity != null)
