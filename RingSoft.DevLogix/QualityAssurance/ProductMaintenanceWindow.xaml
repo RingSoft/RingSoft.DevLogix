@@ -43,6 +43,37 @@
 
             <TabControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" x:Name="TabControl" VerticalAlignment="Stretch">
 
+                <TabItem Header="Versions">
+
+                    <Grid>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <lc:LookupControl Grid.Row="0" Grid.Column="1" LookupDefinition="{Binding ProductVersionLookupDefinition}" Command="{Binding ProductVersionLookupCommand}">
+
+                            <lc:LookupControl.LookupColumns>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf Description, Type={x:Type lm:ProductVersionLookup}}" Header="Version" Width="200"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf VersionDate, Type={x:Type lm:ProductVersionLookup}}" Header="Version Date" Width="200"/>
+
+                                <!--<lc:LookupColumn PropertyName="{lc:NameOf MaxDepartment, Type={x:Type lm:ProductVersionLookup}}" Header="Department" Width="200"/>-->
+
+                            </lc:LookupControl.LookupColumns>
+
+
+                        </lc:LookupControl>
+                    </Grid>
+
+                </TabItem>
                 <dec:DataEntryMemoTabItem Header="Notes" VerticalAlignment="Stretch">
                     <DockPanel>
 

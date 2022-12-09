@@ -137,6 +137,8 @@ namespace RingSoft.DevLogix.DataAccess
             Products.HasLookupDefinition(ProductLookup);
 
             ProductVersionLookup = new LookupDefinition<ProductVersionLookup, ProductVersion>(ProductVersions);
+            //ProductVersionLookup.Include(p => p.Product)
+            //    .AddVisibleColumnDefinition(p => p.Product, "Product", p => p.Description, 50);
             ProductVersionLookup.AddVisibleColumnDefinition(p => p.Description, "Version", p => p.Description, 100);
             ProductVersions.HasLookupDefinition(ProductVersionLookup);
 
