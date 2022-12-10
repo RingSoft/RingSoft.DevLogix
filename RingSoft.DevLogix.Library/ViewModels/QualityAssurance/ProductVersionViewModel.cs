@@ -144,6 +144,20 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         {
             Id = 0;
             ProductAutoFillValue = null;
+            if (LookupAddViewArgs != null && LookupAddViewArgs.ParentWindowPrimaryKeyValue != null)
+            {
+                if (LookupAddViewArgs.ParentWindowPrimaryKeyValue.TableDefinition ==
+                    AppGlobals.LookupContext.Products)
+                {
+                    var product =
+                        AppGlobals.LookupContext.Products.GetEntityFromPrimaryKeyValue(LookupAddViewArgs
+                            .ParentWindowPrimaryKeyValue);
+                    ProductAutoFillValue =
+                        AppGlobals.LookupContext.OnAutoFillTextRequest(AppGlobals.LookupContext.Products,
+                            product.Id.ToString());
+                }
+            }
+
             Notes = null;
             DepartmentsManager.SetupForNewRecord();
         }

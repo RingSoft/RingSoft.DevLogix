@@ -3,8 +3,12 @@ using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DevLogix.DataAccess.Model;
 using System.Linq;
+using RingSoft.DataEntryControls.Engine;
+using RingSoft.DbLookup.AutoFill;
+using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DevLogix.DataAccess.LookupModel;
+using RingSoft.DbMaintenance;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 {
@@ -70,14 +74,91 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                     return;
 
                 _productVersionLookupCommand = value;
+                OnPropertyChanged(null, false);
+            }
+        }
+
+        private AutoFillSetup _departmentFilterAutoFillSetup;
+
+        public AutoFillSetup DepartmentFilterAutoFillSetup
+        {
+            get => _departmentFilterAutoFillSetup;
+            set
+            {
+                if (_departmentFilterAutoFillSetup == value)
+                {
+                    return;
+                }
+                _departmentFilterAutoFillSetup = value;
                 OnPropertyChanged();
             }
         }
 
+        private AutoFillValue _departmentFilterAutoFillValue;
+
+        public AutoFillValue DepartmentFilterAutoFillValue
+        {
+            get => _departmentFilterAutoFillValue;
+            set
+            {
+                if (_departmentFilterAutoFillValue == value)
+                {
+                    return;
+                }
+                _departmentFilterAutoFillValue = value;
+                OnPropertyChanged(null, false);
+                FilterVersions();
+            }
+        }
+
+        public RelayCommand VersionsAddModifyCommand { get; set; }
+
+        public ProductViewModel()
+        {
+            VersionsAddModifyCommand = new RelayCommand(OnVersionsAddModify);
+        }
         protected override void Initialize()
         {
             ProductVersionLookupDefinition = MakeProductLookupDefinition();
+            DepartmentFilterAutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.DepartmentLookup);
+            DepartmentFilterAutoFillSetup.AllowLookupAdd = false;
             base.Initialize();
+        }
+
+        private void FilterVersions()
+        {
+            var lookupDefinition = ProductVersionLookupDefinition;
+            lookupDefinition.FilterDefinition.ClearFixedFilters();
+            if (Id > 0)
+            {
+                lookupDefinition.FilterDefinition.AddFixedFilter("ProductId", Conditions.Equals,
+                    Id.ToString(), "ProductId");
+
+                if (DepartmentFilterAutoFillValue.IsValid())
+                {
+                    var department =
+                        AppGlobals.LookupContext.Departments.GetEntityFromPrimaryKeyValue(DepartmentFilterAutoFillValue
+                            .PrimaryKeyValue);
+
+                    var tableDefinition = AppGlobals.LookupContext.ProductVersionDepartments;
+                    var field = tableDefinition.GetFieldDefinition(p => p.VersionId).FieldName;
+                    var query = new SelectQuery(tableDefinition.TableName);
+                    query.AddSelectColumn(field);
+                    query.AddWhereItem(tableDefinition.GetFieldDefinition(p => p.DepartmentId).FieldName,
+                        Conditions.Equals, department.Id);
+
+                    var versionsTableDefinition = AppGlobals.LookupContext.ProductVersions;
+                    field = versionsTableDefinition.GetFieldDefinition(p => p.Id).FieldName;
+                    field = AppGlobals.LookupContext.DataProcessor.SqlGenerator.FormatSqlObject(field);
+                    field =
+                        $"{AppGlobals.LookupContext.DataProcessor.SqlGenerator.FormatSqlObject(versionsTableDefinition.TableName)}.{field}";
+                    var sql = AppGlobals.LookupContext.DataProcessor.SqlGenerator.GenerateSelectStatement(query);
+                    sql = $"{field} IN ({sql})";
+                    lookupDefinition.FilterDefinition.AddFixedFilter("Department", null, "", sql);
+                }
+            }
+
+            ProductVersionLookupCommand = GetLookupCommand(LookupCommands.Refresh);
         }
 
         private LookupDefinition<ProductVersionLookup, ProductVersion> MakeProductLookupDefinition()
@@ -179,9 +260,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             {
                 Id = result.Id;
                 KeyAutoFillValue = AppGlobals.LookupContext.OnAutoFillTextRequest(TableDefinition, Id.ToString());
-                ProductVersionLookupDefinition.FilterDefinition.AddFixedFilter("ProductId", Conditions.Equals,
-                    Id.ToString(), "ProductId");
-                ProductVersionLookupCommand = GetLookupCommand(LookupCommands.Refresh);
+                FilterVersions();
             }
 
             return result;
@@ -236,6 +315,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 }
             }
             return false;
+
+        }
+
+        private void OnVersionsAddModify()
+        {
+            if (ExecuteAddModifyCommand() == DbMaintenanceResults.Success)
+                ProductVersionLookupCommand = GetLookupCommand(LookupCommands.AddModify);
 
         }
     }

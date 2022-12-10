@@ -48,6 +48,7 @@
                     <Grid>
 
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
@@ -57,7 +58,9 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         
-                        <lc:LookupControl Grid.Row="0" Grid.Column="1" LookupDefinition="{Binding ProductVersionLookupDefinition}" Command="{Binding ProductVersionLookupCommand}">
+                        <Button Grid.Row="0" Grid.Column="0" x:Name="AddModifyButton" Content="Add/Modify" Command="{Binding VersionsAddModifyCommand}"/>
+
+                        <lc:LookupControl Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" LookupDefinition="{Binding ProductVersionLookupDefinition}" Command="{Binding ProductVersionLookupCommand}">
 
                             <lc:LookupControl.LookupColumns>
 
@@ -71,6 +74,13 @@
 
 
                         </lc:LookupControl>
+
+                        <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Left">
+
+                            <Label Content="Department Filter"/>
+
+                            <lc:AutoFillControl Setup="{Binding DepartmentFilterAutoFillSetup}" Value="{Binding DepartmentFilterAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" TabOutAfterLookupSelect="False"/>
+                        </StackPanel>
                     </Grid>
 
                 </TabItem>
