@@ -90,6 +90,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             query.AddSelectColumn(tableDefinition.GetFieldDefinition(p => p.ProductId).FieldName);
             query.AddSelectColumn(tableDefinition.GetFieldDefinition(p => p.Description).FieldName);
             query.AddSelectFormulaColumn("VersionDate", MakeVersionDateFormula());
+            query.AddSelectFormulaColumn("MaxDepartment", MakeMaxDepartmentFormula());
 
             var sql = AppGlobals.LookupContext.DataProcessor.SqlGenerator.GenerateSelectStatement(query);
             result.HasFromFormula(sql);
@@ -99,6 +100,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             column.HasDateType(DbDateTypes.DateTime)
                 .HasDateFormatString(string.Empty)
                 .HasConvertToLocalTime();
+
+            result.InitialSortColumnDefinition = column;
+            result.InitialOrderByType = OrderByTypes.Descending;
+
+            column = result.AddVisibleColumnDefinition(p => p.MaxDepartment
+                , "MaxDepartment", "");
 
             return result;
         }
@@ -127,6 +134,39 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
             result = AppGlobals.LookupContext.DataProcessor.SqlGenerator.GenerateSelectStatement(query);
 
+            return result;
+        }
+
+        private string MakeMaxDepartmentFormula()
+        {
+            var result = string.Empty;
+            var tableDefinition = AppGlobals.LookupContext.ProductVersionDepartments;
+            var descriptionField = AppGlobals.LookupContext.Departments.GetFieldDefinition(p => p.Description).FieldName;
+            var query = new SelectQuery(tableDefinition.TableName);
+            var departmentJoin =
+                query.AddPrimaryJoinTable(JoinTypes.InnerJoin, AppGlobals.LookupContext.Departments.TableName)
+                    .AddJoinField(AppGlobals.LookupContext.Departments.GetFieldDefinition(p => p.Id).FieldName
+                    , tableDefinition.GetFieldDefinition(p => p.DepartmentId).FieldName);
+            query.AddSelectColumn(descriptionField, departmentJoin);
+
+            var field = tableDefinition.GetFieldDefinition(p => p.VersionId).FieldName;
+            field = AppGlobals.LookupContext.DataProcessor.SqlGenerator.FormatSqlObject(field);
+            field = $"{AppGlobals.LookupContext.DataProcessor.SqlGenerator.FormatSqlObject(tableDefinition.TableName)}.{field}";
+
+            var targetField = AppGlobals.LookupContext.ProductVersions
+                .GetFieldDefinition(p => p.Id).FieldName;
+            targetField = AppGlobals.LookupContext.DataProcessor.SqlGenerator.FormatSqlObject(targetField);
+            targetField = $"{AppGlobals.LookupContext.DataProcessor.SqlGenerator.FormatSqlObject(AppGlobals.LookupContext.ProductVersions.TableName)}.{targetField}";
+
+            query.AddWhereItemFormula($"{field} = {targetField}");
+
+            field = tableDefinition.GetFieldDefinition(p => p.ReleaseDateTime).FieldName;
+            field = AppGlobals.LookupContext.DataProcessor.SqlGenerator.FormatSqlObject(field);
+            field = $"{AppGlobals.LookupContext.DataProcessor.SqlGenerator.FormatSqlObject(tableDefinition.TableName)}.{field}";
+
+            query.AddWhereItemFormula($"{field} = ({MakeVersionDateFormula()})");
+
+            result = AppGlobals.LookupContext.DataProcessor.SqlGenerator.GenerateSelectStatement(query);
             return result;
         }
 

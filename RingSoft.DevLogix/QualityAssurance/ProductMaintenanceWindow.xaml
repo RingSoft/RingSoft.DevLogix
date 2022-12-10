@@ -63,9 +63,9 @@
 
                                 <lc:LookupColumn PropertyName="{lc:NameOf Description, Type={x:Type lm:ProductVersionLookup}}" Header="Version" Width="200"/>
 
-                                <lc:LookupColumn PropertyName="{lc:NameOf VersionDate, Type={x:Type lm:ProductVersionLookup}}" Header="Version Date" Width="200"/>
+                                <lc:LookupColumn PropertyName="{lc:NameOf VersionDate, Type={x:Type lm:ProductVersionLookup}}" Header="Version Date" Width="150"/>
 
-                                <!--<lc:LookupColumn PropertyName="{lc:NameOf MaxDepartment, Type={x:Type lm:ProductVersionLookup}}" Header="Department" Width="200"/>-->
+                                <lc:LookupColumn PropertyName="{lc:NameOf MaxDepartment, Type={x:Type lm:ProductVersionLookup}}" Header="Department" Width="200"/>
 
                             </lc:LookupControl.LookupColumns>
 
