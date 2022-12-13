@@ -136,13 +136,115 @@ namespace RingSoft.DevLogix.DataAccess
             ProductLookup.AddVisibleColumnDefinition(p => p.Description, "Description", p => p.Description, 100);
             Products.HasLookupDefinition(ProductLookup);
 
-            ProductVersionLookup = new LookupDefinition<ProductVersionLookup, ProductVersion>(ProductVersions);
+            ProductVersionLookup = MakeProductVersionLookupDefinition();
             //ProductVersionLookup.Include(p => p.Product)
             //    .AddVisibleColumnDefinition(p => p.Product, "Product", p => p.Description, 50);
-            ProductVersionLookup.AddVisibleColumnDefinition(p => p.Description, "Version", p => p.Description, 100);
+
             ProductVersions.HasLookupDefinition(ProductVersionLookup);
 
         }
+
+        public LookupDefinition<ProductVersionLookup, ProductVersion> MakeProductVersionLookupDefinition()
+        {
+            var result = new LookupDefinition<ProductVersionLookup, ProductVersion>(ProductVersions);
+
+            result.AddVisibleColumnDefinition(p => p.Description, "Version", p => p.Description, 35);
+
+            var tableDefinition = ProductVersions;
+            var query = new SelectQuery(tableDefinition.TableName);
+            query.AddSelectColumn(tableDefinition.GetFieldDefinition(p => p.Id).FieldName);
+            query.AddSelectColumn(tableDefinition.GetFieldDefinition(p => p.ProductId).FieldName);
+            query.AddSelectColumn(tableDefinition.GetFieldDefinition(p => p.Description).FieldName);
+            query.AddSelectFormulaColumn("VersionDate", MakeVersionDateFormula());
+            query.AddSelectFormulaColumn("MaxDepartment", MakeMaxDepartmentFormula());
+
+            var sql = DataProcessor.SqlGenerator.GenerateSelectStatement(query);
+            result.HasFromFormula(sql);
+
+            var column = result.AddVisibleColumnDefinition(p => p.VersionDate
+                , "VersionDate", "");
+            column.HasDateType(DbDateTypes.DateTime)
+                .HasDateFormatString(string.Empty)
+                .HasConvertToLocalTime();
+
+            result.InitialOrderByType = OrderByTypes.Descending;
+
+            column = result.AddVisibleColumnDefinition(p => p.MaxDepartment
+                , "MaxDepartment", "");
+
+            result.VisibleColumns[0].UpdatePercentWidth(40);
+            result.VisibleColumns[0].UpdateCaption("Version");
+            result.VisibleColumns[1].UpdatePercentWidth(20);
+            result.VisibleColumns[1].UpdateCaption("Release Date");
+            result.VisibleColumns[2].UpdatePercentWidth(40);
+            result.VisibleColumns[2].UpdateCaption("Released To Department");
+
+            result.InitialSortColumnDefinition = result.VisibleColumns[0];
+
+
+            return result;
+        }
+
+        private string MakeVersionDateFormula()
+        {
+            var result = string.Empty;
+
+            var tableDefinition = ProductVersionDepartments;
+            var field = tableDefinition.GetFieldDefinition(p => p.ReleaseDateTime).FieldName;
+            field = DataProcessor.SqlGenerator.FormatSqlObject(field);
+            field = $"{DataProcessor.SqlGenerator.FormatSqlObject(tableDefinition.TableName)}.{field}";
+            var query = new SelectQuery(tableDefinition.TableName);
+            query.AddSelectFormulaColumn("VersionDate", $"MAX({field})");
+
+            field = tableDefinition.GetFieldDefinition(p => p.VersionId).FieldName;
+            field = DataProcessor.SqlGenerator.FormatSqlObject(field);
+            field = $"{DataProcessor.SqlGenerator.FormatSqlObject(tableDefinition.TableName)}.{field}";
+
+            var targetField = ProductVersions
+                .GetFieldDefinition(p => p.Id).FieldName;
+            targetField = DataProcessor.SqlGenerator.FormatSqlObject(targetField);
+            targetField = $"{DataProcessor.SqlGenerator.FormatSqlObject(ProductVersions.TableName)}.{targetField}";
+
+            query.AddWhereItemFormula($"{field} = {targetField}");
+
+            result = DataProcessor.SqlGenerator.GenerateSelectStatement(query);
+
+            return result;
+        }
+
+        private string MakeMaxDepartmentFormula()
+        {
+            var result = string.Empty;
+            var tableDefinition = ProductVersionDepartments;
+            var descriptionField = Departments.GetFieldDefinition(p => p.Description).FieldName;
+            var query = new SelectQuery(tableDefinition.TableName);
+            var departmentJoin =
+                query.AddPrimaryJoinTable(JoinTypes.InnerJoin, Departments.TableName)
+                    .AddJoinField(Departments.GetFieldDefinition(p => p.Id).FieldName
+                    , tableDefinition.GetFieldDefinition(p => p.DepartmentId).FieldName);
+            query.AddSelectColumn(descriptionField, departmentJoin);
+
+            var field = tableDefinition.GetFieldDefinition(p => p.VersionId).FieldName;
+            field = DataProcessor.SqlGenerator.FormatSqlObject(field);
+            field = $"{DataProcessor.SqlGenerator.FormatSqlObject(tableDefinition.TableName)}.{field}";
+
+            var targetField = ProductVersions
+                .GetFieldDefinition(p => p.Id).FieldName;
+            targetField = DataProcessor.SqlGenerator.FormatSqlObject(targetField);
+            targetField = $"{DataProcessor.SqlGenerator.FormatSqlObject(ProductVersions.TableName)}.{targetField}";
+
+            query.AddWhereItemFormula($"{field} = {targetField}");
+
+            field = tableDefinition.GetFieldDefinition(p => p.ReleaseDateTime).FieldName;
+            field = DataProcessor.SqlGenerator.FormatSqlObject(field);
+            field = $"{DataProcessor.SqlGenerator.FormatSqlObject(tableDefinition.TableName)}.{field}";
+
+            query.AddWhereItemFormula($"{field} = ({MakeVersionDateFormula()})");
+
+            result = DataProcessor.SqlGenerator.GenerateSelectStatement(query);
+            return result;
+        }
+
 
         protected override void SetupModel()
         {

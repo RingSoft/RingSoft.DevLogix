@@ -5,13 +5,16 @@ using RingSoft.DevLogix.DataAccess.Model;
 using System.Linq;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup.AutoFill;
-using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DevLogix.DataAccess.LookupModel;
 using RingSoft.DbMaintenance;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 {
+    public interface IProductView
+    {
+        bool UpdateVersions(ProductViewModel viewModel);
+    }
     public class ProductViewModel : DevLogixDbMaintenanceViewModel<Product>
     {
         public override TableDefinition<Product> TableDefinition => AppGlobals.LookupContext.Products;
@@ -113,13 +116,27 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         public RelayCommand VersionsAddModifyCommand { get; set; }
 
+        public RelayCommand UpdateVersionsCommand { get; set; }
+
+        public new IProductView View { get; set; }
+
         public ProductViewModel()
         {
             VersionsAddModifyCommand = new RelayCommand(OnVersionsAddModify);
+            UpdateVersionsCommand = new RelayCommand(UpdateVersions);
         }
         protected override void Initialize()
         {
-            ProductVersionLookupDefinition = MakeProductLookupDefinition();
+            if (base.View is IProductView productView)
+            {
+                View = productView;
+            }
+
+            var lookupDefinition = AppGlobals.LookupContext.ProductVersionLookup.Clone();
+            lookupDefinition.InitialSortColumnDefinition = lookupDefinition.VisibleColumns[1];
+
+            ProductVersionLookupDefinition = lookupDefinition;
+
             DepartmentFilterAutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.DepartmentLookup);
             DepartmentFilterAutoFillSetup.AllowLookupAdd = false;
             base.Initialize();
@@ -161,95 +178,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             ProductVersionLookupCommand = GetLookupCommand(LookupCommands.Refresh);
         }
 
-        private LookupDefinition<ProductVersionLookup, ProductVersion> MakeProductLookupDefinition()
-        {
-            var result = AppGlobals.LookupContext.ProductVersionLookup.Clone();
-
-            var tableDefinition = AppGlobals.LookupContext.ProductVersions;
-            var query = new SelectQuery(tableDefinition.TableName);
-            query.AddSelectColumn(tableDefinition.GetFieldDefinition(p => p.Id).FieldName);
-            query.AddSelectColumn(tableDefinition.GetFieldDefinition(p => p.ProductId).FieldName);
-            query.AddSelectColumn(tableDefinition.GetFieldDefinition(p => p.Description).FieldName);
-            query.AddSelectFormulaColumn("VersionDate", MakeVersionDateFormula());
-            query.AddSelectFormulaColumn("MaxDepartment", MakeMaxDepartmentFormula());
-
-            var sql = AppGlobals.LookupContext.DataProcessor.SqlGenerator.GenerateSelectStatement(query);
-            result.HasFromFormula(sql);
-
-            var column = result.AddVisibleColumnDefinition(p => p.VersionDate
-                , "VersionDate", "");
-            column.HasDateType(DbDateTypes.DateTime)
-                .HasDateFormatString(string.Empty)
-                .HasConvertToLocalTime();
-
-            result.InitialSortColumnDefinition = column;
-            result.InitialOrderByType = OrderByTypes.Descending;
-
-            column = result.AddVisibleColumnDefinition(p => p.MaxDepartment
-                , "MaxDepartment", "");
-
-            return result;
-        }
-
-        private string MakeVersionDateFormula()
-        {
-            var result = string.Empty;
-
-            var tableDefinition = AppGlobals.LookupContext.ProductVersionDepartments;
-            var field = tableDefinition.GetFieldDefinition(p => p.ReleaseDateTime).FieldName;
-            field = AppGlobals.LookupContext.DataProcessor.SqlGenerator.FormatSqlObject(field);
-            field = $"{AppGlobals.LookupContext.DataProcessor.SqlGenerator.FormatSqlObject(tableDefinition.TableName)}.{field}";
-            var query = new SelectQuery(tableDefinition.TableName);
-            query.AddSelectFormulaColumn("VersionDate", $"MAX({field})");
-
-            field = tableDefinition.GetFieldDefinition(p => p.VersionId).FieldName;
-            field = AppGlobals.LookupContext.DataProcessor.SqlGenerator.FormatSqlObject(field);
-            field = $"{AppGlobals.LookupContext.DataProcessor.SqlGenerator.FormatSqlObject(tableDefinition.TableName)}.{field}";
-
-            var targetField = AppGlobals.LookupContext.ProductVersions
-                .GetFieldDefinition(p => p.Id).FieldName;
-            targetField = AppGlobals.LookupContext.DataProcessor.SqlGenerator.FormatSqlObject(targetField);
-            targetField = $"{AppGlobals.LookupContext.DataProcessor.SqlGenerator.FormatSqlObject(AppGlobals.LookupContext.ProductVersions.TableName)}.{targetField}";
-
-            query.AddWhereItemFormula($"{field} = {targetField}");
-
-            result = AppGlobals.LookupContext.DataProcessor.SqlGenerator.GenerateSelectStatement(query);
-
-            return result;
-        }
-
-        private string MakeMaxDepartmentFormula()
-        {
-            var result = string.Empty;
-            var tableDefinition = AppGlobals.LookupContext.ProductVersionDepartments;
-            var descriptionField = AppGlobals.LookupContext.Departments.GetFieldDefinition(p => p.Description).FieldName;
-            var query = new SelectQuery(tableDefinition.TableName);
-            var departmentJoin =
-                query.AddPrimaryJoinTable(JoinTypes.InnerJoin, AppGlobals.LookupContext.Departments.TableName)
-                    .AddJoinField(AppGlobals.LookupContext.Departments.GetFieldDefinition(p => p.Id).FieldName
-                    , tableDefinition.GetFieldDefinition(p => p.DepartmentId).FieldName);
-            query.AddSelectColumn(descriptionField, departmentJoin);
-
-            var field = tableDefinition.GetFieldDefinition(p => p.VersionId).FieldName;
-            field = AppGlobals.LookupContext.DataProcessor.SqlGenerator.FormatSqlObject(field);
-            field = $"{AppGlobals.LookupContext.DataProcessor.SqlGenerator.FormatSqlObject(tableDefinition.TableName)}.{field}";
-
-            var targetField = AppGlobals.LookupContext.ProductVersions
-                .GetFieldDefinition(p => p.Id).FieldName;
-            targetField = AppGlobals.LookupContext.DataProcessor.SqlGenerator.FormatSqlObject(targetField);
-            targetField = $"{AppGlobals.LookupContext.DataProcessor.SqlGenerator.FormatSqlObject(AppGlobals.LookupContext.ProductVersions.TableName)}.{targetField}";
-
-            query.AddWhereItemFormula($"{field} = {targetField}");
-
-            field = tableDefinition.GetFieldDefinition(p => p.ReleaseDateTime).FieldName;
-            field = AppGlobals.LookupContext.DataProcessor.SqlGenerator.FormatSqlObject(field);
-            field = $"{AppGlobals.LookupContext.DataProcessor.SqlGenerator.FormatSqlObject(tableDefinition.TableName)}.{field}";
-
-            query.AddWhereItemFormula($"{field} = ({MakeVersionDateFormula()})");
-
-            result = AppGlobals.LookupContext.DataProcessor.SqlGenerator.GenerateSelectStatement(query);
-            return result;
-        }
 
         protected override Product PopulatePrimaryKeyControls(Product newEntity, PrimaryKeyValue primaryKeyValue)
         {
@@ -261,6 +189,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 Id = result.Id;
                 KeyAutoFillValue = AppGlobals.LookupContext.OnAutoFillTextRequest(TableDefinition, Id.ToString());
                 FilterVersions();
+                UpdateVersionsCommand.IsEnabled = true;
             }
 
             return result;
@@ -288,6 +217,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             Id = 0;
             Notes = null;
             ProductVersionLookupCommand = GetLookupCommand(LookupCommands.Clear);
+            UpdateVersionsCommand.IsEnabled = false;
         }
 
         protected override bool SaveEntity(Product entity)
@@ -323,6 +253,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             if (ExecuteAddModifyCommand() == DbMaintenanceResults.Success)
                 ProductVersionLookupCommand = GetLookupCommand(LookupCommands.AddModify);
 
+        }
+
+        private void UpdateVersions()
+        {
+            if (View.UpdateVersions(this))
+            {
+                FilterVersions();
+            }
         }
     }
 }

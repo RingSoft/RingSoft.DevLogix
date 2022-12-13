@@ -11,6 +11,19 @@
                         mc:Ignorable="d"
                         Style="{StaticResource BaseWindowStyle}"
                         Title="Product Maintenance" SizeToContent="WidthAndHeight" MinWidth="600" MinHeight="500">
+
+    <Window.Resources>
+
+        <ResourceDictionary>
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary
+                    Source="pack://application:,,,/RingSoft.DevLogix;component/QualityAssurance/ProductHeaderControlTemplate.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+        </ResourceDictionary>
+
+    </Window.Resources>
     <Window.DataContext>
         <vm:ProductViewModel x:Name="LocalViewModel"/>
     </Window.DataContext>
@@ -43,7 +56,7 @@
 
             <TabControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" x:Name="TabControl" VerticalAlignment="Stretch">
 
-                <TabItem Header="Versions">
+                <TabItem x:Name="VersionsTabItem" Header="Versions">
 
                     <Grid>
 
@@ -84,7 +97,7 @@
                     </Grid>
 
                 </TabItem>
-                <dec:DataEntryMemoTabItem Header="Notes" VerticalAlignment="Stretch">
+                <dec:DataEntryMemoTabItem x:Name="NotesTabItem" Header="Notes" VerticalAlignment="Stretch">
                     <DockPanel>
 
                         <dec:DataEntryMemoEditor Text="{Binding Path=Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
