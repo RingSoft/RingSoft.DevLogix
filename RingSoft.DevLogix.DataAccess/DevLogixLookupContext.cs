@@ -167,20 +167,19 @@ namespace RingSoft.DevLogix.DataAccess
                 .HasDateFormatString(string.Empty)
                 .HasConvertToLocalTime();
 
-            result.InitialOrderByType = OrderByTypes.Descending;
-
             column = result.AddVisibleColumnDefinition(p => p.MaxDepartment
                 , "MaxDepartment", "");
 
-            result.VisibleColumns[0].UpdatePercentWidth(40);
+            result.VisibleColumns[0].UpdatePercentWidth(35);
             result.VisibleColumns[0].UpdateCaption("Version");
-            result.VisibleColumns[1].UpdatePercentWidth(20);
+            result.VisibleColumns[1].UpdatePercentWidth(25);
             result.VisibleColumns[1].UpdateCaption("Release Date");
             result.VisibleColumns[2].UpdatePercentWidth(40);
             result.VisibleColumns[2].UpdateCaption("Released To Department");
 
             result.InitialSortColumnDefinition = result.VisibleColumns[0];
-
+            result.InitialOrderByColumn = result.VisibleColumns[1];
+            result.InitialOrderByType = OrderByTypes.Descending;
 
             return result;
         }

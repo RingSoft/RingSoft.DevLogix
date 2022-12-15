@@ -59,7 +59,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                         }
                         if (ReleaseDateTime == null)
                         {
-                            ReleaseDateTime = DateTime.Now;
+                            var newDate = DateTime.Now;
+                            ReleaseDateTime = new DateTime(newDate.Year, newDate.Month, newDate.Day, newDate.Hour,
+                                newDate.Minute, newDate.Second);
                         }
                     }
                     break;

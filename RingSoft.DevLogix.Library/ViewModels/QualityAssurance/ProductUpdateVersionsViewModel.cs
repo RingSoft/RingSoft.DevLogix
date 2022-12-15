@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
+using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DevLogix.DataAccess.Model;
 
@@ -175,11 +176,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                     .PrimaryKeyValue);
 
             var context = AppGlobals.DataRepository.GetDataContext();
-            //var versionQuery = context.GetTable<ProductVersion>();
-            //if (versionQuery != null)
-            //{
-            //    version = versionQuery.FirstOrDefault(p => p.Id == version.Id);
-            //}
             var query = context.GetTable<ProductVersionDepartment>();
             var productDepartment =
                 query.FirstOrDefault(p => p.VersionId == version.Id && p.DepartmentId == existingDepartment.Id);

@@ -5,6 +5,7 @@ using RingSoft.DevLogix.DataAccess.Model;
 using System.Linq;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup.AutoFill;
+using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DevLogix.DataAccess.LookupModel;
 using RingSoft.DbMaintenance;
@@ -133,7 +134,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             }
 
             var lookupDefinition = AppGlobals.LookupContext.ProductVersionLookup.Clone();
-            lookupDefinition.InitialSortColumnDefinition = lookupDefinition.VisibleColumns[1];
+            //lookupDefinition.InitialSortColumnDefinition = lookupDefinition.VisibleColumns[1];
 
             ProductVersionLookupDefinition = lookupDefinition;
 
