@@ -31,7 +31,7 @@ namespace RingSoft.DevLogix.QualityAssurance
 
         public void CloseWindow()
         {
-            CloseWindow();
+            Close();
         }
 
         public void ValidationFailed(ValidationFailControls validationFailControls, string message, string caption)

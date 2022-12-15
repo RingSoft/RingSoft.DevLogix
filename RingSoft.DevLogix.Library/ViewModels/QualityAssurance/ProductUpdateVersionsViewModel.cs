@@ -180,6 +180,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             var productDepartment =
                 query.FirstOrDefault(p => p.VersionId == version.Id && p.DepartmentId == existingDepartment.Id);
 
+            if (productDepartment == null)
+            {
+                ShowNothingToDo();
+                return;
+            }
+
             var versionQuery = context.GetTable<ProductVersion>()
                 .Include(p => p.ProductVersionDepartments);
 
@@ -192,6 +198,45 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 !p.ProductVersionDepartments.Any(
                     p => p.ReleaseDateTime <= productDepartment.ReleaseDateTime &&
                          p.DepartmentId == newDepartment.Id));
+            newVersions =
+                newVersions.Where(p => !p.ProductVersionDepartments.Any(p => p.DepartmentId == newDepartment.Id));
+
+            var nowDate = DateTime.Now.ToUniversalTime();
+            nowDate = new DateTime(nowDate.Year, nowDate.Month, nowDate.Day, nowDate.Hour, nowDate.Minute,
+                nowDate.Second);
+            var newVersionsList = newVersions.ToList();
+            var newProductVersionDepartments = new List<ProductVersionDepartment>();
+            foreach (var productVersion in newVersionsList)
+            {
+                var newProductDepartment = new ProductVersionDepartment()
+                {
+                    DepartmentId = newDepartment.Id,
+                    ReleaseDateTime = nowDate,
+                    VersionId = productVersion.Id,
+                };
+                newProductVersionDepartments.Add(newProductDepartment);
+            }
+
+            if (newProductVersionDepartments.Any())
+            {
+                context.AddRange(newProductVersionDepartments);
+                if (context.Commit("Adding New Department Versions"))
+                {
+                    DialogResult = true;
+                    View.CloseWindow();
+                }
+            }
+            else
+            {
+                ShowNothingToDo();
+            }
+        }
+
+        private static void ShowNothingToDo()
+        {
+            var message = "No records found to process.";
+            var caption = "Nothing to Do";
+            ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
         }
 
         private bool Validate()
