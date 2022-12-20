@@ -17,9 +17,12 @@ namespace RingSoft.DevLogix.DataAccess.Model
 
         public ICollection<ProductVersion> Versions { get; set; }
 
+        public ICollection<Error> Errors { get; set; }
+
         public Product()
         {
             Versions = new HashSet<ProductVersion>();
+            Errors = new HashSet<Error>();
         }
     }
 }

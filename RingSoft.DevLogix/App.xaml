@@ -87,6 +87,7 @@
 
             <Style TargetType="af:AdvancedFindRefreshRateWindow" BasedOn="{StaticResource BaseWindowStyle}"/>
 
+            <Style TargetType="lc:DeleteRecordWindow" BasedOn="{StaticResource BaseWindowStyle}"/>
 
         </ResourceDictionary>
     </Application.Resources>

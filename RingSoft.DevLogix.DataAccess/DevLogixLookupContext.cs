@@ -48,6 +48,7 @@ namespace RingSoft.DevLogix.DataAccess
 
         public LookupDefinition<UserLookup, User> UserLookup { get; set; }
         public LookupDefinition<GroupLookup, Group> GroupLookup { get; set; }
+        public LookupDefinition<UsersGroupsLookup, UsersGroup> UsersGroupsLookup { get; set; }
         public LookupDefinition<DepartmentLookup, Department> DepartmentLookup { get; set; }
 
         public LookupDefinition<ErrorStatusLookup, ErrorStatus> ErrorStatusLookup { get; set; }
@@ -119,6 +120,13 @@ namespace RingSoft.DevLogix.DataAccess
             GroupLookup = new LookupDefinition<GroupLookup, Group>(Groups);
             GroupLookup.AddVisibleColumnDefinition(p => p.Group, "Name", p => p.Name, 100);
             Groups.HasLookupDefinition(GroupLookup);
+
+            UsersGroupsLookup = new LookupDefinition<UsersGroupsLookup, UsersGroup>(UsersGroups);
+            UsersGroupsLookup.Include(p => p.User)
+                .AddVisibleColumnDefinition(p => p.User, "User", p => p.Name, 50);
+            UsersGroupsLookup.Include(p => p.Group)
+                .AddVisibleColumnDefinition(p => p.Group, "Group", p => p.Name, 50);
+            UsersGroups.HasLookupDefinition(UsersGroupsLookup);
 
             ErrorStatusLookup = new LookupDefinition<ErrorStatusLookup, ErrorStatus>(ErrorStatuses);
             ErrorStatusLookup.AddVisibleColumnDefinition(p => p.Description, "Description", p => p.Description, 100);

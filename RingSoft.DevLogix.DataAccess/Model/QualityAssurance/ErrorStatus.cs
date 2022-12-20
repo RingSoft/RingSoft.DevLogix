@@ -21,11 +21,14 @@ namespace RingSoft.DevLogix.DataAccess.Model
 
         public ICollection<Department> FailedDepartments { get; set; }
 
+        public ICollection<Error> Errors { get; set; }
+
         public ErrorStatus()
         {
             FixedDepartments = new HashSet<Department>();
             PassedDepartments = new HashSet<Department>();
             FailedDepartments = new HashSet<Department>();
+            Errors = new HashSet<Error>();
         }
     }
 }
