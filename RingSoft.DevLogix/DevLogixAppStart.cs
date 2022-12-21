@@ -73,11 +73,21 @@ namespace RingSoft.DevLogix
             WindowRegistry.RegisterWindow<ProductMaintenanceWindow>(AppGlobals.LookupContext.Products);
             WindowRegistry.RegisterWindow<ProductVersionMaintenanceWindow>(AppGlobals.LookupContext.ProductVersions);
 
-            AppGlobals.LookupContext.CanViewTableEvent += (sender, args) =>
+            AppGlobals.LookupContext.CanProcessTableEvent += (sender, args) =>
             {
                 if (!args.TableDefinition.HasRight(RightTypes.AllowView))
                 {
                     args.AllowView = false;
+                }
+
+                if (!args.TableDefinition.HasRight(RightTypes.AllowEdit))
+                {
+                    args.AllowEdit = false;
+                }
+
+                if (!args.TableDefinition.HasRight(RightTypes.AllowDelete))
+                {
+                    args.AllowDelete = false;
                 }
             };
 
