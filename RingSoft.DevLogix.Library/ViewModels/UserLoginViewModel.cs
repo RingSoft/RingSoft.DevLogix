@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Microsoft.EntityFrameworkCore;
+using RingSoft.App.Interop;
 using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
