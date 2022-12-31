@@ -1,5 +1,7 @@
 ﻿using System.Windows;
+using System.Windows.Forms;
 using RingSoft.App.Controls;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels.QualityAssurance;
@@ -68,6 +70,42 @@ namespace RingSoft.DevLogix.QualityAssurance
                 return window.DialogResult.Value;
             }
             return false;
+        }
+
+        public string GetInstallerName()
+        {
+            using (var fileDialog = new OpenFileDialog())
+            {
+                if (!LocalViewModel.InstallerFileName.IsNullOrEmpty())
+                {
+                    var file = new System.IO.FileInfo(LocalViewModel.InstallerFileName);
+                    fileDialog.InitialDirectory = file.DirectoryName;
+                    fileDialog.FileName = file.Name;
+                }
+                
+                var dialogResult = fileDialog.ShowDialog();
+                if (dialogResult == System.Windows.Forms.DialogResult.OK && !fileDialog.FileName.IsNullOrEmpty())
+                {
+                    return fileDialog.FileName;
+                }
+            }
+
+            return LocalViewModel.InstallerFileName;
+        }
+
+        public string GetArchivePath()
+        {
+            using (var folderDialog = new FolderBrowserDialog())
+            {
+                folderDialog.InitialDirectory = LocalViewModel.ArchivePath;
+                var dialogResult = folderDialog.ShowDialog();
+                if (dialogResult == System.Windows.Forms.DialogResult.OK && !folderDialog.SelectedPath.IsNullOrEmpty())
+                {
+                    return folderDialog.SelectedPath;
+                }
+            }
+
+            return LocalViewModel.ArchivePath;
         }
     }
 }

@@ -97,6 +97,39 @@
                     </Grid>
 
                 </TabItem>
+                <TabItem Header="Deployment Properties">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Grid.Row="0" Grid.Column="0" Content="Installer Path/File Name"/>
+
+                        <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+
+                            <dec:StringEditControl Width="300" Text="{Binding InstallerFileName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                            <Button Content="..." Width="25" Height="20" Command="{Binding InstallerCommand}"/>
+
+                        </StackPanel>
+
+                        <Label Grid.Row="1" Grid.Column="0" Content="Version Archive Path"/>
+
+                        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+
+                            <dec:StringEditControl Width="300" Text="{Binding ArchivePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                            <Button Content="..." Width="25" Height="20" Command="{Binding ArchivePathCommand}"/>
+
+                        </StackPanel>
+
+                    </Grid>
+                </TabItem>
                 <dec:DataEntryMemoTabItem x:Name="NotesTabItem" Header="Notes" VerticalAlignment="Stretch">
                     <DockPanel>
 

@@ -15,6 +15,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
     public interface IProductView
     {
         bool UpdateVersions(ProductViewModel viewModel);
+
+        string GetInstallerName();
+
+        string GetArchivePath();
     }
     public class ProductViewModel : DevLogixDbMaintenanceViewModel<Product>
     {
@@ -115,9 +119,45 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             }
         }
 
+        private string _installerFileName;
+
+        public string InstallerFileName
+        {
+            get => _installerFileName;
+            set
+            {
+                if (_installerFileName == value)
+                    return;
+
+                _installerFileName = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _archivePath;
+
+        public string ArchivePath
+        {
+            get => _archivePath;
+            set
+            {
+                if (_archivePath == value)
+                    return;
+
+                _archivePath = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+
         public RelayCommand VersionsAddModifyCommand { get; set; }
 
         public RelayCommand UpdateVersionsCommand { get; set; }
+
+        public RelayCommand InstallerCommand { get; set; }
+
+        public RelayCommand ArchivePathCommand { get; set; }
 
         public new IProductView View { get; set; }
 
@@ -125,6 +165,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         {
             VersionsAddModifyCommand = new RelayCommand(OnVersionsAddModify);
             UpdateVersionsCommand = new RelayCommand(UpdateVersions);
+            InstallerCommand = new RelayCommand(() =>
+            {
+                InstallerFileName = View.GetInstallerName();
+            });
+            ArchivePathCommand = new RelayCommand(() =>
+            {
+                ArchivePath = View.GetArchivePath();
+            });
         }
         protected override void Initialize()
         {
