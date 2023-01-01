@@ -1,9 +1,13 @@
-﻿using RingSoft.DbLookup;
+﻿using System;
+using System.IO;
+using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DevLogix.DataAccess.Model;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using RingSoft.DataEntryControls.Engine;
+using RingSoft.DbLookup.QueryBuilder;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 {
@@ -90,11 +94,80 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             }
         }
 
+        private DateTime? _archiveDateTime;
+
+        public DateTime? ArchiveDateTime
+        {
+            get => _archiveDateTime;
+            set
+            {
+                if (_archiveDateTime == value)
+                {
+                    return;
+                }
+                _archiveDateTime = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private AutoFillSetup _departmentAutoFillSetup;
+
+        public AutoFillSetup DepartmentAutoFillSetup
+        {
+            get => _departmentAutoFillSetup;
+            set
+            {
+                if (_departmentAutoFillSetup == value)
+                    return;
+
+                _departmentAutoFillSetup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private AutoFillValue _departmentAutoFillValue;
+
+        public AutoFillValue DepartmentAutoFillValue
+        {
+            get => _departmentAutoFillValue;
+            set
+            {
+                if (_departmentAutoFillValue == value)
+                {
+                    return;
+                }
+                _departmentAutoFillValue = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+
+        public RelayCommand ArchiveCommand { get; private set; }
+
+        public RelayCommand GetVersionCommand { get; private set; }
+
+        public RelayCommand DeployCommand { get; private set; }
+
+        public ProductVersionViewModel()
+        {
+            ArchiveCommand = new RelayCommand(ArchiveVersion);
+
+            GetVersionCommand = new RelayCommand(GetVersion);
+
+            DeployCommand = new RelayCommand(DeployToDepartment);
+        }
+
         protected override void Initialize()
         {
             ProductAutoFillSetup =
                 new AutoFillSetup(AppGlobals.LookupContext.ProductVersions.GetFieldDefinition(p => p.ProductId));
             DepartmentsManager = new ProductVersionDepartmentsManager(this);
+
+            var departmentLookup = AppGlobals.LookupContext.DepartmentLookup.Clone();
+            departmentLookup.FilterDefinition.AddFixedFilter(p => p.FtpAddress, Conditions.NotEqualsNull, "");
+
+            DepartmentAutoFillSetup = new AutoFillSetup(departmentLookup);
             base.Initialize();
         }
 
@@ -121,6 +194,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
             Notes = entity.Notes;
             DepartmentsManager.LoadGrid(entity.ProductVersionDepartments);
+            if (entity.ArchiveDateTime != null)
+            {
+                ArchiveDateTime = entity.ArchiveDateTime.Value.ToLocalTime();
+            }
         }
 
         protected override ProductVersion GetEntityData()
@@ -129,8 +206,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             {
                 Id = Id,
                 Description = KeyAutoFillValue.Text,
-                Notes = Notes
+                Notes = Notes,
             };
+
+            if (ArchiveDateTime.HasValue)
+            {
+                result.ArchiveDateTime = ArchiveDateTime.Value.ToUniversalTime();
+            }
 
             if (ProductAutoFillValue.IsValid())
             {
@@ -205,6 +287,71 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 }
             }
             return false;
+
+        }
+
+        private void ArchiveVersion()
+        {
+            if (ArchiveDateTime == null)
+            {
+                if (ProductAutoFillValue.IsValid())
+                {
+                    var product =
+                        AppGlobals.LookupContext.Products.GetEntityFromPrimaryKeyValue(ProductAutoFillValue
+                            .PrimaryKeyValue);
+
+                    if (product != null)
+                    {
+                        var context = AppGlobals.DataRepository.GetDataContext();
+                        var productTable = context.GetTable<Product>();
+                        if (productTable != null)
+                        {
+                            product = productTable.FirstOrDefault(p => p.Id == product.Id);
+                            if (product != null && !product.ArchivePath.IsNullOrEmpty() && !product.InstallerFileName.IsNullOrEmpty())
+                            {
+                                var file = new FileInfo(product.InstallerFileName);
+                                if (file != null)
+                                {
+                                    var archivePath = product.ArchivePath;
+                                    if (!archivePath.EndsWith("\\"))
+                                    {
+                                        archivePath += "\\";
+                                    }
+
+                                    var fileName = file.Name;
+                                    var typePos = fileName.LastIndexOf(".");
+                                    var extension = string.Empty;
+                                    if (typePos != -1)
+                                    {
+                                        extension = fileName.RightStr(fileName.Length - typePos);
+                                        fileName = fileName.LeftStr(typePos);
+                                    }
+                                    var archiveFile = $"{archivePath}{fileName}_{Id}{extension}";
+                                    try
+                                    {
+                                        file.CopyTo(archiveFile);
+                                        ArchiveDateTime = DateTime.Now;
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        ControlsGlobals.UserInterface.ShowMessageBox("Error Copying File", "Error",
+                                            RsMessageBoxIcons.Exclamation);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void GetVersion()
+        {
+
+        }
+
+        private void DeployToDepartment()
+        {
 
         }
     }

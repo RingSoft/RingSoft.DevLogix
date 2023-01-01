@@ -89,15 +89,15 @@
 
                             <Label Grid.Row="3" Grid.Column="0" Content="FTP Address"/>
 
-                            <dec:StringEditControl Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Stretch"/>
+                            <dec:StringEditControl Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" Text="{Binding FtpAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                             <Label Grid.Row="4" Grid.Column="0" Content="FTP Username"/>
 
-                            <dec:StringEditControl Grid.Row="4" Grid.Column="1" HorizontalAlignment="Stretch"/>
+                            <dec:StringEditControl Grid.Row="4" Grid.Column="1" HorizontalAlignment="Stretch" Text="{Binding FtpUserName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                             <Label Grid.Row="4" Grid.Column="2" Content="FTP Password"/>
 
-                            <PasswordBox Grid.Row="4" Grid.Column="3" HorizontalAlignment="Stretch" Background="{StaticResource ControlBackgroundBrush}" Height="22" VerticalContentAlignment="Center"/>
+                            <PasswordBox Grid.Row="4" Grid.Column="3" x:Name="FtpPasswordBox" HorizontalAlignment="Stretch" Background="{StaticResource ControlBackgroundBrush}" Height="22" VerticalContentAlignment="Center"/>
 
                         </Grid>
                     </DockPanel>

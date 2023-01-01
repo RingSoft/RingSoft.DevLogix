@@ -34,6 +34,15 @@ namespace RingSoft.DevLogix.DataAccess.Model
         [MaxLength(50)]
         public string? FailText { get; set; }
 
+        [MaxLength(50)]
+        public string? FtpAddress { get; set; }
+
+        [MaxLength(50)]
+        public string? FtpUsername { get; set; }
+
+        [MaxLength(50)]
+        public string? FtpPassword { get; set; }
+
         public string? Notes { get; set; }
 
         public virtual ICollection<User> Users { get; set; }

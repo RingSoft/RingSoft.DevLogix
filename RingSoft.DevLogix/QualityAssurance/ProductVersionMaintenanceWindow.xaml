@@ -22,6 +22,8 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
@@ -45,7 +47,25 @@
 
             <lc:AutoFillControl Grid.Row="1" Grid.Column="1" x:Name="ProductControl" Setup="{Binding ProductAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding ProductAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left"/>
 
-            <TabControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="5" x:Name="TabControl" VerticalAlignment="Stretch">
+            <Label Grid.Row="2" Grid.Column="0" Content="Archive Date"/>
+
+            <dec:DateReadOnlyBox Grid.Row="2" Grid.Column="1" DateFormatType="DateTime" Value="{Binding ArchiveDateTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <StackPanel Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Left">
+
+                <Button x:Name="ArchiveButton" Content="Archive" Height="20" Command="{Binding ArchiveCommand}"/>
+
+                <Button x:Name="GetVersionButton" Content="Get Version" Height="20" Command="{Binding GetVersionCommand}"/>
+
+            </StackPanel>
+
+            <Label Grid.Row="3" Grid.Column="0" x:Name="DeployLabel" Content="Deploy to Department"/>
+
+            <lc:AutoFillControl Grid.Row="3" Grid.Column="1" x:Name="DeployControl" Width="200" Setup="{Binding DepartmentAutoFillSetup,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding DepartmentAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <Button Grid.Row="3" Grid.Column="2" x:Name="DeployButton" Content="Deploy" Height="20" Command="{Binding DeployCommand}"/>
+
+            <TabControl Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="5" x:Name="TabControl" VerticalAlignment="Stretch">
 
                 <TabItem Header="Releases">
 

@@ -271,6 +271,8 @@ namespace RingSoft.DevLogix.DataAccess
 
             ProductVersions.PriorityLevel = 400;
             ProductVersions.GetFieldDefinition(p => p.Notes).IsMemo();
+            ProductVersions.GetFieldDefinition(p => p.ArchiveDateTime).HasDateType(DbDateTypes.DateTime)
+                .DoConvertToLocalTime();
 
             ProductVersionDepartments.PriorityLevel = 500;
             ProductVersionDepartments.GetFieldDefinition(p => p.ReleaseDateTime)

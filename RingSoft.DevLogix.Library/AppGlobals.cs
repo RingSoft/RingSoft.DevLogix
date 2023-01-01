@@ -54,8 +54,7 @@ namespace RingSoft.DevLogix.Library
         public static void InitSettings()
         {
             RingSoftAppGlobals.AppTitle = "DevLogix";
-            RingSoftAppGlobals.AppCopyright = "©2022 by Peter Ringering";
-            RingSoftAppGlobals.AppVersion = "0.80.00";
+            RingSoftAppGlobals.AppCopyright = "©2023 by Peter Ringering";
         }
 
         public static void Initialize()

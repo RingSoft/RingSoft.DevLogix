@@ -13,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using RingSoft.DevLogix.Library;
 
 namespace RingSoft.DevLogix.QualityAssurance
 {
@@ -33,6 +34,13 @@ namespace RingSoft.DevLogix.QualityAssurance
         protected override void OnLoaded()
         {
             RegisterFormKeyControl(DescriptionControl);
+            if (!LocalViewModel.TableDefinition.HasRight(RightTypes.AllowEdit))
+            {
+                ArchiveButton.Visibility = Visibility.Collapsed;
+                DeployLabel.Visibility = Visibility.Collapsed;
+                DeployControl.Visibility = Visibility.Collapsed;
+                DeployButton.Visibility = Visibility.Collapsed;
+            }
             base.OnLoaded();
         }
 
@@ -42,5 +50,17 @@ namespace RingSoft.DevLogix.QualityAssurance
             base.ResetViewForNewRecord();
         }
 
+        public override void SetControlReadOnlyMode(Control control, bool readOnlyValue)
+        {
+            if (control == GetVersionButton)
+            {
+                if (LocalViewModel.ArchiveDateTime != null)
+                {
+                    GetVersionButton.IsEnabled = true;
+                    return;
+                }
+            }
+            base.SetControlReadOnlyMode(control, readOnlyValue);
+        }
     }
 }

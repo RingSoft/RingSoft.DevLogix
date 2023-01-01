@@ -3,17 +3,30 @@ using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.Library;
 using System.Windows;
 using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
+using RingSoft.DevLogix.Library.ViewModels.UserManagement;
 
 namespace RingSoft.DevLogix.UserManagement
 {
     /// <summary>
     /// Interaction logic for DepartmentMaintenanceWindow.xaml
     /// </summary>
-    public partial class DepartmentMaintenanceWindow
+    public partial class DepartmentMaintenanceWindow : IDepartmentView
     {
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Department";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;
+
+        public string FtpPassword
+        {
+            get
+            {
+                return FtpPasswordBox.Password;
+            }
+            set
+            {
+                FtpPasswordBox.Password = value;
+            }
+        }
 
         public DepartmentMaintenanceWindow()
         {

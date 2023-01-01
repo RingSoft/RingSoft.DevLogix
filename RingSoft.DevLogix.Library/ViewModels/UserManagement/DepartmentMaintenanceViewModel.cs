@@ -1,4 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Net;
+using RingSoft.App.Interop;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
@@ -13,6 +16,10 @@ using RingSoft.DevLogix.DataAccess.Model;
 
 namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 {
+    public interface IDepartmentView : IDbMaintenanceView
+    {
+        string FtpPassword { get; set; }
+    }
     public class DepartmentMaintenanceViewModel : DevLogixDbMaintenanceViewModel<Department>
     {
         public override TableDefinition<Department> TableDefinition => AppGlobals.LookupContext.Departments;
@@ -206,6 +213,34 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
         }
 
+        private string? _ftpAddress;
+
+        public string? FtpAddress
+        {
+            get => _ftpAddress;
+            set
+            {
+                if (_ftpAddress == value) return;
+                _ftpAddress = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string? _ftpUserName;
+
+        public string? FtpUserName
+        {
+            get => _ftpUserName;
+            set
+            {
+                if (_ftpUserName == value) return;
+                _ftpUserName = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public new IDepartmentView View { get; private set; }
+
         public RelayCommand AddModifyUserLookupCommand { get; set; }
 
         public DepartmentMaintenanceViewModel()
@@ -215,6 +250,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         protected override void Initialize()
         {
+            if (base.View is IDepartmentView view)
+            {
+                View = view;
+            }
+            else
+            {
+                throw new Exception("Invalid View");
+            }
+            
             FixStatusAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ErrorFixStatusId));
             PassStatusAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ErrorPassStatusId));
             FailStatusAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ErrorFailStatusId));
@@ -268,6 +312,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             PassStatusText = entity.PassText;
             FailStatusText = entity.FailText;
             Notes = entity.Notes;
+            FtpAddress = entity.FtpAddress;
+            FtpUserName = entity.FtpUsername;
+            if (!entity.FtpPassword.IsNullOrEmpty())
+            {
+                View.FtpPassword = entity.FtpPassword.Decrypt();
+            }
+
         }
 
         protected override Department GetEntityData()
@@ -279,8 +330,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 FixText = FixStatusText,
                 PassText = PassStatusText,
                 FailText = FailStatusText,
-                Notes = Notes
+                Notes = Notes,
+                FtpAddress = FtpAddress,
+                FtpUsername = FtpUserName,
             };
+
+            if (!View.FtpPassword.IsNullOrEmpty())
+            {
+                result.FtpPassword = View.FtpPassword.Encrypt();
+            }
 
             if (FixStatusAutoFillValue.IsValid())
             {
@@ -310,6 +368,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             PassStatusAutoFillValue = null;
             FailStatusAutoFillValue = null;
             FixStatusText = PassStatusText = FailStatusText = string.Empty;
+            FtpAddress = FtpUserName = null;
+            View.FtpPassword = string.Empty;
             UserLookupCommand = GetLookupCommand(LookupCommands.Clear);
             Notes = null;
         }

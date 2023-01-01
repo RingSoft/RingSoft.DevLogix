@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RingSoft.DevLogix.SqlServer;
 
@@ -11,9 +12,11 @@ using RingSoft.DevLogix.SqlServer;
 namespace RingSoft.DevLogix.SqlServer.Migrations
 {
     [DbContext(typeof(DevLogixSqlServerDbContext))]
-    partial class DevLogixSqlServerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230101004649_Deployment")]
+    partial class Deployment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -364,6 +367,7 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ArchivePath")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
@@ -373,6 +377,7 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .HasColumnType("nvarchar");
 
                     b.Property<string>("InstallerFileName")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
@@ -391,9 +396,6 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .HasColumnType("integer");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime?>("ArchiveDateTime")
-                        .HasColumnType("datetime");
 
                     b.Property<string>("Description")
                         .IsRequired()

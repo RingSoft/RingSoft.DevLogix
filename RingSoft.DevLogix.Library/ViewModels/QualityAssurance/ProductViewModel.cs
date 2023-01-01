@@ -119,9 +119,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             }
         }
 
-        private string _installerFileName;
+        private string? _installerFileName;
 
-        public string InstallerFileName
+        public string? InstallerFileName
         {
             get => _installerFileName;
             set
@@ -134,9 +134,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             }
         }
 
-        private string _archivePath;
+        private string? _archivePath;
 
-        public string ArchivePath
+        public string? ArchivePath
         {
             get => _archivePath;
             set
@@ -247,6 +247,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         protected override void LoadFromEntity(Product entity)
         {
             Notes = entity.Notes;
+            InstallerFileName = entity.InstallerFileName;
+            ArchivePath = entity.ArchivePath;
         }
 
         protected override Product GetEntityData()
@@ -255,7 +257,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             {
                 Id = Id,
                 Description = KeyAutoFillValue.Text,
-                Notes = Notes
+                Notes = Notes,
+                InstallerFileName = InstallerFileName,
+                ArchivePath = ArchivePath,
             };
 
             return result;
@@ -267,6 +271,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             Notes = null;
             ProductVersionLookupCommand = GetLookupCommand(LookupCommands.Clear);
             UpdateVersionsCommand.IsEnabled = false;
+            InstallerFileName = ArchivePath = null;
         }
 
         protected override bool SaveEntity(Product entity)

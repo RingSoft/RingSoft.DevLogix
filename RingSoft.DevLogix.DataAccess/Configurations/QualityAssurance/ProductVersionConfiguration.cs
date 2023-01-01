@@ -13,6 +13,7 @@ namespace RingSoft.DevLogix.DataAccess.Configurations
             builder.Property(p => p.Description).HasColumnType(DbConstants.StringColumnType);
             builder.Property(p => p.ProductId).HasColumnType(DbConstants.IntegerColumnType);
             builder.Property(p => p.Notes).HasColumnType(DbConstants.MemoColumnType);
+            builder.Property(p => p.ArchiveDateTime).HasColumnType(DbConstants.DateColumnType);
 
             builder.HasOne(p => p.Product)
                 .WithMany(p => p.Versions)

@@ -18,6 +18,9 @@ namespace RingSoft.DevLogix.DataAccess.Configurations
             builder.Property(p => p.PassText).HasColumnType(DbConstants.StringColumnType);
             builder.Property(p => p.FailText).HasColumnType(DbConstants.StringColumnType);
             builder.Property(p => p.Notes).HasColumnType(DbConstants.MemoColumnType);
+            builder.Property(p => p.FtpAddress).HasColumnType(DbConstants.StringColumnType);
+            builder.Property(p => p.FtpUsername).HasColumnType(DbConstants.StringColumnType);
+            builder.Property(p => p.FtpPassword).HasColumnType(DbConstants.StringColumnType);
 
             builder.HasOne(p => p.ErrorFixStatus)
                 .WithMany(p => p.FixedDepartments)

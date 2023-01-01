@@ -13,6 +13,12 @@ namespace RingSoft.DevLogix.DataAccess.Model
         [MaxLength(50)]
         public string Description { get; set; }
 
+        [MaxLength(50)]
+        public string? InstallerFileName { get; set; }
+
+        [MaxLength(50)]
+        public string? ArchivePath { get; set; }
+
         public string? Notes { get; set; }
 
         public ICollection<ProductVersion> Versions { get; set; }
