@@ -97,15 +97,17 @@
                     </Grid>
 
                 </TabItem>
-                <TabItem Header="Deployment Properties">
+                <TabItem x:Name="DeploymentTabItem" Header="Deployment Properties">
                     <Grid>
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
                         <Label Grid.Row="0" Grid.Column="0" Content="Installer Path/File Name"/>
@@ -127,6 +129,17 @@
                             <Button Content="..." Width="25" Height="20" Command="{Binding ArchivePathCommand}"/>
 
                         </StackPanel>
+
+                        <Label Grid.Row="2" Grid.Column="0" Content="Application GUID"/>
+
+                        <StackPanel Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Horizontal">
+
+                            <dec:StringEditControl Width="300" Text="{Binding AppGuid, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                            <Button Content="Generate GUID" Height="20" Command="{Binding GenerateGuidCommand}" />
+
+                        </StackPanel>
+
 
                     </Grid>
                 </TabItem>

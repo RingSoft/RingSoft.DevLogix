@@ -14,6 +14,7 @@ namespace RingSoft.DevLogix.DataAccess.Configurations
             builder.Property(p => p.Notes).HasColumnType(DbConstants.MemoColumnType);
             builder.Property(p => p.InstallerFileName).HasColumnType(DbConstants.StringColumnType);
             builder.Property(p => p.ArchivePath).HasColumnType(DbConstants.StringColumnType);
+            builder.Property(p => p.AppGuid).HasColumnType(DbConstants.StringColumnType);
         }
     }
 }

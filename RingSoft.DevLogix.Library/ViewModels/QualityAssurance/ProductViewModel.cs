@@ -1,4 +1,5 @@
-﻿using RingSoft.DbLookup;
+﻿using System;
+using RingSoft.DbLookup;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DevLogix.DataAccess.Model;
@@ -149,6 +150,18 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             }
         }
 
+        private string? _appGuid;
+
+        public string? AppGuid
+        {
+            get => _appGuid;
+            set
+            {
+                if (_appGuid == value) return;
+                _appGuid = value;
+                OnPropertyChanged();
+            }
+        }
 
 
         public RelayCommand VersionsAddModifyCommand { get; set; }
@@ -158,6 +171,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         public RelayCommand InstallerCommand { get; set; }
 
         public RelayCommand ArchivePathCommand { get; set; }
+
+        public RelayCommand GenerateGuidCommand { get; set; }
 
         public new IProductView View { get; set; }
 
@@ -172,6 +187,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             ArchivePathCommand = new RelayCommand(() =>
             {
                 ArchivePath = View.GetArchivePath();
+            });
+            GenerateGuidCommand = new RelayCommand(() =>
+            {
+                AppGuid = Guid.NewGuid().ToString();
             });
         }
         protected override void Initialize()
@@ -249,6 +268,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             Notes = entity.Notes;
             InstallerFileName = entity.InstallerFileName;
             ArchivePath = entity.ArchivePath;
+            AppGuid = entity.AppGuid;
         }
 
         protected override Product GetEntityData()
@@ -260,6 +280,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 Notes = Notes,
                 InstallerFileName = InstallerFileName,
                 ArchivePath = ArchivePath,
+                AppGuid = AppGuid,
             };
 
             return result;
@@ -271,7 +292,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             Notes = null;
             ProductVersionLookupCommand = GetLookupCommand(LookupCommands.Clear);
             UpdateVersionsCommand.IsEnabled = false;
-            InstallerFileName = ArchivePath = null;
+            InstallerFileName = ArchivePath = AppGuid = null;
         }
 
         protected override bool SaveEntity(Product entity)

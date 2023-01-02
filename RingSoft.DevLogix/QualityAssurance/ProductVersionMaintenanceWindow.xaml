@@ -45,7 +45,7 @@
 
             <Label Grid.Row="1" Grid.Column="0" Content="Product"/>
 
-            <lc:AutoFillControl Grid.Row="1" Grid.Column="1" x:Name="ProductControl" Setup="{Binding ProductAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding ProductAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left"/>
+            <lc:AutoFillControl Grid.Row="1" Grid.Column="1" x:Name="ProductControl" Setup="{Binding ProductAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding ProductAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left" IsEnabled="{Binding ProductEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
             <Label Grid.Row="2" Grid.Column="0" Content="Archive Date"/>
 

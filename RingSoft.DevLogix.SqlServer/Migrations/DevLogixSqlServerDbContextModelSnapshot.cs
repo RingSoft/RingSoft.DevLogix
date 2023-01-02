@@ -363,6 +363,10 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("AppGuid")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
                     b.Property<string>("ArchivePath")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");

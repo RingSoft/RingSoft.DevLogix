@@ -19,6 +19,9 @@ namespace RingSoft.DevLogix.DataAccess.Model
         [MaxLength(50)]
         public string? ArchivePath { get; set; }
 
+        [MaxLength(50)]
+        public string? AppGuid { get; set; }
+
         public string? Notes { get; set; }
 
         public ICollection<ProductVersion> Versions { get; set; }

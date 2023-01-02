@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
@@ -8,9 +9,22 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup.QueryBuilder;
+using System.Net;
+using Newtonsoft.Json;
+using RingSoft.App.Interop;
+using RingSoft.DbMaintenance;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 {
+    public interface IProductVersionView : IDbMaintenanceView
+    {
+        bool UploadFile(FileInfo file, Department department, Product product);
+    }
+
+    public class ProcedureStatusArgs
+    {
+        public string Status { get; set; }
+    }
     public class ProductVersionViewModel : DevLogixDbMaintenanceViewModel<ProductVersion>
     {
         public override TableDefinition<ProductVersion> TableDefinition => AppGlobals.LookupContext.ProductVersions;
@@ -28,6 +42,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 }
                 _id = value;
                 OnPropertyChanged();
+                CheckArchiveButtonState();
             }
         }
 
@@ -107,6 +122,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 }
                 _archiveDateTime = value;
                 OnPropertyChanged();
+                DeployCommand.IsEnabled = ArchiveDateTime != null && DepartmentAutoFillValue.IsValid();
+                CheckArchiveButtonState();
+                ProductEnabled = ArchiveDateTime == null;
             }
         }
 
@@ -137,17 +155,37 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                     return;
                 }
                 _departmentAutoFillValue = value;
+                OnPropertyChanged(null, false);
+                DeployCommand.IsEnabled = ArchiveDateTime != null && value.IsValid();
+            }
+        }
+
+        private bool _productEnabled = true;
+
+        public bool ProductEnabled
+        {
+            get => _productEnabled;
+            set
+            {
+                if (_productEnabled == value)
+                    return;
+                _productEnabled = value;
                 OnPropertyChanged();
             }
         }
 
 
+        public new IProductVersionView View { get; private set; }
 
         public RelayCommand ArchiveCommand { get; private set; }
 
         public RelayCommand GetVersionCommand { get; private set; }
 
         public RelayCommand DeployCommand { get; private set; }
+
+        public event EventHandler<ProcedureStatusArgs> UpdateStatusEvent;
+
+        public event EventHandler<ProcedureStatusArgs> DeployErrorEvent;
 
         public ProductVersionViewModel()
         {
@@ -160,6 +198,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         protected override void Initialize()
         {
+            if (base.View is IProductVersionView productVersionView)
+            {
+                View = productVersionView;
+            }
+            else
+            {
+                throw new InvalidOperationException("Invalid View");
+            }
             ProductAutoFillSetup =
                 new AutoFillSetup(AppGlobals.LookupContext.ProductVersions.GetFieldDefinition(p => p.ProductId));
             DepartmentsManager = new ProductVersionDepartmentsManager(this);
@@ -242,6 +288,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
             Notes = null;
             DepartmentsManager.SetupForNewRecord();
+            DepartmentAutoFillValue = null;
+            ArchiveDateTime = null;
         }
 
         protected override bool SaveEntity(ProductVersion entity)
@@ -312,21 +360,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                                 var file = new FileInfo(product.InstallerFileName);
                                 if (file != null)
                                 {
-                                    var archivePath = product.ArchivePath;
-                                    if (!archivePath.EndsWith("\\"))
-                                    {
-                                        archivePath += "\\";
-                                    }
-
-                                    var fileName = file.Name;
-                                    var typePos = fileName.LastIndexOf(".");
-                                    var extension = string.Empty;
-                                    if (typePos != -1)
-                                    {
-                                        extension = fileName.RightStr(fileName.Length - typePos);
-                                        fileName = fileName.LeftStr(typePos);
-                                    }
-                                    var archiveFile = $"{archivePath}{fileName}_{Id}{extension}";
+                                    var archiveFile = GetArchiveFileName(product, file);
                                     try
                                     {
                                         file.CopyTo(archiveFile);
@@ -345,6 +379,27 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             }
         }
 
+        private string GetArchiveFileName(Product product, FileInfo file)
+        {
+            var archivePath = product.ArchivePath;
+            if (!archivePath.EndsWith("\\"))
+            {
+                archivePath += "\\";
+            }
+
+            var fileName = file.Name;
+            var typePos = fileName.LastIndexOf(".");
+            var extension = string.Empty;
+            if (typePos != -1)
+            {
+                extension = fileName.RightStr(fileName.Length - typePos);
+                fileName = fileName.LeftStr(typePos);
+            }
+
+            var archiveFile = $"{archivePath}{fileName}_{Id}{extension}";
+            return archiveFile;
+        }
+
         private void GetVersion()
         {
 
@@ -352,7 +407,135 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         private void DeployToDepartment()
         {
+            if (ProductAutoFillValue.IsValid() && DepartmentAutoFillValue.IsValid() && ArchiveDateTime.HasValue)
+            {
+                var context = AppGlobals.DataRepository.GetDataContext();
+                var department =
+                    AppGlobals.LookupContext.Departments.GetEntityFromPrimaryKeyValue(DepartmentAutoFillValue
+                        .PrimaryKeyValue);
 
+                if (department == null)
+                {
+                    return;
+                }
+                else
+                {
+                    department = context.GetTable<Department>().FirstOrDefault(p => p.Id == department.Id);
+                }
+
+                var product =
+                    AppGlobals.LookupContext.Products.GetEntityFromPrimaryKeyValue(ProductAutoFillValue
+                        .PrimaryKeyValue);
+
+                if (product == null)
+                {
+                    return;
+                }
+                else
+                {
+                    product = context.GetTable<Product>().FirstOrDefault(p => p.Id == product.Id);
+                }
+
+                var file = new FileInfo(product.InstallerFileName);
+                if (file != null)
+                {
+                    View.UploadFile(file, department, product);
+                }
+            }
+        }
+        public bool UploadFile(FileInfo file, Department department, Product product)
+        {
+            UpdateStatusEvent?.Invoke(this, new ProcedureStatusArgs{Status = "Copying File"});
+            var archiveFile = GetArchiveFileName(product, file);
+            var archiveFileInfo = new FileInfo(archiveFile);
+            var fileText = $"{archiveFileInfo.DirectoryName}\\{file.Name}";
+            FileInfo fileToUpload = null;
+            try
+            {
+                var fileTestInfo = new FileInfo(fileText);
+                if (fileTestInfo.Exists)
+                {
+                    fileTestInfo.Delete();
+                }
+                fileToUpload = archiveFileInfo.CopyTo(fileText);
+            }
+            catch (Exception e)
+            {
+                DeployErrorEvent?.Invoke(this, new ProcedureStatusArgs { Status = e.Message });
+                return false;
+            }
+
+            var client = new WebClient();
+            var ftpAddress = department.FtpAddress;
+            if (!ftpAddress.EndsWith("/"))
+            {
+                ftpAddress += "/";
+            }
+
+            try
+            {
+                UpdateStatusEvent?.Invoke(this, new ProcedureStatusArgs { Status = "Deploying File" });
+                var password = department.FtpPassword.Decrypt();
+                client.Credentials = new NetworkCredential(department.FtpUsername, password);
+
+                client.UploadFile($"{ftpAddress}{fileToUpload.Name}", WebRequestMethods.Ftp.UploadFile, fileToUpload.FullName);
+                File.Delete(fileToUpload.FullName);
+            }
+            catch (Exception e)
+            {
+                DeployErrorEvent?.Invoke(this, new ProcedureStatusArgs{Status = e.Message});
+                return false;
+            }
+
+            UpdateStatusEvent?.Invoke(this, new ProcedureStatusArgs { Status = "Deploying Json File" });
+            var ringSoftAppsFileName = "RingSoftApps.json";
+            var ringSoftApps = new List<RingSoftApps>();
+            var ringSoftApp = new RingSoftApps();
+            try
+            {
+                var appsText = client.DownloadString($"{ftpAddress}{ringSoftAppsFileName}");
+                if (!appsText.IsNullOrEmpty())
+                {
+                    ringSoftApps = JsonConvert.DeserializeObject<List<RingSoftApps>>(appsText);
+                    ringSoftApp = ringSoftApps.FirstOrDefault(p => p.AppGuid == product.AppGuid);
+                    if (ringSoftApp == null)
+                    {
+                        ringSoftApp = new RingSoftApps();
+                        ringSoftApps.Add(ringSoftApp);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                ringSoftApps.Add(ringSoftApp);
+            }
+
+            ringSoftApp.AppGuid = product.AppGuid;
+            ringSoftApp.InstallerFileName = fileToUpload.Name;
+            ringSoftApp.VersionId = Id;
+            ringSoftApp.VersionDate = DateTime.Now.ToUniversalTime();
+            ringSoftApp.VersionName = KeyAutoFillValue.Text;
+            var jsonText = JsonConvert.SerializeObject(ringSoftApps);
+            try
+            {
+                var jsonFile =  $"{archiveFileInfo.DirectoryName}\\{ringSoftAppsFileName}";
+                File.WriteAllText(jsonFile, jsonText);
+                client.UploadFile($"{ftpAddress}{ringSoftAppsFileName}", WebRequestMethods.Ftp.UploadFile, jsonFile);
+                File.Delete(jsonFile);
+            }
+            catch (Exception e)
+            {
+                DeployErrorEvent?.Invoke(this, new ProcedureStatusArgs { Status = e.Message });
+                return false;
+            }
+
+            return true;
+        }
+
+        private void CheckArchiveButtonState()
+        {
+            ArchiveCommand.IsEnabled = ArchiveDateTime == null && Id > 0;
+            GetVersionCommand.IsEnabled = ArchiveDateTime != null && Id > 0;
         }
     }
 }
