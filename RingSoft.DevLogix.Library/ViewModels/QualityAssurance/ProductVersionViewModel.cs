@@ -439,7 +439,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                             if (file != null)
                             {
                                 var archiveFile = GetArchiveFileName(product, file);
-                                if (archiveFile != null)
+                                if (!archiveFile.IsNullOrEmpty())
                                 {
                                     try
                                     {
