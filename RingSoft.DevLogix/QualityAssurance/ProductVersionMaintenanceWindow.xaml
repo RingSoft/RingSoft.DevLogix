@@ -61,7 +61,7 @@
 
             <Label Grid.Row="3" Grid.Column="0" x:Name="DeployLabel" Content="Deploy to Department"/>
 
-            <lc:AutoFillControl Grid.Row="3" Grid.Column="1" x:Name="DeployControl" Width="200" Setup="{Binding DepartmentAutoFillSetup,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding DepartmentAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <lc:AutoFillControl Grid.Row="3" Grid.Column="1" x:Name="DeployControl" Width="200" Setup="{Binding DepartmentAutoFillSetup,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding DepartmentAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding DeployProductToDepartmentEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
             <Button Grid.Row="3" Grid.Column="2" x:Name="DeployButton" Content="Deploy" Height="20" Command="{Binding DeployCommand}"/>
 

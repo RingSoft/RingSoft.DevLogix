@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
@@ -122,9 +123,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 }
                 _archiveDateTime = value;
                 OnPropertyChanged();
-                DeployCommand.IsEnabled = ArchiveDateTime != null && DepartmentAutoFillValue.IsValid();
                 CheckArchiveButtonState();
-                ProductEnabled = ArchiveDateTime == null;
             }
         }
 
@@ -173,6 +172,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 OnPropertyChanged();
             }
         }
+
+        private bool _deployProductToDepartmentEnabled;
+
+        public bool DeployProductToDepartmentEnabled
+        {
+            get => _deployProductToDepartmentEnabled;
+            set
+            {
+                if (_deployProductToDepartmentEnabled == value)
+                    return;
+
+                _deployProductToDepartmentEnabled = value;
+                OnPropertyChanged();
+            }
+        }
+
 
 
         public new IProductVersionView View { get; private set; }
@@ -244,6 +259,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             {
                 ArchiveDateTime = entity.ArchiveDateTime.Value.ToLocalTime();
             }
+            CheckArchiveButtonState();
         }
 
         protected override ProductVersion GetEntityData()
@@ -290,6 +306,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             DepartmentsManager.SetupForNewRecord();
             DepartmentAutoFillValue = null;
             ArchiveDateTime = null;
+            CheckArchiveButtonState();
         }
 
         protected override bool SaveEntity(ProductVersion entity)
@@ -402,7 +419,44 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         private void GetVersion()
         {
+            if (ProductAutoFillValue.IsValid())
+            {
+                var product =
+                    AppGlobals.LookupContext.Products.GetEntityFromPrimaryKeyValue(ProductAutoFillValue
+                        .PrimaryKeyValue);
 
+                if (product != null)
+                {
+                    var context = AppGlobals.DataRepository.GetDataContext();
+                    var productTable = context.GetTable<Product>();
+                    if (productTable != null)
+                    {
+                        product = productTable.FirstOrDefault(p => p.Id == product.Id);
+                        if (product != null && !product.ArchivePath.IsNullOrEmpty() &&
+                            !product.InstallerFileName.IsNullOrEmpty())
+                        {
+                            var file = new FileInfo(product.InstallerFileName);
+                            if (file != null)
+                            {
+                                var archiveFile = GetArchiveFileName(product, file);
+                                if (archiveFile != null)
+                                {
+                                    try
+                                    {
+                                        Process.Start(archiveFile);
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        var caption = "Error Getting Version";
+                                        ControlsGlobals.UserInterface.ShowMessageBox(e.Message, caption,
+                                            RsMessageBoxIcons.Error);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         private void DeployToDepartment()
@@ -534,6 +588,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         private void CheckArchiveButtonState()
         {
+            DeployCommand.IsEnabled = ArchiveDateTime != null && DepartmentAutoFillValue.IsValid();
+            DeployProductToDepartmentEnabled = ArchiveDateTime != null;
+            ProductEnabled = ArchiveDateTime == null;
             ArchiveCommand.IsEnabled = ArchiveDateTime == null && Id > 0;
             GetVersionCommand.IsEnabled = ArchiveDateTime != null && Id > 0;
         }

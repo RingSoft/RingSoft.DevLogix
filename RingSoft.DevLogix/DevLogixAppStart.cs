@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using RingSoft.App.Controls;
+using RingSoft.App.Library;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Controls.WPF.AdvancedFind;
@@ -54,6 +55,13 @@ namespace RingSoft.DevLogix
 
             LookupControlsGlobals.LookupControlContentTemplateFactory =
                 new AppLookupContentTemplateFactory(application);
+        }
+
+        protected override void CheckVersion()
+        {
+#if !DEBUG
+            base.CheckVersion();
+#endif
         }
 
         protected override bool DoProcess()

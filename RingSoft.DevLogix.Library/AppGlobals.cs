@@ -55,6 +55,9 @@ namespace RingSoft.DevLogix.Library
         {
             RingSoftAppGlobals.AppTitle = "DevLogix";
             RingSoftAppGlobals.AppCopyright = "©2023 by Peter Ringering";
+            RingSoftAppGlobals.PathToDownloadUpgrade = MasterDbContext.ProgramDataFolder;
+            RingSoftAppGlobals.AppGuid = "";
+            RingSoftAppGlobals.AppVersion = 0;
         }
 
         public static void Initialize()
