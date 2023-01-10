@@ -259,28 +259,66 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("AssignedDeveloperId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("AssignedTesterId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("ntext");
 
                     b.Property<DateTime>("ErrorDate")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("datetime");
 
                     b.Property<string>("ErrorId")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar");
+
+                    b.Property<int>("ErrorPriorityId")
+                        .HasColumnType("integer");
 
                     b.Property<int>("ErrorStatusId")
                         .HasColumnType("integer");
 
+                    b.Property<DateTime?>("FixedDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<int?>("FixedVersionId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("FoundVersionId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("PassedDate")
+                        .HasColumnType("datetime");
+
                     b.Property<int>("ProductId")
                         .HasColumnType("integer");
 
+                    b.Property<string>("Resolution")
+                        .HasColumnType("ntext");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("AssignedDeveloperId");
+
+                    b.HasIndex("AssignedTesterId");
+
+                    b.HasIndex("ErrorPriorityId");
 
                     b.HasIndex("ErrorStatusId");
 
+                    b.HasIndex("FixedVersionId");
+
+                    b.HasIndex("FoundVersionId");
+
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Error");
+                    b.ToTable("Errors");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ErrorPriority", b =>
@@ -535,19 +573,56 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Error", b =>
                 {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "AssignedDeveloper")
+                        .WithMany("AssignedDeveloperErrors")
+                        .HasForeignKey("AssignedDeveloperId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "AssignedTester")
+                        .WithMany("AssignedTesterErrors")
+                        .HasForeignKey("AssignedTesterId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.ErrorPriority", "ErrorPriority")
+                        .WithMany("Errors")
+                        .HasForeignKey("ErrorPriorityId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.ErrorStatus", "ErrorStatus")
                         .WithMany("Errors")
                         .HasForeignKey("ErrorStatusId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.ProductVersion", "FixedVersion")
+                        .WithMany("FixedErrors")
+                        .HasForeignKey("FixedVersionId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.ProductVersion", "FoundVersion")
+                        .WithMany("FoundErrors")
+                        .HasForeignKey("FoundVersionId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.Product", "Product")
                         .WithMany("Errors")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.Navigation("AssignedDeveloper");
+
+                    b.Navigation("AssignedTester");
+
+                    b.Navigation("ErrorPriority");
+
                     b.Navigation("ErrorStatus");
+
+                    b.Navigation("FixedVersion");
+
+                    b.Navigation("FoundVersion");
 
                     b.Navigation("Product");
                 });
@@ -628,6 +703,11 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("Users");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ErrorPriority", b =>
+                {
+                    b.Navigation("Errors");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ErrorStatus", b =>
                 {
                     b.Navigation("Errors");
@@ -653,11 +733,19 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProductVersion", b =>
                 {
+                    b.Navigation("FixedErrors");
+
+                    b.Navigation("FoundErrors");
+
                     b.Navigation("ProductVersionDepartments");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.User", b =>
                 {
+                    b.Navigation("AssignedDeveloperErrors");
+
+                    b.Navigation("AssignedTesterErrors");
+
                     b.Navigation("UserGroups");
                 });
 #pragma warning restore 612, 618

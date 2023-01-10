@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using RingSoft.App.Library;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AdvancedFind;
@@ -13,6 +10,7 @@ using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbLookup.RecordLocking;
 using RingSoft.DevLogix.DataAccess.LookupModel;
 using RingSoft.DevLogix.DataAccess.Model;
+using System;
 
 namespace RingSoft.DevLogix.DataAccess
 {
@@ -41,6 +39,7 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<Product> Products { get; set; }
         public TableDefinition<ProductVersion> ProductVersions { get; set; }
         public TableDefinition<ProductVersionDepartment> ProductVersionDepartments { get; set; }
+        public TableDefinition<Error> Errors { get; set; }
 
         public TableDefinition<AdvancedFind> AdvancedFinds { get; set; }
         public TableDefinition<AdvancedFindColumn> AdvancedFindColumns { get; set; }
@@ -55,6 +54,7 @@ namespace RingSoft.DevLogix.DataAccess
         public LookupDefinition<ErrorPriorityLookup, ErrorPriority> ErrorPriorityLookup { get; set; }
         public LookupDefinition<ProductLookup, Product> ProductLookup { get; set; }
         public LookupDefinition<ProductVersionLookup, ProductVersion> ProductVersionLookup { get; set; }
+        public LookupDefinition<ErrorLookup, Error> ErrorLookup { get; set; }
 
         public LookupDefinition<AdvancedFindLookup, AdvancedFind> AdvancedFindLookup { get; set; }
         public LookupDefinition<RecordLockingLookup, RecordLock> RecordLockingLookup { get; set; }
@@ -149,6 +149,15 @@ namespace RingSoft.DevLogix.DataAccess
             //    .AddVisibleColumnDefinition(p => p.Product, "Product", p => p.Description, 50);
 
             ProductVersions.HasLookupDefinition(ProductVersionLookup);
+
+            ErrorLookup = new LookupDefinition<ErrorLookup, Error>(Errors);
+            ErrorLookup.AddVisibleColumnDefinition(p => p.ErrorId, "Error ID", p => p.ErrorId, 20);
+            ErrorLookup.Include(p => p.ErrorStatus)
+                .AddVisibleColumnDefinition(p => p.Status, "Status", p => p.Description, 30);
+            ErrorLookup.Include(p => p.ErrorPriority)
+                .AddVisibleColumnDefinition(p => p.Priority, "Priority", p => p.Description, 30);
+            ErrorLookup.AddVisibleColumnDefinition(p => p.Date, "Date", p => p.ErrorDate, 20);
+            Errors.HasLookupDefinition(ErrorLookup);
 
         }
 
@@ -277,6 +286,17 @@ namespace RingSoft.DevLogix.DataAccess
             ProductVersionDepartments.PriorityLevel = 500;
             ProductVersionDepartments.GetFieldDefinition(p => p.ReleaseDateTime)
                 .HasDateType(DbDateTypes.DateTime);
+
+            Errors.GetFieldDefinition(p => p.ErrorDate)
+                .HasDateType(DbDateTypes.DateTime)
+                .DoConvertToLocalTime();
+            Errors.GetFieldDefinition(p => p.FixedDate)
+                .HasDateType(DbDateTypes.DateTime)
+                .DoConvertToLocalTime();
+            Errors.GetFieldDefinition(p => p.Description)
+                .IsMemo();
+            Errors.GetFieldDefinition(p => p.Resolution)
+                .IsMemo();
         }
 
         public override UserAutoFill GetUserAutoFill(string userName)

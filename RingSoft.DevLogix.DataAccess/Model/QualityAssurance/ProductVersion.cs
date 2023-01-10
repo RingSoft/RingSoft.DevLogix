@@ -25,9 +25,15 @@ namespace RingSoft.DevLogix.DataAccess.Model
 
         public virtual ICollection<ProductVersionDepartment> ProductVersionDepartments { get; set; }
 
+        public virtual ICollection<Error> FoundErrors { get; set; }
+
+        public virtual ICollection<Error> FixedErrors { get; set; }
+
         public ProductVersion()
         {
             ProductVersionDepartments = new HashSet<ProductVersionDepartment>();
+            FoundErrors = new HashSet<Error>();
+            FixedErrors = new HashSet<Error>();
         }
     }
 }

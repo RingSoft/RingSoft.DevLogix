@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RingSoft.DevLogix.DataAccess.Model
@@ -16,5 +17,12 @@ namespace RingSoft.DevLogix.DataAccess.Model
 
         [Required]
         public int Level { get; set; }
+
+        public virtual ICollection<Error> Errors { get; set; }
+
+        public ErrorPriority()
+        {
+            Errors = new HashSet<Error>();
+        }
     }
 }
