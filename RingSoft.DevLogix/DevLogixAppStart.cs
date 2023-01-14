@@ -80,6 +80,7 @@ namespace RingSoft.DevLogix
             WindowRegistry.RegisterWindow<ErrorPriorityMaintenanceWindow>(AppGlobals.LookupContext.ErrorPriorities);
             WindowRegistry.RegisterWindow<ProductMaintenanceWindow>(AppGlobals.LookupContext.Products);
             WindowRegistry.RegisterWindow<ProductVersionMaintenanceWindow>(AppGlobals.LookupContext.ProductVersions);
+            WindowRegistry.RegisterWindow<ErrorMaintenanceWindow>(AppGlobals.LookupContext.Errors);
 
             AppGlobals.LookupContext.CanProcessTableEvent += (sender, args) =>
             {

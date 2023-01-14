@@ -36,6 +36,8 @@ namespace RingSoft.DevLogix.DataAccess.Model
         public string? Notes { get; set; }
 
         public virtual ICollection<UsersGroup>  UserGroups { get; set; }
+        public virtual ICollection<Error> FoundByUserErrors { get; set; }
+        public virtual ICollection<Error> FixedByUserErrors { get; set; }
         public virtual ICollection<Error> AssignedDeveloperErrors { get; set; }
         public virtual  ICollection<Error> AssignedTesterErrors { get; set; }
 

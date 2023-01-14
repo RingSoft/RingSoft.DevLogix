@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RingSoft.DevLogix.SqlServer;
 
@@ -11,9 +12,11 @@ using RingSoft.DevLogix.SqlServer;
 namespace RingSoft.DevLogix.SqlServer.Migrations
 {
     [DbContext(typeof(DevLogixSqlServerDbContext))]
-    partial class DevLogixSqlServerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230113192049_FixError")]
+    partial class FixError
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -296,16 +299,10 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<int>("ErrorStatusId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("FixedByByUserId")
-                        .HasColumnType("integer");
-
                     b.Property<DateTime?>("FixedDate")
                         .HasColumnType("datetime");
 
                     b.Property<int?>("FixedVersionId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("FoundByUserId")
                         .HasColumnType("integer");
 
                     b.Property<int>("FoundVersionId")
@@ -330,11 +327,7 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
                     b.HasIndex("ErrorStatusId");
 
-                    b.HasIndex("FixedByByUserId");
-
                     b.HasIndex("FixedVersionId");
-
-                    b.HasIndex("FoundByUserId");
 
                     b.HasIndex("FoundVersionId");
 
@@ -629,21 +622,10 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "FixedByUser")
-                        .WithMany("FixedByUserErrors")
-                        .HasForeignKey("FixedByByUserId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.ProductVersion", "FixedVersion")
                         .WithMany("FixedErrors")
                         .HasForeignKey("FixedVersionId")
                         .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "FoundByUser")
-                        .WithMany("FoundByUserErrors")
-                        .HasForeignKey("FoundByUserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
 
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.ProductVersion", "FoundVersion")
                         .WithMany("FoundErrors")
@@ -665,11 +647,7 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
                     b.Navigation("ErrorStatus");
 
-                    b.Navigation("FixedByUser");
-
                     b.Navigation("FixedVersion");
-
-                    b.Navigation("FoundByUser");
 
                     b.Navigation("FoundVersion");
 
@@ -794,10 +772,6 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("AssignedDeveloperErrors");
 
                     b.Navigation("AssignedTesterErrors");
-
-                    b.Navigation("FixedByUserErrors");
-
-                    b.Navigation("FoundByUserErrors");
 
                     b.Navigation("UserGroups");
                 });

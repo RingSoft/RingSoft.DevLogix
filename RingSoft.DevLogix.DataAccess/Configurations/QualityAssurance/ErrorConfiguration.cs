@@ -23,6 +23,8 @@ namespace RingSoft.DevLogix.DataAccess.Configurations
             builder.Property(p => p.PassedDate).HasColumnType(DbConstants.DateColumnType);
             builder.Property(p => p.Description).HasColumnType(DbConstants.MemoColumnType);
             builder.Property(p => p.Resolution).HasColumnType(DbConstants.MemoColumnType);
+            builder.Property(p => p.FoundByUserId).HasColumnType(DbConstants.IntegerColumnType);
+            builder.Property(p => p.FixedByByUserId).HasColumnType(DbConstants.IntegerColumnType);
 
             builder.HasOne(p => p.ErrorStatus)
                 .WithMany(p => p.Errors)
@@ -59,6 +61,17 @@ namespace RingSoft.DevLogix.DataAccess.Configurations
             builder.HasOne(p => p.AssignedTester)
                 .WithMany(p => p.AssignedTesterErrors)
                 .HasForeignKey(p => p.AssignedTesterId)
+                .OnDelete(DeleteBehavior.NoAction)
+                .IsRequired(false);
+
+            builder.HasOne(p => p.FoundByUser)
+                .WithMany(p => p.FoundByUserErrors)
+                .HasForeignKey(p => p.FoundByUserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.HasOne(p => p.FixedByUser)
+                .WithMany(p => p.FixedByUserErrors)
+                .HasForeignKey(p => p.FixedByByUserId)
                 .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired(false);
         }

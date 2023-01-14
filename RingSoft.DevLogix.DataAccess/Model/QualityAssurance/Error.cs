@@ -10,6 +10,7 @@ namespace RingSoft.DevLogix.DataAccess.Model
         public int Id { get; set; }
 
         [Required]
+        [MaxLength(50)]
         public string ErrorId { get; set; }
 
         [Required]
@@ -32,6 +33,15 @@ namespace RingSoft.DevLogix.DataAccess.Model
 
         [Required]
         public int FoundVersionId { get; set; }
+
+        [Required]
+        public int FoundByUserId { get; set; }
+
+        public virtual User FoundByUser { get; set; }
+
+        public int? FixedByByUserId { get; set; }
+
+        public virtual User FixedByUser { get; set; }
 
         public virtual ProductVersion FoundVersion { get; set; }
 
