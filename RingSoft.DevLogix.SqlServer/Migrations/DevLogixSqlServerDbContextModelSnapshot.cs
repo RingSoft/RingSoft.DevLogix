@@ -296,16 +296,13 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<int>("ErrorStatusId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("FixedByByUserId")
-                        .HasColumnType("integer");
-
                     b.Property<DateTime?>("FixedDate")
                         .HasColumnType("datetime");
 
                     b.Property<int?>("FixedVersionId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("FoundByUserId")
+                    b.Property<int?>("FoundByUserId")
                         .HasColumnType("integer");
 
                     b.Property<int>("FoundVersionId")
@@ -330,8 +327,6 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
                     b.HasIndex("ErrorStatusId");
 
-                    b.HasIndex("FixedByByUserId");
-
                     b.HasIndex("FixedVersionId");
 
                     b.HasIndex("FoundByUserId");
@@ -341,6 +336,21 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("Errors");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ErrorDeveloper", b =>
+                {
+                    b.Property<int>("ErrorId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("DeveloperId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("ErrorId", "DeveloperId");
+
+                    b.HasIndex("DeveloperId");
+
+                    b.ToTable("ErrorDevelopers");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ErrorPriority", b =>
@@ -629,11 +639,6 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "FixedByUser")
-                        .WithMany("FixedByUserErrors")
-                        .HasForeignKey("FixedByByUserId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.ProductVersion", "FixedVersion")
                         .WithMany("FixedErrors")
                         .HasForeignKey("FixedVersionId")
@@ -642,8 +647,7 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "FoundByUser")
                         .WithMany("FoundByUserErrors")
                         .HasForeignKey("FoundByUserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.ProductVersion", "FoundVersion")
                         .WithMany("FoundErrors")
@@ -665,8 +669,6 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
                     b.Navigation("ErrorStatus");
 
-                    b.Navigation("FixedByUser");
-
                     b.Navigation("FixedVersion");
 
                     b.Navigation("FoundByUser");
@@ -674,6 +676,25 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("FoundVersion");
 
                     b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ErrorDeveloper", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "Developer")
+                        .WithMany("ErrorDevelopers")
+                        .HasForeignKey("DeveloperId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.Error", "Error")
+                        .WithMany("Developers")
+                        .HasForeignKey("ErrorId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Developer");
+
+                    b.Navigation("Error");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProductVersion", b =>
@@ -752,6 +773,11 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("Users");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Error", b =>
+                {
+                    b.Navigation("Developers");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ErrorPriority", b =>
                 {
                     b.Navigation("Errors");
@@ -795,7 +821,7 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
                     b.Navigation("AssignedTesterErrors");
 
-                    b.Navigation("FixedByUserErrors");
+                    b.Navigation("ErrorDevelopers");
 
                     b.Navigation("FoundByUserErrors");
 

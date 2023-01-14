@@ -40,6 +40,7 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<ProductVersion> ProductVersions { get; set; }
         public TableDefinition<ProductVersionDepartment> ProductVersionDepartments { get; set; }
         public TableDefinition<Error> Errors { get; set; }
+        public TableDefinition<ErrorDeveloper> ErrorDevelopers { get; set; }
 
         public TableDefinition<AdvancedFind> AdvancedFinds { get; set; }
         public TableDefinition<AdvancedFindColumn> AdvancedFindColumns { get; set; }
@@ -54,7 +55,9 @@ namespace RingSoft.DevLogix.DataAccess
         public LookupDefinition<ErrorPriorityLookup, ErrorPriority> ErrorPriorityLookup { get; set; }
         public LookupDefinition<ProductLookup, Product> ProductLookup { get; set; }
         public LookupDefinition<ProductVersionLookup, ProductVersion> ProductVersionLookup { get; set; }
+        public LookupDefinition<ProductVersionDepartmentLookup, ProductVersionDepartment> ProductVersionDepartmentLookup { get; set; }
         public LookupDefinition<ErrorLookup, Error> ErrorLookup { get; set; }
+        public LookupDefinition<ErrorDeveloperLookup, ErrorDeveloper> ErrorDeveloperLookup { get; set; }
 
         public LookupDefinition<AdvancedFindLookup, AdvancedFind> AdvancedFindLookup { get; set; }
         public LookupDefinition<RecordLockingLookup, RecordLock> RecordLockingLookup { get; set; }
@@ -150,6 +153,17 @@ namespace RingSoft.DevLogix.DataAccess
 
             ProductVersions.HasLookupDefinition(ProductVersionLookup);
 
+            ProductVersionDepartmentLookup =
+                new LookupDefinition<ProductVersionDepartmentLookup, ProductVersionDepartment>(
+                    ProductVersionDepartments);
+            ProductVersionDepartmentLookup.Include(p => p.ProductVersion)
+                .AddVisibleColumnDefinition(p => p.ProductVersion, "Product Version", p => p.Description, 33);
+            ProductVersionDepartmentLookup.Include(p => p.Department)
+                .AddVisibleColumnDefinition(p => p.Department, "Department", p => p.Description, 34);
+            ProductVersionDepartmentLookup.AddVisibleColumnDefinition(p => p.ReleaseDate, "Date Released",
+                p => p.ReleaseDateTime, 33);
+            ProductVersionDepartments.HasLookupDefinition(ProductVersionDepartmentLookup);
+
             ErrorLookup = new LookupDefinition<ErrorLookup, Error>(Errors);
             ErrorLookup.AddVisibleColumnDefinition(p => p.ErrorId, "Error ID", p => p.ErrorId, 20);
             ErrorLookup.Include(p => p.ErrorStatus)
@@ -159,6 +173,12 @@ namespace RingSoft.DevLogix.DataAccess
             ErrorLookup.AddVisibleColumnDefinition(p => p.Date, "Date", p => p.ErrorDate, 20);
             Errors.HasLookupDefinition(ErrorLookup);
 
+            ErrorDeveloperLookup = new LookupDefinition<ErrorDeveloperLookup, ErrorDeveloper>(ErrorDevelopers);
+            ErrorDeveloperLookup.Include(p => p.Error)
+                .AddVisibleColumnDefinition(p => p.ErrorId, "Error Id", p => p.ErrorId, 40);
+            ErrorDeveloperLookup.Include(p => p.Developer)
+                .AddVisibleColumnDefinition(p => p.Developer, "Developer", p => p.Name, 60);
+            ErrorDevelopers.HasLookupDefinition(ErrorDeveloperLookup);
         }
 
         public LookupDefinition<ProductVersionLookup, ProductVersion> MakeProductVersionLookupDefinition()
@@ -297,6 +317,7 @@ namespace RingSoft.DevLogix.DataAccess
                 .IsMemo();
             Errors.GetFieldDefinition(p => p.Resolution)
                 .IsMemo();
+            Errors.GetFieldDefinition(p => p.FoundByUserId).CanSetNull(false);
         }
 
         public override UserAutoFill GetUserAutoFill(string userName)

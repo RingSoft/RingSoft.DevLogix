@@ -29,6 +29,7 @@ namespace RingSoft.DevLogix.SqlServer
         public DbSet<ProductVersion> ProductVersions { get; set; }
         public DbSet<ProductVersionDepartment> ProductVersionDepartments { get; set; }
         public DbSet<Error> Errors { get; set; }
+        public DbSet<ErrorDeveloper> ErrorDevelopers { get; set; }
 
         public bool IsDesignTime { get; set; }
 

@@ -21,6 +21,7 @@ namespace RingSoft.DevLogix.DataAccess
         DbSet<ProductVersion> ProductVersions { get; set; }
         DbSet<ProductVersionDepartment> ProductVersionDepartments { get; set; }
         DbSet<Error> Errors { get; set; }
+        DbSet<ErrorDeveloper> ErrorDevelopers { get; set; }
 
         void SetLookupContext(DevLogixLookupContext lookupContext);
     }

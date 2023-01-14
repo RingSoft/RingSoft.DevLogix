@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
+        xmlns:deg="clr-namespace:RingSoft.DataEntryControls.WPF.DataEntryGrid;assembly=RingSoft.DataEntryControls.WPF"
         xmlns:lc="clr-namespace:RingSoft.DbLookup.Controls.WPF;assembly=RingSoft.DbLookup.Controls.WPF"
         xmlns:ac="clr-namespace:RingSoft.App.Controls;assembly=RingSoft.App.Controls"
         xmlns:vm="clr-namespace:RingSoft.DevLogix.Library.ViewModels.QualityAssurance;assembly=RingSoft.DevLogix.Library"
@@ -74,10 +75,6 @@
             <Label Grid.Row="4" Grid.Column="0" Content="Fixed Version"/>
 
             <lc:AutoFillControl Grid.Row="4" Grid.Column="1" Setup="{Binding FixedVersionAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding FixedVersionAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left" RsIsTabStop="False"/>
-
-            <Label Grid.Row="4" Grid.Column="2" Content="Fixed By"/>
-
-            <lc:AutoFillControl Grid.Row="4" Grid.Column="3" Setup="{Binding FixedUserAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding FixedUserAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left" RsIsTabStop="False"/>
 
             <GroupBox Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Header="Product Development" IsTabStop="False">
                 <Grid>
@@ -168,6 +165,22 @@
 
                         <TextBox Grid.Row="1" Grid.Column="1" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" VerticalContentAlignment="Top" AcceptsReturn="True" Margin="5,0,0,0" Text="{Binding Resolution, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     </Grid>
+
+                </TabItem>
+
+                <TabItem Header="Developers">
+
+                    <DockPanel>
+
+                        <deg:DataEntryGrid Manager="{Binding DeveloperManager}">
+
+                            <deg:DataEntryGrid.Columns>
+
+                                <deg:DataEntryGridTextColumn ColumnId="0" Width="200" Header="Developer"/>
+
+                            </deg:DataEntryGrid.Columns>
+                        </deg:DataEntryGrid>
+                    </DockPanel>
 
                 </TabItem>
             </TabControl>

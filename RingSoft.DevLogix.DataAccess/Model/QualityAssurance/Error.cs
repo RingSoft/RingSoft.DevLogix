@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace RingSoft.DevLogix.DataAccess.Model
@@ -34,14 +35,9 @@ namespace RingSoft.DevLogix.DataAccess.Model
         [Required]
         public int FoundVersionId { get; set; }
 
-        [Required]
-        public int FoundByUserId { get; set; }
+        public int? FoundByUserId { get; set; }
 
         public virtual User FoundByUser { get; set; }
-
-        public int? FixedByByUserId { get; set; }
-
-        public virtual User FixedByUser { get; set; }
 
         public virtual ProductVersion FoundVersion { get; set; }
 
@@ -64,5 +60,12 @@ namespace RingSoft.DevLogix.DataAccess.Model
         public string Description { get; set; }
 
         public string? Resolution { get; set; }
+
+        public virtual ICollection<ErrorDeveloper> Developers { get; set; }
+
+        public Error()
+        {
+            Developers = new HashSet<ErrorDeveloper>();
+        }
     }
 }
