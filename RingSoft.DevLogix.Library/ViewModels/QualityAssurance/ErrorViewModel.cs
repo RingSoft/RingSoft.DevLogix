@@ -564,6 +564,23 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 result.ErrorId = KeyAutoFillValue.Text;
             }
 
+            if (result.FoundByUserId == 0)
+            {
+                result.FoundByUserId = null;
+                if (result.FoundByUser == null && AppGlobals.LoggedInUser != null)
+                {
+                    var message = "Found by user cannot be empty. Do you wish to set the found by user to yourself?";
+                    var caption = "Validation Check";
+                    if (ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, caption) ==
+                        MessageBoxButtonsResult.Yes)
+                    {
+                        FoundUserAutoFillValue = FoundUserAutoFillSetup.GetAutoFillValueForIdValue(AppGlobals.LoggedInUser.Id);
+                        result.FoundByUserId = AppGlobals.LoggedInUser.Id;
+                    }
+
+                }
+            }
+
             if (result.FixedVersionId == 0)
             {
                 result.FixedVersionId = null;

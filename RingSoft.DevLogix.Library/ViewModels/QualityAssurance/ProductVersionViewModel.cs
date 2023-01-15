@@ -229,6 +229,25 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             departmentLookup.FilterDefinition.AddFixedFilter(p => p.FtpAddress, Conditions.NotEqualsNull, "");
 
             DepartmentAutoFillSetup = new AutoFillSetup(departmentLookup);
+            if (LookupAddViewArgs != null && LookupAddViewArgs.ParentWindowPrimaryKeyValue != null)
+            {
+                if (LookupAddViewArgs.ParentWindowPrimaryKeyValue.TableDefinition ==
+                    AppGlobals.LookupContext.Products)
+                {
+                    var product =
+                        AppGlobals.LookupContext.Products.GetEntityFromPrimaryKeyValue(LookupAddViewArgs
+                            .ParentWindowPrimaryKeyValue);
+
+                    var field = AppGlobals.LookupContext.ProductVersions.GetFieldDefinition(p => p.ProductId);
+
+                    ViewLookupDefinition.FilterDefinition.AddFixedFilter(field, 
+                        Conditions.Equals, product.Id);
+
+                    KeyAutoFillSetup.LookupDefinition.FilterDefinition.AddFixedFilter(field, Conditions.Equals,
+                        product.Id);
+                }
+            }
+
             base.Initialize();
         }
 
