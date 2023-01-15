@@ -53,19 +53,18 @@ namespace RingSoft.DevLogix.DataAccess.Model
 
         public virtual User AssignedTester { get; set; }
 
-        public DateTime? FixedDate { get; set; }
-
-        public DateTime? PassedDate { get; set; }
-
         public string Description { get; set; }
 
         public string? Resolution { get; set; }
 
         public virtual ICollection<ErrorDeveloper> Developers { get; set; }
 
+        public virtual ICollection<ErrorQa> Testers { get; set; }
+
         public Error()
         {
             Developers = new HashSet<ErrorDeveloper>();
+            Testers = new HashSet<ErrorQa>();
         }
     }
 }

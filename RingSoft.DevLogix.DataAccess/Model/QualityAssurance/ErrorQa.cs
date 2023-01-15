@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RingSoft.DevLogix.DataAccess.Model
 {
-    public class ErrorDeveloper
+    public class ErrorQa
     {
         [Key]
         [Required]
@@ -15,11 +15,16 @@ namespace RingSoft.DevLogix.DataAccess.Model
         public virtual Error Error { get; set; }
 
         [Required]
-        public int DeveloperId { get; set; }
+        public int TesterId { get; set; }
 
-        public virtual User Developer { get; set; }
+        public virtual User Tester { get; set; }
 
         [Required]
-        public DateTime DateFixed { get; set; }
+        public int NewStatusId { get; set; }
+
+        public ErrorStatus NewErrorStatus { get; set; }
+
+        [Required]
+        public DateTime DateChanged { get; set; }
     }
 }

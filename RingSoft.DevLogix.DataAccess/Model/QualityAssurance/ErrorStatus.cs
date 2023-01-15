@@ -22,6 +22,7 @@ namespace RingSoft.DevLogix.DataAccess.Model
         public ICollection<Department> FailedDepartments { get; set; }
 
         public ICollection<Error> Errors { get; set; }
+        public ICollection<ErrorQa> ErrorTesters { get; set; }
 
         public ErrorStatus()
         {
@@ -29,6 +30,7 @@ namespace RingSoft.DevLogix.DataAccess.Model
             PassedDepartments = new HashSet<Department>();
             FailedDepartments = new HashSet<Department>();
             Errors = new HashSet<Error>();
+            ErrorTesters = new HashSet<ErrorQa>();
         }
     }
 }

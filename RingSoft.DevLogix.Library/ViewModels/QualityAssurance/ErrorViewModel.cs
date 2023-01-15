@@ -290,22 +290,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             }
         }
 
-        private DateTime? _fixedDate;
-
-        public DateTime? FixedDate
-        {
-            get => _fixedDate;
-            set
-            {
-                if (_fixedDate == value)
-                {
-                    return;
-                }
-                _fixedDate = value;
-                OnPropertyChanged();
-            }
-        }
-
         private AutoFillSetup _assignedQualityAssuranceAutoFillSetup;
 
         public AutoFillSetup AssignedQualityAssuranceAutoFillSetup
@@ -334,22 +318,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                     return;
                 }
                 _assignedQualityAssuranceAutoFillValue = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private DateTime? _passedDate;
-
-        public DateTime? PassedDate
-        {
-            get => _passedDate;
-            set
-            {
-                if (_passedDate == value)
-                {
-                    return;
-                }
-                _passedDate = value;
                 OnPropertyChanged();
             }
         }
@@ -400,10 +368,18 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             }
         }
 
+        public RelayCommand WriteOffCommand { get; set; }
 
         private IDbContext _makeErrorIdContext;
         private bool _makeErrorId;
 
+        public ErrorViewModel()
+        {
+            WriteOffCommand = new RelayCommand(() =>
+            {
+                DeveloperManager.AddNewRow();
+            });
+        }
         protected override void Initialize()
         {
             StatusAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ErrorStatusId));
@@ -510,6 +486,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 KeyAutoFillValue = KeyAutoFillSetup.GetAutoFillValueForIdValue(Id);
             }
 
+            if (MaintenanceMode == DbMaintenanceModes.EditMode)
+            {
+                WriteOffCommand.IsEnabled = true;
+            }
+
             return result;
         }
 
@@ -524,10 +505,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             FoundUserAutoFillValue = FoundUserAutoFillSetup.GetAutoFillValueForIdValue(entity.FoundByUserId);
             AssignedDeveloperAutoFillValue =
                 AssignedDeveloperAutoFillSetup.GetAutoFillValueForIdValue(entity.AssignedDeveloperId);
-            FixedDate = entity.FixedDate;
             AssignedQualityAssuranceAutoFillValue =
                 AssignedQualityAssuranceAutoFillSetup.GetAutoFillValueForIdValue(entity.AssignedTesterId);
-            PassedDate = entity.PassedDate;
             Description = entity.Description;
             Resolution = entity.Resolution;
             DeveloperManager.LoadGrid(entity.Developers);
@@ -546,9 +525,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 FoundVersionId = FoundVersionAutoFillValue.GetEntity(AppGlobals.LookupContext.ProductVersions).Id,
                 FixedVersionId = FixedVersionAutoFillValue.GetEntity(AppGlobals.LookupContext.ProductVersions).Id,
                 AssignedDeveloperId = AssignedDeveloperAutoFillValue.GetEntity(AppGlobals.LookupContext.Users).Id,
-                FixedDate = FixedDate,
                 AssignedTesterId = AssignedQualityAssuranceAutoFillValue.GetEntity(AppGlobals.LookupContext.Users).Id,
-                PassedDate = PassedDate,
                 Description = Description,
                 Resolution = Resolution,
             };
@@ -567,7 +544,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             if (result.FoundByUserId == 0)
             {
                 result.FoundByUserId = null;
-                if (result.FoundByUser == null && AppGlobals.LoggedInUser != null)
+                if (AppGlobals.LoggedInUser != null)
                 {
                     var message = "Found by user cannot be empty. Do you wish to set the found by user to yourself?";
                     var caption = "Validation Check";
@@ -610,10 +587,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 FoundUserAutoFillValue = FoundUserAutoFillSetup.GetAutoFillValueForIdValue(AppGlobals.LoggedInUser.Id);
             }
 
-            FixedDate = PassedDate = null;
             Description = Resolution = string.Empty;
             DeveloperManager.SetupForNewRecord();
-
+            WriteOffCommand.IsEnabled = false;
         }
 
         protected override bool SaveEntity(Error entity)
@@ -626,21 +602,21 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
                 if (result)
                 {
-                    var developerQuery = AppGlobals.DataRepository.GetDataContext().GetTable<ErrorDeveloper>();
-                    var developers = developerQuery.Where(p => p.ErrorId == Id).ToList();
-                    context.RemoveRange(developers);
-                    developers = DeveloperManager.GetEntityList();
-                    if (developers != null)
-                    {
-                        foreach (var developer in developers)
-                        {
-                            developer.ErrorId = entity.Id;
-                        }
+                    //var developerQuery = AppGlobals.DataRepository.GetDataContext().GetTable<ErrorDeveloper>();
+                    //var developers = developerQuery.Where(p => p.ErrorId == Id).ToList();
+                    //context.RemoveRange(developers);
+                    //var developers = DeveloperManager.GetEntityList();
+                    //if (developers != null)
+                    //{
+                    //    foreach (var developer in developers)
+                    //    {
+                    //        developer.ErrorId = entity.Id;
+                    //    }
 
-                        context.AddRange(developers);
-                    }
+                    //    context.AddRange(developers);
+                    //}
 
-                    result = context.Commit("Saving ErrorDevelopers");
+                    //result = context.Commit("Saving ErrorDevelopers");
                 }
 
             }

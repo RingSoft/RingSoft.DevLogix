@@ -81,7 +81,6 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
                     <Grid.ColumnDefinitions>
@@ -93,15 +92,11 @@
 
                     <lc:AutoFillControl Grid.Row="0" Grid.Column="1" Setup="{Binding AssignedDeveloperAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding AssignedDeveloperAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left" RsIsTabStop="False"/>
 
-                    <Label Grid.Row="1" Grid.Column="0" Content="Fixed Date"/>
-
-                    <dec:DateEditControl Grid.Row="1" Grid.Column="1" Value="{Binding FixedDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DateFormatType="DateTime" Width="200" HorizontalAlignment="Left" RsIsTabStop="False"/>
-
-                    <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center">
+                    <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center">
 
                         <Button Content="_Clipboard Copy" Width="100" IsTabStop="False"/>
 
-                        <Button Content="_Write Off" Margin="5,0,0,0" Width="100" IsTabStop="False"/>
+                        <Button Content="_Write Off" Margin="5,0,0,0" Width="100" IsTabStop="False" Command="{Binding WriteOffCommand}"/>
 
                     </StackPanel>
 
@@ -112,7 +107,6 @@
 
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
@@ -126,11 +120,7 @@
 
                     <lc:AutoFillControl Grid.Row="0" Grid.Column="1" Setup="{Binding AssignedQualityAssuranceAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding AssignedQualityAssuranceAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left" RsIsTabStop="False"/>
 
-                    <Label Grid.Row="1" Grid.Column="0" Content="Date Passed"/>
-
-                    <dec:DateEditControl Grid.Row="1" Grid.Column="1" Value="{Binding PassedDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DateFormatType="DateTime" Width="200" HorizontalAlignment="Left" RsIsTabStop="False"/>
-
-                    <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center">
+                    <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center">
 
                         <Button Content="_Pass" Width="100" IsTabStop="False"/>
 
@@ -172,11 +162,13 @@
 
                     <DockPanel>
 
-                        <deg:DataEntryGrid Manager="{Binding DeveloperManager}">
+                        <deg:DataEntryGrid Manager="{Binding DeveloperManager}" DataEntryCanUserAddRows="False" CanUserDeleteRows="False">
 
                             <deg:DataEntryGrid.Columns>
 
-                                <deg:DataEntryGridTextColumn ColumnId="0" Width="200" Header="Developer"/>
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ErrorDeveloperManager.DeveloperColumnId}" Width="200" Header="Developer"/>
+
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ErrorDeveloperManager.DateFixedColumnId}" Width="200" Header="Date Fixed"/>
 
                             </deg:DataEntryGrid.Columns>
                         </deg:DataEntryGrid>

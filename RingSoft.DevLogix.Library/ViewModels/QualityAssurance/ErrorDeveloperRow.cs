@@ -1,4 +1,6 @@
-﻿using RingSoft.DataEntryControls.Engine.DataEntryGrid;
+﻿using System;
+using RingSoft.DataEntryControls.Engine;
+using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbMaintenance;
@@ -14,6 +16,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         public AutoFillValue DeveloperAutoFillValue { get; private set; }
 
+        public DateTime FixedDate { get; private set; }
+
+        public new int RowId { get; private set; }
+
         public ErrorDeveloperRow(ErrorDeveloperManager manager) : base(manager)
         {
             Manager = manager;
@@ -22,14 +28,46 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         public override DataEntryGridCellProps GetCellProps(int columnId)
         {
-            return new DataEntryGridAutoFillCellProps(this, columnId, DeveloperAutoFillSetup, DeveloperAutoFillValue);
+            var column = (ErrorDeveloperGridColumns)columnId;
+
+            switch (column)
+            {
+                case ErrorDeveloperGridColumns.Developer:
+                    return new DataEntryGridAutoFillCellProps(this, columnId, DeveloperAutoFillSetup, DeveloperAutoFillValue);
+                case ErrorDeveloperGridColumns.DateFixed:
+                    return new DataEntryGridDateCellProps(this, columnId, new DateEditControlSetup
+                    {
+                        DateFormatType = DateFormatTypes.DateTime
+                    }, FixedDate);
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        public override DataEntryGridCellStyle GetCellStyle(int columnId)
+        {
+            return new DataEntryGridCellStyle { State = DataEntryGridCellStates.Disabled };
         }
 
         public override void SetCellValue(DataEntryGridEditingCellProps value)
         {
-            if (value is DataEntryGridAutoFillCellProps autoFillCellProps)
+            var column = (ErrorDeveloperGridColumns)value.ColumnId;
+            switch (column)
             {
-                DeveloperAutoFillValue = autoFillCellProps.AutoFillValue;
+                case ErrorDeveloperGridColumns.Developer:
+                    if (value is DataEntryGridAutoFillCellProps autoFillCellProps)
+                    {
+                        DeveloperAutoFillValue = autoFillCellProps.AutoFillValue;
+                    }
+                    break;
+                case ErrorDeveloperGridColumns.DateFixed:
+                    if (value is DataEntryGridDateCellProps dateCellProps)
+                    {
+                        FixedDate = dateCellProps.Value.Value;
+                    }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
             base.SetCellValue(value);
         }
@@ -37,6 +75,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         public override void LoadFromEntity(ErrorDeveloper entity)
         {
             DeveloperAutoFillValue = DeveloperAutoFillSetup.GetAutoFillValueForIdValue(entity.DeveloperId);
+            FixedDate = entity.DateFixed.ToLocalTime();
+            RowId = entity.Id;
         }
 
         public override bool ValidateRow()
@@ -48,6 +88,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         {
             entity.ErrorId = Manager.ViewModel.Id;
             entity.DeveloperId = DeveloperAutoFillValue.GetEntity(AppGlobals.LookupContext.Users).Id;
+            entity.DateFixed = FixedDate.ToUniversalTime();
+            entity.Id = RowId;
+        }
+
+        public void SetDeveloperProperties()
+        {
+            DeveloperAutoFillValue = DeveloperAutoFillSetup.GetAutoFillValueForIdValue(AppGlobals.LoggedInUser.Id);
+            FixedDate = DateTime.Now;
         }
     }
 }

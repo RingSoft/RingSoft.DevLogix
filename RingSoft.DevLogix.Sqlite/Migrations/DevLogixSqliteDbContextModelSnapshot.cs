@@ -285,9 +285,6 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<int>("ErrorStatusId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime?>("FixedDate")
-                        .HasColumnType("datetime");
-
                     b.Property<int?>("FixedVersionId")
                         .HasColumnType("integer");
 
@@ -296,9 +293,6 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.Property<int>("FoundVersionId")
                         .HasColumnType("integer");
-
-                    b.Property<DateTime?>("PassedDate")
-                        .HasColumnType("datetime");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("integer");
@@ -329,15 +323,24 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ErrorDeveloper", b =>
                 {
-                    b.Property<int>("ErrorId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
+
+                    b.Property<DateTime>("DateFixed")
+                        .HasColumnType("datetime");
 
                     b.Property<int>("DeveloperId")
                         .HasColumnType("integer");
 
-                    b.HasKey("ErrorId", "DeveloperId");
+                    b.Property<int>("ErrorId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("DeveloperId");
+
+                    b.HasIndex("ErrorId");
 
                     b.ToTable("ErrorDevelopers");
                 });
@@ -359,6 +362,35 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ErrorPriorities");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ErrorQa", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("DateChanged")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("ErrorId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("NewStatusId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TesterId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ErrorId");
+
+                    b.HasIndex("NewStatusId");
+
+                    b.HasIndex("TesterId");
+
+                    b.ToTable("ErrorTesters");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ErrorStatus", b =>
@@ -674,6 +706,33 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("Error");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ErrorQa", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.Error", "Error")
+                        .WithMany("Testers")
+                        .HasForeignKey("ErrorId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.ErrorStatus", "NewErrorStatus")
+                        .WithMany("ErrorTesters")
+                        .HasForeignKey("NewStatusId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "Tester")
+                        .WithMany("ErrorTesters")
+                        .HasForeignKey("TesterId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Error");
+
+                    b.Navigation("NewErrorStatus");
+
+                    b.Navigation("Tester");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProductVersion", b =>
                 {
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.Product", "Product")
@@ -753,6 +812,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Error", b =>
                 {
                     b.Navigation("Developers");
+
+                    b.Navigation("Testers");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ErrorPriority", b =>
@@ -762,6 +823,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ErrorStatus", b =>
                 {
+                    b.Navigation("ErrorTesters");
+
                     b.Navigation("Errors");
 
                     b.Navigation("FailedDepartments");
@@ -799,6 +862,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("AssignedTesterErrors");
 
                     b.Navigation("ErrorDevelopers");
+
+                    b.Navigation("ErrorTesters");
 
                     b.Navigation("FoundByUserErrors");
 

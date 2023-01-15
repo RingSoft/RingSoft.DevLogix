@@ -19,8 +19,6 @@ namespace RingSoft.DevLogix.DataAccess.Configurations
             builder.Property(p => p.FixedVersionId).HasColumnType(DbConstants.IntegerColumnType);
             builder.Property(p => p.AssignedDeveloperId).HasColumnType(DbConstants.IntegerColumnType);
             builder.Property(p => p.AssignedTesterId).HasColumnType(DbConstants.IntegerColumnType);
-            builder.Property(p => p.FixedDate).HasColumnType(DbConstants.DateColumnType);
-            builder.Property(p => p.PassedDate).HasColumnType(DbConstants.DateColumnType);
             builder.Property(p => p.Description).HasColumnType(DbConstants.MemoColumnType);
             builder.Property(p => p.Resolution).HasColumnType(DbConstants.MemoColumnType);
             builder.Property(p => p.FoundByUserId).HasColumnType(DbConstants.IntegerColumnType);

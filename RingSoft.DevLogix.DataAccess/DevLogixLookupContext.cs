@@ -41,6 +41,7 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<ProductVersionDepartment> ProductVersionDepartments { get; set; }
         public TableDefinition<Error> Errors { get; set; }
         public TableDefinition<ErrorDeveloper> ErrorDevelopers { get; set; }
+        public TableDefinition<ErrorQa> ErrorTesters { get; set; }
 
         public TableDefinition<AdvancedFind> AdvancedFinds { get; set; }
         public TableDefinition<AdvancedFindColumn> AdvancedFindColumns { get; set; }
@@ -58,6 +59,7 @@ namespace RingSoft.DevLogix.DataAccess
         public LookupDefinition<ProductVersionDepartmentLookup, ProductVersionDepartment> ProductVersionDepartmentLookup { get; set; }
         public LookupDefinition<ErrorLookup, Error> ErrorLookup { get; set; }
         public LookupDefinition<ErrorDeveloperLookup, ErrorDeveloper> ErrorDeveloperLookup { get; set; }
+        public LookupDefinition<ErrorTesterLookup, ErrorQa> ErrorTesterLookup { get; set; }
 
         public LookupDefinition<AdvancedFindLookup, AdvancedFind> AdvancedFindLookup { get; set; }
         public LookupDefinition<RecordLockingLookup, RecordLock> RecordLockingLookup { get; set; }
@@ -179,6 +181,14 @@ namespace RingSoft.DevLogix.DataAccess
             ErrorDeveloperLookup.Include(p => p.Developer)
                 .AddVisibleColumnDefinition(p => p.Developer, "Developer", p => p.Name, 60);
             ErrorDevelopers.HasLookupDefinition(ErrorDeveloperLookup);
+
+            ErrorTesterLookup = new LookupDefinition<ErrorTesterLookup, ErrorQa>(ErrorTesters);
+            ErrorTesterLookup.Include(p => p.Error)
+                .AddVisibleColumnDefinition(p => p.ErrorId, "Error Id", p => p.ErrorId, 40);
+            ErrorTesterLookup.Include(p => p.Tester)
+                .AddVisibleColumnDefinition(p => p.Tester, "Tester", p => p.Name, 60);
+            ErrorTesters.HasLookupDefinition(ErrorTesterLookup);
+
         }
 
         public LookupDefinition<ProductVersionLookup, ProductVersion> MakeProductVersionLookupDefinition()
@@ -308,9 +318,6 @@ namespace RingSoft.DevLogix.DataAccess
                 .HasDateType(DbDateTypes.DateTime);
 
             Errors.GetFieldDefinition(p => p.ErrorDate)
-                .HasDateType(DbDateTypes.DateTime)
-                .DoConvertToLocalTime();
-            Errors.GetFieldDefinition(p => p.FixedDate)
                 .HasDateType(DbDateTypes.DateTime)
                 .DoConvertToLocalTime();
             Errors.GetFieldDefinition(p => p.Description)
