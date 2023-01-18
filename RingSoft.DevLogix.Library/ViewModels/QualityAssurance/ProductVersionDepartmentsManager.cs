@@ -1,4 +1,5 @@
-﻿using RingSoft.DataEntryControls.Engine.DataEntryGrid;
+﻿using System.Linq;
+using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model;
 
@@ -30,6 +31,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             ConstructNewRowFromEntity(ProductVersionDepartment entity)
         {
             return new ProductVersionDepartmentsRow(this);
+        }
+
+        public void AddNewDepartment(int departmentId)
+        {
+            var rows = Rows.OfType<ProductVersionDepartmentsRow>();
+            var row = rows.FirstOrDefault(p => p.IsNew);
+            row.AddNewDepartment(departmentId);
+            row.IsNew = false;
+            InsertNewRow();
+            Grid?.RefreshGridView();
         }
     }
 }

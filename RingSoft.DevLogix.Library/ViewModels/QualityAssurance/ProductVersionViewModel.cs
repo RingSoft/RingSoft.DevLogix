@@ -14,6 +14,7 @@ using System.Net;
 using Newtonsoft.Json;
 using RingSoft.App.Interop;
 using RingSoft.DbMaintenance;
+using IDbContext = RingSoft.DevLogix.DataAccess.IDbContext;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 {
@@ -192,9 +193,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         public new IProductVersionView View { get; private set; }
 
+        public AutoFillValue DefaultProductAutoFillValue { get; private set; }
+
         public RelayCommand ArchiveCommand { get; private set; }
 
         public RelayCommand GetVersionCommand { get; private set; }
+
+        public RelayCommand CreateVersionCommand { get; private set; }
 
         public RelayCommand DeployCommand { get; private set; }
 
@@ -209,6 +214,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             GetVersionCommand = new RelayCommand(GetVersion);
 
             DeployCommand = new RelayCommand(DeployToDepartment);
+
+            CreateVersionCommand = new RelayCommand(CreateVersion);
         }
 
         protected override void Initialize()
@@ -246,6 +253,20 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
                     KeyAutoFillSetup.LookupDefinition.FilterDefinition.AddFixedFilter(field, Conditions.Equals,
                         product.Id);
+                }
+            }
+
+            if (LookupAddViewArgs != null && LookupAddViewArgs.ParentWindowPrimaryKeyValue != null)
+            {
+                if (LookupAddViewArgs.ParentWindowPrimaryKeyValue.TableDefinition ==
+                    AppGlobals.LookupContext.Products)
+                {
+                    var product =
+                        AppGlobals.LookupContext.Products.GetEntityFromPrimaryKeyValue(LookupAddViewArgs
+                            .ParentWindowPrimaryKeyValue);
+                    DefaultProductAutoFillValue =
+                        AppGlobals.LookupContext.OnAutoFillTextRequest(AppGlobals.LookupContext.Products,
+                            product.Id.ToString());
                 }
             }
 
@@ -307,21 +328,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         protected override void ClearData()
         {
             Id = 0;
-            ProductAutoFillValue = null;
-            if (LookupAddViewArgs != null && LookupAddViewArgs.ParentWindowPrimaryKeyValue != null)
-            {
-                if (LookupAddViewArgs.ParentWindowPrimaryKeyValue.TableDefinition ==
-                    AppGlobals.LookupContext.Products)
-                {
-                    var product =
-                        AppGlobals.LookupContext.Products.GetEntityFromPrimaryKeyValue(LookupAddViewArgs
-                            .ParentWindowPrimaryKeyValue);
-                    ProductAutoFillValue =
-                        AppGlobals.LookupContext.OnAutoFillTextRequest(AppGlobals.LookupContext.Products,
-                            product.Id.ToString());
-                }
-            }
-
+            ProductAutoFillValue = DefaultProductAutoFillValue;
             Notes = null;
             DepartmentsManager.SetupForNewRecord();
             DepartmentAutoFillValue = null;
@@ -392,6 +399,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                         if (productTable != null)
                         {
                             product = productTable.FirstOrDefault(p => p.Id == product.Id);
+                            if (product != null && product.ArchiveDepartmentId.HasValue)
+                            {
+                                AddNewDepartment(product.ArchiveDepartmentId.Value);
+                            }
                             if (product != null && !product.ArchivePath.IsNullOrEmpty() && !product.InstallerFileName.IsNullOrEmpty())
                             {
                                 var file = new FileInfo(product.InstallerFileName);
@@ -613,6 +624,126 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             ProductEnabled = ArchiveDateTime == null;
             ArchiveCommand.IsEnabled = ArchiveDateTime == null && Id > 0;
             GetVersionCommand.IsEnabled = ArchiveDateTime != null && Id > 0;
+        }
+
+        private void CreateVersion()
+        {
+            if (RecordDirty)
+            {
+                if (DoSave() != DbMaintenanceResults.Success)
+                {
+                    return;
+                }
+            }
+            OnNewButton();
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var productId = ProductAutoFillValue.GetEntity(AppGlobals.LookupContext.Products).Id;
+            if (productId == 0)
+            {
+                SetNewVersion(context, "00.85.1");
+                return;
+            }
+            var productVersionTable = context.GetTable<ProductVersion>();
+            var versionsExist = productVersionTable.Any(p =>
+                p.ProductId == productId);
+
+            if (versionsExist)
+            {
+                var lastProduct = productVersionTable.OrderBy(p => p.Id)
+                    .LastOrDefault(p => p.ProductId == productId);
+                var newVersion = CreateNewVersion(lastProduct.Description);
+                var existingProduct =
+                    productVersionTable.FirstOrDefault(p => p.ProductId == productId && p.Description == newVersion);
+                while (existingProduct != null)
+                {
+                    newVersion = CreateNewVersion(newVersion);
+                    existingProduct =
+                        productVersionTable.FirstOrDefault(p => p.ProductId == productId && p.Description == newVersion);
+                }
+                SetNewVersion(context, newVersion);
+            }
+            else
+            {
+                SetNewVersion(context, "00.85.1");
+            }
+        }
+
+        private void SetNewVersion(DataAccess.IDbContext context, string version)
+        {
+            KeyAutoFillValue = new AutoFillValue(new PrimaryKeyValue(TableDefinition), version);
+            var product = GetProduct(context);
+            if (product != null && product.CreateDepartmentId.HasValue)
+            {
+                AddNewDepartment(product.CreateDepartmentId.Value);
+            }
+        }
+
+        private Product GetProduct(IDbContext context)
+        {
+            if (ProductAutoFillValue.IsValid())
+            {
+                var productQuery = context.GetTable<Product>();
+                return productQuery.FirstOrDefault(p =>
+                    p.Id == ProductAutoFillValue.GetEntity(AppGlobals.LookupContext.Products).Id)!;
+            }
+
+            return null;
+        }
+
+
+        private void AddNewDepartment(int departmentId)
+        {
+            DepartmentsManager.AddNewDepartment(departmentId);
+            RecordDirty = true;
+        }
+
+        private string CreateNewVersion(string existingVersion)
+        {
+            var result = string.Empty;
+            var newVersion = 1;
+            var lastDecimal = existingVersion.LastIndexOf('.');
+            if (lastDecimal > -1)
+            {
+                var text = existingVersion.RightStr(existingVersion.Length - (lastDecimal + 1));
+                if (!text.IsNullOrEmpty())
+                {
+                    if (IsNumeric(text))
+                    {
+                        newVersion = text.ToInt() + 1;
+                        var leftSide = existingVersion.LeftStr(lastDecimal);
+                        if (!leftSide.IsNullOrEmpty())
+                        {
+                            return $"{leftSide}.{newVersion}";
+                        }
+                    }
+                }
+            }
+            return $"{existingVersion}.{newVersion}";
+        }
+
+        private bool IsNumeric(string version)
+        {
+            var charList = version.ToCharArray().ToList();
+            foreach (var versionChar in charList)
+            {
+                switch (versionChar)
+                {
+                    case '0':
+                    case '1':
+                    case '2':
+                    case '3':
+                    case '4':
+                    case '5':
+                    case '6':
+                    case '7':
+                    case '8':
+                    case '9':
+                        break;
+                    default:
+                        return false;
+                }
+            }
+            return true;
         }
     }
 }

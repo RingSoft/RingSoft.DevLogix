@@ -76,11 +76,26 @@ namespace RingSoft.DevLogix.QualityAssurance
         public ProductVersionMaintenanceWindow()
         {
             InitializeComponent();
+
+            TopHeaderControl.Loaded += (sender, args) =>
+            {
+                if (TopHeaderControl.CustomPanel is ProductVersionHeaderControl productVersionHeaderControl)
+                {
+                    productVersionHeaderControl.CreateVersionButton.Command =
+                        LocalViewModel.CreateVersionCommand;
+
+                    if (!AppGlobals.LookupContext.ProductVersions.HasRight(RightTypes.AllowAdd))
+                    {
+                        productVersionHeaderControl.CreateVersionButton.Visibility = Visibility.Collapsed;
+                    }
+                }
+            };
         }
 
         protected override void OnLoaded()
         {
             RegisterFormKeyControl(DescriptionControl);
+
             if (!LocalViewModel.TableDefinition.HasRight(RightTypes.AllowEdit))
             {
                 ArchiveButton.Visibility = Visibility.Collapsed;

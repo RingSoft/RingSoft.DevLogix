@@ -117,5 +117,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             entity.DepartmentId = department.Id;
             entity.ReleaseDateTime = ReleaseDateTime.Value.ToUniversalTime();
         }
+
+        public void AddNewDepartment(int departmentId)
+        {
+            DepartmentAutoFillValue = DepartmentAutoFillSetup.GetAutoFillValueForIdValue(departmentId);
+            ReleaseDateTime = DateTime.Now;
+        }
     }
 }
