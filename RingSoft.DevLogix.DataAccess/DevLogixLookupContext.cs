@@ -296,13 +296,13 @@ namespace RingSoft.DevLogix.DataAccess
         {
             Groups.PriorityLevel = 100;
 
-            Products.PriorityLevel = 100;
-            Products.GetFieldDefinition(p => p.Notes).IsMemo();
-
             ErrorStatuses.PriorityLevel = 100;
             ErrorPriorities.PriorityLevel = 100;
             
             Departments.PriorityLevel = 200;
+
+            Products.PriorityLevel = 300;
+            Products.GetFieldDefinition(p => p.Notes).IsMemo();
 
             Users.PriorityLevel = 300;
 

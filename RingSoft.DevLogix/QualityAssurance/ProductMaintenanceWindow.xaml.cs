@@ -1,13 +1,31 @@
-﻿using System.Windows;
-using System.Windows.Forms;
-using RingSoft.App.Controls;
+﻿using RingSoft.App.Controls;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels.QualityAssurance;
+using System.Windows;
+using System.Windows.Forms;
+using Button = System.Windows.Controls.Button;
 
 namespace RingSoft.DevLogix.QualityAssurance
 {
+    public class ProductHeaderControl : DbMaintenanceCustomPanel
+    {
+        public Button UpdateVersionsButton { get; set; }
+
+        static ProductHeaderControl()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(ProductHeaderControl), new FrameworkPropertyMetadata(typeof(ProductHeaderControl)));
+        }
+
+        public override void OnApplyTemplate()
+        {
+            UpdateVersionsButton = GetTemplateChild(nameof(UpdateVersionsButton)) as Button;
+
+            base.OnApplyTemplate();
+        }
+    }
+
     /// <summary>
     /// Interaction logic for ProductMaintenanceWindow.xaml
     /// </summary>

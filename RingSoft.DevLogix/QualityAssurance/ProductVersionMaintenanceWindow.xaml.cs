@@ -44,6 +44,24 @@ namespace RingSoft.DevLogix.QualityAssurance
             return true;
         }
     }
+
+    public class ProductVersionHeaderControl : DbMaintenanceCustomPanel
+    {
+        public Button CreateVersionButton { get; set; }
+
+        static ProductVersionHeaderControl()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(ProductVersionHeaderControl), new FrameworkPropertyMetadata(typeof(ProductVersionHeaderControl)));
+        }
+
+        public override void OnApplyTemplate()
+        {
+            CreateVersionButton = GetTemplateChild(nameof(CreateVersionButton)) as Button;
+
+            base.OnApplyTemplate();
+        }
+    }
+
     /// <summary>
     /// Interaction logic for ProductVersionMaintenanceWindow.xaml
     /// </summary>

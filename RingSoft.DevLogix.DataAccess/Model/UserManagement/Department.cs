@@ -47,11 +47,15 @@ namespace RingSoft.DevLogix.DataAccess.Model
 
         public virtual ICollection<User> Users { get; set; }
         public virtual ICollection<ProductVersionDepartment> ProductVersionDepartments { get; set; }
+        public virtual ICollection<Product> CreateVersionProducts { get; set; }
+        public virtual ICollection<Product> ArchiveVersionProducts { get; set; }
 
         public Department()
         {
             Users = new HashSet<User>();
             ProductVersionDepartments = new HashSet<ProductVersionDepartment>();
+            CreateVersionProducts = new HashSet<Product>();
+            ArchiveVersionProducts = new HashSet<Product>();
         }
     }
 }

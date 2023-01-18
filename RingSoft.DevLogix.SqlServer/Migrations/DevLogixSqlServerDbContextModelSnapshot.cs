@@ -462,9 +462,15 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
+                    b.Property<int?>("ArchiveDepartmentId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("ArchivePath")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
+
+                    b.Property<int?>("CreateDepartmentId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -479,6 +485,10 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .HasColumnType("ntext");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ArchiveDepartmentId");
+
+                    b.HasIndex("CreateDepartmentId");
 
                     b.ToTable("Products");
                 });
@@ -760,6 +770,23 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("Tester");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Product", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.Department", "ArchiveDepartment")
+                        .WithMany("ArchiveVersionProducts")
+                        .HasForeignKey("ArchiveDepartmentId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.Department", "CreateDepartment")
+                        .WithMany("CreateVersionProducts")
+                        .HasForeignKey("CreateDepartmentId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("ArchiveDepartment");
+
+                    b.Navigation("CreateDepartment");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProductVersion", b =>
                 {
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.Product", "Product")
@@ -831,6 +858,10 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Department", b =>
                 {
+                    b.Navigation("ArchiveVersionProducts");
+
+                    b.Navigation("CreateVersionProducts");
+
                     b.Navigation("ProductVersionDepartments");
 
                     b.Navigation("Users");

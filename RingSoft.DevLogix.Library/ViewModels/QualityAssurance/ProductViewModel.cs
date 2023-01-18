@@ -163,6 +163,72 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             }
         }
 
+        private AutoFillSetup _createDepartmentAutoFillSetup;
+
+        public AutoFillSetup CreateDepartmentAutoFillSetup
+        {
+            get => _createDepartmentAutoFillSetup;
+            set
+            {
+                if (_createDepartmentAutoFillSetup == value)
+                {
+                    return;
+                }
+                _createDepartmentAutoFillSetup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private AutoFillValue _createDepartmentAutoFillValue;
+
+        public AutoFillValue CreateDepartmentAutoFillValue
+        {
+            get => _createDepartmentAutoFillValue;
+            set
+            {
+                if (_createDepartmentAutoFillValue == value)
+                {
+                    return;
+                }
+                _createDepartmentAutoFillValue = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private AutoFillSetup _archiveDepartmentAutoFillSetup;
+
+        public AutoFillSetup ArchiveDepartmentAutoFillSetup
+        {
+            get => _archiveDepartmentAutoFillSetup;
+            set
+            {
+                if (_archiveDepartmentAutoFillSetup == value)
+                {
+                    return;
+                }
+                _archiveDepartmentAutoFillSetup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private AutoFillValue _archiveDepartmentAutoFillValue;
+
+        public AutoFillValue ArchiveDepartmentAutoFillValue
+        {
+            get => _archiveDepartmentAutoFillValue;
+            set
+            {
+                if (_archiveDepartmentAutoFillValue == value)
+                {
+                    return;
+                }
+                _archiveDepartmentAutoFillValue = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+
 
         public RelayCommand VersionsAddModifyCommand { get; set; }
 
@@ -204,6 +270,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             //lookupDefinition.InitialSortColumnDefinition = lookupDefinition.VisibleColumns[1];
 
             ProductVersionLookupDefinition = lookupDefinition;
+
+            CreateDepartmentAutoFillSetup =
+                new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.CreateDepartmentId));
+            ArchiveDepartmentAutoFillSetup =
+                new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ArchiveDepartmentId));
 
             DepartmentFilterAutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.DepartmentLookup);
             DepartmentFilterAutoFillSetup.AllowLookupAdd = false;
@@ -269,6 +340,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             InstallerFileName = entity.InstallerFileName;
             ArchivePath = entity.ArchivePath;
             AppGuid = entity.AppGuid;
+            CreateDepartmentAutoFillValue =
+                CreateDepartmentAutoFillSetup.GetAutoFillValueForIdValue(entity.CreateDepartmentId);
+            ArchiveDepartmentAutoFillValue =
+                ArchiveDepartmentAutoFillSetup.GetAutoFillValueForIdValue(entity.ArchiveDepartmentId);
         }
 
         protected override Product GetEntityData()
@@ -281,6 +356,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 InstallerFileName = InstallerFileName,
                 ArchivePath = ArchivePath,
                 AppGuid = AppGuid,
+                CreateDepartmentId = CreateDepartmentAutoFillValue.GetEntity(AppGlobals.LookupContext.Departments).Id,
+                ArchiveDepartmentId = ArchiveDepartmentAutoFillValue.GetEntity(AppGlobals.LookupContext.Departments).Id,
             };
 
             return result;
@@ -293,6 +370,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             ProductVersionLookupCommand = GetLookupCommand(LookupCommands.Clear);
             UpdateVersionsCommand.IsEnabled = false;
             InstallerFileName = ArchivePath = AppGuid = null;
+            CreateDepartmentAutoFillValue = ArchiveDepartmentAutoFillValue = null;
         }
 
         protected override bool SaveEntity(Product entity)

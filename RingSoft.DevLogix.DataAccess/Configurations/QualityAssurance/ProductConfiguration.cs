@@ -15,6 +15,20 @@ namespace RingSoft.DevLogix.DataAccess.Configurations
             builder.Property(p => p.InstallerFileName).HasColumnType(DbConstants.StringColumnType);
             builder.Property(p => p.ArchivePath).HasColumnType(DbConstants.StringColumnType);
             builder.Property(p => p.AppGuid).HasColumnType(DbConstants.StringColumnType);
+            builder.Property(p => p.CreateDepartmentId).HasColumnType(DbConstants.IntegerColumnType);
+            builder.Property(p => p.ArchiveDepartmentId).HasColumnType(DbConstants.IntegerColumnType);
+
+            builder.HasOne(p => p.CreateDepartment)
+                .WithMany(p => p.CreateVersionProducts)
+                .HasForeignKey(p => p.CreateDepartmentId)
+                .OnDelete(DeleteBehavior.NoAction)
+                .IsRequired(false);
+
+            builder.HasOne(p => p.ArchiveDepartment)
+                .WithMany(p => p.ArchiveVersionProducts)
+                .HasForeignKey(p => p.ArchiveDepartmentId)
+                .OnDelete(DeleteBehavior.NoAction)
+                .IsRequired(false);
         }
     }
 }

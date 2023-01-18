@@ -213,6 +213,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         protected override void Initialize()
         {
+            TablesToDelete.Add(AppGlobals.LookupContext.ProductVersionDepartments);
             if (base.View is IProductVersionView productVersionView)
             {
                 View = productVersionView;

@@ -22,6 +22,14 @@ namespace RingSoft.DevLogix.DataAccess.Model
         [MaxLength(50)]
         public string? AppGuid { get; set; }
 
+        public int? CreateDepartmentId { get; set; }
+
+        public virtual Department CreateDepartment { get; set; }
+
+        public int? ArchiveDepartmentId { get; set; }
+
+        public virtual Department ArchiveDepartment { get; set; }
+
         public string? Notes { get; set; }
 
         public ICollection<ProductVersion> Versions { get; set; }
