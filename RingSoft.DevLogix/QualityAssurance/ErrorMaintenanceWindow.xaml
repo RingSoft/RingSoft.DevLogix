@@ -168,12 +168,30 @@
 
                                 <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ErrorDeveloperManager.DeveloperColumnId}" Width="200" Header="Developer"/>
 
-                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ErrorDeveloperManager.DateFixedColumnId}" Width="200" Header="Date Fixed"/>
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ErrorDeveloperManager.DateFixedColumnId}" Width="150" Header="Date Fixed"/>
 
                             </deg:DataEntryGrid.Columns>
                         </deg:DataEntryGrid>
                     </DockPanel>
 
+                </TabItem>
+                <TabItem Header="Testers">
+
+                    <DockPanel>
+
+                        <deg:DataEntryGrid Manager="{Binding ErrorQaManager}">
+
+                            <deg:DataEntryGrid.Columns>
+
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ErrorQaManager.TesterColumnId}" Width="200" Header="Tester"/>
+
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ErrorQaManager.NewStatusColumnId}" Width="200" Header="New Status"/>
+
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ErrorQaManager.DateChangedColumnId}" Width="150" Header="Date Changed"/>
+
+                            </deg:DataEntryGrid.Columns>
+                        </deg:DataEntryGrid>
+                    </DockPanel>
                 </TabItem>
             </TabControl>
         </Grid>

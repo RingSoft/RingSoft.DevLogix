@@ -317,6 +317,7 @@ namespace RingSoft.DevLogix.DataAccess
             ProductVersionDepartments.GetFieldDefinition(p => p.ReleaseDateTime)
                 .HasDateType(DbDateTypes.DateTime);
 
+            Errors.PriorityLevel = 400;
             Errors.GetFieldDefinition(p => p.ErrorDate)
                 .HasDateType(DbDateTypes.DateTime)
                 .DoConvertToLocalTime();
@@ -325,6 +326,16 @@ namespace RingSoft.DevLogix.DataAccess
             Errors.GetFieldDefinition(p => p.Resolution)
                 .IsMemo();
             Errors.GetFieldDefinition(p => p.FoundByUserId).CanSetNull(false);
+
+            ErrorDevelopers.PriorityLevel = 500;
+            ErrorDevelopers.GetFieldDefinition(p => p.DateFixed)
+                .HasDateType(DbDateTypes.DateTime)
+                .DoConvertToLocalTime();
+
+            ErrorTesters.PriorityLevel = 500;
+            ErrorTesters.GetFieldDefinition(p => p.DateChanged)
+                .HasDateType(DbDateTypes.DateTime)
+                .DoConvertToLocalTime();
         }
 
         public override UserAutoFill GetUserAutoFill(string userName)

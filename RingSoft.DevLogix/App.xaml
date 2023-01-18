@@ -89,6 +89,8 @@
 
             <Style TargetType="lc:DeleteRecordWindow" BasedOn="{StaticResource BaseWindowStyle}"/>
 
+            <Style TargetType="ac:TwoTierProgressWindow" BasedOn="{StaticResource BaseWindowStyle}"/>
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -368,6 +368,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             }
         }
 
+        private ErrorQaManager _errorQaManager;
+
+        public ErrorQaManager ErrorQaManager
+        {
+            get => _errorQaManager;
+            set
+            {
+                if (_errorQaManager == value)
+                    return;
+
+                _errorQaManager = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         public RelayCommand WriteOffCommand { get; set; }
 
         private IDbContext _makeErrorIdContext;
@@ -395,7 +411,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.AssignedTesterId));
 
             DeveloperManager = new ErrorDeveloperManager(this);
+            ErrorQaManager = new ErrorQaManager(this);
+
             TablesToDelete.Add(AppGlobals.LookupContext.ErrorDevelopers);
+            TablesToDelete.Add(AppGlobals.LookupContext.ErrorTesters);
 
             base.Initialize();
         }
@@ -496,7 +515,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         protected override void LoadFromEntity(Error entity)
         {
-            ErrorDate = entity.ErrorDate;
+            ErrorDate = entity.ErrorDate.ToLocalTime();
             StatusAutoFillValue = StatusAutoFillSetup.GetAutoFillValueForIdValue(entity.ErrorStatusId);
             ProductAutoFillValue = ProductAutoFillSetup.GetAutoFillValueForIdValue(entity.ProductId);
             PriorityAutoFillValue = PriorityAutoFillSetup.GetAutoFillValueForIdValue(entity.ErrorPriorityId);
@@ -517,7 +536,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             var result = new Error
             {
                 Id = Id,
-                ErrorDate = ErrorDate,
+                ErrorDate = ErrorDate.ToUniversalTime(),
                 ErrorStatusId = StatusAutoFillValue.GetEntity(AppGlobals.LookupContext.ErrorStatuses).Id,
                 ProductId = ProductAutoFillValue.GetEntity(AppGlobals.LookupContext.Products).Id,
                 ErrorPriorityId = PriorityAutoFillValue.GetEntity(AppGlobals.LookupContext.ErrorPriorities).Id,
@@ -589,6 +608,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
             Description = Resolution = string.Empty;
             DeveloperManager.SetupForNewRecord();
+            ErrorQaManager.SetupForNewRecord();
             WriteOffCommand.IsEnabled = false;
         }
 
