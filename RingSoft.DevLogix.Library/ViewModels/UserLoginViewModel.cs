@@ -79,7 +79,8 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
             var user = AppGlobals.LookupContext.Users.GetEntityFromPrimaryKeyValue(UserAutoFillValue.PrimaryKeyValue);
             IQueryable<User> userTable = AppGlobals.DataRepository.GetDataContext().GetTable<User>();
-            userTable = userTable.Include(p => p.UserGroups).ThenInclude(p => p.Group);
+            userTable = userTable.Include(p => p.UserGroups).ThenInclude(p => p.Group)
+                .Include(p => p.Department);
             
             user = userTable.FirstOrDefault(p => p.Id == user.Id);
 

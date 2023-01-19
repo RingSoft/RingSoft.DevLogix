@@ -636,7 +636,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             if (AppGlobals.LoggedInUser != null)
             {
                 FoundUserAutoFillValue = FoundUserAutoFillSetup.GetAutoFillValueForIdValue(AppGlobals.LoggedInUser.Id);
-                SetErrorText(GetUser());
+                //SetErrorText(GetUser());
             }
 
             DeveloperManager.SetupForNewRecord();
@@ -738,18 +738,18 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         private User GetUser()
         {
-            if (AppGlobals.LoggedInUser != null)
-            {
-                var context = AppGlobals.DataRepository.GetDataContext();
-                if (context != null)
-                {
-                    var user = context.GetTable<User>().Include(p => p.Department)
-                        .FirstOrDefault(p => p.Id == AppGlobals.LoggedInUser.Id);
-                    return user;
-                }
-            }
+            //if (AppGlobals.LoggedInUser != null)
+            //{
+            //    var context = AppGlobals.DataRepository.GetDataContext();
+            //    if (context != null)
+            //    {
+            //        var user = context.GetTable<User>().Include(p => p.Department)
+            //            .FirstOrDefault(p => p.Id == AppGlobals.LoggedInUser.Id);
+            //        return user;
+            //    }
+            //}
 
-            return null;
+            return AppGlobals.LoggedInUser;
         }
 
         private void WriteOffError()
@@ -771,7 +771,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
             if (user != null && !user.Department.FixText.IsNullOrEmpty())
             {
-                InsertErrorText(user, user.Department.FixText, true);
+                InsertErrorText(user, user.Department.FixText, false);
             }
         }
 
@@ -790,11 +790,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             View.SetFocusAfterText(newText, description, true);
         }
 
-        private void SetErrorText(User user)
-        {
-            var newText = $"{user.Name} - {GblMethods.FormatDateValue(DateTime.Now, DbDateTypes.DateTime)} - ";
-            Description = newText;
-            View.SetFocusAfterText(newText, true, false);
-        }
+        //private void SetErrorText(User user)
+        //{
+        //    var newText = $"{user.Name} - {GblMethods.FormatDateValue(DateTime.Now, DbDateTypes.DateTime)} - ";
+        //    Description = newText;
+        //    View.SetFocusAfterText(newText, true, false);
+        //}
     }
 }
