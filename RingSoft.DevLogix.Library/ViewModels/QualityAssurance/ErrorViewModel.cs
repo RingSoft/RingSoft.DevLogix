@@ -9,9 +9,17 @@ using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 {
+    public interface IErrorView : IDbMaintenanceView
+    {
+        void SetFocusAfterText(string text, bool descrioption, bool setFocus);
+
+        void CopyToClipboard(string text);
+    }
+
     public class ErrorViewModel :AppDbMaintenanceViewModel<Error>
     {
         public override TableDefinition<Error> TableDefinition => AppGlobals.LookupContext.Errors;
@@ -174,6 +182,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 }
                 _foundUserAutoFillValue = value;
                 OnPropertyChanged();
+                
             }
         }
 
@@ -223,7 +232,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 }
                 _foundVersionAutoFillValue = value;
                 OnPropertyChanged();
-            }
+           }
         }
 
         private AutoFillSetup _fixedVersionAutoFillSetup;
@@ -383,21 +392,41 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             }
         }
 
+        public RelayCommand ClipboardCopyCommand { get; set; }
 
         public RelayCommand WriteOffCommand { get; set; }
+
+        public RelayCommand PassCommand { get; set; }
+
+        public RelayCommand FailCommand { get; set; }
+
+        public new IErrorView View { get; private set; }
 
         private IDbContext _makeErrorIdContext;
         private bool _makeErrorId;
 
         public ErrorViewModel()
         {
-            WriteOffCommand = new RelayCommand(() =>
+            ClipboardCopyCommand = new RelayCommand(() =>
             {
-                DeveloperManager.AddNewRow();
+                var user = GetUser();
+                if (user != null)
+                {
+                    var text =
+                        $"{user.Name} - {GblMethods.FormatDateValue(DateTime.Now, DbDateTypes.DateTime)} - {KeyAutoFillValue.Text}";
+                    View.CopyToClipboard(text);
+                }
             });
+            WriteOffCommand = new RelayCommand(WriteOffError);
+            PassCommand = new RelayCommand(PassError);
+            FailCommand = new RelayCommand(FailError);
         }
         protected override void Initialize()
         {
+            if (base.View is IErrorView errorView)
+            {
+                View = errorView;
+            }
             StatusAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ErrorStatusId));
             ProductAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ProductId));
             PriorityAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ErrorPriorityId));
@@ -490,6 +519,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             var context = AppGlobals.DataRepository.GetDataContext();
             var errorTable = context.GetTable<Error>();
             var result = errorTable.Include(p => p.Developers)
+                .Include(p => p.Testers)
                 .FirstOrDefault(p => p.Id == newEntity.Id);
             if (result != null)
             {
@@ -507,7 +537,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
             if (MaintenanceMode == DbMaintenanceModes.EditMode)
             {
-                WriteOffCommand.IsEnabled = true;
+                WriteOffCommand.IsEnabled = ClipboardCopyCommand.IsEnabled = PassCommand.IsEnabled = FailCommand.IsEnabled = true;
             }
 
             return result;
@@ -529,6 +559,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             Description = entity.Description;
             Resolution = entity.Resolution;
             DeveloperManager.LoadGrid(entity.Developers);
+            ErrorQaManager.LoadGrid(entity.Testers);
         }
 
         protected override Error GetEntityData()
@@ -601,15 +632,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             ErrorDate = DateTime.Now;
             StatusAutoFillValue = ProductAutoFillValue = PriorityAutoFillValue = FoundVersionAutoFillValue =
                 FixedVersionAutoFillValue = AssignedDeveloperAutoFillValue = AssignedQualityAssuranceAutoFillValue =  null;
+            Description = Resolution = string.Empty;
             if (AppGlobals.LoggedInUser != null)
             {
                 FoundUserAutoFillValue = FoundUserAutoFillSetup.GetAutoFillValueForIdValue(AppGlobals.LoggedInUser.Id);
+                SetErrorText(GetUser());
             }
 
-            Description = Resolution = string.Empty;
             DeveloperManager.SetupForNewRecord();
             ErrorQaManager.SetupForNewRecord();
-            WriteOffCommand.IsEnabled = false;
+            WriteOffCommand.IsEnabled = ClipboardCopyCommand.IsEnabled = PassCommand.IsEnabled = FailCommand.IsEnabled = false;
         }
 
         protected override bool SaveEntity(Error entity)
@@ -658,12 +690,111 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 var developers = developerQuery.Where(p => p.ErrorId == Id).ToList();
                 context.RemoveRange(developers);
 
+                var testersQuery = AppGlobals.DataRepository.GetDataContext().GetTable<ErrorQa>();
+                var testers = testersQuery.Where(p => p.ErrorId == Id).ToList();
+                context.RemoveRange(testers);
+
                 var entity = context.GetTable<Error>().FirstOrDefault(p => p.Id == Id);
                 return context.DeleteEntity(entity, "Deleting Error");
             }
 
             return false;
 
+        }
+
+        private void PassError()
+        {
+            var user = GetUser();
+            if (user != null && user.Department.ErrorPassStatusId.HasValue)
+            {
+                ErrorQaManager.AddNewRow(user.Department.ErrorPassStatusId.Value);
+
+                StatusAutoFillValue =
+                    StatusAutoFillSetup.GetAutoFillValueForIdValue(user.Department.ErrorPassStatusId.Value);
+
+                if (user != null && !user.Department.PassText.IsNullOrEmpty())
+                {
+                    InsertErrorText(user, user.Department.PassText, false);
+                }
+            }
+        }
+
+        private void FailError()
+        {
+            var user = GetUser();
+            if (user != null && user.Department.ErrorFailStatusId.HasValue)
+            {
+                ErrorQaManager.AddNewRow(user.Department.ErrorFailStatusId.Value);
+
+                StatusAutoFillValue =
+                    StatusAutoFillSetup.GetAutoFillValueForIdValue(user.Department.ErrorFailStatusId.Value);
+
+                if (user != null && !user.Department.FailText.IsNullOrEmpty())
+                {
+                    InsertErrorText(user, user.Department.FailText, false);
+                }
+            }
+        }
+
+        private User GetUser()
+        {
+            if (AppGlobals.LoggedInUser != null)
+            {
+                var context = AppGlobals.DataRepository.GetDataContext();
+                if (context != null)
+                {
+                    var user = context.GetTable<User>().Include(p => p.Department)
+                        .FirstOrDefault(p => p.Id == AppGlobals.LoggedInUser.Id);
+                    return user;
+                }
+            }
+
+            return null;
+        }
+
+        private void WriteOffError()
+        {
+            DeveloperManager.AddNewRow();
+
+            var versionAutoFillValue = GetVersionForUser();
+            if (versionAutoFillValue.IsValid())
+            {
+                FixedVersionAutoFillValue = versionAutoFillValue;
+            }
+
+            var user = GetUser();
+            if (user != null && user.Department.ErrorFixStatusId.HasValue)
+            {
+                StatusAutoFillValue =
+                    StatusAutoFillSetup.GetAutoFillValueForIdValue(user.Department.ErrorPassStatusId.Value);
+            }
+
+            if (user != null && !user.Department.FixText.IsNullOrEmpty())
+            {
+                InsertErrorText(user, user.Department.FixText, true);
+            }
+        }
+
+        private void InsertErrorText(User user, string text, bool description)
+        {
+            var newText = $"{user.Name} - {GblMethods.FormatDateValue(DateTime.Now, DbDateTypes.DateTime)} - {text} - ";
+            if (description)
+            {
+                Description = $"{newText}\r\n{Description}";
+            }
+            else
+            {
+                Resolution = $"{newText}\r\n{Resolution}";
+            }
+
+            View.SetFocusAfterText(newText, description, true);
+        }
+
+        private void SetErrorText(User user)
+        {
+            var newText = $"{user.Name} - {GblMethods.FormatDateValue(DateTime.Now, DbDateTypes.DateTime)} - ";
+            Description = newText;
+            View.SetFocusAfterText(newText, true, false);
         }
     }
 }

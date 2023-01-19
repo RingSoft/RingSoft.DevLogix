@@ -13,13 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using RingSoft.App.Controls;
 using RingSoft.DbMaintenance;
+using RingSoft.DevLogix.Library.ViewModels.QualityAssurance;
 
 namespace RingSoft.DevLogix.QualityAssurance
 {
     /// <summary>
     /// Interaction logic for ErrorMaintenanceWindow.xaml
     /// </summary>
-    public partial class ErrorMaintenanceWindow
+    public partial class ErrorMaintenanceWindow : IErrorView
     {
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Error";
@@ -28,6 +29,13 @@ namespace RingSoft.DevLogix.QualityAssurance
         public ErrorMaintenanceWindow()
         {
             InitializeComponent();
+            DetailsGrid.SizeChanged += DetailsGrid_SizeChanged;
+        }
+
+        private void DetailsGrid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            DescriptionTextBox.MaxWidth = DetailsGrid.ActualWidth / 2;
+            ResolutionTextBox.MaxWidth = DetailsGrid.ActualWidth / 2;
         }
 
         protected override void OnLoaded()
@@ -41,6 +49,37 @@ namespace RingSoft.DevLogix.QualityAssurance
         {
             StatusControl.Focus();
             base.ResetViewForNewRecord();
+        }
+
+        public void SetFocusAfterText(string text, bool descrioption, bool setFocus)
+        {
+            var index = text.Length;
+            if (index >= 0)
+            {
+                if (descrioption)
+                {
+                    if (setFocus)
+                    {
+                        DescriptionTextBox.Focus();
+                    }
+
+                    DescriptionTextBox.SelectionStart = index;
+                }
+                else
+                {
+                    if (setFocus)
+                    {
+                        ResolutionTextBox.Focus();
+                    }
+
+                    ResolutionTextBox.SelectionStart = index;
+                }
+            }
+        }
+
+        public void CopyToClipboard(string text)
+        {
+            Clipboard.SetText(text);
         }
     }
 }

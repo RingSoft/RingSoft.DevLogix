@@ -49,29 +49,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             return new DataEntryGridCellStyle { State = DataEntryGridCellStates.Disabled };
         }
 
-        public override void SetCellValue(DataEntryGridEditingCellProps value)
-        {
-            var column = (ErrorDeveloperGridColumns)value.ColumnId;
-            switch (column)
-            {
-                case ErrorDeveloperGridColumns.Developer:
-                    if (value is DataEntryGridAutoFillCellProps autoFillCellProps)
-                    {
-                        DeveloperAutoFillValue = autoFillCellProps.AutoFillValue;
-                    }
-                    break;
-                case ErrorDeveloperGridColumns.DateFixed:
-                    if (value is DataEntryGridDateCellProps dateCellProps)
-                    {
-                        FixedDate = dateCellProps.Value.Value;
-                    }
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-            base.SetCellValue(value);
-        }
-
         public override void LoadFromEntity(ErrorDeveloper entity)
         {
             DeveloperAutoFillValue = DeveloperAutoFillSetup.GetAutoFillValueForIdValue(entity.DeveloperId);

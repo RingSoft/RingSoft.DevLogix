@@ -94,7 +94,7 @@
 
                     <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center">
 
-                        <Button Content="_Clipboard Copy" Width="100" IsTabStop="False"/>
+                        <Button Content="_Clipboard Copy" Width="100" IsTabStop="False" Command="{Binding ClipboardCopyCommand}"/>
 
                         <Button Content="_Write Off" Margin="5,0,0,0" Width="100" IsTabStop="False" Command="{Binding WriteOffCommand}"/>
 
@@ -122,9 +122,9 @@
 
                     <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center">
 
-                        <Button Content="_Pass" Width="100" IsTabStop="False"/>
+                        <Button Content="_Pass" Width="100" IsTabStop="False" Command="{Binding PassCommand}"/>
 
-                        <Button Content="_Fail" Margin="5,0,0,0" Width="100" IsTabStop="False"/>
+                        <Button Content="_Fail" Margin="5,0,0,0" Width="100" IsTabStop="False" Command="{Binding FailCommand}"/>
 
                     </StackPanel>
 
@@ -133,9 +133,9 @@
 
             <TabControl Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="5" VerticalAlignment="Stretch">
 
-                <TabItem Header="Details" VerticalAlignment="Stretch">
+                <TabItem  Header="Details" VerticalAlignment="Stretch">
 
-                    <Grid>
+                    <Grid x:Name="DetailsGrid">
 
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -143,17 +143,18 @@
                         </Grid.RowDefinitions>
 
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="2*"/>
-                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
                         <Label Grid.Row="0" Grid.Column="0" Content="Description" HorizontalAlignment="Left"/>
 
-                        <TextBox Grid.Row="1" Grid.Column="0" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" VerticalContentAlignment="Top" AcceptsReturn="True" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBox Grid.Row="1" Grid.Column="0" x:Name="DescriptionTextBox" TextWrapping="Wrap" VerticalContentAlignment="Top" AcceptsReturn="True" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalScrollBarVisibility="Visible"/>
 
                         <Label Grid.Row="0" Grid.Column="1" Content="Resolution" HorizontalAlignment="Left" Margin="5,0,0,0"/>
 
-                        <TextBox Grid.Row="1" Grid.Column="1" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" VerticalContentAlignment="Top" AcceptsReturn="True" Margin="5,0,0,0" Text="{Binding Resolution, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBox Grid.Row="1" Grid.Column="1" x:Name="ResolutionTextBox" TextWrapping="Wrap" VerticalContentAlignment="Top" AcceptsReturn="True" Text="{Binding Resolution, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalScrollBarVisibility="Visible"/>
+
                     </Grid>
 
                 </TabItem>
@@ -179,7 +180,7 @@
 
                     <DockPanel>
 
-                        <deg:DataEntryGrid Manager="{Binding ErrorQaManager}">
+                        <deg:DataEntryGrid Manager="{Binding ErrorQaManager}" DataEntryCanUserAddRows="False" CanUserDeleteRows="False">
 
                             <deg:DataEntryGrid.Columns>
 

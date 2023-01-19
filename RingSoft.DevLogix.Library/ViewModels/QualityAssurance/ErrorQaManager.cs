@@ -32,5 +32,24 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         {
             return new ErrorQaRow(this);
         }
+
+        public void AddNewRow(int newStatusId)
+        {
+            if (AppGlobals.LoggedInUser != null)
+            {
+                var row = new ErrorQaRow(this);
+                row.SetTesterProperties(newStatusId);
+                var entity = new ErrorQa();
+                row.SaveToEntity(entity, 0);
+
+                var context = AppGlobals.DataRepository.GetDataContext();
+                if (context.SaveEntity(entity, "Saving Error Tester"))
+                {
+                    AddRow(row);
+                    Grid?.RefreshGridView();
+                }
+            }
+        }
+
     }
 }
