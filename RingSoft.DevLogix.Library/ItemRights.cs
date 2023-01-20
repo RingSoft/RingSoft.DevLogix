@@ -188,6 +188,7 @@ namespace RingSoft.DevLogix.Library
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Users", AppGlobals.LookupContext.Users));
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Groups", AppGlobals.LookupContext.Groups));
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Departments", AppGlobals.LookupContext.Departments));
+            category.Items.Add(new RightCategoryItem(item: "Add/Edit Time Clock Entries", AppGlobals.LookupContext.TimeClocks));
             Categories.Add(category);
 
             category = new RightCategory("Quality Assurance" , MenuCategories.Qa);

@@ -9,9 +9,53 @@
         xmlns:ac="clr-namespace:RingSoft.App.Controls;assembly=RingSoft.App.Controls"
         xmlns:vm="clr-namespace:RingSoft.DevLogix.Library.ViewModels.QualityAssurance;assembly=RingSoft.DevLogix.Library"
         xmlns:lm="clr-namespace:RingSoft.DevLogix.DataAccess.LookupModel;assembly=RingSoft.DevLogix.DataAccess"
+        xmlns:local="clr-namespace:RingSoft.DevLogix.QualityAssurance"
         mc:Ignorable="d"
         Style="{StaticResource BaseWindowStyle}"
         Title="Errors Maintenance" SizeToContent="WidthAndHeight" MinWidth="600" MinHeight="500">
+
+    <Window.Resources>
+
+        <Style TargetType="{x:Type local:ErrorHeaderControl}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type local:ErrorHeaderControl}">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+
+                            <Grid VerticalAlignment="Stretch">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <ac:DbMaintenanceButton Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" x:Name="PunchInButton" Content="_Punch In" ImageSource="{StaticResource AfUpImage}" Style="{StaticResource SubButton}" HorizontalContentAlignment="Left"/>
+
+                            </Grid>
+
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="{x:Type ac:DbMaintenanceTopHeaderControl}" BasedOn="{StaticResource {x:Type ac:DbMaintenanceTopHeaderControl}}">
+
+            <Setter Property="CustomPanel">
+                <Setter.Value>
+                    <local:ErrorHeaderControl/>
+                </Setter.Value>
+            </Setter>
+
+        </Style>
+    </Window.Resources>
 
     <Window.DataContext>
         <vm:ErrorViewModel x:Name="LocalViewModel"/>

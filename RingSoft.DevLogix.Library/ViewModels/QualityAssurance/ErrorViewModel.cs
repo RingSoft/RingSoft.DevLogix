@@ -18,6 +18,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         void SetFocusAfterText(string text, bool descrioption, bool setFocus);
 
         void CopyToClipboard(string text);
+
+        void PunchIn(Error error);
     }
 
     public class ErrorViewModel :AppDbMaintenanceViewModel<Error>
@@ -400,6 +402,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         public RelayCommand FailCommand { get; set; }
 
+        public RelayCommand PunchInCommand { get; set; }
+
         public new IErrorView View { get; private set; }
 
         private IDbContext _makeErrorIdContext;
@@ -420,6 +424,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             WriteOffCommand = new RelayCommand(WriteOffError);
             PassCommand = new RelayCommand(PassError);
             FailCommand = new RelayCommand(FailError);
+            PunchInCommand = new RelayCommand(() =>
+            {
+                View.PunchIn(GetError(Id));
+            });
         }
         protected override void Initialize()
         {
@@ -516,11 +524,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         protected override Error PopulatePrimaryKeyControls(Error newEntity, PrimaryKeyValue primaryKeyValue)
         {
-            var context = AppGlobals.DataRepository.GetDataContext();
-            var errorTable = context.GetTable<Error>();
-            var result = errorTable.Include(p => p.Developers)
-                .Include(p => p.Testers)
-                .FirstOrDefault(p => p.Id == newEntity.Id);
+            var result = GetError(newEntity.Id);
             if (result != null)
             {
                 Id = result.Id;
@@ -537,9 +541,21 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
             if (MaintenanceMode == DbMaintenanceModes.EditMode)
             {
-                WriteOffCommand.IsEnabled = ClipboardCopyCommand.IsEnabled = PassCommand.IsEnabled = FailCommand.IsEnabled = true;
+                WriteOffCommand.IsEnabled = ClipboardCopyCommand.IsEnabled =
+                    PassCommand.IsEnabled = FailCommand.IsEnabled = PunchInCommand.IsEnabled = true;
             }
 
+            return result;
+        }
+
+        private static Error GetError(int errorId)
+        {
+            Error newEntity;
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var errorTable = context.GetTable<Error>();
+            var result = errorTable.Include(p => p.Developers)
+                .Include(p => p.Testers)
+                .FirstOrDefault(p => p.Id == errorId);
             return result;
         }
 
@@ -641,7 +657,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
             DeveloperManager.SetupForNewRecord();
             ErrorQaManager.SetupForNewRecord();
-            WriteOffCommand.IsEnabled = ClipboardCopyCommand.IsEnabled = PassCommand.IsEnabled = FailCommand.IsEnabled = false;
+            WriteOffCommand.IsEnabled = ClipboardCopyCommand.IsEnabled = PassCommand.IsEnabled = FailCommand.IsEnabled = PunchInCommand.IsEnabled = false;
         }
 
         protected override bool SaveEntity(Error entity)

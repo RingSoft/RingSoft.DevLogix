@@ -61,10 +61,13 @@ namespace RingSoft.DevLogix.DataAccess.Model
 
         public virtual ICollection<ErrorQa> Testers { get; set; }
 
+        public virtual ICollection<TimeClock> TimeClocks { get; set; }
+
         public Error()
         {
             Developers = new HashSet<ErrorDeveloper>();
             Testers = new HashSet<ErrorQa>();
+            TimeClocks = new HashSet<TimeClock>();
         }
     }
 }

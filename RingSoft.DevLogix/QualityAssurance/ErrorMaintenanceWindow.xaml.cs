@@ -12,11 +12,33 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using RingSoft.App.Controls;
+using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbMaintenance;
+using RingSoft.DevLogix.DataAccess.Model;
+using RingSoft.DevLogix.Library;
+using RingSoft.DevLogix.Library.ViewModels;
 using RingSoft.DevLogix.Library.ViewModels.QualityAssurance;
+using RingSoft.DevLogix.UserManagement;
 
 namespace RingSoft.DevLogix.QualityAssurance
 {
+    public class ErrorHeaderControl : DbMaintenanceCustomPanel
+    {
+        public Button PunchInButton { get; set; }
+
+        static ErrorHeaderControl()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(ErrorHeaderControl), new FrameworkPropertyMetadata(typeof(ErrorHeaderControl)));
+        }
+
+        public override void OnApplyTemplate()
+        {
+            PunchInButton = GetTemplateChild(nameof(PunchInButton)) as Button;
+
+            base.OnApplyTemplate();
+        }
+    }
+
     /// <summary>
     /// Interaction logic for ErrorMaintenanceWindow.xaml
     /// </summary>
@@ -30,6 +52,20 @@ namespace RingSoft.DevLogix.QualityAssurance
         {
             InitializeComponent();
             DetailsGrid.SizeChanged += DetailsGrid_SizeChanged;
+            TopHeaderControl.Loaded += (sender, args) =>
+            {
+                if (TopHeaderControl.CustomPanel is ErrorHeaderControl errorHeaderControl)
+                {
+                    errorHeaderControl.PunchInButton.Command =
+                        LocalViewModel.PunchInCommand;
+
+                    if (!AppGlobals.LookupContext.ProductVersions.HasRight(RightTypes.AllowAdd))
+                    {
+                        errorHeaderControl.PunchInButton.Visibility = Visibility.Collapsed;
+                    }
+                }
+            };
+
         }
 
         private void DetailsGrid_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -80,6 +116,11 @@ namespace RingSoft.DevLogix.QualityAssurance
         public void CopyToClipboard(string text)
         {
             Clipboard.SetText(text);
+        }
+
+        public void PunchIn(Error error)
+        {
+            AppGlobals.MainViewModel.MainView.PunchIn(error);
         }
     }
 }

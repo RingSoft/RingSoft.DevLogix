@@ -19,6 +19,8 @@ namespace RingSoft.DevLogix.Library.ViewModels
         void ShowAdvancedFindWindow();
 
         void MakeMenu();
+
+        void PunchIn(Error error);
     }
     public class MainViewModel
     {

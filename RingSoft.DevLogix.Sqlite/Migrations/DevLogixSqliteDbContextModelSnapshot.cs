@@ -526,6 +526,39 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.ToTable("SystemMaster");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.TimeClock", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("ErrorId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal?>("MinutesSpent")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("PunchInDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("PunchOutDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ErrorId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("TimeClocks");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.User", b =>
                 {
                     b.Property<int>("Id")
@@ -790,6 +823,23 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("ProductVersion");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.TimeClock", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.Error", "Error")
+                        .WithMany("TimeClocks")
+                        .HasForeignKey("ErrorId");
+
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "User")
+                        .WithMany("TimeClocks")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Error");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.User", b =>
                 {
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.Department", "Department")
@@ -845,6 +895,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("Developers");
 
                     b.Navigation("Testers");
+
+                    b.Navigation("TimeClocks");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ErrorPriority", b =>
@@ -897,6 +949,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("ErrorTesters");
 
                     b.Navigation("FoundByUserErrors");
+
+                    b.Navigation("TimeClocks");
 
                     b.Navigation("UserGroups");
                 });

@@ -5,13 +5,16 @@ using System.Linq;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms;
 using System.Windows.Input;
 using Google.Protobuf.WellKnownTypes;
 using RingSoft.App.Controls;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Controls.WPF.AdvancedFind;
 using RingSoft.DbLookup.ModelDefinition;
+using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels;
 using RingSoft.DevLogix.UserManagement;
@@ -293,6 +296,51 @@ namespace RingSoft.DevLogix
             {
                 ShowWindow(dbMaintenanceWindow);
             }
+        }
+
+        public void PunchIn(Error error)
+        {
+            var timeClockWindow = new TimeClockMaintenanceWindow();
+            timeClockWindow.GetTimeClockError += (sender, args) =>
+            {
+                args.Error = error;
+            };
+            ShowTimeClockWindow(timeClockWindow);
+        }
+
+        private void ShowTimeClockWindow(TimeClockMaintenanceWindow timeClockWindow)
+        {
+            var activeWindow = LookupControlsGlobals.ActiveWindow;
+            var closed = false;
+            if (activeWindow != null)
+            {
+                activeWindow.Closed += (sender, args) => closed = true;
+            }
+            timeClockWindow.Closed += (sender, args) =>
+            {
+                if (!closed)
+                {
+                    activeWindow.Activate();
+                }
+            };
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var tableQuery = context.GetTable<TimeClock>();
+            var activeTimeCard =
+                tableQuery.FirstOrDefault(p => p.PunchOutDate == null && p.UserId == AppGlobals.LoggedInUser.Id);
+            if (activeTimeCard != null)
+            {
+                var message = "You currently are punched into an active time card. Do you wish to load that time card instead?";
+                var caption = "Already Punched in";
+                if (MessageBox.Show(message, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+                {
+                    AppGlobals.LookupContext.TimeClocks.LookupDefinition.ShowAddOnTheFlyWindow(AppGlobals.LookupContext.TimeClocks.GetPrimaryKeyValueFromEntity(activeTimeCard));
+                }
+                
+                return;
+            }
+            timeClockWindow.Owner = this;
+            timeClockWindow.ShowInTaskbar = false;
+            timeClockWindow.Show();
         }
     }
 }

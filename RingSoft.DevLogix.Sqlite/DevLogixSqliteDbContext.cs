@@ -22,6 +22,7 @@ namespace RingSoft.DevLogix.Sqlite
         public DbSet<User> Users { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<UsersGroup> UsersGroups { get; set; }
+        public DbSet<TimeClock> TimeClocks { get; set; }
         public DbSet<ErrorStatus> ErrorStatuses { get; set; }
         public DbSet<ErrorPriority> ErrorPriorities { get; set; }
         public DbSet<Department> Departments { get; set; }

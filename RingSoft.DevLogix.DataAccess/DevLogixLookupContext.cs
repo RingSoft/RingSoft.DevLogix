@@ -33,6 +33,7 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<Group> Groups { get; set; }
         public TableDefinition<UsersGroup> UsersGroups { get; set; }
         public TableDefinition<Department> Departments { get; set; }
+        public TableDefinition<TimeClock> TimeClocks { get; set; }
 
         public TableDefinition<ErrorStatus> ErrorStatuses { get; set; }
         public TableDefinition<ErrorPriority> ErrorPriorities { get; set; }
@@ -51,6 +52,7 @@ namespace RingSoft.DevLogix.DataAccess
         public LookupDefinition<GroupLookup, Group> GroupLookup { get; set; }
         public LookupDefinition<UsersGroupsLookup, UsersGroup> UsersGroupsLookup { get; set; }
         public LookupDefinition<DepartmentLookup, Department> DepartmentLookup { get; set; }
+        public LookupDefinition<TimeClockLookup, TimeClock> TimeClockLookup { get; set; }
 
         public LookupDefinition<ErrorStatusLookup, ErrorStatus> ErrorStatusLookup { get; set; }
         public LookupDefinition<ErrorPriorityLookup, ErrorPriority> ErrorPriorityLookup { get; set; }
@@ -132,6 +134,13 @@ namespace RingSoft.DevLogix.DataAccess
             UsersGroupsLookup.Include(p => p.Group)
                 .AddVisibleColumnDefinition(p => p.Group, "Group", p => p.Name, 50);
             UsersGroups.HasLookupDefinition(UsersGroupsLookup);
+
+            TimeClockLookup = new LookupDefinition<TimeClockLookup, TimeClock>(TimeClocks);
+            TimeClockLookup.Include(p => p.User)
+                .AddVisibleColumnDefinition(p => p.UserName, "User", p => p.Name, 50);
+            TimeClockLookup.AddVisibleColumnDefinition(p => p.PunchInDate, "Punch In Date", p => p.PunchInDate, 25);
+            TimeClockLookup.AddVisibleColumnDefinition(p => p.MinutesSpent, "Minutes Spent", p => p.MinutesSpent, 25);
+            TimeClocks.HasLookupDefinition(TimeClockLookup);
 
             ErrorStatusLookup = new LookupDefinition<ErrorStatusLookup, ErrorStatus>(ErrorStatuses);
             ErrorStatusLookup.AddVisibleColumnDefinition(p => p.Description, "Description", p => p.Description, 100);
@@ -336,6 +345,12 @@ namespace RingSoft.DevLogix.DataAccess
             ErrorTesters.GetFieldDefinition(p => p.DateChanged)
                 .HasDateType(DbDateTypes.DateTime)
                 .DoConvertToLocalTime();
+
+            TimeClocks.PriorityLevel = 600;
+            TimeClocks.GetFieldDefinition(p => p.Notes).IsMemo();
+            TimeClocks.GetFieldDefinition(p => p.PunchInDate).HasDateType(DbDateTypes.DateTime)
+                .DoConvertToLocalTime();
+            TimeClocks.GetFieldDefinition(p => p.PunchOutDate).HasDateType(DbDateTypes.DateTime).DoConvertToLocalTime();
         }
 
         public override UserAutoFill GetUserAutoFill(string userName)

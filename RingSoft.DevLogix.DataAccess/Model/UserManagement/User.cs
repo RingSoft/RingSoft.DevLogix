@@ -41,6 +41,7 @@ namespace RingSoft.DevLogix.DataAccess.Model
         public virtual  ICollection<Error> AssignedTesterErrors { get; set; }
         public virtual ICollection<ErrorDeveloper> ErrorDevelopers { get; set; }
         public virtual ICollection<ErrorQa> ErrorTesters { get; set; }
+        public virtual ICollection<TimeClock> TimeClocks { get; set; }
 
         public User()
         {
@@ -49,6 +50,7 @@ namespace RingSoft.DevLogix.DataAccess.Model
             AssignedTesterErrors = new HashSet<Error>();
             ErrorDevelopers = new HashSet<ErrorDeveloper>();
             ErrorTesters = new HashSet<ErrorQa>();
+            TimeClocks = new HashSet<TimeClock>();
         }
     }
 }
