@@ -237,7 +237,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             var context = AppGlobals.DataRepository.GetDataContext();
             var timeClock = context.GetTable<TimeClock>().FirstOrDefault(p => p.Id == newEntity.Id);
             Id = newEntity.Id;
-            PunchOutCommand.IsEnabled = false;
+            PunchOutCommand.IsEnabled = !timeClock.PunchOutDate.HasValue && timeClock.UserId == AppGlobals.LoggedInUser.Id;
             return timeClock;
         }
 
@@ -255,9 +255,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
             Notes = entity.Notes;
 
-            if (PunchOutDate == null && entity.UserId == AppGlobals.LoggedInUser.Id)
+            if (PunchOutDate == null)
             {
                 PunchIn(false);
+            }
+            else
+            {
+                StopTimer();
             }
 
             if (ErrorAutoFillValue.IsValid())
@@ -321,7 +325,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             return result;
         }
 
-        private void PunchIn(bool save)
+        public void PunchIn(bool save)
         {
             _timer.Start();
             if (save)
@@ -348,8 +352,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         public override void OnWindowClosing(CancelEventArgs e)
         {
-            _timer.Stop();
-            _timer.Enabled = false;
+            StopTimer();
             base.OnWindowClosing(e);
         }
 
@@ -357,9 +360,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         {
             PunchOutDate = DateTime.Now;
             _endDate = PunchOutDate.Value;
+            StopTimer();
+            DoSave();
+        }
+
+        private void StopTimer()
+        {
             _timer.Stop();
             _timer.Enabled = false;
-            DoSave();
         }
     }
 }

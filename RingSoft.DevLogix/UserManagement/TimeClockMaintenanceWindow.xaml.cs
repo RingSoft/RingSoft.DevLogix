@@ -65,6 +65,13 @@ namespace RingSoft.DevLogix.UserManagement
                         LocalViewModel.PunchOutCommand;
                 }
 
+                if (Processor is AppDbMaintenanceWindowProcessor processor)
+                {
+                    if (processor.MaintenanceButtonsControl is DbMaintenanceTopHeaderControl buttonsControl)
+                    {
+                        buttonsControl.SaveSelectButton.Visibility = Visibility.Collapsed;
+                    }
+                }
             };
 
         }

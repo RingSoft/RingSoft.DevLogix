@@ -359,6 +359,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 CreateDepartmentId = CreateDepartmentAutoFillValue.GetEntity(AppGlobals.LookupContext.Departments).Id,
                 ArchiveDepartmentId = ArchiveDepartmentAutoFillValue.GetEntity(AppGlobals.LookupContext.Departments).Id,
             };
+            if (result.CreateDepartmentId == 0)
+            {
+                result.CreateDepartmentId = null;
+            }
+
+            if (result.ArchiveDepartmentId == 0)
+            {
+                result.ArchiveDepartmentId = null;
+            }
 
             return result;
         }
