@@ -16,6 +16,7 @@ namespace RingSoft.DevLogix.DataAccess.Configurations
             builder.Property(p => p.UserId).HasColumnType(DbConstants.IntegerColumnType);
             builder.Property(p => p.ErrorId).HasColumnType(DbConstants.IntegerColumnType);
             builder.Property(p => p.Notes).HasColumnType(DbConstants.MemoColumnType);
+            builder.Property(p => p.AreDatesEdited).HasColumnType(DbConstants.BoolColumnType);
 
             builder.HasOne(p => p.Error)
                 .WithMany(p => p.TimeClocks)

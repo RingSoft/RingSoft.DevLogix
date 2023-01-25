@@ -559,6 +559,9 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("AreDatesEdited")
+                        .HasColumnType("bit");
+
                     b.Property<int?>("ErrorId")
                         .HasColumnType("integer");
 

@@ -93,19 +93,21 @@
 
             <Label Grid.Row="2" Grid.Column="0" Content="Punch In Date"/>
 
-            <dec:DateReadOnlyBox Grid.Row="2" Grid.Column="1" x:Name="PunchInBox" Value="{Binding PunchInDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DateFormatType="DateTime" HorizontalAlignment="Left"/>
+            <dec:DateEditControl Grid.Row="2" Grid.Column="1" x:Name="PunchInBox" Value="{Binding PunchInDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DateFormatType="DateTime" HorizontalAlignment="Left" Width="200"/>
 
             <Label Grid.Row="2" Grid.Column="2" Content="Punch Out Date"/>
 
-            <dec:DateReadOnlyBox Grid.Row="2" Grid.Column="3" Value="{Binding PunchOutDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DateFormatType="DateTime" HorizontalAlignment="Left" Width="{Binding ElementName=PunchInBox, Path=ActualWidth}"/>
+            <dec:DateEditControl Grid.Row="2" Grid.Column="3" Value="{Binding PunchOutDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DateFormatType="DateTime" HorizontalAlignment="Left" Width="200"/>
 
             <Label Grid.Row="3" Grid.Column="0" Content="Elapsed Time"/>
 
-            <dec:StringReadOnlyBox Grid.Row="3" Grid.Column="1" x:Name="ElapsedTimeBox"/>
+            <dec:StringReadOnlyBox Grid.Row="3" Grid.Column="1" x:Name="ElapsedTimeBox" />
+
+            <CheckBox Grid.Row="3" Grid.Column="2" Content="Dates Edited" IsEnabled="False" IsChecked="{Binding IsEdited, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
             <Label Grid.Row="4" Grid.Column="0" Content="Notes" VerticalAlignment="Top"/>
 
-            <dec:DataEntryMemoEditor Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3" Text="{Binding Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <dec:DataEntryMemoEditor Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3" x:Name="NotesControl" Text="{Binding Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
         </Grid>
     </DockPanel>
 

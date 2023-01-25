@@ -21,8 +21,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         void SetTimeClockMode(TimeClockModes timeClockMode);
 
-        void SetElapsedTime(string elapsedTime);
+        void SetElapsedTime();
+
+        void FocusNotes();
     }
+
     public class TimeClockMaintenanceViewModel : DevLogixDbMaintenanceViewModel<TimeClock>
     {
         public override TableDefinition<TimeClock> TableDefinition => AppGlobals.LookupContext.TimeClocks;
@@ -38,6 +41,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 {
                     return;
                 }
+
                 _id = value;
                 OnPropertyChanged();
             }
@@ -54,6 +58,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 {
                     return;
                 }
+
                 _userAutoFillSetup = value;
                 OnPropertyChanged();
             }
@@ -70,6 +75,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 {
                     return;
                 }
+
                 _userAutoFillValue = value;
                 OnPropertyChanged();
             }
@@ -86,6 +92,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 {
                     return;
                 }
+
                 _keyText = value;
                 OnPropertyChanged();
             }
@@ -102,6 +109,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 {
                     return;
                 }
+
                 _errorAutoFillSetup = value;
                 OnPropertyChanged();
             }
@@ -118,6 +126,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 {
                     return;
                 }
+
                 _errorAutoFillValue = value;
                 OnPropertyChanged();
             }
@@ -134,7 +143,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 {
                     return;
                 }
+
                 _punchInDate = value;
+                ChangePunchDates(true);
                 OnPropertyChanged();
             }
         }
@@ -150,7 +161,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 {
                     return;
                 }
+
                 _punchOutDate = value;
+                ChangePunchDates(false);
                 OnPropertyChanged();
             }
         }
@@ -166,8 +179,39 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 {
                     return;
                 }
+
                 _notes = value;
                 OnPropertyChanged();
+            }
+        }
+
+        private bool _isEdited;
+
+        public bool IsEdited
+        {
+            get => _isEdited;
+            set
+            {
+                if (_isEdited == value)
+                    return;
+                _isEdited = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _elapsedTime;
+
+        public string ElapsedTime
+        {
+            get => _elapsedTime;
+            set
+            {
+                if (_elapsedTime == value)
+                {
+                    return;
+                }
+                _elapsedTime = value;
+                //OnPropertyChanged(null, false);
             }
         }
 
@@ -179,6 +223,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         private DateTime _endDate;
         private Timer _timer = new Timer();
+        private bool _loading;
+        private bool _timerActive;
 
         public TimeClockMaintenanceViewModel()
         {
@@ -193,12 +239,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         protected override void Initialize()
         {
+            _loading = true;
             NewButtonEnabled = false;
             var punchIn = false;
             _timer.Elapsed += (sender, args) =>
             {
-                _endDate = DateTime.Now;
-                View.SetElapsedTime(GetElapsedTime());
+                if (_timerActive)
+                {
+                    _endDate = DateTime.Now;
+                    SetElapsedTime(GetElapsedTime());
+                }
             };
 
             ErrorAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ErrorId));
@@ -222,6 +272,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             {
                 PunchIn(true);
             }
+
             base.Initialize();
             if (punchIn)
             {
@@ -230,6 +281,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     DeleteButtonEnabled = true;
                 }
             }
+
+            _loading = false;
         }
 
         protected override TimeClock PopulatePrimaryKeyControls(TimeClock newEntity, PrimaryKeyValue primaryKeyValue)
@@ -237,12 +290,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             var context = AppGlobals.DataRepository.GetDataContext();
             var timeClock = context.GetTable<TimeClock>().FirstOrDefault(p => p.Id == newEntity.Id);
             Id = newEntity.Id;
-            PunchOutCommand.IsEnabled = !timeClock.PunchOutDate.HasValue && timeClock.UserId == AppGlobals.LoggedInUser.Id;
+            PunchOutCommand.IsEnabled =
+                !timeClock.PunchOutDate.HasValue && timeClock.UserId == AppGlobals.LoggedInUser.Id;
             return timeClock;
         }
 
         protected override void LoadFromEntity(TimeClock entity)
         {
+            _loading = true;
             UserAutoFillValue = UserAutoFillSetup.GetAutoFillValueForIdValue(entity.UserId);
             ErrorAutoFillValue = ErrorAutoFillSetup.GetAutoFillValueForIdValue(entity.ErrorId);
             PunchInDate = entity.PunchInDate.ToLocalTime();
@@ -251,32 +306,38 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             {
                 PunchOutDate = PunchOutDate.Value.ToLocalTime();
                 _endDate = PunchOutDate.Value;
-                View.SetElapsedTime(GetElapsedTime());
-            }
-            Notes = entity.Notes;
-
-            if (PunchOutDate == null)
-            {
-                PunchIn(false);
             }
             else
             {
-                StopTimer();
+                PunchIn(false);
             }
+
+            Notes = entity.Notes;
+            IsEdited = entity.AreDatesEdited;
 
             if (ErrorAutoFillValue.IsValid())
             {
                 KeyText = "Error";
             }
+
+            _loading = false;
+            if (PunchOutDate.HasValue)
+            {
+                ChangePunchDates(false);
+                IsEdited = entity.AreDatesEdited;
+            }
+
+            View.FocusNotes();
         }
 
         protected override TimeClock GetEntityData()
         {
-            if (PunchOutDate != null && MinutesSpent.Equals(0))
+            if (PunchOutDate != null)
             {
                 var duration = PunchOutDate.Value.Subtract(PunchInDate);
                 MinutesSpent = (decimal)duration.TotalMinutes;
             }
+
             var timeClock = new TimeClock
             {
                 Id = Id,
@@ -285,22 +346,25 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 PunchInDate = PunchInDate.ToUniversalTime(),
                 PunchOutDate = PunchOutDate,
                 MinutesSpent = MinutesSpent,
-                Notes = Notes
+                Notes = Notes,
+                AreDatesEdited = IsEdited
             };
             if (timeClock.PunchOutDate.HasValue)
             {
                 timeClock.PunchOutDate = timeClock.PunchOutDate.Value.ToUniversalTime();
             }
+
             if (timeClock.ErrorId == 0)
             {
                 timeClock.ErrorId = null;
             }
+
             return timeClock;
         }
 
         protected override void ClearData()
         {
-            
+
         }
 
         protected override bool SaveEntity(TimeClock entity)
@@ -322,12 +386,18 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     Processor.CloseWindow();
                 }
             }
+
             return result;
         }
 
         public void PunchIn(bool save)
         {
-            _timer.Start();
+            if (!_timer.Enabled)
+            {
+                _timer.Start();
+            }
+            
+            _timerActive = true;
             if (save)
             {
                 var timeClock = GetEntityData();
@@ -345,7 +415,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             var result = string.Empty;
 
             var duration = _endDate.Subtract(PunchInDate);
-            result = duration.ToString("hh\\:mm\\:ss");
+            result = $"{duration.Days.ToString("00")} {duration.ToString("hh\\:mm\\:ss")}";
 
             return result;
         }
@@ -358,16 +428,77 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         private void PunchOut()
         {
-            PunchOutDate = DateTime.Now;
-            _endDate = PunchOutDate.Value;
-            StopTimer();
-            DoSave();
+            _loading = true;
+            PunchOutSave();
+            View.FocusNotes();
+            _loading = false;
         }
 
+        private void PunchOutSave(bool save = true)
+        {
+            if (!PunchOutDate.HasValue)
+            {
+                PunchOutDate = DateTime.Now;
+            }
+
+            _endDate = PunchOutDate.Value;
+            StopTimer();
+            if (save)
+            {
+                DoSave();
+            }
+        }
         private void StopTimer()
         {
             _timer.Stop();
             _timer.Enabled = false;
+            _timerActive = false;
         }
-    }
+
+        private void ChangePunchDates(bool fromPunchIn)
+        {
+            if (_loading)
+            {
+                return;
+            }
+
+            var elapsedTime = string.Empty;
+            if (PunchOutDate.HasValue)
+            {
+                PunchOutCommand.IsEnabled = false;
+                if (!fromPunchIn)
+                {
+                    PunchOutSave(false);
+                }
+            }
+            else if (!fromPunchIn)
+            {
+                _endDate = DateTime.Now;
+                PunchIn(false);
+            }
+
+            IsEdited = true;
+            if (PunchOutDate.HasValue)
+            {
+                _endDate = PunchOutDate.Value;
+                StopTimer();
+                elapsedTime = GetElapsedTime();
+                SetElapsedTime(elapsedTime);
+            }
+            else
+            {
+                if (_timer.Enabled)
+                {
+                    elapsedTime = GetElapsedTime();
+                    SetElapsedTime(elapsedTime);
+                }
+            }
+        }
+
+        private void SetElapsedTime(string elapsedTime)
+        {
+            ElapsedTime = elapsedTime;
+            View.SetElapsedTime();
+        }
+}
 }

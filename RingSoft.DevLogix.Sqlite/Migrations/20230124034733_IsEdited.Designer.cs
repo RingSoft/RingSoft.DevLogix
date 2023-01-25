@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RingSoft.DevLogix.Sqlite;
 
@@ -10,9 +11,11 @@ using RingSoft.DevLogix.Sqlite;
 namespace RingSoft.DevLogix.Sqlite.Migrations
 {
     [DbContext(typeof(DevLogixSqliteDbContext))]
-    partial class DevLogixSqliteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230124034733_IsEdited")]
+    partial class IsEdited
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.1");
@@ -532,11 +535,11 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<bool>("AreDatesEdited")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int?>("ErrorId")
                         .HasColumnType("integer");
+
+                    b.Property<bool>("IsEdited")
+                        .HasColumnType("INTEGER");
 
                     b.Property<decimal?>("MinutesSpent")
                         .HasColumnType("TEXT");

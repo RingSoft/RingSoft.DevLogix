@@ -26,5 +26,7 @@ namespace RingSoft.DevLogix.DataAccess.Model
         public virtual Error Error { get; set; }
 
         public string? Notes { get; set; }
+
+        public bool AreDatesEdited { get; set; }
     }
 }

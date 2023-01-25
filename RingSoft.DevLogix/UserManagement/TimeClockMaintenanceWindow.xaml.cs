@@ -73,7 +73,16 @@ namespace RingSoft.DevLogix.UserManagement
                     }
                 }
             };
+            NotesControl.Loaded += (sender, args) =>
+            {
+                NotesControl.TextBox.Focus();
+            };
+        }
 
+        public override void ResetViewForNewRecord()
+        {
+            NotesControl.Focus();
+            base.ResetViewForNewRecord();
         }
 
         public Error GetError()
@@ -96,12 +105,20 @@ namespace RingSoft.DevLogix.UserManagement
             }
         }
 
-        public void SetElapsedTime(string elapsedTime)
+        public void SetElapsedTime()
         {
             Dispatcher?.Invoke(() =>
             {
-                ElapsedTimeBox.Text = elapsedTime;
+                ElapsedTimeBox.Text = LocalViewModel.ElapsedTime;
             });
+        }
+
+        public void FocusNotes()
+        {
+            if (NotesControl.TextBox != null)
+            {
+                NotesControl.TextBox.Focus();
+            }
         }
     }
 }
