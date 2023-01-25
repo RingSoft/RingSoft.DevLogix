@@ -126,6 +126,9 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<bool>("CustomDate")
                         .HasColumnType("bit");
 
+                    b.Property<byte>("DateFilterType")
+                        .HasColumnType("tinyint");
+
                     b.Property<byte>("EndLogic")
                         .HasColumnType("tinyint");
 
