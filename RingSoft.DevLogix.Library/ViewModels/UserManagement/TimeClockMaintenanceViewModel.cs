@@ -381,7 +381,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
             if (result)
             {
-                if (!context.GetTable<TimeClock>().Any())
+                if (context.GetTable<TimeClock>().Any())
+                {
+                    OnGotoNextButton();
+                }
+                else
                 {
                     Processor.CloseWindow();
                 }
