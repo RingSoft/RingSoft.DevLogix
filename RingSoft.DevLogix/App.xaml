@@ -91,6 +91,10 @@
 
             <Style TargetType="ac:TwoTierProgressWindow" BasedOn="{StaticResource BaseWindowStyle}"/>
 
+            <Style TargetType="lc:PrintingProcessingWindow" BasedOn="{StaticResource BaseWindowStyle}"/>
+
+            <Style TargetType="lc:GenericReportFilterWindow" BasedOn="{StaticResource BaseWindowStyle}"/>
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>

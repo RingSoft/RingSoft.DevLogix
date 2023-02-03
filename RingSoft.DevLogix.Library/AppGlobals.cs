@@ -64,6 +64,8 @@ namespace RingSoft.DevLogix.Library
         {
             DataRepository ??= new DataRepository();
             SystemGlobals.DataRepository = DataRepository;
+            
+            SystemGlobals.ProgramDataFolder = MasterDbContext.ProgramDataFolder;
 
             AppSplashProgress?.Invoke(null, new AppProgressArgs("Initializing Database Structure."));
 
