@@ -93,6 +93,8 @@
 
             <Style TargetType="lc:PrintingProcessingWindow" BasedOn="{StaticResource BaseWindowStyle}"/>
 
+            <Style TargetType="lc:PrintSetupWindow" BasedOn="{StaticResource BaseWindowStyle}"/>
+
             <Style TargetType="lc:GenericReportFilterWindow" BasedOn="{StaticResource BaseWindowStyle}"/>
 
         </ResourceDictionary>
