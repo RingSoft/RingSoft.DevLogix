@@ -11,7 +11,7 @@
                         xmlns:local="clr-namespace:RingSoft.DevLogix.QualityAssurance"
                         mc:Ignorable="d"
                         Style="{StaticResource BaseWindowStyle}"
-                        Title="Product Version Maintenance" SizeToContent="WidthAndHeight" MinWidth="600" MinHeight="500">
+                        Title="Product Version Maintenance" Width="600" Height="500">
 
     <Window.Resources>
 
@@ -110,7 +110,7 @@
 
             <Button Grid.Row="3" Grid.Column="2" x:Name="DeployButton" Content="Deploy" Height="20" Command="{Binding DeployCommand}"/>
 
-            <TabControl Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="5" x:Name="TabControl" VerticalAlignment="Stretch">
+            <TabControl Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="5" x:Name="TabControl">
 
                 <TabItem Header="Releases">
 
@@ -131,7 +131,7 @@
                     </DockPanel>
 
                 </TabItem>
-                <dec:DataEntryMemoTabItem Header="Notes" VerticalAlignment="Stretch">
+                <dec:DataEntryMemoTabItem Header="Notes">
                     <DockPanel>
 
                         <dec:DataEntryMemoEditor Text="{Binding Path=Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>

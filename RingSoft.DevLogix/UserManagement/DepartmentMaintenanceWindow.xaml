@@ -10,7 +10,7 @@
                          xmlns:lm="clr-namespace:RingSoft.DevLogix.DataAccess.LookupModel;assembly=RingSoft.DevLogix.DataAccess"
                          mc:Ignorable="d"
                          Style="{StaticResource BaseWindowStyle}"
-                         Title="Department Maintenance" SizeToContent="WidthAndHeight" MinWidth="600" MinHeight="500">
+                         Title="Department Maintenance" Width="650" Height="500">
     <Window.DataContext>
         <vm:DepartmentMaintenanceViewModel x:Name="LocalViewModel"/>
     </Window.DataContext>

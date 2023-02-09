@@ -11,7 +11,7 @@
                         xmlns:local="clr-namespace:RingSoft.DevLogix.QualityAssurance"
                         mc:Ignorable="d"
                         Style="{StaticResource BaseWindowStyle}"
-                        Title="Product Maintenance" SizeToContent="WidthAndHeight" MinWidth="600" MinHeight="500">
+                        Title="Product Maintenance" Width="700" Height="500">
 
     <Window.Resources>
 

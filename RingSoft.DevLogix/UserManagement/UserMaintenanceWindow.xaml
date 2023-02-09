@@ -11,7 +11,7 @@
                          xmlns:dataEntryGrid="clr-namespace:RingSoft.DataEntryControls.WPF.DataEntryGrid;assembly=RingSoft.DataEntryControls.WPF"
                          mc:Ignorable="d"
                          Style="{StaticResource BaseWindowStyle}"
-                         Title="User Maintenance" SizeToContent="WidthAndHeight" MinWidth="600" MinHeight="500">
+                         Title="User Maintenance" Width="600" Height="500">
     <Window.DataContext>
         <vm:UserMaintenanceViewModel x:Name="UserMaintenanceViewModel"/>
     </Window.DataContext>

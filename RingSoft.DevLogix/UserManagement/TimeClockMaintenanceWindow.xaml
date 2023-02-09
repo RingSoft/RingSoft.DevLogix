@@ -10,7 +10,7 @@
                         xmlns:vm="clr-namespace:RingSoft.DevLogix.Library.ViewModels.UserManagement;assembly=RingSoft.DevLogix.Library"
                         mc:Ignorable="d"
                         Style="{StaticResource BaseWindowStyle}"
-                        Title="Time Clock" SizeToContent="WidthAndHeight" MinWidth="600" MinHeight="500">
+                        Title="Time Clock" SizeToContent="WidthAndHeight" MinHeight="500" ResizeMode="NoResize">
 
     <Window.Resources>
 
@@ -76,7 +76,6 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
             <Label Grid.Row="0" Grid.Column="0" Content="Time Clock ID"/>
@@ -107,7 +106,7 @@
 
             <Label Grid.Row="4" Grid.Column="0" Content="Notes" VerticalAlignment="Top"/>
 
-            <dec:DataEntryMemoEditor Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3" x:Name="NotesControl" Text="{Binding Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <dec:DataEntryMemoEditor Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3" x:Name="NotesControl" Text="{Binding Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         </Grid>
     </DockPanel>
 

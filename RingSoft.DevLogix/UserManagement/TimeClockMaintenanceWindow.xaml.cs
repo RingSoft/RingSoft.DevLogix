@@ -76,6 +76,8 @@ namespace RingSoft.DevLogix.UserManagement
             NotesControl.Loaded += (sender, args) =>
             {
                 NotesControl.TextBox.Focus();
+                NotesControl.MaxWidth = NotesControl.ActualWidth;
+                NotesControl.MaxHeight = NotesControl.ActualHeight;
             };
         }
 
@@ -115,7 +117,7 @@ namespace RingSoft.DevLogix.UserManagement
 
         public void FocusNotes()
         {
-            if (NotesControl.TextBox != null)
+            if (NotesControl != null)
             {
                 NotesControl.TextBox.Focus();
             }
