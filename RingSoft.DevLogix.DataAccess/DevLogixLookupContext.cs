@@ -208,9 +208,13 @@ namespace RingSoft.DevLogix.DataAccess
 
             var tableDefinition = ProductVersions;
             var query = new SelectQuery(tableDefinition.TableName);
-            query.AddSelectColumn(tableDefinition.GetFieldDefinition(p => p.Id).FieldName);
-            query.AddSelectColumn(tableDefinition.GetFieldDefinition(p => p.ProductId).FieldName);
-            query.AddSelectColumn(tableDefinition.GetFieldDefinition(p => p.Description).FieldName);
+            foreach (var fieldDefinition in tableDefinition.FieldDefinitions)
+            {
+                query.AddSelectColumn(fieldDefinition.FieldName);
+            }
+            //query.AddSelectColumn(tableDefinition.GetFieldDefinition(p => p.Id).FieldName);
+            //query.AddSelectColumn(tableDefinition.GetFieldDefinition(p => p.ProductId).FieldName);
+            //query.AddSelectColumn(tableDefinition.GetFieldDefinition(p => p.Description).FieldName);
             query.AddSelectFormulaColumn("VersionDate", MakeVersionDateFormula());
             query.AddSelectFormulaColumn("MaxDepartment", MakeMaxDepartmentFormula());
 
