@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using RingSoft.DbLookup;
@@ -13,6 +14,7 @@ using RingSoft.DbLookup.QueryBuilder;
 using System.Net;
 using Newtonsoft.Json;
 using RingSoft.App.Interop;
+using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbMaintenance;
 using IDbContext = RingSoft.DevLogix.DataAccess.IDbContext;
 
@@ -270,7 +272,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 }
             }
 
+            //DbDataProcessor.ShowSqlStatementWindow();
             base.Initialize();
+        }
+
+        public override void OnWindowClosing(CancelEventArgs e)
+        {
+            DbDataProcessor.ShowSqlStatementWindow(false);
+            base.OnWindowClosing(e);
         }
 
         protected override ProductVersion PopulatePrimaryKeyControls(ProductVersion newEntity, PrimaryKeyValue primaryKeyValue)

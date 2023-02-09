@@ -2,26 +2,36 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using RingSoft.DevLogix.Sqlite;
+using RingSoft.DevLogix.SqlServer;
 
 #nullable disable
 
-namespace RingSoft.DevLogix.Sqlite.Migrations
+namespace RingSoft.DevLogix.SqlServer.Migrations
 {
-    [DbContext(typeof(DevLogixSqliteDbContext))]
-    partial class DevLogixSqliteDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(DevLogixSqlServerDbContext))]
+    [Migration("20230209035158_FtpLength")]
+    partial class FtpLength
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "7.0.1");
+            modelBuilder
+                .HasAnnotation("ProductVersion", "7.0.1")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("RingSoft.DbLookup.AdvancedFind.AdvancedFind", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<bool?>("Disabled")
                         .HasColumnType("bit");
@@ -38,10 +48,10 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .HasColumnType("integer");
 
                     b.Property<byte?>("RefreshCondition")
-                        .HasColumnType("smallint");
+                        .HasColumnType("tinyint");
 
                     b.Property<byte?>("RefreshRate")
-                        .HasColumnType("smallint");
+                        .HasColumnType("tinyint");
 
                     b.Property<int?>("RefreshValue")
                         .HasColumnType("integer");
@@ -56,7 +66,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AdvancedFinds", (string)null);
+                    b.ToTable("AdvancedFinds");
                 });
 
             modelBuilder.Entity("RingSoft.DbLookup.AdvancedFind.AdvancedFindColumn", b =>
@@ -72,10 +82,10 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .HasColumnType("nvarchar");
 
                     b.Property<byte>("DecimalFormatType")
-                        .HasColumnType("smallint");
+                        .HasColumnType("tinyint");
 
                     b.Property<byte>("FieldDataType")
-                        .HasColumnType("smallint");
+                        .HasColumnType("tinyint");
 
                     b.Property<string>("FieldName")
                         .HasMaxLength(50)
@@ -88,7 +98,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar");
 
-                    b.Property<double>("PercentWidth")
+                    b.Property<decimal>("PercentWidth")
                         .HasColumnType("numeric");
 
                     b.Property<string>("PrimaryFieldName")
@@ -105,7 +115,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasKey("AdvancedFindId", "ColumnId");
 
-                    b.ToTable("AdvancedFindColumns", (string)null);
+                    b.ToTable("AdvancedFindColumns");
                 });
 
             modelBuilder.Entity("RingSoft.DbLookup.AdvancedFind.AdvancedFindFilter", b =>
@@ -120,10 +130,10 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .HasColumnType("bit");
 
                     b.Property<byte>("DateFilterType")
-                        .HasColumnType("smallint");
+                        .HasColumnType("tinyint");
 
                     b.Property<byte>("EndLogic")
-                        .HasColumnType("smallint");
+                        .HasColumnType("tinyint");
 
                     b.Property<string>("FieldName")
                         .HasMaxLength(50)
@@ -133,17 +143,17 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .HasColumnType("ntext");
 
                     b.Property<byte>("FormulaDataType")
-                        .HasColumnType("smallint");
+                        .HasColumnType("tinyint");
 
                     b.Property<string>("FormulaDisplayValue")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
                     b.Property<byte>("LeftParentheses")
-                        .HasColumnType("smallint");
+                        .HasColumnType("tinyint");
 
                     b.Property<byte>("Operand")
-                        .HasColumnType("smallint");
+                        .HasColumnType("tinyint");
 
                     b.Property<string>("Path")
                         .HasMaxLength(1000)
@@ -158,7 +168,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .HasColumnType("nvarchar");
 
                     b.Property<byte>("RightParentheses")
-                        .HasColumnType("smallint");
+                        .HasColumnType("tinyint");
 
                     b.Property<int?>("SearchForAdvancedFindId")
                         .HasColumnType("integer");
@@ -175,7 +185,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("SearchForAdvancedFindId");
 
-                    b.ToTable("AdvancedFindFilters", (string)null);
+                    b.ToTable("AdvancedFindFilters");
                 });
 
             modelBuilder.Entity("RingSoft.DbLookup.RecordLocking.RecordLock", b =>
@@ -197,7 +207,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasKey("Table", "PrimaryKey");
 
-                    b.ToTable("RecordLocks", (string)null);
+                    b.ToTable("RecordLocks");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Department", b =>
@@ -205,6 +215,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -233,7 +245,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .HasColumnType("nvarchar");
 
                     b.Property<string>("FtpPassword")
-                        .HasMaxLength(50)
+                        .HasMaxLength(200)
                         .HasColumnType("nvarchar");
 
                     b.Property<string>("FtpUsername")
@@ -255,7 +267,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("ErrorPassStatusId");
 
-                    b.ToTable("Departments", (string)null);
+                    b.ToTable("Departments");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Error", b =>
@@ -263,6 +275,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int?>("AssignedDeveloperId")
                         .HasColumnType("integer");
@@ -321,7 +335,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Errors", (string)null);
+                    b.ToTable("Errors");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ErrorDeveloper", b =>
@@ -329,6 +343,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("DateFixed")
                         .HasColumnType("datetime");
@@ -345,7 +361,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("ErrorId");
 
-                    b.ToTable("ErrorDevelopers", (string)null);
+                    b.ToTable("ErrorDevelopers");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ErrorPriority", b =>
@@ -353,6 +369,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -364,7 +382,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ErrorPriorities", (string)null);
+                    b.ToTable("ErrorPriorities");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ErrorQa", b =>
@@ -373,8 +391,10 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
                     b.Property<DateTime>("DateChanged")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("ErrorId")
                         .HasColumnType("integer");
@@ -393,7 +413,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("TesterId");
 
-                    b.ToTable("ErrorTesters", (string)null);
+                    b.ToTable("ErrorTesters");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ErrorStatus", b =>
@@ -402,6 +422,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -409,7 +431,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ErrorStatuses", (string)null);
+                    b.ToTable("ErrorStatuses");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Group", b =>
@@ -417,6 +439,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -429,7 +453,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Groups", (string)null);
+                    b.ToTable("Groups");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Product", b =>
@@ -437,6 +461,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AppGuid")
                         .HasMaxLength(50)
@@ -470,7 +496,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("CreateDepartmentId");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProductVersion", b =>
@@ -478,6 +504,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("ArchiveDateTime")
                         .HasColumnType("datetime");
@@ -497,7 +525,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductVersions", (string)null);
+                    b.ToTable("ProductVersions");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProductVersionDepartment", b =>
@@ -515,43 +543,45 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("DepartmentId");
 
-                    b.ToTable("ProductVersionDepartments", (string)null);
+                    b.ToTable("ProductVersionDepartments");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.SystemMaster", b =>
                 {
                     b.Property<string>("OrganizationName")
                         .HasMaxLength(50)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("OrganizationName");
 
-                    b.ToTable("SystemMaster", (string)null);
+                    b.ToTable("SystemMaster");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.TimeClock", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("AreDatesEdited")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("bit");
 
                     b.Property<int?>("ErrorId")
                         .HasColumnType("integer");
 
                     b.Property<decimal?>("MinutesSpent")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Notes")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("PunchInDate")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("PunchOutDate")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
@@ -562,7 +592,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("TimeClocks", (string)null);
+                    b.ToTable("TimeClocks");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.User", b =>
@@ -570,6 +600,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("DepartmentId")
                         .HasColumnType("integer");
@@ -602,7 +634,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("DepartmentId");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.UsersGroup", b =>
@@ -617,7 +649,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("UsersGroups", (string)null);
+                    b.ToTable("UsersGroups");
                 });
 
             modelBuilder.Entity("RingSoft.DbLookup.AdvancedFind.AdvancedFindColumn", b =>

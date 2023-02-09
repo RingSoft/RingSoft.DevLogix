@@ -242,7 +242,7 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .HasColumnType("nvarchar");
 
                     b.Property<string>("FtpPassword")
-                        .HasMaxLength(50)
+                        .HasMaxLength(200)
                         .HasColumnType("nvarchar");
 
                     b.Property<string>("FtpUsername")

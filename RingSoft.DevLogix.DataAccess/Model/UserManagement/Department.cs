@@ -40,7 +40,7 @@ namespace RingSoft.DevLogix.DataAccess.Model
         [MaxLength(50)]
         public string? FtpUsername { get; set; }
 
-        [MaxLength(50)]
+        [MaxLength(200)]
         public string? FtpPassword { get; set; }
 
         public string? Notes { get; set; }
