@@ -39,4 +39,10 @@
     <Resource Include="Resources\YellowAlert.ico" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="QualityAssurance\Error.rpt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

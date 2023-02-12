@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.App.Library;
@@ -9,6 +10,7 @@ using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model;
+using RingSoft.Printing.Interop;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
@@ -428,7 +430,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             {
                 View.PunchIn(GetError(Id));
             });
+
+            PrintProcessingHeader += ErrorViewModel_PrintProcessingHeader;
         }
+
         protected override void Initialize()
         {
             if (base.View is IErrorView errorView)
@@ -806,11 +811,74 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             View.SetFocusAfterText(newText, description, true);
         }
 
-        //private void SetErrorText(User user)
-        //{
-        //    var newText = $"{user.Name} - {GblMethods.FormatDateValue(DateTime.Now, DbDateTypes.DateTime)} - ";
-        //    Description = newText;
-        //    View.SetFocusAfterText(newText, true, false);
-        //}
+        protected override void SetupPrinterArgs(PrinterSetupArgs printerSetupArgs, int stringFieldIndex = 1, int numericFieldIndex = 1,
+            int memoFieldIndex = 1)
+        {
+            printerSetupArgs.PrintingProperties.ReportType = ReportTypes.Custom;
+            printerSetupArgs.PrintingProperties.CustomReportPathFileName =
+                $"{RingSoftAppGlobals.AssemblyDirectory}\\QualityAssurance\\Error.rpt";
+
+            base.SetupPrinterArgs(printerSetupArgs, stringFieldIndex, numericFieldIndex, memoFieldIndex);
+        }
+
+        public override void ProcessPrintOutputData(PrinterSetupArgs printerSetupArgs)
+        {
+            base.ProcessPrintOutputData(printerSetupArgs);
+            var customProperties = new List<PrintingCustomProperty>();
+            customProperties.Add(new PrintingCustomProperty
+            {
+                Name = "intRecordCount",
+                Value = printerSetupArgs.TotalRecords.ToString(),
+            });
+            PrintingInteropGlobals.PropertiesProcessor.CustomProperties = customProperties;
+        }
+
+
+        private void ErrorViewModel_PrintProcessingHeader(object? sender, PrinterDataProcessedEventArgs e)
+        {
+            var errorId =
+                e.OutputRow.GetRowValue(AppGlobals.LookupContext.Errors.GetFieldDefinition(p => p.Id).FieldName)
+                    .ToInt();
+
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var errorTableQuery = context.GetTable<Error>();
+
+            var error = errorTableQuery.Include(p => p.Developers)
+                .ThenInclude(p => p.Developer)
+                .Include(p => p.Testers)
+                .ThenInclude(p => p.Tester)
+                .Include(p => p.Testers)
+                .ThenInclude(p => p.NewErrorStatus)
+                .FirstOrDefault(p => p.Id == errorId);
+
+            var detailsChunk = new List<PrintingInputDetailsRow>();
+            foreach (var errorDeveloper in error.Developers)
+            {
+                var detailRow = new PrintingInputDetailsRow();
+                detailRow.HeaderRowKey = e.HeaderRow.RowKey;
+                detailRow.TablelId = 1;
+                detailRow.StringField01 = errorDeveloper.Developer.Name;
+                detailRow.StringField02 = errorDeveloper.DateFixed.ToLocalTime()
+                    .FormatDateValue(DbDateTypes.DateTime, false);
+                detailsChunk.Add(detailRow);
+            }
+            PrintingInteropGlobals.DetailsProcessor.AddChunk(detailsChunk, e.PrinterSetup.PrintingProperties);
+            
+            detailsChunk.Clear();
+
+            foreach (var errorTester in error.Testers)
+            {
+                var detailRow = new PrintingInputDetailsRow();
+                detailRow.HeaderRowKey = e.HeaderRow.RowKey;
+                detailRow.TablelId = 2;
+                detailRow.StringField01 = errorTester.Tester.Name;
+                detailRow.StringField02 = errorTester.NewErrorStatus.Description;
+                detailRow.StringField03 = errorTester.DateChanged.ToLocalTime()
+                    .FormatDateValue(DbDateTypes.DateTime, false);
+                detailsChunk.Add(detailRow);
+            }
+
+            PrintingInteropGlobals.DetailsProcessor.AddChunk(detailsChunk, e.PrinterSetup.PrintingProperties);
+        }
     }
 }
