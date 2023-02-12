@@ -29,6 +29,8 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<RecordLock> RecordLocks { get; set; }
 
         public TableDefinition<SystemMaster> SystemMaster { get; set; }
+        public TableDefinition<DevLogixChart> DevLogixCharts { get; set; }
+        public TableDefinition<DevLogixChartBar> DevLogixChartBars { get; set; }
         public TableDefinition<User> Users { get; set; }
         public TableDefinition<Group> Groups { get; set; }
         public TableDefinition<UsersGroup> UsersGroups { get; set; }
@@ -48,6 +50,7 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<AdvancedFindColumn> AdvancedFindColumns { get; set; }
         public TableDefinition<AdvancedFindFilter> AdvancedFindFilters { get; set; }
 
+        public LookupDefinition<DevLogixChartLookup, DevLogixChart> DevLogixChartLookup { get; set; }
         public LookupDefinition<UserLookup, User> UserLookup { get; set; }
         public LookupDefinition<GroupLookup, Group> GroupLookup { get; set; }
         public LookupDefinition<UsersGroupsLookup, UsersGroup> UsersGroupsLookup { get; set; }
@@ -117,6 +120,10 @@ namespace RingSoft.DevLogix.DataAccess
         }
         protected override void InitializeLookupDefinitions()
         {
+            DevLogixChartLookup = new LookupDefinition<DevLogixChartLookup, DevLogixChart>(DevLogixCharts);
+            DevLogixChartLookup.AddVisibleColumnDefinition(p => p.Name, "Name", p => p.Name, 50);
+            DevLogixCharts.HasLookupDefinition(DevLogixChartLookup);
+            
             UserLookup = new LookupDefinition<UserLookup, User>(Users);
             UserLookup.AddVisibleColumnDefinition(p => p.UserName, "Name", p => p.Name, 70);
             UserLookup.Include(p => p.Department)

@@ -9,6 +9,8 @@ namespace RingSoft.DevLogix.DataAccess
         DbContext DbContext { get; }
 
         DbSet<SystemMaster> SystemMaster { get; set; }
+        DbSet<DevLogixChart> DevLogixCharts { get; set; }
+        DbSet<DevLogixChartBar> DevLogixChartsBars { get; set;}
 
         DbSet<User> Users { get; set; }
         DbSet<Group> Groups { get; set; }

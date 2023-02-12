@@ -19,6 +19,8 @@ namespace RingSoft.DevLogix.Sqlite
         public DbSet<AdvancedFindFilter> AdvancedFindFilters { get; set; }
         public DbContext DbContext => this;
         public DbSet<SystemMaster> SystemMaster { get; set; }
+        public DbSet<DevLogixChart> DevLogixCharts { get; set; }
+        public DbSet<DevLogixChartBar> DevLogixChartsBars { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<UsersGroup> UsersGroups { get; set; }

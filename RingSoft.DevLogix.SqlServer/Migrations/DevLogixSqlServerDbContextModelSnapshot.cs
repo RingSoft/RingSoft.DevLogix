@@ -267,6 +267,45 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.ToTable("Departments");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.DevLogixChart", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DevLogixCharts");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.DevLogixChartBar", b =>
+                {
+                    b.Property<int>("ChartId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("BarId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("AdvancedFindId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.HasKey("ChartId", "BarId");
+
+                    b.ToTable("DevLogixChartsBars");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Error", b =>
                 {
                     b.Property<int>("Id")
@@ -702,6 +741,17 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("ErrorPassStatus");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.DevLogixChartBar", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.DevLogixChart", "Chart")
+                        .WithMany("ChartBars")
+                        .HasForeignKey("ChartId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Chart");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Error", b =>
                 {
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "AssignedDeveloper")
@@ -923,6 +973,11 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("ProductVersionDepartments");
 
                     b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.DevLogixChart", b =>
+                {
+                    b.Navigation("ChartBars");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Error", b =>
