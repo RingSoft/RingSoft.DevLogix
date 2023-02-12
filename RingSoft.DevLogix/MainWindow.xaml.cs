@@ -270,6 +270,15 @@ namespace RingSoft.DevLogix
                 Command = ViewModel.LogoutCommand
             });
 
+            if (AppGlobals.LookupContext.DevLogixCharts.HasRight(RightTypes.AllowView))
+            {
+                MainMenu.Items.Add(new MenuItem()
+                {
+                    Header ="_Charts",
+                    Command = ViewModel.ShowMaintenanceWindowCommand,
+                    CommandParameter = AppGlobals.LookupContext.DevLogixCharts,
+                });
+            }
             MakeUserMenu();
             MakeQaMenu();
         }

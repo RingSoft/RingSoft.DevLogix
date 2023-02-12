@@ -200,6 +200,7 @@ namespace RingSoft.DevLogix.Library
             Categories.Add(category);
 
             category = new RightCategory("Miscellaneous", MenuCategories.Tools);
+            category.Items.Add(new RightCategoryItem(item: "Add/Edit Charts", AppGlobals.LookupContext.DevLogixCharts));
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Advanced Finds", AppGlobals.LookupContext.AdvancedFinds));
             category.Items.Add(new RightCategoryItem(item: "View Record Locks", AppGlobals.LookupContext.RecordLocks));
             Categories.Add(category);

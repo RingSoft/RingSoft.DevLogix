@@ -72,6 +72,8 @@ namespace RingSoft.DevLogix
 
             AppGlobals.LookupContext.LookupAddView += LookupContext_LookupAddView;
 
+            WindowRegistry.RegisterWindow<DevLogixChartMaintenanceWindow>(AppGlobals.LookupContext.DevLogixCharts);
+
             WindowRegistry.RegisterWindow<UserMaintenanceWindow>(AppGlobals.LookupContext.Users);
             WindowRegistry.RegisterWindow<GroupsMaintenanceWindow>(AppGlobals.LookupContext.Groups);
             WindowRegistry.RegisterWindow<DepartmentMaintenanceWindow>(AppGlobals.LookupContext.Departments);
