@@ -46,6 +46,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
         public DevLogixChartViewModel()
         {
             BarsManager = new DevLogixChartBarManager(this);
+            TablesToDelete.Add(AppGlobals.LookupContext.DevLogixChartBars);
         }
 
         protected override DevLogixChart PopulatePrimaryKeyControls(DevLogixChart newEntity, PrimaryKeyValue primaryKeyValue)
@@ -68,7 +69,11 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         protected override DevLogixChart GetEntityData()
         {
-            throw new System.NotImplementedException();
+            return new DevLogixChart()
+            {
+                Id = Id,
+                Name = KeyAutoFillValue.Text,
+            };
         }
 
         protected override void ClearData()
@@ -80,7 +85,27 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         protected override bool SaveEntity(DevLogixChart entity)
         {
-            throw new System.NotImplementedException();
+            var bars = BarsManager.GetEntityList();
+
+            var context = AppGlobals.DataRepository.GetDataContext();
+            if (context.SaveEntity(entity, "Saving Chart"))
+            {
+                var barsQuery = context.GetTable<DevLogixChartBar>();
+                var oldBars = barsQuery.Where(p => p.ChartId == Id).ToList();
+                context.RemoveRange(oldBars);
+
+                foreach (var devLogixChartBar in bars)
+                {
+                    devLogixChartBar.ChartId = entity.Id;
+                }
+                context.AddRange(bars);
+                if (context.Commit("Saving Bars"))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         protected override bool DeleteEntity()

@@ -65,17 +65,20 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         public override void LoadFromEntity(DevLogixChartBar entity)
         {
-            throw new System.NotImplementedException();
+            AutoFillValue = AutoFillSetup.GetAutoFillValueForIdValue(entity.AdvancedFindId);
+            Name = entity.Name;
         }
 
         public override bool ValidateRow()
         {
-            throw new System.NotImplementedException();
+            return true;
         }
 
         public override void SaveToEntity(DevLogixChartBar entity, int rowIndex)
         {
-            throw new System.NotImplementedException();
+            entity.BarId = rowIndex;
+            entity.AdvancedFindId = AutoFillValue.GetEntity(AppGlobals.LookupContext.AdvancedFinds).Id;
+            entity.Name = Name;
         }
     }
 }
