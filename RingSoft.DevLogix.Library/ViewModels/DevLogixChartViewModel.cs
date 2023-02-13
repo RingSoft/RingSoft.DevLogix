@@ -83,7 +83,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
             {
                 return;
             }
-            ChartViewModel.View.UpdateBars(BarsManager.Rows.OfType<DevLogixChartBarRow>().ToList());
+            ChartViewModel.View.UpdateBars(BarsManager.GetEntityList());
         }
 
         protected override DevLogixChart PopulatePrimaryKeyControls(DevLogixChart newEntity, PrimaryKeyValue primaryKeyValue)

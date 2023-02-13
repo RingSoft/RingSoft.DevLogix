@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.VisualBasic.Devices;
+using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels;
 using ScottPlot;
@@ -88,7 +89,7 @@ namespace RingSoft.DevLogix
 
         }
 
-        public void UpdateBars(List<DevLogixChartBarRow> rows)
+        public void UpdateBars(List<DevLogixChartBar> rows)
         {
             _yLimit = 0;
             var bars = RedrawBars();

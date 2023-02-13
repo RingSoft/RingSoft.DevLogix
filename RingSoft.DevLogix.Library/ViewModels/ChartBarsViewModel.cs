@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using RingSoft.DevLogix.DataAccess.Model;
 
 namespace RingSoft.DevLogix.Library.ViewModels
 {
     public interface IChartBarsView
     {
-        void UpdateBars(List<DevLogixChartBarRow> rows);
+        void UpdateBars(List<DevLogixChartBar> rows);
     }
     public class ChartBarsViewModel : INotifyPropertyChanged
     {
