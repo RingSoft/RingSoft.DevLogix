@@ -1,4 +1,5 @@
 ﻿using System;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
@@ -30,7 +31,9 @@ namespace RingSoft.DevLogix.Library.ViewModels
             switch (column)
             {
                 case ChartBarColumns.AdvFind:
-                    return new DataEntryGridAutoFillCellProps(this, columnId, AutoFillSetup, AutoFillValue);
+                    var props = new DataEntryGridAutoFillCellProps(this, columnId, AutoFillSetup, AutoFillValue);
+                    props.AlwaysUpdateOnSelect = true;
+                    return props;
                 case ChartBarColumns.Name:
                     return new DataEntryGridTextCellProps(this, columnId, Name);
                 default:
@@ -48,6 +51,10 @@ namespace RingSoft.DevLogix.Library.ViewModels
                     if (value is DataEntryGridAutoFillCellProps autoFillCellProps)
                     {
                         AutoFillValue = autoFillCellProps.AutoFillValue;
+                        if (Name.IsNullOrEmpty() && AutoFillValue.IsValid())
+                        {
+                            Name = AutoFillValue.Text;
+                        }
                     }
                     break;
                 case ChartBarColumns.Name:
@@ -71,6 +78,31 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         public override bool ValidateRow()
         {
+            if (IsNew)
+            {
+                return true;
+            }
+            if (!AutoFillValue.IsValid())
+            {
+                Manager.ViewModel.View.OnValGridFail();
+
+                var message = "Advanced Find contains an invalid value.";
+                var caption = "Validation Fail";
+                ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
+                Manager.Grid?.GotoCell(this, DevLogixChartBarManager.AdvFindColumnId);
+                return false;
+            }
+
+            if (Name.IsNullOrEmpty())
+            {
+                Manager.ViewModel.View.OnValGridFail();
+
+                var message = "Name must have a value.";
+                var caption = "Validation Fail";
+                ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
+                Manager.Grid?.GotoCell(this, DevLogixChartBarManager.NameColumnId);
+                return false;
+            }
             return true;
         }
 

@@ -45,6 +45,12 @@
 
             <TabControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" x:Name="TabControl" VerticalAlignment="Stretch" >
 
+                <TabItem Header="Chart" VerticalAlignment="Stretch">
+
+                    <local:ChartBarsControl x:Name="ChartBarsControl"/>
+
+                </TabItem>
+
                 <TabItem Header="Bar Definitions" x:Name="BarsTab" VerticalAlignment="Stretch">
 
                     <DockPanel>

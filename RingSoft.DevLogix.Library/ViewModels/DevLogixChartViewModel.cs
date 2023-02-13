@@ -4,9 +4,15 @@ using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.Library.ViewModels.UserManagement;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using RingSoft.DbMaintenance;
 
 namespace RingSoft.DevLogix.Library.ViewModels
 {
+    public interface IChartWindowView : IDbMaintenanceView
+    {
+        public void OnValGridFail();
+    }
+
     public class DevLogixChartViewModel : DevLogixDbMaintenanceViewModel<DevLogixChart>
     {
         private int _id;
@@ -43,10 +49,41 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         public override TableDefinition<DevLogixChart> TableDefinition => AppGlobals.LookupContext.DevLogixCharts;
 
+        public new IChartWindowView View { get; set; }
+
+        public ChartBarsViewModel ChartViewModel { get; set; }
+
         public DevLogixChartViewModel()
         {
             BarsManager = new DevLogixChartBarManager(this);
             TablesToDelete.Add(AppGlobals.LookupContext.DevLogixChartBars);
+        }
+
+        protected override void Initialize()
+        {
+            if (base.View is IChartWindowView view)
+            {
+                View = view;
+            }
+            base.Initialize();
+        }
+
+        public void SetChartViewModel(ChartBarsViewModel chartBarsViewModel)
+        {
+            ChartViewModel = chartBarsViewModel;
+            if (MaintenanceMode == DbMaintenanceModes.EditMode)
+            {
+                RefreshChart();
+            }
+        }
+
+        public void RefreshChart()
+        {
+            if (ChartViewModel == null)
+            {
+                return;
+            }
+            ChartViewModel.View.UpdateBars(BarsManager.Rows.OfType<DevLogixChartBarRow>().ToList());
         }
 
         protected override DevLogixChart PopulatePrimaryKeyControls(DevLogixChart newEntity, PrimaryKeyValue primaryKeyValue)
@@ -59,12 +96,13 @@ namespace RingSoft.DevLogix.Library.ViewModels
             KeyAutoFillValue = AppGlobals.LookupContext.OnAutoFillTextRequest(TableDefinition, Id.ToString());
             
             return result;
-
         }
 
         protected override void LoadFromEntity(DevLogixChart entity)
         {
             BarsManager.LoadGrid(entity.ChartBars);
+
+            RefreshChart();
         }
 
         protected override DevLogixChart GetEntityData()
@@ -81,6 +119,16 @@ namespace RingSoft.DevLogix.Library.ViewModels
             Id = 0;
             KeyAutoFillValue = null;
             BarsManager.SetupForNewRecord();
+        }
+
+        protected override bool ValidateEntity(DevLogixChart entity)
+        {
+            if (!BarsManager.ValidateGrid())
+            {
+                return false;
+            }
+
+            return base.ValidateEntity(entity);
         }
 
         protected override bool SaveEntity(DevLogixChart entity)
@@ -110,7 +158,17 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         protected override bool DeleteEntity()
         {
-            throw new System.NotImplementedException();
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var bars = context.GetTable<DevLogixChartBar>().Where(p => p.ChartId == Id).ToList();
+            context.RemoveRange(bars);
+
+            var chart = context.GetTable<DevLogixChart>().FirstOrDefault(p => p.Id == Id);
+            if (context.DeleteNoCommitEntity(chart, "Deleting Chart"))
+            {
+                return context.Commit("Deleting Chart");
+            }
+
+            return false;
         }
     }
 }

@@ -6,8 +6,8 @@ namespace RingSoft.DevLogix.Library.ViewModels
 {
     public enum ChartBarColumns
     {
-        AdvFind = 0,
-        Name = 1,
+        AdvFind = 1,
+        Name = 2,
     }
 
     public class DevLogixChartBarManager : DbMaintenanceDataEntryGridManager<DevLogixChartBar>

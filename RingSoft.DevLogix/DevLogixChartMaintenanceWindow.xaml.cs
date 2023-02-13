@@ -1,25 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using RingSoft.App.Controls;
+﻿using RingSoft.App.Controls;
 using RingSoft.DbMaintenance;
+using RingSoft.DevLogix.Library.ViewModels;
 
 namespace RingSoft.DevLogix
 {
     /// <summary>
     /// Interaction logic for DevLogixChartMaintenanceWindow.xaml
     /// </summary>
-    public partial class DevLogixChartMaintenanceWindow
+    public partial class DevLogixChartMaintenanceWindow : IChartWindowView
     {
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Chart";
@@ -28,6 +16,11 @@ namespace RingSoft.DevLogix
         public DevLogixChartMaintenanceWindow()
         {
             InitializeComponent();
+
+            ChartBarsControl.Loaded += (sender, args) =>
+            {
+                LocalViewModel.SetChartViewModel(ChartBarsControl.ViewModel);
+            };
         }
 
         protected override void OnLoaded()
@@ -42,5 +35,9 @@ namespace RingSoft.DevLogix
             base.ResetViewForNewRecord();
         }
 
+        public void OnValGridFail()
+        {
+            TabControl.SelectedItem = BarsTab;
+        }
     }
 }
