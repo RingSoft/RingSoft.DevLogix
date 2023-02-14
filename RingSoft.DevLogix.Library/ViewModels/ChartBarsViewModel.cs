@@ -1,21 +1,128 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using RingSoft.DbLookup;
+using RingSoft.DbLookup.AdvancedFind;
+using RingSoft.DbLookup.Lookup;
 using RingSoft.DevLogix.DataAccess.Model;
 
 namespace RingSoft.DevLogix.Library.ViewModels
 {
     public interface IChartBarsView
     {
-        void UpdateBars(List<DevLogixChartBar> rows);
+        void RefreshChart();
+
+        void SetAlertLevel(AlertLevels level, ChartBarViewModel viewModel);
+
+        void UpdateBar(ChartBarViewModel bar);
+    }
+
+    public class ChartBarViewModel
+    {
+        public ChartBarsViewModel MainViewModel { get; private set; }
+
+        public LookupDefinitionBase LookupDefinition { get; private set; }
+
+        public LookupRefresher LookupRefresher { get; private set; }
+
+        public DevLogixChartBar ChartBar { get; private set; }
+
+        public LookupDataBase LookupData { get; private set; }
+
+        public int Count { get; private set; }
+
+        public ChartBarViewModel(ChartBarsViewModel mainViewModel, DevLogixChartBar chartBar)
+        {
+            MainViewModel = mainViewModel;
+            ChartBar = chartBar;
+            LookupRefresher = new LookupRefresher();
+            LookupDefinition = new LookupDefinitionBase(chartBar.AdvancedFindId, LookupRefresher);
+            var lookupControl = new LookupUserInterface()
+            {
+                PageSize = 10,
+                SearchType = LookupSearchTypes.Equals
+            };
+            LookupData = new LookupDataBase(LookupDefinition, lookupControl);
+
+            LookupRefresher.SetAlertLevelEvent += (sender, args) =>
+            {
+                MainViewModel.View.SetAlertLevel(args.AlertLevel, this);
+            };
+
+            LookupRefresher.RefreshRecordCountEvent += (sender, args) =>
+            {
+                GetRecordCount();
+                MainViewModel.View.UpdateBar(this);
+            };
+            GetRecordCount();
+            LookupRefresher.StartRefresh();
+        }
+
+        private void GetRecordCount()
+        {
+            Count = LookupData.GetRecordCountWait();
+            LookupRefresher.UpdateRecordCount(Count);
+        }
+
+        public void ShowAddOnFly(object ownerWindow)
+        {
+            var advFindId = ChartBar.AdvancedFindId;
+            var advFind = new AdvancedFind
+            {
+                Id = advFindId,
+            };
+            var primaryKey = AppGlobals.LookupContext.AdvancedFinds.GetPrimaryKeyValueFromEntity(advFind);
+            var advFindLookup = AppGlobals.LookupContext.AdvancedFindLookup.Clone();
+            advFindLookup.WindowClosed += (sender, args) =>
+            {
+                GetRecordCount();
+                MainViewModel.View.RefreshChart();
+            };
+            advFindLookup.ShowAddOnTheFlyWindow(primaryKey, null, ownerWindow);
+        }
     }
     public class ChartBarsViewModel : INotifyPropertyChanged
     {
         public IChartBarsView View { get; set; }
 
+        public List<ChartBarViewModel> Bars { get; private set; } = new List<ChartBarViewModel>();
+
         public void Initialize(IChartBarsView view)
         {
             View = view;
+        }
+
+        public void Clear(bool clearChart)
+        {
+            foreach (var chartBarViewModel in Bars)
+            {
+                chartBarViewModel.LookupRefresher.Dispose();
+            }
+            Bars.Clear();
+            if (clearChart)
+            {
+                View.RefreshChart();
+            }
+        }
+        public void SetChartBars(List<DevLogixChartBar> bars)
+        {
+            if (Bars != null)
+            {
+                foreach (var chartBarViewModel in Bars)
+                {
+                    chartBarViewModel.LookupRefresher.Dispose();
+                }
+            }
+            Bars = new List<ChartBarViewModel>();
+            foreach (var devLogixChartBar in bars)
+            {
+                if (devLogixChartBar.AdvancedFindId > 0)
+                {
+                    var chartBarViewModel = new ChartBarViewModel(this, devLogixChartBar);
+                    Bars.Add(chartBarViewModel);
+                }
+            }
+            View.RefreshChart();
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

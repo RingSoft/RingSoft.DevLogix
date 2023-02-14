@@ -32,7 +32,10 @@ namespace RingSoft.DevLogix.Library.ViewModels
             {
                 case ChartBarColumns.AdvFind:
                     var props = new DataEntryGridAutoFillCellProps(this, columnId, AutoFillSetup, AutoFillValue);
-                    props.AlwaysUpdateOnSelect = true;
+                    if (!IsNew)
+                    {
+                        props.AlwaysUpdateOnSelect = true;
+                    }
                     return props;
                 case ChartBarColumns.Name:
                     return new DataEntryGridTextCellProps(this, columnId, Name);
@@ -66,7 +69,8 @@ namespace RingSoft.DevLogix.Library.ViewModels
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
+            IsNew = false;
+            Manager.ViewModel.RefreshChart();
             base.SetCellValue(value);
         }
 

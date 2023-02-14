@@ -70,6 +70,10 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         public void SetChartViewModel(ChartBarsViewModel chartBarsViewModel)
         {
+            if (ChartViewModel != null)
+            {
+                return;
+            }
             ChartViewModel = chartBarsViewModel;
             if (MaintenanceMode == DbMaintenanceModes.EditMode)
             {
@@ -83,7 +87,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
             {
                 return;
             }
-            ChartViewModel.View.UpdateBars(BarsManager.GetEntityList());
+            ChartViewModel.SetChartBars(BarsManager.GetRowsList());
         }
 
         protected override DevLogixChart PopulatePrimaryKeyControls(DevLogixChart newEntity, PrimaryKeyValue primaryKeyValue)
@@ -119,6 +123,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
             Id = 0;
             KeyAutoFillValue = null;
             BarsManager.SetupForNewRecord();
+            ChartViewModel?.Clear(true);
         }
 
         protected override bool ValidateEntity(DevLogixChart entity)

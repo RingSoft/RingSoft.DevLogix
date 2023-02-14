@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.VisualBasic.Devices;
+using RingSoft.DbLookup;
+using RingSoft.DbLookup.Controls.WPF;
+using RingSoft.DbLookup.Lookup;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels;
@@ -51,11 +55,18 @@ namespace RingSoft.DevLogix
 
         public ChartBarsViewModel ViewModel { get; private set; }
 
+        public List<DevLogixChartBar> DevLogixChartBars { get; private set; }
+
         private int _yLimit;
+        private bool _closed;
 
         static ChartBarsControl()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ChartBarsControl), new FrameworkPropertyMetadata(typeof(ChartBarsControl)));
+        }
+
+        public ChartBarsControl()
+        {
         }
 
         public override void OnApplyTemplate()
@@ -74,6 +85,13 @@ namespace RingSoft.DevLogix
 
             WpfPlot.LeftClicked += WpfPlot_LeftClicked;
 
+            var window = Window.GetWindow(this);
+            window.Closed += (sender, args) =>
+            {
+                _closed = true;
+                ViewModel.Clear(false);
+            };
+            UpdateBars();
             base.OnApplyTemplate();
         }
 
@@ -84,49 +102,108 @@ namespace RingSoft.DevLogix
 
             if (newBar != null)
             {
-                MessageBox.Show(newBar.Label, "");
+                var index = BarPlot.Bars.IndexOf(newBar);
+                if (index >= 0)
+                {
+                    var viewModel = ViewModel.Bars[index];
+                    viewModel.ShowAddOnFly(Window.GetWindow(this));
+                }
             }
 
         }
 
-        public void UpdateBars(List<DevLogixChartBar> rows)
+        public void UpdateBars()
         {
             _yLimit = 0;
             var bars = RedrawBars();
             WpfPlot.Plot.Clear();
             BarPlot = WpfPlot.Plot.AddBarSeries(bars);
+            SetYLimit();
             //WpfPlot.Plot.AxisAutoY(0.4);
-            WpfPlot.Plot.SetAxisLimitsY(0, _yLimit * 1.2);
             //WpfPlot.Plot.YAxis.SetSizeLimit(0);
             WpfPlot.Plot.XAxis.IsVisible = false;
-            WpfPlot.Refresh();
+            WpfPlot.Plot.Style(dataBackground: Color.Transparent, figureBackground: Color.Transparent);
+            RefreshPlot();
         }
 
         private List<Bar> RedrawBars()
         {
-            List<ScottPlot.Plottable.Bar> bars = new();
-            for (int i = 0; i < 3; i++)
+            List<Bar> bars = new();
+            var position = 0;
+            
+            foreach (var barViewModel in ViewModel.Bars)
             {
-                var barValue = new Random().Next();
-                if (barValue > _yLimit)
+                Bar bar = new()
                 {
-                    _yLimit = barValue;
-                }
-                ScottPlot.Plottable.Bar bar = new()
-                {
-                    // Each bar can be extensively customized
-                    Value = barValue,
-                    Position = i,
-                    FillColor = ScottPlot.Palette.Category10.GetColor(i),
-                    Label = barValue.ToString() + $"\r\nPerson {i}",
-                    LineWidth = 2,
                 };
-                var limits = bar.GetLimits();
-                bars.Add(bar);
-            }
 
+                UpdateBar(bar, barViewModel, position);
+                bars.Add(bar);
+                position++;
+            }
             return bars;
         }
 
+        private void UpdateBar(Bar bar, ChartBarViewModel barViewModel, int position)
+        {
+            var numFormat = GblMethods.GetNumFormat(0, false);
+            bar.Value = barViewModel.Count;
+            bar.FillColor = ScottPlot.Palette.Category10.GetColor(position);
+            bar.Label = barViewModel.Count.ToString(numFormat) + $"\r\n{barViewModel.ChartBar.Name}";
+            bar.LineWidth = 2;
+            bar.Position = position;
+        }
+        private void SetYLimit()
+        {
+            _yLimit = 0;
+            foreach (var barViewModel in ViewModel.Bars)
+            {
+                if (barViewModel.Count > _yLimit)
+                {
+                    _yLimit = barViewModel.Count;
+                }
+            }
+            WpfPlot.Plot.SetAxisLimitsY(0, _yLimit * 1.2);
+            RefreshPlot();
+        }
+
+        public void RefreshChart()
+        {
+            UpdateBars();
+        }
+
+        private void RefreshPlot()
+        {
+            Dispatcher.Invoke(() =>
+            {
+                WpfPlot.Refresh();
+            });
+        }
+
+        public void SetAlertLevel(AlertLevels level, ChartBarViewModel viewModel)
+        {
+            if (_closed)
+            {
+                return;
+            }
+            Dispatcher.Invoke(() =>
+            {
+                var message = viewModel.LookupRefresher.GetRecordCountMessage(viewModel.Count, viewModel.ChartBar.Name);
+                LookupControlsGlobals.LookupWindowFactory.SetAlertLevel(level, viewModel.LookupRefresher.Disabled
+                    , Window.GetWindow(this), message);
+            });
+        }
+
+        public void UpdateBar(ChartBarViewModel bar)
+        {
+            var position = bar.MainViewModel.Bars.IndexOf(bar);
+            if (position == -1)
+                return;
+
+            var chartBar = BarPlot.Bars[position];
+            UpdateBar(chartBar, bar, position);
+            SetYLimit();
+            RefreshPlot();
+        }
     }
 }
