@@ -21,6 +21,8 @@ namespace RingSoft.DevLogix.Library.ViewModels
         void MakeMenu();
 
         void PunchIn(Error error);
+
+        void ShowMainChart(bool show = true);
     }
     public class MainViewModel
     {
@@ -30,6 +32,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
         public RelayCommand<TableDefinitionBase> ShowMaintenanceWindowCommand { get; }
         public RelayCommand ExitCommand { get; }
         public RelayCommand AdvancedFindCommand { get; }
+        public ChartBarsViewModel ChartViewModel { get; private set; }
         
         public MainViewModel()
         {
@@ -101,6 +104,24 @@ namespace RingSoft.DevLogix.Library.ViewModels
             if (MainView.LoginUser())
             {
                 MainView.MakeMenu();
+            }
+        }
+
+        public void InitChart(ChartBarsViewModel chartBarsViewModel)
+        {
+            ChartViewModel = chartBarsViewModel;
+        }
+
+        public void SetChartId(int chartId)
+        {
+            MainView.ShowMainChart(chartId != 0);
+            if (chartId == 0)
+            {
+                ChartViewModel.Clear(true);
+            }
+            else
+            {
+                ChartViewModel.SetChartBars(chartId);
             }
         }
     }

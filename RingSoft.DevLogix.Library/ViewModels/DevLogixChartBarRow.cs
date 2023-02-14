@@ -18,6 +18,8 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         public string Name { get; set; }
 
+        public bool IsDisposed { get; private set; }
+
         public DevLogixChartBarRow(DevLogixChartBarManager manager) : base(manager)
         {
             Manager = manager;
@@ -115,6 +117,13 @@ namespace RingSoft.DevLogix.Library.ViewModels
             entity.BarId = rowIndex;
             entity.AdvancedFindId = AutoFillValue.GetEntity(AppGlobals.LookupContext.AdvancedFinds).Id;
             entity.Name = Name;
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            IsDisposed = true;
+            Manager.ViewModel.RefreshChart();
         }
     }
 }

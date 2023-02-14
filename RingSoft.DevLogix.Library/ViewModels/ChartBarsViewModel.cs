@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using Microsoft.EntityFrameworkCore;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AdvancedFind;
 using RingSoft.DbLookup.Lookup;
@@ -31,12 +33,16 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         public int Count { get; private set; }
 
+        public bool OrigDisableBalloon { get; private set; }
+
         public ChartBarViewModel(ChartBarsViewModel mainViewModel, DevLogixChartBar chartBar)
         {
             MainViewModel = mainViewModel;
             ChartBar = chartBar;
             LookupRefresher = new LookupRefresher();
             LookupDefinition = new LookupDefinitionBase(chartBar.AdvancedFindId, LookupRefresher);
+            OrigDisableBalloon = LookupRefresher.Disabled;
+
             var lookupControl = new LookupUserInterface()
             {
                 PageSize = 10,
@@ -87,6 +93,8 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         public List<ChartBarViewModel> Bars { get; private set; } = new List<ChartBarViewModel>();
 
+        public int ChartId { get; private set; }
+
         public void Initialize(IChartBarsView view)
         {
             View = view;
@@ -102,6 +110,35 @@ namespace RingSoft.DevLogix.Library.ViewModels
             if (clearChart)
             {
                 View.RefreshChart();
+            }
+        }
+
+        public void DisableBalloons(bool disableBalloons = true)
+        {
+            foreach (var chartBarViewModel in Bars)
+            {
+                if (disableBalloons)
+                {
+                    chartBarViewModel.LookupRefresher.Disabled = true;
+                }
+                else
+                {
+                    chartBarViewModel.LookupRefresher.Disabled = chartBarViewModel.OrigDisableBalloon;
+                }
+            }
+        }
+
+        public void SetChartBars(int chartId)
+        {
+            ChartId = chartId;
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var chartTable = context.GetTable<DevLogixChart>();
+            var chart = chartTable.Include(p => p.ChartBars)
+                .FirstOrDefault(p => p.Id == chartId);
+
+            if (chart != null)
+            {
+                SetChartBars(chart.ChartBars.ToList());
             }
         }
         public void SetChartBars(List<DevLogixChartBar> bars)

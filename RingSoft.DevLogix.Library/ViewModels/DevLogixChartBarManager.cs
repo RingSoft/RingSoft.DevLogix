@@ -37,7 +37,8 @@ namespace RingSoft.DevLogix.Library.ViewModels
         public List<DevLogixChartBar> GetRowsList()
         {
             var result = new List<DevLogixChartBar>();
-            var chartBarRows = Rows.OfType<DevLogixChartBarRow>().Where(p => p.IsNew == false);
+            var chartBarRows = Rows.OfType<DevLogixChartBarRow>().Where(p => p.IsNew == false && !p.IsDisposed);
+
             var rowIndex = 1;
 
             foreach (var devLogixChartBarRow in chartBarRows)

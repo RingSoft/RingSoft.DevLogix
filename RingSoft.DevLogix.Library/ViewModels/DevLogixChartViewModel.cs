@@ -1,4 +1,5 @@
-﻿using RingSoft.DbLookup;
+﻿using System.ComponentModel;
+using RingSoft.DbLookup;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.Library.ViewModels.UserManagement;
@@ -31,6 +32,22 @@ namespace RingSoft.DevLogix.Library.ViewModels
             }
         }
 
+        private bool _isMain;
+
+        public bool IsMain
+        {
+            get => _isMain;
+            set
+            {
+                if (_isMain == value)
+                {
+                    return;
+                }
+                _isMain = value;
+                OnPropertyChanged();
+            }
+        }
+
         private DevLogixChartBarManager _barsManager;
 
         public DevLogixChartBarManager BarsManager
@@ -52,6 +69,9 @@ namespace RingSoft.DevLogix.Library.ViewModels
         public new IChartWindowView View { get; set; }
 
         public ChartBarsViewModel ChartViewModel { get; set; }
+
+        private bool _savingRecord;
+        private bool _origIsMain;
 
         public DevLogixChartViewModel()
         {
@@ -88,6 +108,10 @@ namespace RingSoft.DevLogix.Library.ViewModels
                 return;
             }
             ChartViewModel.SetChartBars(BarsManager.GetRowsList());
+            if (IsMain && AppGlobals.MainViewModel.ChartViewModel.ChartId == Id)
+            {
+                AppGlobals.MainViewModel.ChartViewModel.SetChartBars(Id);
+            }
         }
 
         protected override DevLogixChart PopulatePrimaryKeyControls(DevLogixChart newEntity, PrimaryKeyValue primaryKeyValue)
@@ -97,8 +121,30 @@ namespace RingSoft.DevLogix.Library.ViewModels
             var result = query.Include(p => p.ChartBars)
                 .FirstOrDefault(p => p.Id == newEntity.Id);
             Id = result.Id;
+            if (_savingRecord)
+            {
+                if (IsMain)
+                {
+                    AppGlobals.LoggedInOrganization.DefaultChartId = Id;
+                    MasterData.MasterDbContext.SaveOrganization(AppGlobals.LoggedInOrganization);
+                }
+                _savingRecord = false;
+                if (!IsMain && _origIsMain)
+                {
+                    AppGlobals.LoggedInOrganization.DefaultChartId = 0;
+                    MasterData.MasterDbContext.SaveOrganization(AppGlobals.LoggedInOrganization);
+
+                    AppGlobals.MainViewModel.SetChartId(0);
+                }
+                else
+                {
+                    AppGlobals.MainViewModel.SetChartId(Id);
+                }
+            }
             KeyAutoFillValue = AppGlobals.LookupContext.OnAutoFillTextRequest(TableDefinition, Id.ToString());
-            
+            IsMain = AppGlobals.LoggedInOrganization.DefaultChartId == Id;
+            AppGlobals.MainViewModel.ChartViewModel.DisableBalloons(IsMain);
+            _origIsMain = IsMain;
             return result;
         }
 
@@ -124,6 +170,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
             KeyAutoFillValue = null;
             BarsManager.SetupForNewRecord();
             ChartViewModel?.Clear(true);
+            IsMain = false;
         }
 
         protected override bool ValidateEntity(DevLogixChart entity)
@@ -138,7 +185,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         protected override bool SaveEntity(DevLogixChart entity)
         {
-            var bars = BarsManager.GetEntityList();
+            var bars = BarsManager.GetRowsList();
 
             var context = AppGlobals.DataRepository.GetDataContext();
             if (context.SaveEntity(entity, "Saving Chart"))
@@ -154,6 +201,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
                 context.AddRange(bars);
                 if (context.Commit("Saving Bars"))
                 {
+                    _savingRecord = true;
                     return true;
                 }
             }
@@ -174,6 +222,12 @@ namespace RingSoft.DevLogix.Library.ViewModels
             }
 
             return false;
+        }
+
+        public override void OnWindowClosing(CancelEventArgs e)
+        {
+            AppGlobals.MainViewModel.ChartViewModel.DisableBalloons(false);
+            base.OnWindowClosing(e);
         }
     }
 }

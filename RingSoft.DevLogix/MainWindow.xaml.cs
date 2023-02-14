@@ -48,8 +48,13 @@ namespace RingSoft.DevLogix
                     RingSoft.App.Library.RingSoftAppGlobals.HandleError(e);
                 }
 #endif
+                ViewModel.SetChartId(AppGlobals.LoggedInOrganization.DefaultChartId);
             };
-            WpfPlot.Visibility = Visibility.Collapsed;
+            MainChart.Loaded += (s, e) =>
+            {
+                ViewModel.InitChart(MainChart.ViewModel);
+                MainChart.Visibility = Visibility.Collapsed;
+            };
             //var bars = RedrawBars();
             //var barPlot = WpfPlot.Plot.AddBarSeries(bars);
             //WpfPlot.Plot.AxisAutoY();
@@ -83,7 +88,7 @@ namespace RingSoft.DevLogix
             //        MessageBox.Show(newBar.Position.ToString(), "");
             //    }
             //};
-            
+
         }
 
         private static List<Bar> RedrawBars()
@@ -318,6 +323,11 @@ namespace RingSoft.DevLogix
                 };
                 ShowTimeClockWindow(timeClockWindow);
             }
+        }
+
+        public void ShowMainChart(bool show = true)
+        {
+            MainChart.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private TimeClockMaintenanceWindow GetTimeClockWindow()
