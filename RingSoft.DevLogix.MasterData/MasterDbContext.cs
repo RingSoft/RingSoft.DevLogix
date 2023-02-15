@@ -104,7 +104,6 @@ namespace RingSoft.DevLogix.MasterData
 
                 entity.Property(p => p.MigrateDb).HasColumnType(DbConstants.BoolColumnType);
 
-                entity.Property(p => p.DefaultChartId).HasColumnType(DbConstants.IntegerColumnType);
             });
 
             base.OnModelCreating(modelBuilder);

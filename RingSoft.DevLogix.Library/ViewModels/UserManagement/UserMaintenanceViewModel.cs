@@ -76,6 +76,37 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
         }
 
+        private AutoFillSetup _defaultChartAutoFillSetup;
+
+        public AutoFillSetup DefaultChartAutoFillSetup
+        {
+            get => _defaultChartAutoFillSetup;
+            set
+            {
+                if (_defaultChartAutoFillSetup == value)
+                {
+                    return;
+                }
+                _defaultChartAutoFillSetup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private AutoFillValue _defaultChartAutoFillValue;
+        public AutoFillValue DefaultChartAutoFillValue
+        {
+            get => _defaultChartAutoFillValue;
+            set
+            {
+                if (_defaultChartAutoFillValue == value)
+                {
+                    return;
+                }
+                _defaultChartAutoFillValue = value;
+                OnPropertyChanged();
+            }
+        }
+
         private string? _emailAddress;
 
         public string? EmailAddress
@@ -151,6 +182,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 throw new Exception($"User View interface must be of type '{nameof(IUserView)}'.");
 
             DepartmentAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.DepartmentId));
+            DefaultChartAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.DefaultChartId));
+
             GroupsManager = new UsersGroupsManager( this);
 
             base.Initialize();
@@ -177,6 +210,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             PhoneNumber = entity.PhoneNumber;
             GroupsManager.LoadGrid(entity.UserGroups);
             Notes = entity.Notes;
+            DefaultChartAutoFillValue = DefaultChartAutoFillSetup.GetAutoFillValueForIdValue(entity.DefaultChartId);
         }
 
         protected override User GetEntityData()
@@ -194,6 +228,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             {
                 user.DepartmentId = AppGlobals.LookupContext.Departments
                     .GetEntityFromPrimaryKeyValue(DepartmentAutoFillValue.PrimaryKeyValue).Id;
+            }
+            user.DefaultChartId = DefaultChartAutoFillValue.GetEntity(AppGlobals.LookupContext.DevLogixCharts).Id;
+            if (user.DefaultChartId == 0)
+            {
+                user.DefaultChartId = null;
             }
 
             return user;
@@ -239,7 +278,23 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     context.AddRange(userGroups);
                 }
 
-                return context.Commit("Saving UsersGroups");
+                var result = context.Commit("Saving UsersGroups");
+
+                if (result)
+                {
+                    if (AppGlobals.LoggedInUser.Id == Id)
+                    {
+                        if (entity.DefaultChartId.HasValue)
+                        {
+                            AppGlobals.MainViewModel.SetChartId(entity.DefaultChartId.Value);
+                        }
+                        else
+                        {
+                            AppGlobals.MainViewModel.SetChartId(0);
+                        }
+                    }
+                }
+                return result;
             }
 
             return false;

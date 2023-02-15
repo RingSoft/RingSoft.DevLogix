@@ -42,8 +42,6 @@ namespace RingSoft.DevLogix.MasterData
         public int? DefaultUser { get; set; }
 
         public bool MigrateDb { get; set; }
-
-        public int DefaultChartId { get; set; }
     }
 }
 

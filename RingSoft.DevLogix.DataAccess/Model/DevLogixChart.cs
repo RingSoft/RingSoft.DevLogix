@@ -14,10 +14,12 @@ namespace RingSoft.DevLogix.DataAccess.Model
         public string Name { get; set; }
 
         public virtual ICollection<DevLogixChartBar> ChartBars { get; set; }
+        public virtual ICollection<User> Users { get; set; }
 
         public DevLogixChart()
         {
             ChartBars = new HashSet<DevLogixChartBar>();
+            Users = new HashSet<User>();
         }
     }
 }

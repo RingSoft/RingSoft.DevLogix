@@ -150,7 +150,7 @@ namespace RingSoft.DevLogix
             bar.Value = barViewModel.Count;
             bar.FillColor = ScottPlot.Palette.Category10.GetColor(position);
             bar.Label = barViewModel.Count.ToString(numFormat) + $"\r\n{barViewModel.ChartBar.Name}";
-            bar.LineWidth = 2;
+            bar.LineWidth = 0;
             bar.Position = position;
         }
         private void SetYLimit()

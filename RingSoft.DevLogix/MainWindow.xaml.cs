@@ -49,7 +49,11 @@ namespace RingSoft.DevLogix
                     RingSoft.App.Library.RingSoftAppGlobals.HandleError(e);
                 }
 #endif
-                ViewModel.SetChartId(AppGlobals.LoggedInOrganization.DefaultChartId);
+                //ViewModel.SetChartId(AppGlobals.LoggedInOrganization.DefaultChartId);
+                if (AppGlobals.LoggedInUser != null && AppGlobals.LoggedInUser.DefaultChartId.HasValue)
+                {
+                    ViewModel.SetChartId(AppGlobals.LoggedInUser.DefaultChartId.Value);
+                }
             };
             MainChart.Loaded += (s, e) =>
             {

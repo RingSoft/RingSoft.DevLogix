@@ -35,6 +35,10 @@ namespace RingSoft.DevLogix.DataAccess.Model
 
         public string? Notes { get; set; }
 
+        public int? DefaultChartId { get; set; }
+
+        public virtual DevLogixChart DefaultChart { get; set; }
+
         public virtual ICollection<UsersGroup>  UserGroups { get; set; }
         public virtual ICollection<Error> FoundByUserErrors { get; set; }
         public virtual ICollection<Error> AssignedDeveloperErrors { get; set; }
