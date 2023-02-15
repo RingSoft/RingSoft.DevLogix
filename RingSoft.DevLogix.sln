@@ -15,12 +15,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.DevLogix.Sqlite", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.DevLogix.SqlServer", "RingSoft.DevLogix.SqlServer\RingSoft.DevLogix.SqlServer.csproj", "{124E8EEC-1264-4936-802E-99D935C1CD5B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.DbLookup", "..\RingSoft.DbLookup\RingSoft.DbLookup\RingSoft.DbLookup.csproj", "{D0CCFB45-3A95-4AE1-88C0-B578E2B56FF5}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.DbLookup.Controls.WPF", "..\RingSoft.DbLookup\RingSoft.DbLookup.Controls.WPF\RingSoft.DbLookup.Controls.WPF.csproj", "{0EDA65EA-A6B6-4CD8-9A8D-8CED83DE14D4}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.DbMaintenance", "..\RingSoft.DbLookup\RingSoft.DbMaintenance\RingSoft.DbMaintenance.csproj", "{D9642715-17C5-429F-A08D-F5CF4CDA29B0}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,18 +45,6 @@ Global
 		{124E8EEC-1264-4936-802E-99D935C1CD5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{124E8EEC-1264-4936-802E-99D935C1CD5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{124E8EEC-1264-4936-802E-99D935C1CD5B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D0CCFB45-3A95-4AE1-88C0-B578E2B56FF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D0CCFB45-3A95-4AE1-88C0-B578E2B56FF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D0CCFB45-3A95-4AE1-88C0-B578E2B56FF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D0CCFB45-3A95-4AE1-88C0-B578E2B56FF5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0EDA65EA-A6B6-4CD8-9A8D-8CED83DE14D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0EDA65EA-A6B6-4CD8-9A8D-8CED83DE14D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0EDA65EA-A6B6-4CD8-9A8D-8CED83DE14D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0EDA65EA-A6B6-4CD8-9A8D-8CED83DE14D4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D9642715-17C5-429F-A08D-F5CF4CDA29B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D9642715-17C5-429F-A08D-F5CF4CDA29B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D9642715-17C5-429F-A08D-F5CF4CDA29B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D9642715-17C5-429F-A08D-F5CF4CDA29B0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

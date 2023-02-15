@@ -253,8 +253,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                     ViewLookupDefinition.FilterDefinition.AddFixedFilter(field, 
                         Conditions.Equals, product.Id);
 
-                    KeyAutoFillSetup.LookupDefinition.FilterDefinition.AddFixedFilter(field, Conditions.Equals,
-                        product.Id);
+                    //KeyAutoFillSetup.LookupDefinition.FilterDefinition.AddFixedFilter(field, Conditions.Equals,
+                    //    product.Id);
                 }
             }
 
