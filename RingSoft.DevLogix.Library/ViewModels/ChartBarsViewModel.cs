@@ -67,7 +67,10 @@ namespace RingSoft.DevLogix.Library.ViewModels
         private void GetRecordCount()
         {
             Count = LookupData.GetRecordCountWait();
-            LookupRefresher.UpdateRecordCount(Count);
+            if (LookupRefresher.RefreshRate != RefreshRate.None)
+            {
+                LookupRefresher.UpdateRecordCount(Count);
+            }
         }
 
         public void ShowAddOnFly(object ownerWindow)
