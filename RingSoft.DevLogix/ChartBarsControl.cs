@@ -177,6 +177,7 @@ namespace RingSoft.DevLogix
             Dispatcher.Invoke(() =>
             {
                 WpfPlot.Refresh();
+                UpdateLayout();
             });
         }
 

@@ -23,6 +23,8 @@ namespace RingSoft.DevLogix.Library.ViewModels
         void PunchIn(Error error);
 
         void ShowMainChart(bool show = true);
+
+        object GetOwnerWindow();
     }
     public class MainViewModel
     {
@@ -32,6 +34,8 @@ namespace RingSoft.DevLogix.Library.ViewModels
         public RelayCommand<TableDefinitionBase> ShowMaintenanceWindowCommand { get; }
         public RelayCommand ExitCommand { get; }
         public RelayCommand AdvancedFindCommand { get; }
+        public RelayCommand RefreshChartCommand { get; }
+        public RelayCommand EditChartCommand { get; }
         public ChartBarsViewModel ChartViewModel { get; private set; }
         
         public MainViewModel()
@@ -41,6 +45,8 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
             AdvancedFindCommand = new RelayCommand(ShowAdvancedFind);
             ShowMaintenanceWindowCommand = new RelayCommand<TableDefinitionBase>(ShowMaintenanceWindow);
+            RefreshChartCommand = new RelayCommand(RefreshChart);
+            EditChartCommand = new RelayCommand(EditChart);
         }
         public void Initialize(IMainView view)
         {
@@ -123,6 +129,25 @@ namespace RingSoft.DevLogix.Library.ViewModels
             {
                 ChartViewModel.SetChartBars(chartId);
             }
+        }
+
+        private void RefreshChart()
+        {
+            ChartViewModel.SetChartBars(ChartViewModel.ChartId);
+            var message = "Chart Refreshed.";
+            ControlsGlobals.UserInterface.ShowMessageBox(message, message, RsMessageBoxIcons.Information);
+        }
+
+        private void EditChart()
+        {
+            var devLogixChart = new DevLogixChart
+            {
+                Id = ChartViewModel.ChartId
+            };
+
+            var primaryKey = AppGlobals.LookupContext.DevLogixCharts.GetPrimaryKeyValueFromEntity(devLogixChart);
+            var lookup = AppGlobals.LookupContext.DevLogixChartLookup.Clone();
+            lookup.ShowAddOnTheFlyWindow(primaryKey, null, MainView.GetOwnerWindow());
         }
     }
 }

@@ -21,6 +21,7 @@ using RingSoft.DevLogix.UserManagement;
 using ScottPlot;
 using ScottPlot.Plottable;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using Application = System.Windows.Application;
 using MessageBox = System.Windows.Forms.MessageBox;
 using Window = System.Windows.Window;
 
@@ -53,7 +54,7 @@ namespace RingSoft.DevLogix
             MainChart.Loaded += (s, e) =>
             {
                 ViewModel.InitChart(MainChart.ViewModel);
-                MainChart.Visibility = Visibility.Collapsed;
+                ChartGrid.Visibility = Visibility.Collapsed;
             };
             //var bars = RedrawBars();
             //var barPlot = WpfPlot.Plot.AddBarSeries(bars);
@@ -327,7 +328,12 @@ namespace RingSoft.DevLogix
 
         public void ShowMainChart(bool show = true)
         {
-            MainChart.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+            ChartGrid.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        public object GetOwnerWindow()
+        {
+            return this;
         }
 
         private TimeClockMaintenanceWindow GetTimeClockWindow()

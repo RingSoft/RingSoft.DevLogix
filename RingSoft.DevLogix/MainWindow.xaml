@@ -74,8 +74,21 @@
                 <ac:DbMaintenanceButton x:Name="AdvancedFindButton" Content="_Advanced Find" ImageSource="{StaticResource FindImage}" Command="{Binding AdvancedFindCommand}"/>
 
             </StackPanel>
-            <Grid>
-                <local:ChartBarsControl x:Name="MainChart"/>
+            <Grid x:Name="ChartGrid">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <local:ChartBarsControl Grid.Row="0" x:Name="MainChart"/>
+
+                <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5">
+
+                    <Button Content="_Refresh" Width="50" Command="{Binding RefreshChartCommand}"/>
+
+                    <Button Content="_Edit" Margin="5,0,0,0" Width="50" Command="{Binding EditChartCommand}"/>
+
+                </StackPanel>
             </Grid>
         </DockPanel>
     </DockPanel>

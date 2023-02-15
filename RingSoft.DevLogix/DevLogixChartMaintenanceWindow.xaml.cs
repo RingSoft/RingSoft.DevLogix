@@ -1,4 +1,5 @@
-﻿using RingSoft.App.Controls;
+﻿using System.Windows;
+using RingSoft.App.Controls;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.Library.ViewModels;
 
