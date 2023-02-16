@@ -329,6 +329,7 @@ namespace RingSoft.DevLogix.DataAccess
             Products.GetFieldDefinition(p => p.Notes).IsMemo();
 
             Users.PriorityLevel = 300;
+            Users.GetFieldDefinition(p => p.SupervisorId).DoesAllowRecursion(false);
 
             UsersGroups.PriorityLevel = 400;
 

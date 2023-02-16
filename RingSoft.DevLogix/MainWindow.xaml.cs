@@ -50,10 +50,6 @@ namespace RingSoft.DevLogix
                 }
 #endif
                 //ViewModel.SetChartId(AppGlobals.LoggedInOrganization.DefaultChartId);
-                if (AppGlobals.LoggedInUser != null && AppGlobals.LoggedInUser.DefaultChartId.HasValue)
-                {
-                    ViewModel.SetChartId(AppGlobals.LoggedInUser.DefaultChartId.Value);
-                }
             };
             MainChart.Loaded += (s, e) =>
             {
@@ -255,6 +251,17 @@ namespace RingSoft.DevLogix
             if (userLoginWindow.ViewModel.DialogResult)
             {
                 MakeMenu();
+                if (AppGlobals.LoggedInUser != null)
+                {
+                    if (AppGlobals.LoggedInUser.DefaultChartId.HasValue)
+                    {
+                        ViewModel.SetChartId(AppGlobals.LoggedInUser.DefaultChartId.Value);
+                    }
+                    else
+                    {
+                        ViewModel.SetChartId(0);
+                    }
+                }
             }
             return userLoginWindow.ViewModel.DialogResult;
         }

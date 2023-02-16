@@ -76,6 +76,53 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
         }
 
+        private AutoFillSetup _supervisorAutoFillSetup;
+
+        public AutoFillSetup SupervisorAutoFillSetup
+        {
+            get => _supervisorAutoFillSetup;
+            set
+            {
+                if (_supervisorAutoFillSetup == value)
+                {
+                    return;
+                }
+                _supervisorAutoFillSetup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private AutoFillValue _supervisorAutoFillValue;
+        public AutoFillValue SupervisorAutoFillValue
+        {
+            get => _supervisorAutoFillValue;
+            set
+            {
+                if (_supervisorAutoFillValue == value)
+                {
+                    return;
+                }
+                _supervisorAutoFillValue = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private DateTime? _clockDateTime;
+
+        public DateTime? ClockDateTime
+        {
+            get => _clockDateTime;
+            set
+            {
+                if (_clockDateTime == value)
+                    return;
+
+                _clockDateTime = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         private AutoFillSetup _defaultChartAutoFillSetup;
 
         public AutoFillSetup DefaultChartAutoFillSetup
@@ -172,8 +219,19 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
         }
 
-
         public new IUserView View { get; private set; }
+
+        public RelayCommand ChangeChartCommand { get; private set; }
+
+        public RelayCommand ClockOutCommand { get; private set; }
+
+        public UserMaintenanceViewModel()
+        {
+            ChangeChartCommand = new RelayCommand(() =>
+            {
+
+            });
+        }
 
         protected override void Initialize()
         {
@@ -183,6 +241,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
             DepartmentAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.DepartmentId));
             DefaultChartAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.DefaultChartId));
+            SupervisorAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.SupervisorId));
 
             GroupsManager = new UsersGroupsManager( this);
 
@@ -211,6 +270,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             GroupsManager.LoadGrid(entity.UserGroups);
             Notes = entity.Notes;
             DefaultChartAutoFillValue = DefaultChartAutoFillSetup.GetAutoFillValueForIdValue(entity.DefaultChartId);
+            SupervisorAutoFillValue = SupervisorAutoFillSetup.GetAutoFillValueForIdValue(entity.SupervisorId);
+            ClockDateTime = entity.ClockDate;
         }
 
         protected override User GetEntityData()
@@ -222,7 +283,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 Email = EmailAddress,
                 PhoneNumber = PhoneNumber,
                 Rights = View.GetRights().Encrypt(),
-                Notes = Notes
+                Notes = Notes,
+                SupervisorId = SupervisorAutoFillValue.GetEntity(AppGlobals.LookupContext.Users).Id,
             };
             if (DepartmentAutoFillValue.IsValid())
             {
@@ -233,6 +295,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             if (user.DefaultChartId == 0)
             {
                 user.DefaultChartId = null;
+            }
+
+            if (user.SupervisorId == 0)
+            {
+                user.SupervisorId = null;
             }
 
             return user;

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -37,6 +38,12 @@ namespace RingSoft.DevLogix.DataAccess.Model
 
         public int? DefaultChartId { get; set; }
 
+        public DateTime? ClockDate { get; set; }
+
+        public int? SupervisorId { get; set; }
+
+        public virtual User Supervisor { get; set; }
+
         public virtual DevLogixChart DefaultChart { get; set; }
 
         public virtual ICollection<UsersGroup>  UserGroups { get; set; }
@@ -46,6 +53,7 @@ namespace RingSoft.DevLogix.DataAccess.Model
         public virtual ICollection<ErrorDeveloper> ErrorDevelopers { get; set; }
         public virtual ICollection<ErrorQa> ErrorTesters { get; set; }
         public virtual ICollection<TimeClock> TimeClocks { get; set; }
+        public virtual ICollection<User> Underlings { get; set; }
 
         public User()
         {
@@ -55,6 +63,7 @@ namespace RingSoft.DevLogix.DataAccess.Model
             ErrorDevelopers = new HashSet<ErrorDeveloper>();
             ErrorTesters = new HashSet<ErrorQa>();
             TimeClocks = new HashSet<TimeClock>();
+            Underlings = new HashSet<User>();
         }
     }
 }

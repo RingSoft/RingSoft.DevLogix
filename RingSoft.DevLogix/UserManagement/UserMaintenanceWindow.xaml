@@ -4,6 +4,7 @@
                          xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                          xmlns:local="clr-namespace:RingSoft.DevLogix"
+                         xmlns:userl="clr-namespace:RingSoft.DevLogix.UserManagement"
                          xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
                          xmlns:lc="clr-namespace:RingSoft.DbLookup.Controls.WPF;assembly=RingSoft.DbLookup.Controls.WPF"
                          xmlns:ac="clr-namespace:RingSoft.App.Controls;assembly=RingSoft.App.Controls"
@@ -11,7 +12,52 @@
                          xmlns:dataEntryGrid="clr-namespace:RingSoft.DataEntryControls.WPF.DataEntryGrid;assembly=RingSoft.DataEntryControls.WPF"
                          mc:Ignorable="d"
                          Style="{StaticResource BaseWindowStyle}"
-                         Title="User Maintenance" Width="600" Height="500">
+                         Title="User Maintenance" Width="650" Height="500">
+    <Window.Resources>
+
+        <Style TargetType="{x:Type userl:UserHeaderControl}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type userl:UserHeaderControl}">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+
+                            <Grid VerticalAlignment="Stretch">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <ac:DbMaintenanceButton Grid.Row="0" Grid.Column="0" x:Name="ClockOutButton" Content="C_lock Out" ImageSource="{StaticResource AfUpImage}" Style="{StaticResource SubButton}" HorizontalContentAlignment="Left"/>
+
+                                <ac:DbMaintenanceButton Grid.Row="1" Grid.Column="0" x:Name="ChangeChartButton" Content="C_hange Default Chart" ImageSource="{StaticResource AfUpImage}" Style="{StaticResource SubButton}" HorizontalContentAlignment="Left"/>
+
+                            </Grid>
+
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="{x:Type ac:DbMaintenanceTopHeaderControl}" BasedOn="{StaticResource {x:Type ac:DbMaintenanceTopHeaderControl}}">
+
+            <Setter Property="CustomPanel">
+                <Setter.Value>
+                    <userl:UserHeaderControl/>
+                </Setter.Value>
+            </Setter>
+
+        </Style>
+    </Window.Resources>
+
     <Window.DataContext>
         <vm:UserMaintenanceViewModel x:Name="UserMaintenanceViewModel"/>
     </Window.DataContext>
@@ -52,15 +98,25 @@
 
             <lc:AutoFillControl Grid.Row="1" Grid.Column="3" x:Name="DefaultChartControl"  Width="200" HorizontalAlignment="Left" Setup="{Binding DefaultChartAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding DefaultChartAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-            <Label Grid.Row="2" Grid.Column="0" Content="Email Address"/>
+            <Label Grid.Row="2" Grid.Column="0" Content="Supervisor"/>
 
-            <dec:StringEditControl Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left" Text="{Binding EmailAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
+            <lc:AutoFillControl Grid.Row="2" Grid.Column="1" Width="200" Setup="{Binding SupervisorAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding SupervisorAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-            <TextBlock Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2" x:Name="SendEmailControl" Text="Send Email" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"/>
 
-            <Label Grid.Row="3" Grid.Column="0" Content="Phone Number"/>
+            <Label Grid.Row="2" Grid.Column="2" Content="Clock In Date/Time"/>
 
-            <dec:StringEditControl Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left" Text="{Binding PhoneNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
+            <dec:DateReadOnlyBox Grid.Row="2" Grid.Column="3" HorizontalAlignment="Left" Width="200" DateFormatType="DateTime" Value="{Binding ClockDateTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+
+            <Label Grid.Row="3" Grid.Column="0" Content="Email Address"/>
+
+            <dec:StringEditControl Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left" Text="{Binding EmailAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
+
+            <TextBlock Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" x:Name="SendEmailControl" Text="Send Email" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"/>
+
+            <Label Grid.Row="4" Grid.Column="0" Content="Phone Number"/>
+
+            <dec:StringEditControl Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left" Text="{Binding PhoneNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
 
             <TabControl Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="5" x:Name="TabControl" VerticalAlignment="Stretch" >
 

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RingSoft.DevLogix.SqlServer;
 
@@ -11,9 +12,11 @@ using RingSoft.DevLogix.SqlServer;
 namespace RingSoft.DevLogix.SqlServer.Migrations
 {
     [DbContext(typeof(DevLogixSqlServerDbContext))]
-    partial class DevLogixSqlServerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230215204917_UserClockDate")]
+    partial class UserClockDate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -672,16 +675,11 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar");
 
-                    b.Property<int?>("SupervisorId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
                     b.HasIndex("DefaultChartId");
 
                     b.HasIndex("DepartmentId");
-
-                    b.HasIndex("SupervisorId");
 
                     b.ToTable("Users");
                 });
@@ -951,16 +949,9 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "Supervisor")
-                        .WithMany("Underlings")
-                        .HasForeignKey("SupervisorId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.Navigation("DefaultChart");
 
                     b.Navigation("Department");
-
-                    b.Navigation("Supervisor");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.UsersGroup", b =>
@@ -1070,8 +1061,6 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("FoundByUserErrors");
 
                     b.Navigation("TimeClocks");
-
-                    b.Navigation("Underlings");
 
                     b.Navigation("UserGroups");
                 });

@@ -21,6 +21,27 @@ using RingSoft.DevLogix.Library.ViewModels.UserManagement;
 
 namespace RingSoft.DevLogix.UserManagement
 {
+    public class UserHeaderControl : DbMaintenanceCustomPanel
+    {
+        public Button ClockOutButton { get; set; }
+
+        public Button ChangeChartButton { get; set; }
+
+        static UserHeaderControl()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(TimeClockHeaderControl), new FrameworkPropertyMetadata(typeof(TimeClockHeaderControl)));
+        }
+
+        public override void OnApplyTemplate()
+        {
+            ClockOutButton = GetTemplateChild(nameof(ClockOutButton)) as Button;
+            ChangeChartButton = GetTemplateChild(nameof(ChangeChartButton)) as Button;
+            ;
+
+            base.OnApplyTemplate();
+        }
+    }
+
     /// <summary>
     /// Interaction logic for UserMaintenanceWindow.xaml
     /// </summary>
@@ -29,6 +50,24 @@ namespace RingSoft.DevLogix.UserManagement
         public UserMaintenanceWindow()
         {
             InitializeComponent();
+
+            TopHeaderControl.Loaded += (sender, args) =>
+            {
+                if (TopHeaderControl.CustomPanel is UserHeaderControl userHeaderControl)
+                {
+                    userHeaderControl.ChangeChartButton.Command =
+                        UserMaintenanceViewModel.ChangeChartCommand;
+                }
+
+                if (Processor is AppDbMaintenanceWindowProcessor processor)
+                {
+                    if (processor.MaintenanceButtonsControl is DbMaintenanceTopHeaderControl buttonsControl)
+                    {
+                        buttonsControl.SaveSelectButton.Visibility = Visibility.Collapsed;
+                    }
+                }
+            };
+
         }
 
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;

@@ -608,6 +608,9 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
+                    b.Property<DateTime?>("ClockDate")
+                        .HasColumnType("datetime");
+
                     b.Property<int?>("DefaultChartId")
                         .HasColumnType("integer");
 
@@ -638,11 +641,16 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar");
 
+                    b.Property<int?>("SupervisorId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.HasIndex("DefaultChartId");
 
                     b.HasIndex("DepartmentId");
+
+                    b.HasIndex("SupervisorId");
 
                     b.ToTable("Users");
                 });
@@ -912,9 +920,16 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "Supervisor")
+                        .WithMany("Underlings")
+                        .HasForeignKey("SupervisorId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.Navigation("DefaultChart");
 
                     b.Navigation("Department");
+
+                    b.Navigation("Supervisor");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.UsersGroup", b =>
@@ -1024,6 +1039,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("FoundByUserErrors");
 
                     b.Navigation("TimeClocks");
+
+                    b.Navigation("Underlings");
 
                     b.Navigation("UserGroups");
                 });
