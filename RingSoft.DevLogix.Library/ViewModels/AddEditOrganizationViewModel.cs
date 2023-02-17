@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.App.Interop;
 using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
+using RingSoft.DbLookup;
 using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.EfCore;
 using RingSoft.DevLogix.DataAccess;
@@ -103,7 +107,8 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         }
 
-        protected override bool PreDataCopy(ref LookupContext context, ref DbDataProcessor destinationProcessor, ITwoTierProcedure procedure)
+        protected override bool PreDataCopy(ref LookupContext context, ref DbDataProcessor destinationProcessor
+            , ITwoTierProcedure procedure)
         {
             DbContext destinationDbContext = null;
             IDevLogixDbContext sourceDbContext = null;
@@ -124,6 +129,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
                     var sqlServerContext = new DevLogixSqlServerDbContext();
                     sqlServerContext.SetLookupContext(AppGlobals.LookupContext);
                     destinationDbContext = sqlServerContext;
+
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -142,6 +148,23 @@ namespace RingSoft.DevLogix.Library.ViewModels
                     throw new ArgumentOutOfRangeException();
             }
             AppGlobals.LoadDataProcessor(Object, OriginalDbPlatform);
+            switch (OriginalDbPlatform)
+            {
+                case DbPlatforms.Sqlite:
+                    break;
+                case DbPlatforms.SqlServer:
+                    if (!AppGlobals.AllowMigrate(AppGlobals.LookupContext.SqlServerDataProcessor))
+                    {
+                        var message = "You do not have the permission to copy this database's data.";
+                        var caption = "Copy Error";
+                        procedure.ShowMessage(message, caption, RsMessageBoxIcons.Exclamation);
+                        return false;
+                    }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
             //var systemMaster = new SystemMaster() { OrganizationName = Object.Name + "1" };
             //sourceDbContext.SystemMaster.Add(systemMaster);
             //try
@@ -153,6 +176,40 @@ namespace RingSoft.DevLogix.Library.ViewModels
             //    Console.WriteLine(e);
             //    throw;
             //}
+            switch (OriginalDbPlatform)
+            {
+                case DbPlatforms.Sqlite:
+                    if (DbPlatform == DbPlatforms.SqlServer)
+                    {
+                        var databaseList = new List<string>();
+                        var getListResults = destinationProcessor.GetListOfDatabases();
+                        if (getListResults.ResultCode == GetDataResultCodes.Success)
+                        {
+                            foreach (DataRow dataRow in getListResults.DataSet.Tables[0].Rows)
+                            {
+                                databaseList.Add(
+                                    dataRow.GetRowValue(getListResults.DataSet.Tables[0].Columns[0].ColumnName));
+                            }
+                        }
+                        var databaseExists =
+                            databaseList.Contains(SqlServerLoginViewModel.Database);
+
+                        if (databaseExists)
+                        {
+                            var message =
+                                "You must first delete the destination database in Microsoft SQL Server management studio in order to continue.";
+
+                            var caption = "Delete First";
+                            procedure.ShowMessage(message, caption, RsMessageBoxIcons.Exclamation);
+                            return false;
+                        }
+                    }
+                    break;
+                case DbPlatforms.SqlServer:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
             var dropResult = destinationProcessor.DropDatabase();
             if (dropResult.ResultCode != GetDataResultCodes.Success)
             {

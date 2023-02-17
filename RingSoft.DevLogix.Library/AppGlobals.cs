@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.WebSockets;
 using System.Threading;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.App.Interop;
@@ -185,18 +187,8 @@ namespace RingSoft.DevLogix.Library
                         else
                         {
                             var migrate = true;
-                            var migrateSystemMaster = new SystemMaster { OrganizationName = organization.Name + "1" };
-                            try
-                            {
-                                context.SystemMaster.Add(migrateSystemMaster);
-                                context.DbContext.SaveChanges();
-                                context.SystemMaster.Remove(migrateSystemMaster);
-                                context.DbContext.SaveChanges();
-                            }
-                            catch (Exception e)
-                            {
-                                migrate = false;
-                            }
+
+                            migrate = AllowMigrate();
 
                             if (migrate)
                             {
@@ -236,6 +228,31 @@ namespace RingSoft.DevLogix.Library
             LookupContext.DataProcessor.GetData(selectQuery, false);
 
             return string.Empty;
+        }
+
+        public static bool AllowMigrate(DbDataProcessor processor = null)
+        {
+            if (processor == null)
+            {
+                processor = LookupContext.DataProcessor;
+            }
+            bool migrate;
+            var sqlValue = Guid.NewGuid().ToString();
+            var field = LookupContext.SystemMaster.GetFieldDefinition(p => p.OrganizationName);
+            var insertStatement = new InsertDataStatement(LookupContext.SystemMaster);
+            var sqlData = new SqlData(field.FieldName, sqlValue, field.ValueType);
+            insertStatement.AddSqlData(sqlData);
+            var sqls = new List<string>();
+            sqls.Add(processor.SqlGenerator.GenerateInsertSqlStatement(
+                insertStatement));
+            var orgQuery = new SelectQuery(LookupContext.SystemMaster.TableName);
+            orgQuery.AddWhereItem(field.FieldName, Conditions.Equals, sqlValue);
+
+            sqls.Add(processor.SqlGenerator.GenerateDeleteStatement(orgQuery));
+
+            var orgResult = processor.ExecuteSqls(sqls, true, false, false);
+            migrate = orgResult.ResultCode == GetDataResultCodes.Success;
+            return migrate;
         }
 
         public static string MigrateContext(DbContext migrateContext)
