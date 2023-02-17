@@ -324,6 +324,10 @@ namespace RingSoft.DevLogix.DataAccess
             ErrorPriorities.PriorityLevel = 100;
             
             Departments.PriorityLevel = 200;
+            DevLogixCharts.PriorityLevel = 200;
+
+            AdvancedFinds.PriorityLevel = 250;
+            DevLogixChartBars.PriorityLevel = 300;
 
             Products.PriorityLevel = 300;
             Products.GetFieldDefinition(p => p.Notes).IsMemo();
