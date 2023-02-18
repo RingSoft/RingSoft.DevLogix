@@ -98,7 +98,7 @@
 
             <StackPanel Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Left">
 
-                <Button x:Name="ArchiveButton" Content="Archive" Height="20" Command="{Binding ArchiveCommand}"/>
+                <Button x:Name="ArchiveButton" Content="_Archive" Height="20" Command="{Binding ArchiveCommand}"/>
 
                 <Button x:Name="GetVersionButton" Content="Get Version" Height="20" Command="{Binding GetVersionCommand}"/>
 
