@@ -142,6 +142,13 @@ namespace RingSoft.DevLogix.QualityAssurance
             return result;
         }
 
+        public void SetFocusToGrid()
+        {
+            TabControl.SelectedItem = GridTabItem;
+            TabControl.UpdateLayout();
+            GridControl.Focus();
+        }
+
         public override void SetControlReadOnlyMode(Control control, bool readOnlyValue)
         {
             if (control == GetVersionButton)

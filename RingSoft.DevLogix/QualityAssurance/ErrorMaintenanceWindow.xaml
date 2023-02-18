@@ -12,7 +12,7 @@
         xmlns:local="clr-namespace:RingSoft.DevLogix.QualityAssurance"
         mc:Ignorable="d"
         Style="{StaticResource BaseWindowStyle}"
-        Title="Errors Maintenance" Width="600" Height="500">
+        Title="Errors Maintenance" Width="650" Height="500">
 
     <Window.Resources>
 

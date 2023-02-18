@@ -32,9 +32,20 @@ namespace RingSoft.DevLogix
     /// </summary>
     public partial class MainWindow : IMainView
     {
+        public RelayCommand AboutCommand { get; private set; }
+
         public MainWindow()
         {
             InitializeComponent();
+
+            AboutCommand = new RelayCommand(() =>
+            {
+                var splashWindow = new AppSplashWindow(false);
+                splashWindow.Title = "About DevLogix";
+                splashWindow.Owner = this;
+                splashWindow.ShowInTaskbar = false;
+                splashWindow.ShowDialog();
+            });
             ContentRendered += (sender, args) =>
             {
 #if DEBUG
@@ -130,7 +141,7 @@ namespace RingSoft.DevLogix
                         userCategory.Items.FirstOrDefault(p => p.TableDefinition == AppGlobals.LookupContext.Users);
                     menuItem.Items.Add(new MenuItem()
                     {
-                        Header = $"{categoryItem.Description}...",
+                        Header = "Add/Edit _Users...",
                         Command = ViewModel.ShowMaintenanceWindowCommand,
                         CommandParameter = AppGlobals.LookupContext.Users,
                     });
@@ -142,7 +153,7 @@ namespace RingSoft.DevLogix
                         userCategory.Items.FirstOrDefault(p => p.TableDefinition == AppGlobals.LookupContext.Groups);
                     menuItem.Items.Add(new MenuItem()
                     {
-                        Header = $"{categoryItem.Description}...",
+                        Header = "Add/Edit _Groups...",
                         Command = ViewModel.ShowMaintenanceWindowCommand,
                         CommandParameter = AppGlobals.LookupContext.Groups,
                     });
@@ -154,7 +165,7 @@ namespace RingSoft.DevLogix
                         userCategory.Items.FirstOrDefault(p => p.TableDefinition == AppGlobals.LookupContext.Departments);
                     menuItem.Items.Add(new MenuItem()
                     {
-                        Header = $"{categoryItem.Description}...",
+                        Header = "Add/Edit _Departments...",
                         Command = ViewModel.ShowMaintenanceWindowCommand,
                         CommandParameter = AppGlobals.LookupContext.Departments,
                     });
@@ -182,7 +193,7 @@ namespace RingSoft.DevLogix
                             p => p.TableDefinition == AppGlobals.LookupContext.ErrorStatuses);
                     menuItem.Items.Add(new MenuItem()
                     {
-                        Header = $"{categoryItem.Description}...",
+                        Header = "Add/Edit Error _Statuses...",
                         Command = ViewModel.ShowMaintenanceWindowCommand,
                         CommandParameter = AppGlobals.LookupContext.ErrorStatuses,
                     });
@@ -195,7 +206,7 @@ namespace RingSoft.DevLogix
                             p => p.TableDefinition == AppGlobals.LookupContext.ErrorPriorities);
                     menuItem.Items.Add(new MenuItem()
                     {
-                        Header = $"{categoryItem.Description}...",
+                        Header = $"Add/Edit E_rror Priorities...",
                         Command = ViewModel.ShowMaintenanceWindowCommand,
                         CommandParameter = AppGlobals.LookupContext.ErrorPriorities,
                     });
@@ -208,7 +219,7 @@ namespace RingSoft.DevLogix
                             p => p.TableDefinition == AppGlobals.LookupContext.Products);
                     menuItem.Items.Add(new MenuItem()
                     {
-                        Header = $"{categoryItem.Description}...",
+                        Header = "Add/Edit _Products...",
                         Command = ViewModel.ShowMaintenanceWindowCommand,
                         CommandParameter = AppGlobals.LookupContext.Products,
                     });
@@ -221,7 +232,7 @@ namespace RingSoft.DevLogix
                             p => p.TableDefinition == AppGlobals.LookupContext.Errors);
                     menuItem.Items.Add(new MenuItem()
                     {
-                        Header = $"{categoryItem.Description}...",
+                        Header = "Add/Edit Product _Errors...",
                         Command = ViewModel.ShowMaintenanceWindowCommand,
                         CommandParameter = AppGlobals.LookupContext.Errors,
                     });
@@ -298,6 +309,12 @@ namespace RingSoft.DevLogix
             }
             MakeUserMenu();
             MakeQaMenu();
+
+            MainMenu.Items.Add(new MenuItem()
+            {
+                Header = "_About DevLogix...",
+                Command = AboutCommand,
+            });
         }
 
 

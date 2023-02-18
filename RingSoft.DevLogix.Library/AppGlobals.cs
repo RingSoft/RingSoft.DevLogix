@@ -59,15 +59,14 @@ namespace RingSoft.DevLogix.Library
             RingSoftAppGlobals.AppCopyright = "©2023 by Peter Ringering";
             RingSoftAppGlobals.PathToDownloadUpgrade = MasterDbContext.ProgramDataFolder;
             RingSoftAppGlobals.AppGuid = "96ac9aa5-65af-43ca-8cb8-6e35a2f12570";
-            RingSoftAppGlobals.AppVersion = 59;
+            RingSoftAppGlobals.AppVersion = 63;
+            SystemGlobals.ProgramDataFolder = MasterDbContext.ProgramDataFolder;
         }
 
         public static void Initialize()
         {
             DataRepository ??= new DataRepository();
             SystemGlobals.DataRepository = DataRepository;
-            
-            SystemGlobals.ProgramDataFolder = MasterDbContext.ProgramDataFolder;
 
             AppSplashProgress?.Invoke(null, new AppProgressArgs("Initializing Database Structure."));
 

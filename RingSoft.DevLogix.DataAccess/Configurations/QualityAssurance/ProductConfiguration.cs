@@ -21,8 +21,7 @@ namespace RingSoft.DevLogix.DataAccess.Configurations
             builder.HasOne(p => p.CreateDepartment)
                 .WithMany(p => p.CreateVersionProducts)
                 .HasForeignKey(p => p.CreateDepartmentId)
-                .OnDelete(DeleteBehavior.NoAction)
-                .IsRequired(false);
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(p => p.ArchiveDepartment)
                 .WithMany(p => p.ArchiveVersionProducts)

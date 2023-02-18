@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition;
@@ -20,6 +21,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         string GetInstallerName();
 
         string GetArchivePath();
+
+        void SetViewToVersions();
     }
     public class ProductViewModel : DevLogixDbMaintenanceViewModel<Product>
     {
@@ -359,10 +362,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 CreateDepartmentId = CreateDepartmentAutoFillValue.GetEntity(AppGlobals.LookupContext.Departments).Id,
                 ArchiveDepartmentId = ArchiveDepartmentAutoFillValue.GetEntity(AppGlobals.LookupContext.Departments).Id,
             };
-            if (result.CreateDepartmentId == 0)
-            {
-                result.CreateDepartmentId = null;
-            }
 
             if (result.ArchiveDepartmentId == 0)
             {
@@ -387,10 +386,49 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             var context = AppGlobals.DataRepository.GetDataContext();
             if (context != null)
             {
-                return context.SaveEntity(entity, $"Saving Product '{entity.Description}'");
+                var result = context.SaveEntity(entity, $"Saving Product '{entity.Description}'");
+                if (result && MaintenanceMode == DbMaintenanceModes.AddMode)
+                {
+                    return CreateNewVersion(context, entity);
+                }
+                return result;
             }
             return false;
 
+        }
+
+        private bool CreateNewVersion(DataAccess.IDbContext context, Product product)
+        {
+            var newVersion = new ProductVersion
+            {
+                Description = "00.85.1",
+                ProductId = product.Id,
+            };
+            if (context.SaveEntity(newVersion, "Creating new version"))
+            {
+                var versionDepartment = new ProductVersionDepartment
+                {
+                    VersionId = newVersion.Id,
+                    DepartmentId = product.CreateDepartmentId,
+                    ReleaseDateTime = DateTime.Now.ToUniversalTime(),
+                };
+                var versionDepartments = new List<ProductVersionDepartment>();
+                versionDepartments.Add(versionDepartment);
+                context.AddRange(versionDepartments);
+                if (context.Commit("Adding new Version Department"))
+                {
+                    View.SetViewToVersions();
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+            return true;
         }
 
         protected override bool DeleteEntity()

@@ -5,6 +5,7 @@ using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels.QualityAssurance;
 using System.Windows;
 using System.Windows.Forms;
+using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using Button = System.Windows.Controls.Button;
 
 namespace RingSoft.DevLogix.QualityAssurance
@@ -76,6 +77,16 @@ namespace RingSoft.DevLogix.QualityAssurance
             base.ResetViewForNewRecord();
         }
 
+        public override void OnValidationFail(FieldDefinition fieldDefinition, string text, string caption)
+        {
+            if (fieldDefinition == LocalViewModel.TableDefinition.GetFieldDefinition(p => p.CreateDepartmentId))
+            {
+                TabControl.SelectedItem = DeploymentTabItem;
+                TabControl.UpdateLayout();
+                CreateDepartmentControl.Focus();
+            }
+            base.OnValidationFail(fieldDefinition, text, caption);
+        }
 
         public bool UpdateVersions(ProductViewModel viewModel)
         {
@@ -124,6 +135,13 @@ namespace RingSoft.DevLogix.QualityAssurance
             }
 
             return LocalViewModel.ArchivePath;
+        }
+
+        public void SetViewToVersions()
+        {
+            TabControl.SelectedItem = VersionsTabItem;
+            VersionsTabItem.UpdateLayout();
+            VersionLookupControl.Focus();
         }
     }
 }

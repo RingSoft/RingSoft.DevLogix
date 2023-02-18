@@ -104,7 +104,7 @@
                         
                         <Button Grid.Row="0" Grid.Column="0" x:Name="AddModifyButton" Content="Add/Modify" Command="{Binding VersionsAddModifyCommand}"/>
 
-                        <lc:LookupControl Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" LookupDefinition="{Binding ProductVersionLookupDefinition}" Command="{Binding ProductVersionLookupCommand}">
+                        <lc:LookupControl Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" x:Name="VersionLookupControl" LookupDefinition="{Binding ProductVersionLookupDefinition}" Command="{Binding ProductVersionLookupCommand}">
 
                             <lc:LookupControl.LookupColumns>
 
@@ -175,7 +175,7 @@
 
                         <Label Grid.Row="3" Grid.Column="0" Content="Create Version Department"/>
 
-                        <lc:AutoFillControl Grid.Row="3" Grid.Column="1" Setup="{Binding CreateDepartmentAutoFillSetup}" Value="{Binding CreateDepartmentAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="300" HorizontalAlignment="Left"/>
+                        <lc:AutoFillControl Grid.Row="3" Grid.Column="1" x:Name="CreateDepartmentControl" Setup="{Binding CreateDepartmentAutoFillSetup}" Value="{Binding CreateDepartmentAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="300" HorizontalAlignment="Left"/>
 
                         <Label Grid.Row="4" Grid.Column="0" Content="Archive Version Department"/>
 

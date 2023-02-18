@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.App.Library;
@@ -478,11 +479,17 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
                 FixedVersionAutoFillSetup.LookupDefinition.FilterDefinition.AddFixedFilter(
                     AppGlobals.LookupContext.ProductVersions.GetFieldDefinition(p => p.ProductId), Conditions.Equals,
-                    product.Id);
+                product.Id);
 
-                if (MaintenanceMode == DbMaintenanceModes.AddMode)
+                //Peter Ringering -02 / 17 / 2023 12:49:33 AM - E - 13
+                //if (MaintenanceMode == DbMaintenanceModes.AddMode)
+                //{
+                //    FoundVersionAutoFillValue = GetVersionForUser();
+                //}
+                FoundVersionAutoFillValue = GetVersionForUser();
+                if (FixedVersionAutoFillValue != null)
                 {
-                    FoundVersionAutoFillValue = GetVersionForUser();
+                    FixedVersionAutoFillValue = GetVersionForUser();
                 }
             }
         }

@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model;
@@ -41,6 +42,21 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             row.IsNew = false;
             InsertNewRow();
             Grid?.RefreshGridView();
+        }
+
+        public override bool ValidateGrid()
+        {
+            var allRows = Rows.Where(p => !p.IsNew);
+            if (!allRows.Any())
+            {
+                var message = "There must be at least one department row.";
+                var caption = "Validation Fail";
+                ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
+                ViewModel.View.SetFocusToGrid();
+                return false;
+            }
+
+            return true;
         }
     }
 }

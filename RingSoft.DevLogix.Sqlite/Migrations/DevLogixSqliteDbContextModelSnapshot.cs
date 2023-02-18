@@ -486,7 +486,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
-                    b.Property<int?>("CreateDepartmentId")
+                    b.Property<int>("CreateDepartmentId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Description")
@@ -853,7 +853,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.Department", "CreateDepartment")
                         .WithMany("CreateVersionProducts")
                         .HasForeignKey("CreateDepartmentId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.Navigation("ArchiveDepartment");
 

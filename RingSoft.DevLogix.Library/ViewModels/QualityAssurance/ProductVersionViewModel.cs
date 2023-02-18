@@ -15,6 +15,7 @@ using System.Net;
 using Newtonsoft.Json;
 using RingSoft.App.Interop;
 using RingSoft.DbLookup.DataProcessor;
+using RingSoft.DbLookup.Lookup;
 using RingSoft.DbMaintenance;
 using IDbContext = RingSoft.DevLogix.DataAccess.IDbContext;
 
@@ -23,6 +24,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
     public interface IProductVersionView : IDbMaintenanceView
     {
         bool UploadFile(FileInfo file, Department department, Product product);
+
+        void SetFocusToGrid();
     }
 
     public class ProcedureStatusArgs
@@ -209,6 +212,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         public event EventHandler<ProcedureStatusArgs> DeployErrorEvent;
 
+        private int _originalProductId;
+
         public ProductVersionViewModel()
         {
             ArchiveCommand = new RelayCommand(ArchiveVersion);
@@ -239,24 +244,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             departmentLookup.FilterDefinition.AddFixedFilter(p => p.FtpAddress, Conditions.NotEqualsNull, "");
 
             DepartmentAutoFillSetup = new AutoFillSetup(departmentLookup);
-            if (LookupAddViewArgs != null && LookupAddViewArgs.ParentWindowPrimaryKeyValue != null)
-            {
-                if (LookupAddViewArgs.ParentWindowPrimaryKeyValue.TableDefinition ==
-                    AppGlobals.LookupContext.Products)
-                {
-                    var product =
-                        AppGlobals.LookupContext.Products.GetEntityFromPrimaryKeyValue(LookupAddViewArgs
-                            .ParentWindowPrimaryKeyValue);
-
-                    var field = AppGlobals.LookupContext.ProductVersions.GetFieldDefinition(p => p.ProductId);
-
-                    ViewLookupDefinition.FilterDefinition.AddFixedFilter(field, 
-                        Conditions.Equals, product.Id);
-
-                    //KeyAutoFillSetup.LookupDefinition.FilterDefinition.AddFixedFilter(field, Conditions.Equals,
-                    //    product.Id);
-                }
-            }
 
             if (LookupAddViewArgs != null && LookupAddViewArgs.ParentWindowPrimaryKeyValue != null)
             {
@@ -272,8 +259,34 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 }
             }
 
-            //DbDataProcessor.ShowSqlStatementWindow();
+            FindButtonLookupDefinition.InitialOrderByType = OrderByTypes.Descending;
             base.Initialize();
+        }
+
+        protected override void SetupViewLookupDefinition(LookupDefinitionBase lookupDefinition)
+        {
+            if (LookupAddViewArgs != null && LookupAddViewArgs.ParentWindowPrimaryKeyValue != null)
+            {
+                if (LookupAddViewArgs.ParentWindowPrimaryKeyValue.TableDefinition ==
+                    AppGlobals.LookupContext.Products)
+                {
+                    var product =
+                        AppGlobals.LookupContext.Products.GetEntityFromPrimaryKeyValue(LookupAddViewArgs
+                            .ParentWindowPrimaryKeyValue);
+
+                    _originalProductId = product.Id;
+
+                    var field = AppGlobals.LookupContext.ProductVersions.GetFieldDefinition(p => p.ProductId);
+
+                    ViewLookupDefinition.FilterDefinition.AddFixedFilter(field,
+                        Conditions.Equals, product.Id);
+                }
+            }
+
+            lookupDefinition.InitialOrderByType = OrderByTypes.Ascending;
+
+
+            base.SetupViewLookupDefinition(lookupDefinition);
         }
 
         public override void OnWindowClosing(CancelEventArgs e)
@@ -345,6 +358,23 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             CheckArchiveButtonState();
         }
 
+        protected override bool ValidateEntity(ProductVersion entity)
+        {
+            var result = DepartmentsManager.ValidateGrid();
+            if (!result)
+            {
+                return result;
+            }
+            
+            if (entity.ProductId != _originalProductId)
+            {
+                if (!ValidateOnlyVersion())
+                    return false;
+            }
+
+            return base.ValidateEntity(entity);
+        }
+
         protected override bool SaveEntity(ProductVersion entity)
         {
             var context = AppGlobals.DataRepository.GetDataContext();
@@ -376,6 +406,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             var query = context.GetTable<ProductVersion>();
             if (query != null)
             {
+                if (!ValidateOnlyVersion()) return false;
+
                 var departmentsToRemove = context.GetTable<ProductVersionDepartment>()
                     .Where(p => p.VersionId == Id);
 
@@ -389,6 +421,27 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             }
             return false;
 
+        }
+
+        private bool ValidateOnlyVersion()
+        {
+            var selectQuery = new SelectQuery(TableDefinition.TableName);
+            selectQuery.SetMaxRecords(2);
+            selectQuery.AddWhereItem(TableDefinition.GetFieldDefinition(p => p.ProductId).FieldName,
+                Conditions.Equals, _originalProductId);
+            var result = TableDefinition.Context.DataProcessor.GetData(selectQuery);
+            if (result.ResultCode == GetDataResultCodes.Success)
+            {
+                if (result.DataSet.Tables[0].Rows.Count < 2)
+                {
+                    var message = "You cannot delete the version or change the product for only version of this product.";
+                    var caption = "Delete Validation Fail";
+                    ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         private void ArchiveVersion()
@@ -681,10 +734,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         {
             KeyAutoFillValue = new AutoFillValue(new PrimaryKeyValue(TableDefinition), version);
             var product = GetProduct(context);
-            if (product != null && product.CreateDepartmentId.HasValue)
+            if (product != null)
             {
-                AddNewDepartment(product.CreateDepartmentId.Value);
+                AddNewDepartment(product.CreateDepartmentId);
             }
+
+            DoSave();
         }
 
         private Product GetProduct(IDbContext context)

@@ -112,12 +112,11 @@
 
             <TabControl Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="5" x:Name="TabControl">
 
-                <TabItem Header="Releases">
+                <TabItem Header="Releases" x:Name="GridTabItem">
 
                     <DockPanel>
 
-                        <deg:DataEntryGrid Manager="{Binding DepartmentsManager}">
-
+                        <deg:DataEntryGrid x:Name="GridControl" Manager="{Binding DepartmentsManager}">
                             <deg:DataEntryGrid.Columns>
 
                                 <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ProductVersionDepartmentsManager.DepartmentColumnId}" Header="Released To&#10;Department" Width="250"/>
