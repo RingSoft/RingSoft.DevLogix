@@ -26,6 +26,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         bool UploadFile(FileInfo file, Department department, Product product);
 
         void SetFocusToGrid();
+
+        void SetFocusToDeploy();
     }
 
     public class ProcedureStatusArgs
@@ -475,6 +477,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                                     {
                                         file.CopyTo(archiveFile);
                                         ArchiveDateTime = DateTime.Now;
+                                        DoSave();
+                                        View.SetFocusToDeploy();
                                     }
                                     catch (Exception e)
                                     {
@@ -808,6 +812,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 }
             }
             return true;
+        }
+
+        protected override void OnPropertyChanged(string propertyName = null, bool raiseDirtyFlag = true)
+        {
+            if (raiseDirtyFlag)
+            {
+                
+            }
+            base.OnPropertyChanged(propertyName, raiseDirtyFlag);
         }
     }
 }

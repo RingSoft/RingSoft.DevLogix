@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using Microsoft.VisualBasic.Devices;
+using RingSoft.DataEntryControls.WPF;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Lookup;
@@ -92,7 +95,69 @@ namespace RingSoft.DevLogix
                 ViewModel.Clear(false);
             };
             UpdateBars();
+
             base.OnApplyTemplate();
+        }
+
+        protected override void OnPreviewKeyDown(KeyEventArgs e)
+        {
+            ProcessKeyDown(e);
+            base.OnPreviewKeyDown(e);
+        }
+
+        public void ProcessKeyDown(KeyEventArgs e)
+        {
+            var isCtrlDown = System.Windows.Input.Keyboard.IsKeyDown(Key.LeftCtrl)
+                             || System.Windows.Input.Keyboard.IsKeyDown(Key.RightCtrl);
+
+            if (isCtrlDown && e.Key != Key.LeftCtrl && e.Key != Key.RightCtrl)
+            {
+                var index = 0;
+                switch (e.Key)
+                {
+                    case Key.D1:
+                    case Key.NumPad1:
+                        index = 1;
+                        break;
+                    case Key.D2:
+                        case Key.NumPad2:
+                        index = 2;
+                        break;
+                    case Key.D3:
+                        case Key.NumPad3:
+                        index = 3;
+                        break;
+                    case Key.D4:
+                        case Key.NumPad4:
+                        index = 4;
+                        break;
+                    case Key.D5:
+                        case Key.NumPad5:
+                        index = 5;
+                        break;
+                    case Key.D6:
+                        case Key.NumPad6:
+                        index = 6;
+                        break;
+                    case Key.D7:
+                        case Key.NumPad7:
+                        index = 7;
+                        break;
+                    case Key.D8:
+                        case Key.NumPad8:
+                        index = 8;
+                        break;
+                    case Key.D9:
+                        case Key.NumPad9:
+                        index = 9;
+                        break;
+                }
+                if (index > 0)
+                {
+                    var viewModel = ViewModel.Bars[index - 1];
+                    viewModel.ShowAddOnFly(Window.GetWindow(this));
+                }
+            }
         }
 
         private void WpfPlot_LeftClicked(object? sender, EventArgs e)

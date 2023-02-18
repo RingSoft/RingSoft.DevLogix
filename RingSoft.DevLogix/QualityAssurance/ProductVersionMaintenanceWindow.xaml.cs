@@ -149,6 +149,13 @@ namespace RingSoft.DevLogix.QualityAssurance
             GridControl.Focus();
         }
 
+        public void SetFocusToDeploy()
+        {
+            DeployControl.IsEnabled = true;
+            UpdateLayout();
+            DeployControl.Focus();
+        }
+
         public override void SetControlReadOnlyMode(Control control, bool readOnlyValue)
         {
             if (control == GetVersionButton)

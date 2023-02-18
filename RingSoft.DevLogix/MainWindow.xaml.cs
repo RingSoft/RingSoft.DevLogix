@@ -22,6 +22,7 @@ using ScottPlot;
 using ScottPlot.Plottable;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using Application = System.Windows.Application;
+using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MessageBox = System.Windows.Forms.MessageBox;
 using Window = System.Windows.Window;
 
@@ -402,6 +403,12 @@ namespace RingSoft.DevLogix
             timeClockWindow.Owner = this;
             timeClockWindow.ShowInTaskbar = false;
             timeClockWindow.Show();
+        }
+
+        protected override void OnPreviewKeyDown(KeyEventArgs e)
+        {
+            MainChart.ProcessKeyDown(e);
+            base.OnPreviewKeyDown(e);
         }
     }
 }

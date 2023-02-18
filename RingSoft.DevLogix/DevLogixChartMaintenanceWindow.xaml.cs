@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Input;
 using RingSoft.App.Controls;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.Library.ViewModels;
@@ -39,6 +40,15 @@ namespace RingSoft.DevLogix
         public void OnValGridFail()
         {
             TabControl.SelectedItem = BarsTab;
+        }
+
+        protected override void OnPreviewKeyDown(KeyEventArgs e)
+        {
+            if (TabControl.SelectedIndex == 0)
+            {
+                ChartBarsControl.ProcessKeyDown(e);
+            }
+            base.OnPreviewKeyDown(e);
         }
     }
 }
