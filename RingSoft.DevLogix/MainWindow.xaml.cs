@@ -375,9 +375,18 @@ namespace RingSoft.DevLogix
             {
                 var message = "You currently are punched into an active time card. Do you wish to load that time card instead?";
                 var caption = "Already Punched in";
-                if (MessageBox.Show(message, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+                if (MessageBox.Show(message, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) ==
+                    System.Windows.Forms.DialogResult.Yes)
                 {
-                    AppGlobals.LookupContext.TimeClocks.LookupDefinition.ShowAddOnTheFlyWindow(AppGlobals.LookupContext.TimeClocks.GetPrimaryKeyValueFromEntity(activeTimeCard));
+                    var activeWindow = LookupControlsGlobals.ActiveWindow;
+                    var lookupDefinition = AppGlobals.LookupContext.TimeClockLookup.Clone();
+                    lookupDefinition.WindowClosed += (sender, args) =>
+                    {
+                        activeWindow.Activate();
+                    };
+
+                    lookupDefinition.ShowAddOnTheFlyWindow(
+                        AppGlobals.LookupContext.TimeClocks.GetPrimaryKeyValueFromEntity(activeTimeCard));
                 }
 
                 return null;

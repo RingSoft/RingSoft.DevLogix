@@ -60,7 +60,12 @@ namespace RingSoft.DevLogix
         protected override void CheckVersion()
         {
 #if DEBUG
-            RingSoftAppGlobals.IsAppVersionOld();
+            var app = RingSoftAppGlobals.IsAppVersionOld();
+            if (app != null)
+            {
+                RingSoftAppGlobals.UserVersion = app.VersionName;
+            }
+
 #else
             base.CheckVersion();
 #endif
