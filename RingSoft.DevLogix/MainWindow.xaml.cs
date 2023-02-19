@@ -286,18 +286,33 @@ namespace RingSoft.DevLogix
         public void MakeMenu()
         {
             MainMenu.Items.Clear();
-            MainMenu.Items.Add(new MenuItem()
+
+            var fileMenu = new MenuItem()
+            {
+                Header = "_File"
+            };
+            fileMenu.Items.Add(new MenuItem()
+            {
+                Header = $"_Change Organization",
+                Command = ViewModel.ChangeOrgCommand
+            });
+
+            fileMenu.Items.Add(new MenuItem()
+            {
+                Header = $"_Logout",
+                Command = ViewModel.LogoutCommand
+            });
+
+            fileMenu.Items.Add(new MenuItem()
             {
                 Header = $"E_xit",
                 Command = ViewModel.ExitCommand
             });
 
+            MainMenu.Items.Add(fileMenu);
 
-            MainMenu.Items.Add(new MenuItem()
-            {
-                Header = $"_Logout",
-                Command = ViewModel.LogoutCommand
-            });
+            MakeUserMenu();
+            MakeQaMenu();
 
             if (AppGlobals.LookupContext.DevLogixCharts.HasRight(RightTypes.AllowView))
             {
@@ -308,8 +323,6 @@ namespace RingSoft.DevLogix
                     CommandParameter = AppGlobals.LookupContext.DevLogixCharts,
                 });
             }
-            MakeUserMenu();
-            MakeQaMenu();
 
             MainMenu.Items.Add(new MenuItem()
             {

@@ -36,6 +36,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
         public RelayCommand AdvancedFindCommand { get; }
         public RelayCommand RefreshChartCommand { get; }
         public RelayCommand EditChartCommand { get; }
+        public RelayCommand ChangeOrgCommand { get; }
         public ChartBarsViewModel ChartViewModel { get; private set; }
         
         public MainViewModel()
@@ -47,6 +48,12 @@ namespace RingSoft.DevLogix.Library.ViewModels
             ShowMaintenanceWindowCommand = new RelayCommand<TableDefinitionBase>(ShowMaintenanceWindow);
             RefreshChartCommand = new RelayCommand(RefreshChart);
             EditChartCommand = new RelayCommand(EditChart);
+            ChangeOrgCommand = new RelayCommand((() =>
+            {
+                SetChartId(0);
+                AppGlobals.LoggedInOrganization = null;
+                Initialize(MainView);
+            }));
         }
         public void Initialize(IMainView view)
         {
@@ -65,22 +72,29 @@ namespace RingSoft.DevLogix.Library.ViewModels
                     loadVm = view.LoginUser();
                     if (!loadVm)
                     {
-                        var message =
-                            "If you don't login a user, the application will shut down. Are you sure this is what you want to do?";
-                        var caption = "User Login Failed";
-                        if (ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, caption) ==
-                            MessageBoxButtonsResult.Yes)
-                        {
-                            AppGlobals.LoggedInOrganization = null;
-                            loadVm = view.ChangeOrganization();
-                        }
-                        else
-                        {
-                            while (!loadVm)
-                            {
-                                loadVm = view.LoginUser();
-                            }
-                        }
+                        AppGlobals.LoggedInOrganization = null;
+                        Initialize(view);
+                        //var message =
+                        //    "If you don't login a user, the application will shut down. Are you sure this is what you want to do?";
+                        //var caption = "User Login Failed";
+                        //if (ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, caption) ==
+                        //    MessageBoxButtonsResult.Yes)
+                        //{
+                        //    AppGlobals.LoggedInOrganization = null;
+                        //    Initialize(view);
+                        //    //loadVm = view.ChangeOrganization();
+                        //    //if (loadVm)
+                        //    //{
+
+                        //    //}
+                        //}
+                        //else
+                        //{
+                        //    while (!loadVm)
+                        //    {
+                        //        loadVm = view.LoginUser();
+                        //    }
+                        //}
                     }
                 }
                 else
