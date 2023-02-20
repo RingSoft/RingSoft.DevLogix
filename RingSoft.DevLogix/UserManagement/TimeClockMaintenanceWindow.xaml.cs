@@ -58,6 +58,7 @@ namespace RingSoft.DevLogix.UserManagement
             InitializeComponent();
             TopHeaderControl.Loaded += (sender, args) =>
             {
+                TopHeaderControl.PrintButton.Visibility = Visibility.Collapsed;
                 TopHeaderControl.NewButton.Visibility = Visibility.Collapsed;
                 if (TopHeaderControl.CustomPanel is TimeClockHeaderControl timeClockHeaderControl)
                 {
@@ -121,6 +122,15 @@ namespace RingSoft.DevLogix.UserManagement
             {
                 NotesControl.TextBox.Focus();
             }
+        }
+
+        public void SetDialogMode()
+        {
+            TopHeaderControl.FindButton.Visibility = Visibility.Collapsed;
+            TopHeaderControl.NextButton.Visibility = Visibility.Collapsed;
+            TopHeaderControl.PreviousButton.Visibility = Visibility.Collapsed;
+            TopHeaderControl.DeleteButton.Visibility = Visibility.Collapsed;
+            TopHeaderControl.NewButton.Visibility = Visibility.Collapsed;
         }
     }
 }

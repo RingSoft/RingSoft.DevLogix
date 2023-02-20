@@ -10,6 +10,7 @@
                          xmlns:ac="clr-namespace:RingSoft.App.Controls;assembly=RingSoft.App.Controls"
                          xmlns:vm="clr-namespace:RingSoft.DevLogix.Library.ViewModels.UserManagement;assembly=RingSoft.DevLogix.Library"
                          xmlns:dataEntryGrid="clr-namespace:RingSoft.DataEntryControls.WPF.DataEntryGrid;assembly=RingSoft.DataEntryControls.WPF"
+                         xmlns:lm="clr-namespace:RingSoft.DevLogix.DataAccess.LookupModel;assembly=RingSoft.DevLogix.DataAccess"
                          mc:Ignorable="d"
                          Style="{StaticResource BaseWindowStyle}"
                          Title="User Maintenance" Width="650" Height="500">
@@ -125,6 +126,24 @@
                     <DockPanel>
 
                         <local:RightsTree x:Name="RightsTree"/>
+
+                    </DockPanel>
+
+                </TabItem>
+
+                <TabItem Header="Time Clocks" x:Name="TimeClockTab" VerticalAlignment="Stretch">
+
+                    <DockPanel>
+
+                        <lc:LookupControl LookupDefinition="{Binding TimeClockLookup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Command="{Binding TimeClockLookupCommand, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+
+                            <lc:LookupControl.LookupColumns>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf PunchInDate, Type={x:Type lm:TimeClockLookup}}" Header="Punch In Date" Width="450"/>
+
+                            </lc:LookupControl.LookupColumns>
+
+                        </lc:LookupControl>
 
                     </DockPanel>
 

@@ -22,6 +22,8 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         void PunchIn(Error error);
 
+        bool PunchOut(bool clockOut, int userId = 0);
+
         void ShowMainChart(bool show = true);
 
         object GetOwnerWindow();

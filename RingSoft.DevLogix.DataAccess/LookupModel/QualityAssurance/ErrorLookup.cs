@@ -11,5 +11,7 @@ namespace RingSoft.DevLogix.DataAccess.LookupModel
         public string Priority { get; set; }
 
         public DateTime Date { get; set; }
+
+        public string User { get; set; }
     }
 }

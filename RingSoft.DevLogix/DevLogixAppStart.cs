@@ -156,9 +156,20 @@ namespace RingSoft.DevLogix
                 var processor = maintenanceWindow.ViewModel.Processor as AppDbMaintenanceWindowProcessor;
                 processor.CheckAddOnFlyAfterLoaded();
             };
-            maintenanceWindow.Show();
-            maintenanceWindow.Activate();
-            maintenanceWindow.Closed += (sender, args) => ownWindow?.Activate();
+            if (e.InputParameter is DialogInput dialogInput)
+            {
+                var inputResult = maintenanceWindow.ShowDialog();
+                if (inputResult != null && inputResult.Value)
+                {
+                    dialogInput.DialogResult = inputResult.Value;
+                }
+            }
+            else
+            {
+                maintenanceWindow.Show();
+                maintenanceWindow.Activate();
+                maintenanceWindow.Closed += (sender, args) => ownWindow?.Activate();
+            }
         }
 
 

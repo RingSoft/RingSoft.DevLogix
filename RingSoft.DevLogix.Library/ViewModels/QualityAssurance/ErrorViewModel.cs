@@ -7,9 +7,11 @@ using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
+using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbMaintenance;
+using RingSoft.DevLogix.DataAccess.LookupModel;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.Printing.Interop;
 using static System.Net.Mime.MediaTypeNames;
@@ -366,6 +368,36 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             }
         }
 
+        private LookupDefinition<TimeClockLookup, TimeClock> _timeClockLookup;
+
+        public LookupDefinition<TimeClockLookup, TimeClock> TimeClockLookup
+        {
+            get => _timeClockLookup;
+            set
+            {
+                if (_timeClockLookup == value)
+                    return;
+
+                _timeClockLookup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private LookupCommand _timeClockLookupCommand;
+
+        public LookupCommand TimeClockLookupCommand
+        {
+            get => _timeClockLookupCommand;
+            set
+            {
+                if (_timeClockLookupCommand == value)
+                    return;
+
+                _timeClockLookupCommand = value;
+                OnPropertyChanged();
+            }
+        }
+
         private ErrorDeveloperManager _developerManager;
 
         public ErrorDeveloperManager DeveloperManager
@@ -433,6 +465,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             });
 
             PrintProcessingHeader += ErrorViewModel_PrintProcessingHeader;
+
+            var timeClockLookup = new LookupDefinition<TimeClockLookup, TimeClock>(AppGlobals.LookupContext.TimeClocks);
+            timeClockLookup.AddVisibleColumnDefinition(p => p.PunchInDate, p => p.PunchInDate);
+            timeClockLookup.Include(p => p.User)
+                .AddVisibleColumnDefinition(p => p.UserName, p => p.Name);
+            TimeClockLookup = timeClockLookup;
+            TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
         }
 
         protected override void Initialize()
@@ -557,6 +596,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                     PassCommand.IsEnabled = FailCommand.IsEnabled = PunchInCommand.IsEnabled = true;
             }
 
+            TimeClockLookup.FilterDefinition.ClearFixedFilters();
+            TimeClockLookup.FilterDefinition.AddFixedFilter(p => p.ErrorId, Conditions.Equals, Id);
+            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
+
             return result;
         }
 
@@ -670,6 +713,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             DeveloperManager.SetupForNewRecord();
             ErrorQaManager.SetupForNewRecord();
             WriteOffCommand.IsEnabled = ClipboardCopyCommand.IsEnabled = PassCommand.IsEnabled = FailCommand.IsEnabled = PunchInCommand.IsEnabled = false;
+            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Clear);
         }
 
         protected override bool SaveEntity(Error entity)
@@ -714,14 +758,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             var context = AppGlobals.DataRepository.GetDataContext();
             if (context != null)
             {
-                var developerQuery = AppGlobals.DataRepository.GetDataContext().GetTable<ErrorDeveloper>();
-                var developers = developerQuery.Where(p => p.ErrorId == Id).ToList();
+                var developerQuery = context.GetTable<ErrorDeveloper>();
+                var developers = developerQuery.Where(p => p.ErrorId == Id);
                 context.RemoveRange(developers);
 
-                var testersQuery = AppGlobals.DataRepository.GetDataContext().GetTable<ErrorQa>();
-                var testers = testersQuery.Where(p => p.ErrorId == Id).ToList();
+                var testersQuery = context.GetTable<ErrorQa>();
+                var testers = testersQuery.Where(p => p.ErrorId == Id);
                 context.RemoveRange(testers);
 
+                var table = TableDefinition;
                 var entity = context.GetTable<Error>().FirstOrDefault(p => p.Id == Id);
                 return context.DeleteEntity(entity, "Deleting Error");
             }

@@ -371,6 +371,7 @@ namespace RingSoft.DevLogix.DataAccess
             TimeClocks.GetFieldDefinition(p => p.PunchInDate).HasDateType(DbDateTypes.DateTime)
                 .DoConvertToLocalTime();
             TimeClocks.GetFieldDefinition(p => p.PunchOutDate).HasDateType(DbDateTypes.DateTime).DoConvertToLocalTime();
+            TimeClocks.GetFieldDefinition(p => p.ErrorId).CanSetNull(false);
         }
 
         public override UserAutoFill GetUserAutoFill(string userName)

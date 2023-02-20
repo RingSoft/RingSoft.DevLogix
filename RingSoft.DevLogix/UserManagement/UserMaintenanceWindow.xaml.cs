@@ -29,7 +29,7 @@ namespace RingSoft.DevLogix.UserManagement
 
         static UserHeaderControl()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(TimeClockHeaderControl), new FrameworkPropertyMetadata(typeof(TimeClockHeaderControl)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(UserHeaderControl), new FrameworkPropertyMetadata(typeof(UserHeaderControl)));
         }
 
         public override void OnApplyTemplate()
@@ -57,15 +57,17 @@ namespace RingSoft.DevLogix.UserManagement
                 {
                     userHeaderControl.ChangeChartButton.Command =
                         UserMaintenanceViewModel.ChangeChartCommand;
+
+                    userHeaderControl.ClockOutButton.Command = UserMaintenanceViewModel.ClockOutCommand;
                 }
 
-                if (Processor is AppDbMaintenanceWindowProcessor processor)
-                {
-                    if (processor.MaintenanceButtonsControl is DbMaintenanceTopHeaderControl buttonsControl)
-                    {
-                        buttonsControl.SaveSelectButton.Visibility = Visibility.Collapsed;
-                    }
-                }
+                //if (Processor is AppDbMaintenanceWindowProcessor processor)
+                //{
+                //    if (processor.MaintenanceButtonsControl is DbMaintenanceTopHeaderControl buttonsControl)
+                //    {
+                //        buttonsControl.SaveSelectButton.Visibility = Visibility.Collapsed;
+                //    }
+                //}
             };
 
         }

@@ -12,7 +12,7 @@
         xmlns:local="clr-namespace:RingSoft.DevLogix.QualityAssurance"
         mc:Ignorable="d"
         Style="{StaticResource BaseWindowStyle}"
-        Title="Errors Maintenance" Width="650" Height="500">
+        Title="Errors Maintenance" Width="650" Height="650">
 
     <Window.Resources>
 
@@ -202,6 +202,27 @@
                     </Grid>
 
                 </TabItem>
+
+                <TabItem Header="Time Clocks" x:Name="TimeClockTab" VerticalAlignment="Stretch">
+
+                    <DockPanel>
+
+                        <lc:LookupControl LookupDefinition="{Binding TimeClockLookup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Command="{Binding TimeClockLookupCommand, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+
+                            <lc:LookupControl.LookupColumns>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf PunchInDate, Type={x:Type lm:TimeClockLookup}}" Header="Punch In Date" Width="200"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf UserName, Type={x:Type lm:TimeClockLookup}}" Header="User" Width="350"/>
+
+                            </lc:LookupControl.LookupColumns>
+
+                        </lc:LookupControl>
+
+                    </DockPanel>
+
+                </TabItem>
+
 
                 <TabItem Header="Developers">
 

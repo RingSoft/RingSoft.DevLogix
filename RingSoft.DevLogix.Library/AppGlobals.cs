@@ -22,6 +22,11 @@ using DbPlatforms = RingSoft.App.Library.DbPlatforms;
 
 namespace RingSoft.DevLogix.Library
 {
+    public class DialogInput
+    {
+        public bool DialogResult { get; set; }
+    }
+
     public class AppProgressArgs
     {
         public string ProgressText { get; }
@@ -67,6 +72,7 @@ namespace RingSoft.DevLogix.Library
         {
             DataRepository ??= new DataRepository();
             SystemGlobals.DataRepository = DataRepository;
+            SystemGlobals.ConvertAllDatesToUniversalTime = true;
 
             AppSplashProgress?.Invoke(null, new AppProgressArgs("Initializing Database Structure."));
 

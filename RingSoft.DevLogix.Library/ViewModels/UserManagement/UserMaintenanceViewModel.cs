@@ -7,8 +7,11 @@ using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
+using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition;
+using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbMaintenance;
+using RingSoft.DevLogix.DataAccess.LookupModel;
 using RingSoft.DevLogix.DataAccess.Model;
 
 namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
@@ -187,6 +190,37 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
         }
 
+        private LookupDefinition<TimeClockLookup, TimeClock> _timeClockLookup;
+
+        public LookupDefinition<TimeClockLookup, TimeClock > TimeClockLookup
+        {
+            get => _timeClockLookup;
+            set
+            {
+                if (_timeClockLookup == value)
+                    return;
+
+                _timeClockLookup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private LookupCommand _timeClockLookupCommand;
+
+        public LookupCommand TimeClockLookupCommand
+        {
+            get => _timeClockLookupCommand;
+            set
+            {
+                if (_timeClockLookupCommand == value)
+                    return;
+
+                _timeClockLookupCommand = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         private UsersGroupsManager _groupsManager;
 
         public UsersGroupsManager GroupsManager
@@ -229,8 +263,61 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         {
             ChangeChartCommand = new RelayCommand(() =>
             {
+                PrimaryKeyValue primaryKey = null;
+                var chart = DefaultChartAutoFillValue.GetEntity(AppGlobals.LookupContext.DevLogixCharts);
+                if (chart.Id > 0)
+                {
+                    primaryKey = AppGlobals.LookupContext.DevLogixCharts.GetPrimaryKeyValueFromEntity(chart);
+                }
 
+                var lookup = AppGlobals.LookupContext.DevLogixChartLookup.Clone();
+                lookup.WindowClosed += (sender, args) =>
+                {
+                    if (!args.LookupData.SelectedPrimaryKeyValue.IsValid)
+                    {
+                        return;
+                    }
+                    var newChart =
+                        AppGlobals.LookupContext.DevLogixCharts.GetEntityFromPrimaryKeyValue(args.LookupData
+                            .SelectedPrimaryKeyValue);
+
+                    var recordDirty = RecordDirty;
+                    DefaultChartAutoFillValue = DefaultChartAutoFillSetup.GetAutoFillValueForIdValue(newChart.Id);
+
+                    var user = new User { Id = Id };
+                    var userPrimaryKey = TableDefinition.GetPrimaryKeyValueFromEntity(user);
+                    var updateStatement = new UpdateDataStatement(userPrimaryKey);
+                    var field = TableDefinition.GetFieldDefinition(p => p.DefaultChartId);
+                    var sqlData = new SqlData(field.FieldName, newChart.Id.ToString(), ValueTypes.Numeric);
+                    updateStatement.AddSqlData(sqlData);
+                    var sqls = AppGlobals.LookupContext.DataProcessor.SqlGenerator.GenerateUpdateSql(updateStatement);
+                    AppGlobals.LookupContext.DataProcessor.ExecuteSqls(sqls);
+
+                    if (AppGlobals.LoggedInUser.Id == user.Id)
+                    {
+                        AppGlobals.MainViewModel.SetChartId(newChart.Id);
+                    }
+
+                    RecordDirty = recordDirty;
+                };
+                lookup.ShowAddOnTheFlyWindow(primaryKey);
             });
+
+            ClockOutCommand = new RelayCommand(() =>
+            {
+                var recordDirty = RecordDirty;
+                if (AppGlobals.MainViewModel.MainView.PunchOut(true, Id))
+                {
+                    ClockDateTime = null;
+                    ClockOutCommand.IsEnabled = false;
+                    RecordDirty = recordDirty;
+                }
+            });
+
+            var timeClockLookup = new LookupDefinition<TimeClockLookup, TimeClock>(AppGlobals.LookupContext.TimeClocks);
+            timeClockLookup.AddVisibleColumnDefinition(p => p.PunchInDate, p => p.PunchInDate);
+            TimeClockLookup = timeClockLookup;
+            TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
         }
 
         protected override void Initialize()
@@ -257,6 +344,28 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             Id = result.Id;
             KeyAutoFillValue = AppGlobals.LookupContext.OnAutoFillTextRequest(TableDefinition, Id.ToString());
             View.RefreshView();
+
+            if (result.Id == AppGlobals.LoggedInUser.Id || result.IsSupervisor())
+            {
+                if (result.ClockDate == null)
+                {
+                    ClockOutCommand.IsEnabled = false;
+                }
+                else
+                {
+                    ClockOutCommand.IsEnabled = true;
+                }
+            }
+            else
+            {
+                ClockOutCommand.IsEnabled = false;
+            }
+
+            ChangeChartCommand.IsEnabled = true;
+
+            TimeClockLookup.FilterDefinition.ClearFixedFilters();
+            TimeClockLookup.FilterDefinition.AddFixedFilter(p => p.UserId, Conditions.Equals, Id);
+            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
             return result;
         }
 
@@ -271,7 +380,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             Notes = entity.Notes;
             DefaultChartAutoFillValue = DefaultChartAutoFillSetup.GetAutoFillValueForIdValue(entity.DefaultChartId);
             SupervisorAutoFillValue = SupervisorAutoFillSetup.GetAutoFillValueForIdValue(entity.SupervisorId);
-            ClockDateTime = entity.ClockDate;
+            if (entity.ClockDate.HasValue)
+            {
+                ClockDateTime = entity.ClockDate.Value.ToLocalTime();
+            }
+            else
+            {
+                ClockDateTime = null;
+            }
         }
 
         protected override User GetEntityData()
@@ -312,8 +428,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             DepartmentAutoFillValue = null;
             EmailAddress = null;
             PhoneNumber = null;
+            DefaultChartAutoFillValue = null;
+            SupervisorAutoFillValue = null;
             View.ResetRights();
             GroupsManager.SetupForNewRecord();
+            ClockOutCommand.IsEnabled = false;
+            ChangeChartCommand.IsEnabled = false;
+            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Clear);
             Notes = null;
         }
 

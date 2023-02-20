@@ -3,6 +3,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.DbLookup.ModelDefinition;
+using RingSoft.DevLogix.DataAccess.Model;
 
 namespace RingSoft.DevLogix.Library
 {
@@ -13,16 +14,31 @@ namespace RingSoft.DevLogix.Library
             return AppGlobals.Rights.HasRight(tableDefinition, rightType);
         }
 
-        //public static IQueryable<T> IncludeMultiple<T>(this IQueryable<T> query, params Expression<Func<T, object>>[] includes)
-        //    where T : class
-        //{
-        //    if (includes != null)
-        //    {
-        //        query = includes.Aggregate(query,
-        //            (current, include) => current.Include(include));
-        //    }
+        public static bool IsSupervisor(this User user, IQueryable<User> userQuery = null)
+        {
+            if (user == null)
+            {
+                return false;
+            }
+            if (user.SupervisorId.HasValue)
+            {
+                if (userQuery == null)
+                {
+                    var context = AppGlobals.DataRepository.GetDataContext();
+                    userQuery = context.GetTable<User>();
+                }
 
-        //    return query;
-        //}
+                var supervisor = userQuery.FirstOrDefault(p => p.Id == user.SupervisorId.Value);
+                if (supervisor != null)
+                {
+                    if (supervisor.Id == AppGlobals.LoggedInUser.Id)
+                    {
+                        return true;
+                    }
+                    return supervisor.IsSupervisor(userQuery);
+                }
+            }
+            return false;
+        }
     }
 }
