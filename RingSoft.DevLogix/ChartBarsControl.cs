@@ -152,7 +152,7 @@ namespace RingSoft.DevLogix
                         index = 9;
                         break;
                 }
-                if (index > 0)
+                if (index > 0 && index <= ViewModel.Bars.Count )
                 {
                     var viewModel = ViewModel.Bars[index - 1];
                     viewModel.ShowAddOnFly(Window.GetWindow(this));

@@ -2,6 +2,7 @@
 using RingSoft.DbLookup.EfCore;
 using RingSoft.DevLogix.DataAccess.Configurations;
 using System.Collections.Generic;
+using RingSoft.DevLogix.DataAccess.Configurations.ProjectManagement;
 using RingSoft.DevLogix.DataAccess.Configurations.QualityAssurance;
 
 namespace RingSoft.DevLogix.DataAccess
@@ -26,6 +27,7 @@ namespace RingSoft.DevLogix.DataAccess
             modelBuilder.ApplyConfiguration(new ErrorConfiguration());
             modelBuilder.ApplyConfiguration(new ErrorDeveloperConfiguration());
             modelBuilder.ApplyConfiguration(new ErrorQaConfiguration());
+            modelBuilder.ApplyConfiguration(new ProjectConfiguration());
 
             AdvancedFindDataProcessorEfCore.ConfigureAdvancedFind(modelBuilder);
         }

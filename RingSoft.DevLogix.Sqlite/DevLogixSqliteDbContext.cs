@@ -9,6 +9,7 @@ using RingSoft.DbLookup.EfCore;
 using RingSoft.DbLookup.RecordLocking;
 using RingSoft.DevLogix.DataAccess;
 using RingSoft.DevLogix.DataAccess.Model;
+using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 
 namespace RingSoft.DevLogix.Sqlite
 {
@@ -34,6 +35,7 @@ namespace RingSoft.DevLogix.Sqlite
         public DbSet<Error> Errors { get; set; }
         public DbSet<ErrorDeveloper> ErrorDevelopers { get; set; }
         public DbSet<ErrorQa> ErrorTesters { get; set; }
+        public DbSet<Project> Projects { get; set; }
 
         public bool IsDesignTime { get; set; }
 

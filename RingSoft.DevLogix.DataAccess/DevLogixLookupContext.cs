@@ -11,6 +11,8 @@ using RingSoft.DbLookup.RecordLocking;
 using RingSoft.DevLogix.DataAccess.LookupModel;
 using RingSoft.DevLogix.DataAccess.Model;
 using System;
+using RingSoft.DevLogix.DataAccess.LookupModel.ProjectManagement;
+using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 
 namespace RingSoft.DevLogix.DataAccess
 {
@@ -46,6 +48,8 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<ErrorDeveloper> ErrorDevelopers { get; set; }
         public TableDefinition<ErrorQa> ErrorTesters { get; set; }
 
+        public TableDefinition<Project> Projects { get; set; }
+
         public TableDefinition<AdvancedFind> AdvancedFinds { get; set; }
         public TableDefinition<AdvancedFindColumn> AdvancedFindColumns { get; set; }
         public TableDefinition<AdvancedFindFilter> AdvancedFindFilters { get; set; }
@@ -65,6 +69,8 @@ namespace RingSoft.DevLogix.DataAccess
         public LookupDefinition<ErrorLookup, Error> ErrorLookup { get; set; }
         public LookupDefinition<ErrorDeveloperLookup, ErrorDeveloper> ErrorDeveloperLookup { get; set; }
         public LookupDefinition<ErrorTesterLookup, ErrorQa> ErrorTesterLookup { get; set; }
+
+        public LookupDefinition<ProjectLookup, Project> ProjectLookup { get; set; }
 
         public LookupDefinition<AdvancedFindLookup, AdvancedFind> AdvancedFindLookup { get; set; }
         public LookupDefinition<RecordLockingLookup, RecordLock> RecordLockingLookup { get; set; }
@@ -204,6 +210,11 @@ namespace RingSoft.DevLogix.DataAccess
             ErrorTesterLookup.Include(p => p.Tester)
                 .AddVisibleColumnDefinition(p => p.Tester, "Tester", p => p.Name, 60);
             ErrorTesters.HasLookupDefinition(ErrorTesterLookup);
+
+            ProjectLookup = new LookupDefinition<ProjectLookup, Project>(Projects);
+            ProjectLookup.AddVisibleColumnDefinition(p => p.Name, "Project Name", p => p.Name, 70);
+            ProjectLookup.AddVisibleColumnDefinition(p => p.Deadline, "Deadline", p => p.Deadline, 30);
+            Projects.HasLookupDefinition(ProjectLookup);
 
         }
 

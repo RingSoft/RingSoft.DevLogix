@@ -555,6 +555,54 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.ToTable("ProductVersionDepartments");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.Project", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("Deadline")
+                        .HasColumnType("datetime");
+
+                    b.Property<decimal?>("FridayHours")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal?>("MondayHours")
+                        .HasColumnType("numeric");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<DateTime>("OriginalDeadline")
+                        .HasColumnType("datetime");
+
+                    b.Property<int?>("ProductId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal?>("SaturdayHours")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal?>("SundayHours")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal?>("ThursdayHours")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal?>("TuesdayHours")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal?>("WednesdayHours")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("Projects");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.SystemMaster", b =>
                 {
                     b.Property<string>("OrganizationName")
@@ -891,6 +939,16 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("ProductVersion");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.Project", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.Product", "Product")
+                        .WithMany("Projects")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.TimeClock", b =>
                 {
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.Error", "Error")
@@ -1014,6 +1072,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Product", b =>
                 {
                     b.Navigation("Errors");
+
+                    b.Navigation("Projects");
 
                     b.Navigation("Versions");
                 });
