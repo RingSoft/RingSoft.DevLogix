@@ -21,6 +21,7 @@ namespace RingSoft.DevLogix.DataAccess.Configurations.ProjectManagement
             builder.Property(p => p.ThursdayHours).HasColumnType(DbConstants.DecimalColumnType);
             builder.Property(p => p.FridayHours).HasColumnType(DbConstants.DecimalColumnType);
             builder.Property(p => p.SaturdayHours).HasColumnType(DbConstants.DecimalColumnType);
+            builder.Property(p => p.Notes).HasColumnType(DbConstants.MemoColumnType);
 
             builder.HasOne(p => p.Product)
                 .WithMany(p => p.Projects)

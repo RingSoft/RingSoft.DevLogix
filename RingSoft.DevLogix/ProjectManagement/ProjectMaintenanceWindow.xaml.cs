@@ -17,5 +17,18 @@ namespace RingSoft.DevLogix.ProjectManagement
             InitializeComponent();
         }
 
+        protected override void OnLoaded()
+        {
+            RegisterFormKeyControl(NameControl);
+
+            base.OnLoaded();
+        }
+
+        public override void ResetViewForNewRecord()
+        {
+            NameControl.Focus();
+
+            base.ResetViewForNewRecord();
+        }
     }
 }

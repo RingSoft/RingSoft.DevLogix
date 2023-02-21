@@ -36,5 +36,7 @@ namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
         public decimal? FridayHours { get; set; }
 
         public decimal? SaturdayHours { get; set; }
+
+        public string? Notes { get; set; }
     }
 }

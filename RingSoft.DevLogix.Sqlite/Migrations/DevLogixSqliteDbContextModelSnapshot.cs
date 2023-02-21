@@ -575,6 +575,9 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
+                    b.Property<string>("Notes")
+                        .HasColumnType("ntext");
+
                     b.Property<DateTime>("OriginalDeadline")
                         .HasColumnType("datetime");
 

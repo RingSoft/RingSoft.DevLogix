@@ -383,6 +383,10 @@ namespace RingSoft.DevLogix.DataAccess
                 .DoConvertToLocalTime();
             TimeClocks.GetFieldDefinition(p => p.PunchOutDate).HasDateType(DbDateTypes.DateTime).DoConvertToLocalTime();
             TimeClocks.GetFieldDefinition(p => p.ErrorId).CanSetNull(false);
+
+            Projects.GetFieldDefinition(p => p.Notes).IsMemo();
+            Projects.GetFieldDefinition(p => p.Deadline).HasDateType(DbDateTypes.DateTime).DoConvertToLocalTime();
+            Projects.GetFieldDefinition(p => p.OriginalDeadline).HasDateType(DbDateTypes.DateTime);
         }
 
         public override UserAutoFill GetUserAutoFill(string userName)
