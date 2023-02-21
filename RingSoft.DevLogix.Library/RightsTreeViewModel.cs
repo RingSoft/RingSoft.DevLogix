@@ -112,7 +112,8 @@ namespace RingSoft.DevLogix.Library
 
         public void CheckParent()
         {
-            var checkedItems = Parent.Items.Where(p => p.IsChecked == true);
+            var checkedItems = Parent.Items.Where(p => p.IsChecked == true
+                                                       || p.ThreeState == true);
             var anyChecked = checkedItems.Any();
             if (anyChecked)
             {

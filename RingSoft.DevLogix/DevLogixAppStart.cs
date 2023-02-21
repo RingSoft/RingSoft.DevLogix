@@ -11,6 +11,7 @@ using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.Library;
+using RingSoft.DevLogix.ProjectManagement;
 using RingSoft.DevLogix.QualityAssurance;
 using RingSoft.DevLogix.UserManagement;
 
@@ -91,6 +92,8 @@ namespace RingSoft.DevLogix
             WindowRegistry.RegisterWindow<ProductMaintenanceWindow>(AppGlobals.LookupContext.Products);
             WindowRegistry.RegisterWindow<ProductVersionMaintenanceWindow>(AppGlobals.LookupContext.ProductVersions);
             WindowRegistry.RegisterWindow<ErrorMaintenanceWindow>(AppGlobals.LookupContext.Errors);
+
+            WindowRegistry.RegisterWindow<ProjectMaintenanceWindow>(AppGlobals.LookupContext.Projects);
 
             AppGlobals.LookupContext.CanProcessTableEvent += (sender, args) =>
             {

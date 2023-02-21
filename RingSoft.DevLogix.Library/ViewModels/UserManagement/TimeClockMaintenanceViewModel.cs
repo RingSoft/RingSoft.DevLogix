@@ -230,10 +230,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         private Timer _timer = new Timer();
         private bool _loading;
         private bool _timerActive;
+        private bool _setDirty = true;
 
         public TimeClockMaintenanceViewModel()
         {
-            PunchOutCommand = new RelayCommand(PunchOut);
+            PunchOutCommand = new RelayCommand((() =>
+            {
+                _setDirty = false;
+                PunchOut();
+                _setDirty = true;
+            }));
         }
 
         private void SetError(Error error)
@@ -529,7 +535,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 PunchIn(false);
             }
 
-            IsEdited = true;
+            if (_setDirty)
+            {
+                IsEdited = true;
+            }
+
             if (PunchOutDate.HasValue)
             {
                 _endDate = PunchOutDate.Value;

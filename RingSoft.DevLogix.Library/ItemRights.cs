@@ -15,6 +15,7 @@ namespace RingSoft.DevLogix.Library
         UserManagement = 0,
         Tools = 1,
         Qa = 2,
+        Projects = 3,
     }
     public enum RightTypes
     {
@@ -197,6 +198,10 @@ namespace RingSoft.DevLogix.Library
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Error Products", AppGlobals.LookupContext.Products));
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Error Product Versions", AppGlobals.LookupContext.ProductVersions));
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Errors", AppGlobals.LookupContext.Errors));
+            Categories.Add(category);
+
+            category = new RightCategory("Project Management", MenuCategories.Projects);
+            category.Items.Add(new RightCategoryItem(item: "Add/Edit Projects", AppGlobals.LookupContext.Projects));
             Categories.Add(category);
 
             category = new RightCategory("Miscellaneous", MenuCategories.Tools);

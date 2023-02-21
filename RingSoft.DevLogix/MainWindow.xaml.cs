@@ -246,10 +246,36 @@ namespace RingSoft.DevLogix
                 }
 
             }
-
         }
 
-        public bool ChangeOrganization()
+        private void MakeProjectMenu()
+        {
+            var projectCategory =
+                AppGlobals.Rights.UserRights.Categories.FirstOrDefault(p =>
+                    p.MenuCategory == MenuCategories.Projects);
+
+            var items = projectCategory.Items.Where(p => p.TableDefinition.HasRight(RightTypes.AllowView));
+            if (items.Any())
+            {
+                var menuItem = new MenuItem() { Header = "_Project Management" };
+                MainMenu.Items.Add(menuItem);
+
+                if (AppGlobals.LookupContext.Projects.HasRight(RightTypes.AllowView))
+                {
+                    var categoryItem =
+                        projectCategory.Items.FirstOrDefault(
+                            p => p.TableDefinition == AppGlobals.LookupContext.Projects);
+                    menuItem.Items.Add(new MenuItem()
+                    {
+                        Header = "Add/Edit _Projects...",
+                        Command = ViewModel.ShowMaintenanceWindowCommand,
+                        CommandParameter = AppGlobals.LookupContext.Projects,
+                    });
+                }
+            }
+        }
+
+            public bool ChangeOrganization()
         {
             var loginWindow = new LoginWindow { Owner = this };
 
@@ -319,6 +345,7 @@ namespace RingSoft.DevLogix
 
             MakeUserMenu();
             MakeQaMenu();
+            MakeProjectMenu();
 
             if (AppGlobals.LookupContext.DevLogixCharts.HasRight(RightTypes.AllowView))
             {

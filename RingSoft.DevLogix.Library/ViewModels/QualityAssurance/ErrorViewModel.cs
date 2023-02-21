@@ -27,7 +27,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         void PunchIn(Error error);
     }
 
-    public class ErrorViewModel :AppDbMaintenanceViewModel<Error>
+    public class ErrorViewModel :DevLogixDbMaintenanceViewModel<Error>
     {
         public override TableDefinition<Error> TableDefinition => AppGlobals.LookupContext.Errors;
 
