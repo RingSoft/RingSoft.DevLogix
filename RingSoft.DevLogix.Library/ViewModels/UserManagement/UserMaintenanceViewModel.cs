@@ -190,6 +190,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
         }
 
+        private decimal _hourlyRate;
+
+        public decimal HourlyRate
+        {
+            get => _hourlyRate;
+            set
+            {
+                if (_hourlyRate == value)
+                    return;
+
+                _hourlyRate = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         private LookupDefinition<TimeClockLookup, TimeClock> _timeClockLookup;
 
         public LookupDefinition<TimeClockLookup, TimeClock > TimeClockLookup
@@ -388,6 +404,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             {
                 ClockDateTime = null;
             }
+
+            HourlyRate = entity.HourlyRate;
         }
 
         protected override User GetEntityData()
@@ -401,6 +419,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 Rights = View.GetRights().Encrypt(),
                 Notes = Notes,
                 SupervisorId = SupervisorAutoFillValue.GetEntity(AppGlobals.LookupContext.Users).Id,
+                HourlyRate = HourlyRate,
             };
             if (DepartmentAutoFillValue.IsValid())
             {
@@ -436,6 +455,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             ChangeChartCommand.IsEnabled = false;
             TimeClockLookupCommand = GetLookupCommand(LookupCommands.Clear);
             Notes = null;
+            HourlyRate = 0;
         }
 
         protected override bool ValidateEntity(User entity)

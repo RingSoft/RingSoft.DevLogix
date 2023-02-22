@@ -99,6 +99,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
+        private bool _isBillable;
+
+        public bool IsBillable
+        {
+            get => _isBillable;
+            set
+            {
+                if (_isBillable == value)
+                    return;
+
+                _isBillable = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         private LookupDefinition<TimeClockLookup, TimeClock> _timeClockLookup;
 
         public LookupDefinition<TimeClockLookup, TimeClock> TimeClockLookup
@@ -207,6 +223,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             Deadline = entity.Deadline.ToLocalTime();
             OriginalDeadline = entity.OriginalDeadline.ToLocalTime();
             ProductAutoFillValue = ProductAutoFillSetup.GetAutoFillValueForIdValue(entity.ProductId);
+            IsBillable = entity.IsBillable;
             Notes = entity.Notes;
         }
 
@@ -219,6 +236,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 Deadline = Deadline.ToUniversalTime(),
                 OriginalDeadline = OriginalDeadline.ToUniversalTime(),
                 ProductId = ProductAutoFillValue.GetEntity(AppGlobals.LookupContext.Products).Id,
+                IsBillable = IsBillable,
                 Notes = Notes,
             };
 
@@ -235,6 +253,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             KeyAutoFillValue = null;
             OriginalDeadline = Deadline = DateTime.Now;
             ProductAutoFillValue = null;
+            IsBillable = false;
             TimeClockLookupCommand = GetLookupCommand(LookupCommands.Clear);
             Notes = null;
         }

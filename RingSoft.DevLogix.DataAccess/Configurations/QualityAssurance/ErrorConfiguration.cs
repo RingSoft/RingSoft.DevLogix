@@ -22,6 +22,8 @@ namespace RingSoft.DevLogix.DataAccess.Configurations
             builder.Property(p => p.Description).HasColumnType(DbConstants.MemoColumnType);
             builder.Property(p => p.Resolution).HasColumnType(DbConstants.MemoColumnType);
             builder.Property(p => p.FoundByUserId).HasColumnType(DbConstants.IntegerColumnType);
+            builder.Property(p => p.MinutesSpent).HasColumnType(DbConstants.DecimalColumnType);
+            builder.Property(p => p.Cost).HasColumnType(DbConstants.DecimalColumnType);
 
             builder.HasOne(p => p.ErrorStatus)
                 .WithMany(p => p.Errors)

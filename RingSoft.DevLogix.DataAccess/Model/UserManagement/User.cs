@@ -46,6 +46,18 @@ namespace RingSoft.DevLogix.DataAccess.Model
 
         public virtual DevLogixChart DefaultChart { get; set; }
 
+        [DefaultValue(0)]
+        public decimal HourlyRate { get; set; }
+
+        [DefaultValue(0)]
+        public decimal BillableProjectsMinutesSpent { get; set; }
+
+        [DefaultValue(0)]
+        public decimal NonBillableProjectsMinutesSpent { get; set; }
+
+        [DefaultValue(0)]
+        public decimal ErrorsMinutesSpent { get; set; }
+
         public virtual ICollection<UsersGroup>  UserGroups { get; set; }
         public virtual ICollection<Error> FoundByUserErrors { get; set; }
         public virtual ICollection<Error> AssignedDeveloperErrors { get; set; }

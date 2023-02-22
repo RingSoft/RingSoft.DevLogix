@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace RingSoft.DevLogix.DataAccess.Model
@@ -56,6 +57,12 @@ namespace RingSoft.DevLogix.DataAccess.Model
         public string Description { get; set; }
 
         public string? Resolution { get; set; }
+
+        [DefaultValue(0)]
+        public decimal MinutesSpent { get; set; }
+
+        [DefaultValue(0)]
+        public decimal Cost { get; set; }
 
         public virtual ICollection<ErrorDeveloper> Developers { get; set; }
 

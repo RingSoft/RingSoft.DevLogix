@@ -307,6 +307,9 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<int?>("AssignedTesterId")
                         .HasColumnType("integer");
 
+                    b.Property<decimal>("Cost")
+                        .HasColumnType("numeric");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("ntext");
@@ -333,6 +336,9 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.Property<int>("FoundVersionId")
                         .HasColumnType("integer");
+
+                    b.Property<decimal>("MinutesSpent")
+                        .HasColumnType("numeric");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("integer");
@@ -561,10 +567,19 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
+                    b.Property<decimal>("Cost")
+                        .HasColumnType("numeric");
+
                     b.Property<DateTime>("Deadline")
                         .HasColumnType("datetime");
 
                     b.Property<decimal?>("FridayHours")
+                        .HasColumnType("numeric");
+
+                    b.Property<bool>("IsBillable")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal>("MinutesSpent")
                         .HasColumnType("numeric");
 
                     b.Property<decimal?>("MondayHours")
@@ -664,6 +679,9 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
+                    b.Property<decimal>("BillableProjectsMinutesSpent")
+                        .HasColumnType("numeric");
+
                     b.Property<DateTime?>("ClockDate")
                         .HasColumnType("datetime");
 
@@ -677,10 +695,19 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar");
 
+                    b.Property<decimal>("ErrorsMinutesSpent")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("HourlyRate")
+                        .HasColumnType("numeric");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
+
+                    b.Property<decimal>("NonBillableProjectsMinutesSpent")
+                        .HasColumnType("numeric");
 
                     b.Property<string>("Notes")
                         .HasColumnType("ntext");

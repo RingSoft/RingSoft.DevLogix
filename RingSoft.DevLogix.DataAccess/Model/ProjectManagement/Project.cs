@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
@@ -39,6 +40,15 @@ namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
         public decimal? SaturdayHours { get; set; }
 
         public string? Notes { get; set; }
+
+        [DefaultValue(true)]
+        public bool IsBillable { get; set; }
+
+        [DefaultValue(0)]
+        public decimal MinutesSpent { get; set; }
+
+        [DefaultValue(0)]
+        public decimal Cost { get; set; }
 
         public virtual ICollection<TimeClock> TimeClocks { get; set; }
 

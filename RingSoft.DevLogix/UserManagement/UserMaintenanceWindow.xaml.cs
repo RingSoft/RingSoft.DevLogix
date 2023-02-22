@@ -60,16 +60,7 @@ namespace RingSoft.DevLogix.UserManagement
 
                     userHeaderControl.ClockOutButton.Command = UserMaintenanceViewModel.ClockOutCommand;
                 }
-
-                //if (Processor is AppDbMaintenanceWindowProcessor processor)
-                //{
-                //    if (processor.MaintenanceButtonsControl is DbMaintenanceTopHeaderControl buttonsControl)
-                //    {
-                //        buttonsControl.SaveSelectButton.Visibility = Visibility.Collapsed;
-                //    }
-                //}
             };
-
         }
 
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
@@ -92,17 +83,17 @@ namespace RingSoft.DevLogix.UserManagement
 
         public string GetRights()
         {
-            return RightsTree.ViewModel.Rights.GetRightsString();
+            return RightsTree.GetRights();
         }
 
         public void LoadRights(string rightsString)
         {
-            RightsTree.ViewModel.LoadRights(rightsString);
+            RightsTree.LoadRights(rightsString);
         }
 
         public void ResetRights()
         {
-            RightsTree.ViewModel.Reset();
+            RightsTree.Reset();
         }
 
         public void RefreshView()
@@ -149,6 +140,8 @@ namespace RingSoft.DevLogix.UserManagement
         {
             if (fieldDefinition == UserMaintenanceViewModel.TableDefinition.GetFieldDefinition(p => p.DepartmentId))
             {
+                TabControl.SelectedItem = DetailsTabItem;
+                TabControl.UpdateLayout();
                 DepartmentControl.Focus();
             }
             base.OnValidationFail(fieldDefinition, text, caption);

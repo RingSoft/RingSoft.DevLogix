@@ -69,8 +69,6 @@
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
@@ -90,20 +88,46 @@
 
             <lc:AutoFillControl Grid.Row="0" Grid.Column="3" x:Name="NameControl" Width="200" HorizontalAlignment="Left"/>
 
-            <Label Grid.Row="1" Grid.Column="0" Content="Deadline"/>
-
-            <dec:DateEditControl Grid.Row="1" Grid.Column="1" x:Name="DeadlineControl" DateFormatType="DateTime" HorizontalAlignment="Left" Width="200" Value="{Binding Deadline, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-
-            <Label Grid.Row="1" Grid.Column="2" Content="Original Deadline"/>
-
-            <dec:DateEditControl Grid.Row="1" Grid.Column="3" x:Name="OriginalDeadlineControl" DateFormatType="DateTime" HorizontalAlignment="Left" Width="200" Value="{Binding OriginalDeadline, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-
-            <Label Grid.Row="2" Grid.Column="0" Content="Product"/>
-
-            <lc:AutoFillControl Grid.Row="2" Grid.Column="1" x:Name="ProductControl" Setup="{Binding ProductAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding ProductAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-
             <TabControl Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="5" x:Name="TabControl">
 
+                <TabItem x:Name="DetailsTabItem" Header="Details" VerticalAlignment="Stretch">
+
+                    <DockPanel>
+
+                        <Grid>
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Label Grid.Row="0" Grid.Column="0" Content="Deadline"/>
+
+                            <dec:DateEditControl Grid.Row="0" Grid.Column="1" x:Name="DeadlineControl" DateFormatType="DateTime" HorizontalAlignment="Left" Width="200" Value="{Binding Deadline, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                            <Label Grid.Row="0" Grid.Column="2" Content="Original Deadline"/>
+
+                            <dec:DateEditControl Grid.Row="0" Grid.Column="3" x:Name="OriginalDeadlineControl" DateFormatType="DateTime" HorizontalAlignment="Left" Width="200" Value="{Binding OriginalDeadline, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                            <Label Grid.Row="1" Grid.Column="0" Content="Product"/>
+
+                            <lc:AutoFillControl Grid.Row="1" Grid.Column="1" x:Name="ProductControl" Setup="{Binding ProductAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding ProductAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                            <CheckBox Grid.Row="1" Grid.Column="2" Content="Is Billable" IsChecked="{Binding IsBillable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        </Grid>
+
+                    </DockPanel>
+
+                </TabItem>
                 <TabItem Header="Time Clocks" x:Name="TimeClockTab" VerticalAlignment="Stretch">
 
                     <DockPanel>

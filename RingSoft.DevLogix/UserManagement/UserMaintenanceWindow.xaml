@@ -68,10 +68,6 @@
         <Grid Margin="5">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
@@ -91,35 +87,65 @@
 
             <lc:AutoFillControl Grid.Row="0" Grid.Column="3" x:Name="NameControl" Setup="{Binding KeyAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding KeyAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left"/>
 
-            <Label Grid.Row="1" Grid.Column="0" Content="Department"/>
-
-            <lc:AutoFillControl Grid.Row="1" Grid.Column="1" x:Name="DepartmentControl" Setup="{Binding DepartmentAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding DepartmentAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left"/>
-
-            <Label Grid.Row="1" Grid.Column="2" Content="Default Chart"/>
-
-            <lc:AutoFillControl Grid.Row="1" Grid.Column="3" x:Name="DefaultChartControl"  Width="200" HorizontalAlignment="Left" Setup="{Binding DefaultChartAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding DefaultChartAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-
-            <Label Grid.Row="2" Grid.Column="0" Content="Supervisor"/>
-
-            <lc:AutoFillControl Grid.Row="2" Grid.Column="1" Width="200" Setup="{Binding SupervisorAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding SupervisorAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-
-
-            <Label Grid.Row="2" Grid.Column="2" Content="Clock In Date/Time"/>
-
-            <dec:DateReadOnlyBox Grid.Row="2" Grid.Column="3" HorizontalAlignment="Left" Width="200" DateFormatType="DateTime" Value="{Binding ClockDateTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-
-
-            <Label Grid.Row="3" Grid.Column="0" Content="Email Address"/>
-
-            <dec:StringEditControl Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left" Text="{Binding EmailAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
-
-            <TextBlock Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" x:Name="SendEmailControl" Text="Send Email" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"/>
-
-            <Label Grid.Row="4" Grid.Column="0" Content="Phone Number"/>
-
-            <dec:StringEditControl Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left" Text="{Binding PhoneNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
 
             <TabControl Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="5" x:Name="TabControl" VerticalAlignment="Stretch" >
+
+                <TabItem x:Name="DetailsTabItem" Header="Details" VerticalAlignment="Stretch">
+
+                    <DockPanel>
+
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Label Grid.Row="0" Grid.Column="0" Content="Department"/>
+
+                            <lc:AutoFillControl Grid.Row="0" Grid.Column="1" x:Name="DepartmentControl" Setup="{Binding DepartmentAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding DepartmentAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left"/>
+
+                            <Label Grid.Row="0" Grid.Column="2" Content="Default Chart"/>
+
+                            <lc:AutoFillControl Grid.Row="0" Grid.Column="3" x:Name="DefaultChartControl"  Width="200" HorizontalAlignment="Left" Setup="{Binding DefaultChartAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding DefaultChartAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                            <Label Grid.Row="1" Grid.Column="0" Content="Supervisor"/>
+
+                            <lc:AutoFillControl Grid.Row="1" Grid.Column="1" Width="200" Setup="{Binding SupervisorAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding SupervisorAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+
+                            <Label Grid.Row="1" Grid.Column="2" Content="Clock In Date/Time"/>
+
+                            <dec:DateReadOnlyBox Grid.Row="1" Grid.Column="3" HorizontalAlignment="Left" Width="200" DateFormatType="DateTime" Value="{Binding ClockDateTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+
+                            <Label Grid.Row="3" Grid.Column="0" Content="Email Address"/>
+
+                            <dec:StringEditControl Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left" Text="{Binding EmailAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
+
+                            <TextBlock Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" x:Name="SendEmailControl" Text="Send Email" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"/>
+
+                            <Label Grid.Row="4" Grid.Column="0" Content="Phone Number"/>
+
+                            <dec:StringEditControl Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left" Text="{Binding PhoneNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
+
+                            <Label Grid.Row="4" Grid.Column="2" Content="Hourly Rate"/>
+
+                            <dec:DecimalEditControl Grid.Row="4" Grid.Column="3" HorizontalAlignment="Left" Width="100" FormatType="Currency" Value="{Binding HourlyRate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        </Grid>
+                    </DockPanel>
+                </TabItem>
 
                 <TabItem Header="Rights" VerticalAlignment="Stretch">
 

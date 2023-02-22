@@ -20,6 +20,10 @@ namespace RingSoft.DevLogix.DataAccess.Configurations
             builder.Property(p => p.DefaultChartId).HasColumnType(DbConstants.IntegerColumnType);
             builder.Property(p => p.ClockDate).HasColumnType(DbConstants.DateColumnType);
             builder.Property(p => p.SupervisorId).HasColumnType(DbConstants.IntegerColumnType);
+            builder.Property(p => p.HourlyRate).HasColumnType(DbConstants.DecimalColumnType);
+            builder.Property(p => p.BillableProjectsMinutesSpent).HasColumnType(DbConstants.DecimalColumnType);
+            builder.Property(p => p.NonBillableProjectsMinutesSpent).HasColumnType(DbConstants.DecimalColumnType);
+            builder.Property(p => p.ErrorsMinutesSpent).HasColumnType(DbConstants.DecimalColumnType);
 
             builder.HasKey(p => p.Id);
 
