@@ -205,6 +205,21 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
         }
 
+        private UserBillabilityGridManager _billabilityGridManager;
+
+        public UserBillabilityGridManager BillabilityGridManager
+        {
+            get => _billabilityGridManager;
+            set
+            {
+                if (_billabilityGridManager == value)
+                    return;
+
+                _billabilityGridManager = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         private LookupDefinition<TimeClockLookup, TimeClock> _timeClockLookup;
 
@@ -330,6 +345,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 }
             });
 
+            BillabilityGridManager = new UserBillabilityGridManager(this);
+
             var timeClockLookup = new LookupDefinition<TimeClockLookup, TimeClock>(AppGlobals.LookupContext.TimeClocks);
             timeClockLookup.AddVisibleColumnDefinition(p => p.PunchInDate, p => p.PunchInDate);
             TimeClockLookup = timeClockLookup;
@@ -347,6 +364,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             SupervisorAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.SupervisorId));
 
             GroupsManager = new UsersGroupsManager( this);
+
+            BillabilityGridManager.MakeGrid();
 
             base.Initialize();
         }
@@ -405,6 +424,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 ClockDateTime = null;
             }
 
+            BillabilityGridManager.SetRowValues(UserBillabilityRows.BillableProjects,
+                entity.BillableProjectsMinutesSpent, 0);
+
+            BillabilityGridManager.SetRowValues(UserBillabilityRows.NonBillableProjects,
+                entity.NonBillableProjectsMinutesSpent, 0);
+
+            BillabilityGridManager.SetRowValues(UserBillabilityRows.Errors,
+                entity.ErrorsMinutesSpent, 0);
+
+
             HourlyRate = entity.HourlyRate;
         }
 
@@ -420,6 +449,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 Notes = Notes,
                 SupervisorId = SupervisorAutoFillValue.GetEntity(AppGlobals.LookupContext.Users).Id,
                 HourlyRate = HourlyRate,
+                BillableProjectsMinutesSpent = BillabilityGridManager.GetMinutesSpent(UserBillabilityRows.BillableProjects),
+                NonBillableProjectsMinutesSpent = BillabilityGridManager.GetMinutesSpent(UserBillabilityRows.NonBillableProjects),
+                ErrorsMinutesSpent = BillabilityGridManager.GetMinutesSpent(UserBillabilityRows.Errors),
             };
             if (DepartmentAutoFillValue.IsValid())
             {

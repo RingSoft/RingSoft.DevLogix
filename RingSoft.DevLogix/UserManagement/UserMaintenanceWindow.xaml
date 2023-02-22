@@ -101,6 +101,8 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
 
                             <Grid.ColumnDefinitions>
@@ -142,6 +144,22 @@
                             <Label Grid.Row="4" Grid.Column="2" Content="Hourly Rate"/>
 
                             <dec:DecimalEditControl Grid.Row="4" Grid.Column="3" HorizontalAlignment="Left" Width="100" FormatType="Currency" Value="{Binding HourlyRate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                            <Label Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Left" Content="Billability"/>
+
+                            <dataEntryGrid:DataEntryGrid Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="4" x:Name="BillabilityGrid" HorizontalAlignment="Left" Manager="{Binding BillabilityGridManager}" DataEntryCanUserAddRows="False">
+
+                                <dataEntryGrid:DataEntryGrid.Columns>
+
+                                    <dataEntryGrid:DataEntryGridTextColumn Header="Item Type" ColumnId="{x:Static vm:UserBillabilityGridManager.NameColumnId}" Width="150"/>
+
+                                    <dataEntryGrid:DataEntryGridTextColumn Header="Time Spent" ColumnId="{x:Static vm:UserBillabilityGridManager.TimeSpentColumnId}" Width="150"/>
+
+                                    <dataEntryGrid:DataEntryGridTextColumn Header="Billability" ColumnId="{x:Static vm:UserBillabilityGridManager.BillabilityColumnId}"/>
+
+                                </dataEntryGrid:DataEntryGrid.Columns>
+
+                            </dataEntryGrid:DataEntryGrid>
 
                         </Grid>
                     </DockPanel>

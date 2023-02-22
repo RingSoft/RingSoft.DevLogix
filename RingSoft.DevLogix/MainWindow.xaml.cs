@@ -533,6 +533,11 @@ namespace RingSoft.DevLogix
 
         protected override void OnClosing(CancelEventArgs e)
         {
+            if (AppGlobals.LoggedInUser == null)
+            {
+                base.OnClosing(e);
+                return;
+            }
             var context = AppGlobals.DataRepository.GetDataContext();
             if (context != null)
             {
