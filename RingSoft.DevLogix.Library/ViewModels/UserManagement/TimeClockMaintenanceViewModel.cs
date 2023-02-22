@@ -9,16 +9,20 @@ using System.Linq;
 using System.Timers;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.DataEntryControls.Engine;
+using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 
 namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 {
     public enum TimeClockModes
     {
         Error = 1,
+        Project = 2,
     }
     public interface ITimeClockView : IDbMaintenanceView
     {
         Error GetError();
+
+        Project GetProject();
 
         void SetTimeClockMode(TimeClockModes timeClockMode);
 
@@ -135,6 +139,40 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
         }
 
+        private AutoFillSetup _projectAutoFillSetup;
+
+        public AutoFillSetup ProjectAutoFillSetup
+        {
+            get => _projectAutoFillSetup;
+            set
+            {
+                if (_projectAutoFillSetup == value)
+                {
+                    return;
+                }
+
+                _projectAutoFillSetup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private AutoFillValue _projectAutoFillValue;
+
+        public AutoFillValue ProjectAutoFillValue
+        {
+            get => _projectAutoFillValue;
+            set
+            {
+                if (_projectAutoFillValue == value)
+                {
+                    return;
+                }
+
+                _projectAutoFillValue = value;
+                OnPropertyChanged(null, false);
+            }
+        }
+
         private DateTime _punchInDate;
 
         public DateTime PunchInDate
@@ -245,7 +283,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         private void SetError(Error error)
         {
             ErrorAutoFillValue = ErrorAutoFillSetup.GetAutoFillValueForIdValue(error.Id);
-            KeyText = "Error";
+        }
+
+        private void SetProject(Project project)
+        {
+            ProjectAutoFillValue = ProjectAutoFillSetup.GetAutoFillValueForIdValue(project.Id);
         }
 
         protected override void Initialize()
@@ -264,15 +306,29 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             };
 
             ErrorAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ErrorId));
+            ProjectAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ProjectId));
+
             if (base.View is ITimeClockView timeClockView)
             {
                 View = timeClockView;
+
+                var timeClockMode = TimeClockModes.Error;
                 var error = View.GetError();
                 if (error != null)
                 {
                     SetError(error);
                     punchIn = true;
                 }
+                var project = View.GetProject();
+                if (project != null)
+                {
+                    SetProject(project);
+                    punchIn = true;
+                    timeClockMode = TimeClockModes.Project;
+                }
+
+                View.SetTimeClockMode(timeClockMode);
+
                 if (InputParameter is DialogInput dialogInput)
                 {
                     DialogInput = dialogInput;
@@ -337,6 +393,21 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             _loading = true;
             UserAutoFillValue = UserAutoFillSetup.GetAutoFillValueForIdValue(entity.UserId);
             ErrorAutoFillValue = ErrorAutoFillSetup.GetAutoFillValueForIdValue(entity.ErrorId);
+            ProjectAutoFillValue = ProjectAutoFillSetup.GetAutoFillValueForIdValue(entity.ProjectId);
+
+            var timeClockMode = TimeClockModes.Error;
+
+            if (ErrorAutoFillValue.IsValid())
+            {
+                timeClockMode = TimeClockModes.Error;
+            }
+            else if (ProjectAutoFillValue.IsValid())
+            {
+                timeClockMode = TimeClockModes.Project;
+            }
+            View.SetTimeClockMode(timeClockMode);
+            
+
             PunchInDate = entity.PunchInDate.ToLocalTime();
             PunchOutDate = entity.PunchOutDate;
             if (PunchOutDate.HasValue)
@@ -351,11 +422,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
             Notes = entity.Notes;
             IsEdited = entity.AreDatesEdited;
-
-            if (ErrorAutoFillValue.IsValid())
-            {
-                KeyText = "Error";
-            }
 
             _loading = false;
             if (PunchOutDate.HasValue)
@@ -380,6 +446,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 Id = Id,
                 UserId = UserAutoFillValue.GetEntity(AppGlobals.LookupContext.Users).Id,
                 ErrorId = ErrorAutoFillValue.GetEntity(AppGlobals.LookupContext.Errors).Id,
+                ProjectId =ProjectAutoFillValue.GetEntity(AppGlobals.LookupContext.Projects).Id,
                 PunchInDate = PunchInDate.ToUniversalTime(),
                 PunchOutDate = PunchOutDate,
                 MinutesSpent = MinutesSpent,
@@ -394,6 +461,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             if (timeClock.ErrorId == 0)
             {
                 timeClock.ErrorId = null;
+            }
+
+            if (timeClock.ProjectId == 0)
+            {
+                timeClock.ProjectId = null;
             }
 
             return timeClock;

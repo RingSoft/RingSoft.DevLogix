@@ -1,12 +1,20 @@
 ﻿using System;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
+using RingSoft.DevLogix.Library.ViewModels.QualityAssurance;
 
 namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 {
+    public interface IProjectView
+    {
+        void PunchIn(Project project);
+    }
+
     public class ProjectMaintenanceViewModel : DevLogixDbMaintenanceViewModel<Project>
     {
         public override TableDefinition<Project> TableDefinition => AppGlobals.LookupContext.Projects;
@@ -104,22 +112,49 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
+        public new IProjectView View { get; private set; }
+
+        public RelayCommand PunchInCommand { get; set; }
+
         public ProjectMaintenanceViewModel()
         {
             ProductAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ProductId));
+
+            PunchInCommand = new RelayCommand(() =>
+            {
+                View.PunchIn(GetProject(Id));
+            });
+        }
+
+        protected override void Initialize()
+        {
+            if (base.View is IProjectView projectView)
+            {
+                View = projectView;
+            }
+
+            base.Initialize();
         }
 
         protected override Project PopulatePrimaryKeyControls(Project newEntity, PrimaryKeyValue primaryKeyValue)
         {
-            var context = AppGlobals.DataRepository.GetDataContext();
-            var project = context.GetTable<Project>()
-                .FirstOrDefault(p => p.Id == newEntity.Id);
+            var project = GetProject(newEntity.Id);
 
             Id = project.Id;
             KeyAutoFillValue = KeyAutoFillSetup.GetAutoFillValueForIdValue(project.Id);
 
             return project;
         }
+
+        private static Project GetProject(int projectId)
+        {
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var projectTable = context.GetTable<Project>();
+            var result = projectTable
+                .FirstOrDefault(p => p.Id == projectId);
+            return result;
+        }
+
 
         protected override void LoadFromEntity(Project entity)
         {

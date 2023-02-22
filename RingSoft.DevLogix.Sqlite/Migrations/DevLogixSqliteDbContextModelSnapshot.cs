@@ -635,6 +635,9 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<string>("Notes")
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("ProjectId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("PunchInDate")
                         .HasColumnType("TEXT");
 
@@ -647,6 +650,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ErrorId");
+
+                    b.HasIndex("ProjectId");
 
                     b.HasIndex("UserId");
 
@@ -958,6 +963,10 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .WithMany("TimeClocks")
                         .HasForeignKey("ErrorId");
 
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.Project", "Project")
+                        .WithMany("TimeClocks")
+                        .HasForeignKey("ProjectId");
+
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "User")
                         .WithMany("TimeClocks")
                         .HasForeignKey("UserId")
@@ -965,6 +974,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .IsRequired();
 
                     b.Navigation("Error");
+
+                    b.Navigation("Project");
 
                     b.Navigation("User");
                 });
@@ -1088,6 +1099,11 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("FoundErrors");
 
                     b.Navigation("ProductVersionDepartments");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.Project", b =>
+                {
+                    b.Navigation("TimeClocks");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.User", b =>

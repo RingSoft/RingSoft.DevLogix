@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 
 namespace RingSoft.DevLogix.DataAccess.Model
 {
@@ -24,6 +25,10 @@ namespace RingSoft.DevLogix.DataAccess.Model
         public int? ErrorId { get; set; }
 
         public virtual Error Error { get; set; }
+
+        public int? ProjectId { get; set; }
+
+        public virtual Project Project { get; set; }
 
         public string? Notes { get; set; }
 

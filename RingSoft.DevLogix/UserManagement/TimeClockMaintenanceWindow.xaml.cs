@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using RingSoft.App.Controls;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model;
+using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels.UserManagement;
 using RingSoft.DevLogix.QualityAssurance;
@@ -23,6 +24,11 @@ namespace RingSoft.DevLogix.UserManagement
     public class GetErrorEventArgs
     {
         public Error Error { get; set; }
+    }
+
+    public class GetProjectEventArgs
+    {
+        public Project Project { get; set; }
     }
 
     public class TimeClockHeaderControl : DbMaintenanceCustomPanel
@@ -52,6 +58,7 @@ namespace RingSoft.DevLogix.UserManagement
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;
 
         public event EventHandler<GetErrorEventArgs> GetTimeClockError;
+        public event EventHandler<GetProjectEventArgs> GetTimeClockProject;
 
         public TimeClockMaintenanceWindow()
         {
@@ -95,13 +102,27 @@ namespace RingSoft.DevLogix.UserManagement
             return args.Error;
         }
 
+        public Project GetProject()
+        {
+            var args = new GetProjectEventArgs();
+            GetTimeClockProject?.Invoke(this, args);
+            return args.Project;
+        }
+
         public void SetTimeClockMode(TimeClockModes timeClockMode)
         {
             ErrorControl.Visibility = Visibility.Collapsed;
+            ProjectControl.Visibility = Visibility.Collapsed;
+
             switch (timeClockMode)
             {
                 case TimeClockModes.Error:
+                    KeyLabel.Content = "Error";
                     ErrorControl.Visibility = Visibility.Visible;
+                    break;
+                case TimeClockModes.Project:
+                    KeyLabel.Content = "Project";
+                    ProjectControl.Visibility = Visibility.Visible;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(timeClockMode), timeClockMode, null);

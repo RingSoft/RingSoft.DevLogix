@@ -58,11 +58,6 @@ namespace RingSoft.DevLogix.QualityAssurance
                 {
                     errorHeaderControl.PunchInButton.Command =
                         LocalViewModel.PunchInCommand;
-
-                    if (!AppGlobals.LookupContext.ProductVersions.HasRight(RightTypes.AllowAdd))
-                    {
-                        errorHeaderControl.PunchInButton.Visibility = Visibility.Collapsed;
-                    }
                 }
             };
 

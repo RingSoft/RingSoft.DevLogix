@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DevLogix.DataAccess.Model;
+using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 
 namespace RingSoft.DevLogix.Library.ViewModels
 {
@@ -21,6 +22,8 @@ namespace RingSoft.DevLogix.Library.ViewModels
         void MakeMenu();
 
         void PunchIn(Error error);
+
+        void PunchIn(Project project);
 
         bool PunchOut(bool clockOut, int userId = 0);
 

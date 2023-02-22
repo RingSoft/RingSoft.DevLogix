@@ -385,7 +385,7 @@ namespace RingSoft.DevLogix.DataAccess
             TimeClocks.GetFieldDefinition(p => p.ErrorId).CanSetNull(false);
 
             Projects.GetFieldDefinition(p => p.Notes).IsMemo();
-            Projects.GetFieldDefinition(p => p.Deadline).HasDateType(DbDateTypes.DateTime).DoConvertToLocalTime();
+            Projects.GetFieldDefinition(p => p.Deadline).HasDateType(DbDateTypes.DateTime);
             Projects.GetFieldDefinition(p => p.OriginalDeadline).HasDateType(DbDateTypes.DateTime);
         }
 

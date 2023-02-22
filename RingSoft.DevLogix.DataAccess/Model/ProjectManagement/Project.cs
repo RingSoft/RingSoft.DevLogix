@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
@@ -38,5 +39,12 @@ namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
         public decimal? SaturdayHours { get; set; }
 
         public string? Notes { get; set; }
+
+        public virtual ICollection<TimeClock> TimeClocks { get; set; }
+
+        public Project()
+        {
+            TimeClocks = new HashSet<TimeClock>();
+        }
     }
 }

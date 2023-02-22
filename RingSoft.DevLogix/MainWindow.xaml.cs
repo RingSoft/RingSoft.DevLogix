@@ -19,13 +19,16 @@ using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DevLogix.DataAccess.Model;
+using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels;
 using RingSoft.DevLogix.UserManagement;
 using ScottPlot;
 using ScottPlot.Plottable;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using Application = System.Windows.Application;
+using Error = RingSoft.DevLogix.DataAccess.Model.Error;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MessageBox = System.Windows.Forms.MessageBox;
 using Window = System.Windows.Window;
@@ -364,7 +367,6 @@ namespace RingSoft.DevLogix
             });
         }
 
-
         public void CloseWindow()
         {
             Close();
@@ -399,6 +401,20 @@ namespace RingSoft.DevLogix
                 };
                 ShowTimeClockWindow(timeClockWindow);
             }
+        }
+
+        public void PunchIn(Project project)
+        {
+            var timeClockWindow = GetTimeClockWindow();
+            if (timeClockWindow != null)
+            {
+                timeClockWindow.GetTimeClockProject += (sender, args) =>
+                {
+                    args.Project = project;
+                };
+                ShowTimeClockWindow(timeClockWindow);
+            }
+
         }
 
         public bool PunchOut(bool clockOut, int userId)
