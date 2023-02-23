@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Globalization;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
+using RingSoft.DbLookup;
+using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 
 namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 {
@@ -72,26 +75,38 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             var timeSpent = "0 Minutes";
             var hoursSpent = (decimal)0;
             var daysSpent = (decimal)0;
+            var numFormatString = GblMethods.GetNumFormat(2, false);
 
-            if (minutesSpent > 0)
+            if (minutesSpent >= 0)
             {
                 if (minutesSpent > 60)
                 {
-                    hoursSpent = minutesSpent / 60;
-                    TimeSpent = $"{hoursSpent} Hours";
+                    hoursSpent = Math.Round(minutesSpent / 60, 2);
+                    TimeSpent = $"{FormatValue(hoursSpent, DecimalFieldTypes.Decimal)} Hours";
                 }
                 else
                 {
-                    TimeSpent = $"{minutesSpent} Minutes";
+                    minutesSpent = Math.Round(minutesSpent, 2);
+                    TimeSpent = $"{FormatValue(minutesSpent, DecimalFieldTypes.Decimal)} Minutes";
                 }
             }
 
             if (hoursSpent > 24)
             {
-                daysSpent = hoursSpent / 24;
-                TimeSpent = $"{daysSpent} Days";
+                daysSpent = Math.Round(hoursSpent / 24, 2);
+                TimeSpent = $"{FormatValue(daysSpent, DecimalFieldTypes.Decimal)} Days";
             }
-            Billability = billability;
+            Billability = Math.Round(billability, 4);
+        }
+
+        private string FormatValue(decimal value, DecimalFieldTypes decimalFieldType)
+        {
+            var result = string.Empty;
+            var numFormat = GblMethods.GetNumFormat(2, false);
+            result = GblMethods.FormatValue(FieldDataTypes.Decimal, value.ToString()
+                , numFormat);
+
+            return result;
         }
     }
 }

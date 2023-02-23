@@ -290,6 +290,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         public RelayCommand ClockOutCommand { get; private set; }
 
+        public RelayCommand RecalcCommand { get; private set; }
+
         public UserMaintenanceViewModel()
         {
             ChangeChartCommand = new RelayCommand(() =>
@@ -343,6 +345,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     ClockOutCommand.IsEnabled = false;
                     RecordDirty = recordDirty;
                 }
+            });
+
+            RecalcCommand = new RelayCommand(() =>
+            {
+                Recalculate();
             });
 
             BillabilityGridManager = new UserBillabilityGridManager(this);
@@ -401,6 +408,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             TimeClockLookup.FilterDefinition.ClearFixedFilters();
             TimeClockLookup.FilterDefinition.AddFixedFilter(p => p.UserId, Conditions.Equals, Id);
             TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
+
+            RecalcCommand.IsEnabled = true;
             return result;
         }
 
@@ -424,17 +433,36 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 ClockDateTime = null;
             }
 
-            BillabilityGridManager.SetRowValues(UserBillabilityRows.BillableProjects,
-                entity.BillableProjectsMinutesSpent, 0);
-
-            BillabilityGridManager.SetRowValues(UserBillabilityRows.NonBillableProjects,
-                entity.NonBillableProjectsMinutesSpent, 0);
-
-            BillabilityGridManager.SetRowValues(UserBillabilityRows.Errors,
-                entity.ErrorsMinutesSpent, 0);
+            SetBillability(entity);
 
 
             HourlyRate = entity.HourlyRate;
+        }
+
+        private void SetBillability(User entity)
+        {
+            var totalMinutes = entity.BillableProjectsMinutesSpent
+                               + entity.NonBillableProjectsMinutesSpent
+                               + entity.ErrorsMinutesSpent;
+
+            var billableProjectsBillability = (decimal)0;
+            var nonBillableProjectsBillability = (decimal)0;
+            var errorsBillability = (decimal)0;
+
+            if (totalMinutes > 0)
+            {
+                billableProjectsBillability = entity.BillableProjectsMinutesSpent / totalMinutes;
+                nonBillableProjectsBillability = entity.NonBillableProjectsMinutesSpent / totalMinutes;
+                errorsBillability = entity.ErrorsMinutesSpent / totalMinutes;
+            }
+            BillabilityGridManager.SetRowValues(UserBillabilityRows.BillableProjects,
+                entity.BillableProjectsMinutesSpent, billableProjectsBillability);
+
+            BillabilityGridManager.SetRowValues(UserBillabilityRows.NonBillableProjects,
+                entity.NonBillableProjectsMinutesSpent, nonBillableProjectsBillability);
+
+            BillabilityGridManager.SetRowValues(UserBillabilityRows.Errors,
+                entity.ErrorsMinutesSpent, errorsBillability);
         }
 
         protected override User GetEntityData()
@@ -488,6 +516,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             TimeClockLookupCommand = GetLookupCommand(LookupCommands.Clear);
             Notes = null;
             HourlyRate = 0;
+
+            SetBillability(new User());
+
+            RecalcCommand.IsEnabled = false;
         }
 
         protected override bool ValidateEntity(User entity)
@@ -559,6 +591,44 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
             return false;
 
+        }
+
+        private void Recalculate()
+        {
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var query = context.GetTable<User>();
+            var user = query
+                .Include(p => p.TimeClocks)
+                .ThenInclude(p => p.Project)
+                .Include(p => p.TimeClocks)
+                .ThenInclude(p => p.Error)
+                .FirstOrDefault(p => p.Id == Id);
+
+            if (user != null)
+            {
+                var billableProjects = user.TimeClocks.Where(p => 
+                    p.ProjectId.HasValue
+                    && p.Project.IsBillable
+                    && p.MinutesSpent.HasValue);
+                user.BillableProjectsMinutesSpent = billableProjects.Sum(p => p.MinutesSpent.Value);
+
+                var nonBillableProjects = user.TimeClocks.Where(p => 
+                    p.ProjectId.HasValue
+                    && !p.Project.IsBillable
+                    && p.MinutesSpent.HasValue);
+                user.NonBillableProjectsMinutesSpent = nonBillableProjects.Sum(p => p.MinutesSpent.Value);
+
+                var errors = user.TimeClocks.Where(p => 
+                    p.ErrorId.HasValue
+                    && p.MinutesSpent.HasValue);
+
+                user.ErrorsMinutesSpent = errors.Sum(p => p.MinutesSpent.Value);
+                SetBillability(user);
+                RecordDirty = true;
+
+                ControlsGlobals.UserInterface.ShowMessageBox("Billability recalculation complete.", "Recalculation Complete", RsMessageBoxIcons.Information);
+
+            }
         }
     }
 }

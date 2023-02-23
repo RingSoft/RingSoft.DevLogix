@@ -56,6 +56,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             {
                 row.SetRowValues(minutesSpent, billability);
             }
+            Grid?.RefreshGridView();
         }
 
         public decimal GetMinutesSpent(UserBillabilityRows rowType)

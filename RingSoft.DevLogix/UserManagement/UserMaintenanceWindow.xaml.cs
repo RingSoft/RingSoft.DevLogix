@@ -27,6 +27,8 @@ namespace RingSoft.DevLogix.UserManagement
 
         public Button ChangeChartButton { get; set; }
 
+        public Button RecalcButton { get; set; }
+
         static UserHeaderControl()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(UserHeaderControl), new FrameworkPropertyMetadata(typeof(UserHeaderControl)));
@@ -36,7 +38,7 @@ namespace RingSoft.DevLogix.UserManagement
         {
             ClockOutButton = GetTemplateChild(nameof(ClockOutButton)) as Button;
             ChangeChartButton = GetTemplateChild(nameof(ChangeChartButton)) as Button;
-            ;
+            RecalcButton = GetTemplateChild(nameof(RecalcButton)) as Button;
 
             base.OnApplyTemplate();
         }
@@ -59,6 +61,13 @@ namespace RingSoft.DevLogix.UserManagement
                         UserMaintenanceViewModel.ChangeChartCommand;
 
                     userHeaderControl.ClockOutButton.Command = UserMaintenanceViewModel.ClockOutCommand;
+
+                    userHeaderControl.RecalcButton.Command = UserMaintenanceViewModel.RecalcCommand;
+
+                    if (!UserMaintenanceViewModel.TableDefinition.HasRight(RightTypes.AllowEdit))
+                    {
+                        userHeaderControl.RecalcButton.Visibility = Visibility.Collapsed;
+                    }
                 }
             };
         }
