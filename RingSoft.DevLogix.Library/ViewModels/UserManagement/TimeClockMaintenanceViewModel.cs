@@ -479,7 +479,52 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         protected override bool SaveEntity(TimeClock entity)
         {
             var context = AppGlobals.DataRepository.GetDataContext();
-            return context.SaveEntity(entity, "Saving Time Clock");
+            var result = context.SaveNoCommitEntity(entity, "Saving Time Clock");
+            if (entity.MinutesSpent.HasValue && entity.MinutesSpent.Value > 0)
+            {
+                if (result)
+                {
+                    var user = context.GetTable<User>().FirstOrDefault(p => p.Id == entity.UserId);
+                    if (entity.ProjectId.HasValue)
+                    {
+                        var project = context.GetTable<Project>().FirstOrDefault(p => p.Id == entity.ProjectId.Value);
+                        if (project != null)
+                        {
+                            project.MinutesSpent += entity.MinutesSpent.Value;
+                            result = context.SaveNoCommitEntity(project, "Saving Project");
+                            if (result && project.IsBillable)
+                            {
+                                user.BillableProjectsMinutesSpent += entity.MinutesSpent.Value;
+                            }
+                            else
+                            {
+                                user.NonBillableProjectsMinutesSpent += entity.MinutesSpent.Value;
+                            }
+                        }
+                    }
+                    else if (entity.ErrorId.HasValue)
+                    {
+                        var error = context.GetTable<Error>().FirstOrDefault(p => p.Id == entity.ErrorId.Value);
+                        if (error != null)
+                        {
+                            error.MinutesSpent += entity.MinutesSpent.Value;
+                            result = context.SaveNoCommitEntity(error, "Saving Error");
+                            user.ErrorsMinutesSpent += entity.MinutesSpent.Value;
+                        }
+                    }
+
+                    if (result)
+                    {
+                        result = context.SaveNoCommitEntity(user, "Saving User");
+                    }
+                }
+            }
+
+            if (result)
+            {
+                result = context.Commit("Saving Timeclock");
+            }
+            return result;
         }
 
         protected override bool DeleteEntity()
