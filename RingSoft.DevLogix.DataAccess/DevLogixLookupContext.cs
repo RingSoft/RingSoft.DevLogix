@@ -49,6 +49,7 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<ErrorQa> ErrorTesters { get; set; }
 
         public TableDefinition<Project> Projects { get; set; }
+        public TableDefinition<ProjectUser> ProjectUsers { get; set; }
 
         public TableDefinition<AdvancedFind> AdvancedFinds { get; set; }
         public TableDefinition<AdvancedFindColumn> AdvancedFindColumns { get; set; }
@@ -71,6 +72,7 @@ namespace RingSoft.DevLogix.DataAccess
         public LookupDefinition<ErrorTesterLookup, ErrorQa> ErrorTesterLookup { get; set; }
 
         public LookupDefinition<ProjectLookup, Project> ProjectLookup { get; set; }
+        public LookupDefinition<ProjectUserLookup, ProjectUser> ProjectUserLookup { get; set; }
 
         public LookupDefinition<AdvancedFindLookup, AdvancedFind> AdvancedFindLookup { get; set; }
         public LookupDefinition<RecordLockingLookup, RecordLock> RecordLockingLookup { get; set; }
@@ -215,6 +217,13 @@ namespace RingSoft.DevLogix.DataAccess
             ProjectLookup.AddVisibleColumnDefinition(p => p.Name, "Project Name", p => p.Name, 70);
             ProjectLookup.AddVisibleColumnDefinition(p => p.Deadline, "Deadline", p => p.Deadline, 30);
             Projects.HasLookupDefinition(ProjectLookup);
+
+            ProjectUserLookup = new LookupDefinition<ProjectUserLookup, ProjectUser>(ProjectUsers);
+            ProjectUserLookup.Include(p => p.Project)
+                .AddVisibleColumnDefinition(p => p.Project, "Project", p => p.Name, 50);
+            ProjectUserLookup.Include(p => p.User)
+                .AddVisibleColumnDefinition(p => p.User, "User", p => p.Name, 50);
+            ProjectUsers.HasLookupDefinition(ProjectUserLookup);
 
         }
 

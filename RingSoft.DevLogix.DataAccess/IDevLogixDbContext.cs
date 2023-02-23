@@ -29,6 +29,7 @@ namespace RingSoft.DevLogix.DataAccess
         DbSet<ErrorQa> ErrorTesters { get; set; }
 
         DbSet<Project> Projects { get; set; }
+        DbSet<ProjectUser> ProjectUsers { get; set; }
 
         void SetLookupContext(DevLogixLookupContext lookupContext);
     }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Org.BouncyCastle.Utilities.Collections;
+using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 
 namespace RingSoft.DevLogix.DataAccess.Model
 {
@@ -66,6 +67,7 @@ namespace RingSoft.DevLogix.DataAccess.Model
         public virtual ICollection<ErrorQa> ErrorTesters { get; set; }
         public virtual ICollection<TimeClock> TimeClocks { get; set; }
         public virtual ICollection<User> Underlings { get; set; }
+        public virtual ICollection<ProjectUser> ProjectUsers { get; set; }
 
         public User()
         {
@@ -76,6 +78,7 @@ namespace RingSoft.DevLogix.DataAccess.Model
             ErrorTesters = new HashSet<ErrorQa>();
             TimeClocks = new HashSet<TimeClock>();
             Underlings = new HashSet<User>();
+            ProjectUsers = new HashSet<ProjectUser>();
         }
     }
 }

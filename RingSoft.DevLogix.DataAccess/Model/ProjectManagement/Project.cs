@@ -52,9 +52,12 @@ namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
 
         public virtual ICollection<TimeClock> TimeClocks { get; set; }
 
+        public virtual ICollection<ProjectUser> ProjectUsers { get; set; }
+
         public Project()
         {
             TimeClocks = new HashSet<TimeClock>();
+            ProjectUsers = new HashSet<ProjectUser>();
         }
     }
 }

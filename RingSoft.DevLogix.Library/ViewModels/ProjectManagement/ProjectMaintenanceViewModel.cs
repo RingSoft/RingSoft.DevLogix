@@ -114,6 +114,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
+        private ProjectUsersGridManager _usersGridManager;
+
+        public ProjectUsersGridManager UsersGridManager
+        {
+            get => _usersGridManager;
+            set
+            {
+                if (_usersGridManager == value)
+                    return;
+
+                _usersGridManager = value;
+                OnPropertyChanged();
+            }
+        }
+
+
 
         private LookupDefinition<TimeClockLookup, TimeClock> _timeClockLookup;
 
@@ -165,6 +181,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public RelayCommand PunchInCommand { get; set; }
 
+        public RelayCommand RecalcCommand { get; set; }
+
         public ProjectMaintenanceViewModel()
         {
             ProductAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ProductId));
@@ -173,6 +191,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             {
                 View.PunchIn(GetProject(Id));
             });
+
+            RecalcCommand = new RelayCommand(() =>
+            {
+                Recalc();
+            });
+
+            UsersGridManager = new ProjectUsersGridManager(this);
 
             var timeClockLookup = new LookupDefinition<TimeClockLookup, TimeClock>(AppGlobals.LookupContext.TimeClocks);
             timeClockLookup.AddVisibleColumnDefinition(p => p.PunchInDate, p => p.PunchInDate);
@@ -204,6 +229,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             TimeClockLookup.FilterDefinition.ClearFixedFilters();
             TimeClockLookup.FilterDefinition.AddFixedFilter(p => p.ProjectId, Conditions.Equals, Id);
             TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
+            RecalcCommand.IsEnabled = true;
 
             return project;
         }
@@ -213,6 +239,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             var context = AppGlobals.DataRepository.GetDataContext();
             var projectTable = context.GetTable<Project>();
             var result = projectTable
+                .Include(p => p.ProjectUsers)
                 .FirstOrDefault(p => p.Id == projectId);
             return result;
         }
@@ -224,6 +251,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             OriginalDeadline = entity.OriginalDeadline.ToLocalTime();
             ProductAutoFillValue = ProductAutoFillSetup.GetAutoFillValueForIdValue(entity.ProductId);
             IsBillable = entity.IsBillable;
+            UsersGridManager.LoadGrid(entity.ProjectUsers);
             Notes = entity.Notes;
         }
 
@@ -256,6 +284,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             IsBillable = false;
             TimeClockLookupCommand = GetLookupCommand(LookupCommands.Clear);
             Notes = null;
+            UsersGridManager.SetupForNewRecord();
+            RecalcCommand.IsEnabled = false;
         }
 
         protected override bool SaveEntity(Project entity)
@@ -265,6 +295,21 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             var result = false;
 
             result = context.SaveEntity(entity, "Saving Project");
+
+            if (result)
+            {
+                var userRows = context.GetTable<ProjectUser>().Where(p => p.ProjectId == entity.Id).ToList();
+                context.RemoveRange(userRows);
+                userRows = UsersGridManager.GetEntityList();
+
+                foreach (var userRow in userRows)
+                {
+                    userRow.ProjectId = entity.Id;
+                }
+                context.AddRange(userRows);
+
+                result = context.Commit("Saving Project");
+            }
             return result;
         }
 
@@ -281,6 +326,37 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
 
             return result;
+        }
+
+        private void Recalc()
+        {
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var usersTable = context.GetTable<ProjectUser>();
+            var timeClocksTable = context.GetTable<TimeClock>();
+            var users = usersTable.Where(p => p.ProjectId == Id)
+                .Include(p => p.User);
+
+            var usersRows = UsersGridManager.Rows.OfType<ProjectUsersGridRow>();
+
+            foreach (var user in users)
+            {
+                var projectUser = new ProjectUser();
+
+                var totalMinutesSpent = timeClocksTable.Where(
+                        p => p.ProjectId == Id
+                             && p.MinutesSpent.HasValue
+                             && p.UserId == user.UserId).ToList()
+                    .Sum(p => p.MinutesSpent);
+
+                var cost = user.User.HourlyRate * (totalMinutesSpent / 60);
+                user.MinutesSpent = totalMinutesSpent.Value;
+                user.Cost = cost.Value;
+                var userRow = usersRows.FirstOrDefault(p => p.UserId == user.UserId);
+                if (userRow != null) userRow.LoadFromEntity(user);
+            }
+
+            UsersGridManager.Grid?.RefreshGridView();
+            RecordDirty = true;
         }
     }
 }

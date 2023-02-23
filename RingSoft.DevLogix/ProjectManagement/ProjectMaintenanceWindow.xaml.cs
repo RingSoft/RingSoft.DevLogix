@@ -12,6 +12,8 @@ namespace RingSoft.DevLogix.ProjectManagement
     {
         public Button PunchInButton { get; set; }
 
+        public Button RecalcButton { get; set; }
+
         static ProjectHeaderControl()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ProjectHeaderControl), new FrameworkPropertyMetadata(typeof(ProjectHeaderControl)));
@@ -20,6 +22,7 @@ namespace RingSoft.DevLogix.ProjectManagement
         public override void OnApplyTemplate()
         {
             PunchInButton = GetTemplateChild(nameof(PunchInButton)) as Button;
+            RecalcButton = GetTemplateChild(nameof(RecalcButton)) as Button;
 
             base.OnApplyTemplate();
         }
@@ -43,6 +46,12 @@ namespace RingSoft.DevLogix.ProjectManagement
                 {
                     projectHeaderControl.PunchInButton.Command =
                         LocalViewModel.PunchInCommand;
+
+                    if (!LocalViewModel.TableDefinition.HasRight(RightTypes.AllowEdit))
+                    {
+                        projectHeaderControl.RecalcButton.Visibility = Visibility.Collapsed;
+                    }
+                    projectHeaderControl.RecalcButton.Command = LocalViewModel.RecalcCommand;
                 }
             };
 

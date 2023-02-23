@@ -621,6 +621,51 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.ToTable("Projects");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectUser", b =>
+                {
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("Cost")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal?>("FridayHours")
+                        .HasColumnType("numeric");
+
+                    b.Property<bool>("IsStandard")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal>("MinutesSpent")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal?>("MondayHours")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal?>("SaturdayHours")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal?>("SundayHours")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal?>("ThursdayHours")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal?>("TuesdayHours")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal?>("WednesdayHours")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("ProjectId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ProjectUsers");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.SystemMaster", b =>
                 {
                     b.Property<string>("OrganizationName")
@@ -984,6 +1029,25 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectUser", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.Project", "Project")
+                        .WithMany("ProjectUsers")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "User")
+                        .WithMany("ProjectUsers")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Project");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.TimeClock", b =>
                 {
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.Error", "Error")
@@ -1130,6 +1194,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.Project", b =>
                 {
+                    b.Navigation("ProjectUsers");
+
                     b.Navigation("TimeClocks");
                 });
 
@@ -1144,6 +1210,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("ErrorTesters");
 
                     b.Navigation("FoundByUserErrors");
+
+                    b.Navigation("ProjectUsers");
 
                     b.Navigation("TimeClocks");
 

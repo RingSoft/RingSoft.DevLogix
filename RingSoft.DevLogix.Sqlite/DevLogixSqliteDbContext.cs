@@ -36,6 +36,7 @@ namespace RingSoft.DevLogix.Sqlite
         public DbSet<ErrorDeveloper> ErrorDevelopers { get; set; }
         public DbSet<ErrorQa> ErrorTesters { get; set; }
         public DbSet<Project> Projects { get; set; }
+        public DbSet<ProjectUser> ProjectUsers { get; set; }
 
         public bool IsDesignTime { get; set; }
 

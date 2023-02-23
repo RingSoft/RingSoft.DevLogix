@@ -11,6 +11,7 @@ using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.EfCore;
+using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DevLogix.DataAccess;
 using RingSoft.DevLogix.DataAccess.Model;
@@ -297,6 +298,44 @@ namespace RingSoft.DevLogix.Library
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+        public static string MakeTimeSpent(decimal minutesSpent)
+        {
+            var timeSpent = "0 Minutes";
+            var hoursSpent = (decimal)0;
+            var daysSpent = (decimal)0;
+            var numFormatString = GblMethods.GetNumFormat(2, false);
+
+            if (minutesSpent >= 0)
+            {
+                if (minutesSpent > 60)
+                {
+                    hoursSpent = Math.Round(minutesSpent / 60, 2);
+                    timeSpent = $"{FormatValue(hoursSpent, DecimalFieldTypes.Decimal)} Hours";
+                }
+                else
+                {
+                    minutesSpent = Math.Round(minutesSpent, 2);
+                    timeSpent = $"{FormatValue(minutesSpent, DecimalFieldTypes.Decimal)} Minutes";
+                }
+            }
+
+            if (hoursSpent > 24)
+            {
+                daysSpent = Math.Round(hoursSpent / 24, 2);
+                timeSpent = $"{FormatValue(daysSpent, DecimalFieldTypes.Decimal)} Days";
+            }
+
+            return timeSpent;
+        }
+        private static string FormatValue(decimal value, DecimalFieldTypes decimalFieldType)
+        {
+            var result = string.Empty;
+            var numFormat = GblMethods.GetNumFormat(2, false);
+            result = GblMethods.FormatValue(FieldDataTypes.Decimal, value.ToString()
+                , numFormat);
+
+            return result;
         }
 
     }

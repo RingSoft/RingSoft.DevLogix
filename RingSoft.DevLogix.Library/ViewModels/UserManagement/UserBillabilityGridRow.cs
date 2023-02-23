@@ -72,41 +72,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         public void SetRowValues(decimal minutesSpent, decimal billability)
         {
             MinutesSpent = minutesSpent;
-            var timeSpent = "0 Minutes";
-            var hoursSpent = (decimal)0;
-            var daysSpent = (decimal)0;
-            var numFormatString = GblMethods.GetNumFormat(2, false);
-
-            if (minutesSpent >= 0)
-            {
-                if (minutesSpent > 60)
-                {
-                    hoursSpent = Math.Round(minutesSpent / 60, 2);
-                    TimeSpent = $"{FormatValue(hoursSpent, DecimalFieldTypes.Decimal)} Hours";
-                }
-                else
-                {
-                    minutesSpent = Math.Round(minutesSpent, 2);
-                    TimeSpent = $"{FormatValue(minutesSpent, DecimalFieldTypes.Decimal)} Minutes";
-                }
-            }
-
-            if (hoursSpent > 24)
-            {
-                daysSpent = Math.Round(hoursSpent / 24, 2);
-                TimeSpent = $"{FormatValue(daysSpent, DecimalFieldTypes.Decimal)} Days";
-            }
+            TimeSpent = AppGlobals.MakeTimeSpent(minutesSpent);
             Billability = Math.Round(billability, 4);
-        }
-
-        private string FormatValue(decimal value, DecimalFieldTypes decimalFieldType)
-        {
-            var result = string.Empty;
-            var numFormat = GblMethods.GetNumFormat(2, false);
-            result = GblMethods.FormatValue(FieldDataTypes.Decimal, value.ToString()
-                , numFormat);
-
-            return result;
         }
     }
 }
