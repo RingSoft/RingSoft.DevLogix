@@ -191,18 +191,18 @@ namespace RingSoft.DevLogix.Library.ViewModels
                                     dataRow.GetRowValue(getListResults.DataSet.Tables[0].Columns[0].ColumnName));
                             }
                         }
-                        var databaseExists =
-                            databaseList.Contains(SqlServerLoginViewModel.Database);
+                        //var databaseExists =
+                        //    databaseList.Contains(SqlServerLoginViewModel.Database);
 
-                        if (databaseExists)
-                        {
-                            var message =
-                                "You must first delete the destination database in Microsoft SQL Server management studio in order to continue.";
+                        //if (databaseExists)
+                        //{
+                        //    var message =
+                        //        "You must first delete the destination database in Microsoft SQL Server management studio in order to continue.";
 
-                            var caption = "Delete First";
-                            procedure.ShowMessage(message, caption, RsMessageBoxIcons.Exclamation);
-                            return false;
-                        }
+                        //    var caption = "Delete First";
+                        //    procedure.ShowMessage(message, caption, RsMessageBoxIcons.Exclamation);
+                        //    return false;
+                        //}
                     }
                     break;
                 case DbPlatforms.SqlServer:

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net.WebSockets;
 using System.Threading;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.App.Interop;
 using RingSoft.App.Library;
