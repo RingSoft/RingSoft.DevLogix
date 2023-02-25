@@ -323,8 +323,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     var field = TableDefinition.GetFieldDefinition(p => p.DefaultChartId);
                     var sqlData = new SqlData(field.FieldName, newChart.Id.ToString(), ValueTypes.Numeric);
                     updateStatement.AddSqlData(sqlData);
-                    var sqls = AppGlobals.LookupContext.DataProcessor.SqlGenerator.GenerateUpdateSql(updateStatement);
-                    AppGlobals.LookupContext.DataProcessor.ExecuteSqls(sqls);
+                    var sql = AppGlobals.LookupContext.DataProcessor.SqlGenerator.GenerateUpdateSql(updateStatement);
+                    AppGlobals.LookupContext.DataProcessor.ExecuteSql(sql);
 
                     if (AppGlobals.LoggedInUser.Id == user.Id)
                     {

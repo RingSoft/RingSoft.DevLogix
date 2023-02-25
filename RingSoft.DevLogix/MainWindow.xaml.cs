@@ -459,8 +459,8 @@ namespace RingSoft.DevLogix
                 var sqlData = new SqlData(AppGlobals.LookupContext.Users.GetFieldDefinition(p => p.ClockDate).FieldName
                     , "", ValueTypes.String);
                 updateStatement.AddSqlData(sqlData);
-                var sqls = AppGlobals.LookupContext.DataProcessor.SqlGenerator.GenerateUpdateSql(updateStatement);
-                if (AppGlobals.LookupContext.DataProcessor.ExecuteSqls(sqls).ResultCode == GetDataResultCodes.Success)
+                var sql = AppGlobals.LookupContext.DataProcessor.SqlGenerator.GenerateUpdateSql(updateStatement);
+                if (AppGlobals.LookupContext.DataProcessor.ExecuteSql(sql).ResultCode == GetDataResultCodes.Success)
                 {
                     return true;
                 }

@@ -142,7 +142,7 @@
 
                                 <deg:DataEntryGridTextColumn Header="Time Spent" ColumnId="{x:Static vm:ProjectUsersGridManager.MinutesSpentColumnId}" Width="100"/>
 
-                                <deg:DataEntryGridTextColumn Header="Cost" ColumnId="{x:Static vm:ProjectUsersGridManager.CostColumnId}" Width="75" Alignment="Right"/>
+                                <deg:DataEntryGridTextColumn Header="Cost" ColumnId="{x:Static vm:ProjectUsersGridManager.CostColumnId}" Width="100" Alignment="Right"/>
 
                             </deg:DataEntryGrid.Columns>
                         </deg:DataEntryGrid>

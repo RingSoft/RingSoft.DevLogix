@@ -393,9 +393,12 @@ namespace RingSoft.DevLogix.DataAccess
             TimeClocks.GetFieldDefinition(p => p.PunchOutDate).HasDateType(DbDateTypes.DateTime).DoConvertToLocalTime();
             TimeClocks.GetFieldDefinition(p => p.ErrorId).CanSetNull(false);
 
+            Projects.PriorityLevel = 400;
             Projects.GetFieldDefinition(p => p.Notes).IsMemo();
             Projects.GetFieldDefinition(p => p.Deadline).HasDateType(DbDateTypes.DateTime);
             Projects.GetFieldDefinition(p => p.OriginalDeadline).HasDateType(DbDateTypes.DateTime);
+
+            ProjectUsers.PriorityLevel = 500;
         }
 
         public override UserAutoFill GetUserAutoFill(string userName)
