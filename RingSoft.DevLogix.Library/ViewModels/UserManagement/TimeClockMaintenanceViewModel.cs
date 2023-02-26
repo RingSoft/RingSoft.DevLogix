@@ -10,6 +10,7 @@ using System.Timers;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
+using IDbContext = RingSoft.DevLogix.DataAccess.IDbContext;
 
 namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 {
@@ -260,6 +261,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         public decimal MinutesSpent { get; private set; }
 
+        public decimal OriginalMinutesSpent { get; private set; }
+
         public DialogInput DialogInput { get; private set; }
 
         public RelayCommand PunchOutCommand { get; private set; }
@@ -365,6 +368,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             var timeClock = context.GetTable<TimeClock>().Include(p => p.User)
                 .FirstOrDefault(p => p.Id == newEntity.Id);
             Id = newEntity.Id;
+            if (timeClock.MinutesSpent != null) 
+                OriginalMinutesSpent = timeClock.MinutesSpent.Value;
             if (!timeClock.PunchOutDate.HasValue)
             {
                 if (timeClock.UserId == AppGlobals.LoggedInUser.Id)
@@ -473,49 +478,53 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         protected override void ClearData()
         {
-
         }
 
         protected override bool SaveEntity(TimeClock entity)
         {
+            var saveChildren = entity.Id != 0;
             var context = AppGlobals.DataRepository.GetDataContext();
+            var user = context.GetTable<User>().FirstOrDefault(p => p.Id == entity.UserId);
+            Project project = null;
             var result = context.SaveNoCommitEntity(entity, "Saving Time Clock");
-            if (entity.MinutesSpent.HasValue && entity.MinutesSpent.Value > 0)
+            if (result && saveChildren)
             {
+                if (entity.ProjectId.HasValue)
+                {
+                    project = context.GetTable<Project>()
+                        .Include(p => p.ProjectUsers)
+                        .FirstOrDefault(p => p.Id == entity.ProjectId.Value);
+                    if (project != null)
+                    {
+                        result = UpdateProject(entity, project, context, user);
+                        if (result && project.IsBillable)
+                        {
+                            user.BillableProjectsMinutesSpent += GetNewMinutesSpent();
+                        }
+                        else
+                        {
+                            user.NonBillableProjectsMinutesSpent += GetNewMinutesSpent();
+                        }
+                    }
+                }
+                else if (entity.ErrorId.HasValue)
+                {
+                    var error = context.GetTable<Error>().FirstOrDefault(p => p.Id == entity.ErrorId.Value);
+                    if (error != null)
+                    {
+                        error.MinutesSpent += entity.MinutesSpent.Value;
+                        result = context.SaveNoCommitEntity(error, "Saving Error");
+                        user.ErrorsMinutesSpent += GetNewMinutesSpent();
+                    }
+                }
+
                 if (result)
                 {
-                    var user = context.GetTable<User>().FirstOrDefault(p => p.Id == entity.UserId);
-                    if (entity.ProjectId.HasValue)
+                    result = context.SaveNoCommitEntity(user, "Saving User");
+                    var userPrimaryKey = AppGlobals.LookupContext.Users.GetPrimaryKeyValueFromEntity(user);
+                    if (userPrimaryKey != null)
                     {
-                        var project = context.GetTable<Project>().FirstOrDefault(p => p.Id == entity.ProjectId.Value);
-                        if (project != null)
-                        {
-                            project.MinutesSpent += entity.MinutesSpent.Value;
-                            result = context.SaveNoCommitEntity(project, "Saving Project");
-                            if (result && project.IsBillable)
-                            {
-                                user.BillableProjectsMinutesSpent += entity.MinutesSpent.Value;
-                            }
-                            else
-                            {
-                                user.NonBillableProjectsMinutesSpent += entity.MinutesSpent.Value;
-                            }
-                        }
-                    }
-                    else if (entity.ErrorId.HasValue)
-                    {
-                        var error = context.GetTable<Error>().FirstOrDefault(p => p.Id == entity.ErrorId.Value);
-                        if (error != null)
-                        {
-                            error.MinutesSpent += entity.MinutesSpent.Value;
-                            result = context.SaveNoCommitEntity(error, "Saving Error");
-                            user.ErrorsMinutesSpent += entity.MinutesSpent.Value;
-                        }
-                    }
-
-                    if (result)
-                    {
-                        result = context.SaveNoCommitEntity(user, "Saving User");
+                        userPrimaryKey.CreateRecordLock();
                     }
                 }
             }
@@ -523,7 +532,60 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             if (result)
             {
                 result = context.Commit("Saving Timeclock");
+                if (result && saveChildren)
+                {
+                    var viewModels = AppGlobals.MainViewModel.UserViewModels.Where(p => p.Id == user.Id);
+
+                    if (viewModels.Any())
+                    {
+                        foreach (var model in viewModels)
+                        {
+                            model.RefreshBillability(user);
+                        }
+                    }
+
+                    if (project != null)
+                    {
+                        var projectViewModels = AppGlobals.MainViewModel.ProjectViewModels
+                            .Where(p => p.Id == project.Id);
+
+                        if (projectViewModels.Any())
+                        {
+                            foreach (var model in projectViewModels)
+                            {
+                                model.RefreshCostGrid(project);
+                            }
+                        }
+                    }
+                }
+
             }
+            return result;
+        }
+
+        private bool UpdateProject(TimeClock entity, Project project, IDbContext context, User user)
+        {
+            var result = true;
+            project.MinutesSpent += entity.MinutesSpent.Value;
+            var projectUser = project.ProjectUsers.FirstOrDefault(p => p.UserId == user.Id);
+            if (projectUser != null)
+            {
+                projectUser.MinutesSpent += GetNewMinutesSpent();
+                projectUser.Cost = Math.Round((projectUser.MinutesSpent / 60) * user.HourlyRate, 2);
+                result = context.SaveNoCommitEntity(projectUser, "Saving Project User");
+            }
+
+            if (result)
+            {
+                result = context.SaveNoCommitEntity(project, "Saving Project");
+                var projectPrimaryKey = AppGlobals.LookupContext.Projects
+                    .GetPrimaryKeyValueFromEntity(project);
+                if (projectPrimaryKey != null)
+                {
+                    projectPrimaryKey.CreateRecordLock();
+                }
+            }
+
             return result;
         }
 
@@ -678,6 +740,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         {
             ElapsedTime = elapsedTime;
             View.SetElapsedTime();
+        }
+
+        public decimal GetNewMinutesSpent()
+        {
+            var result = MinutesSpent - OriginalMinutesSpent;
+            return result;
         }
     }
 }

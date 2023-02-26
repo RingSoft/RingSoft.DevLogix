@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
@@ -366,6 +367,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             if (View == null)
                 throw new Exception($"User View interface must be of type '{nameof(IUserView)}'.");
 
+            AppGlobals.MainViewModel.UserViewModels.Add(this);
+
             DepartmentAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.DepartmentId));
             DefaultChartAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.DefaultChartId));
             SupervisorAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.SupervisorId));
@@ -629,6 +632,19 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 ControlsGlobals.UserInterface.ShowMessageBox("Billability recalculation complete.", "Recalculation Complete", RsMessageBoxIcons.Information);
 
             }
+        }
+
+        public void RefreshBillability(User user)
+        {
+            SetBillability(user);
+            
+            RecordDirty = true;
+        }
+
+        public override void OnWindowClosing(CancelEventArgs e)
+        {
+            AppGlobals.MainViewModel.UserViewModels.Remove(this);
+            base.OnWindowClosing(e);
         }
     }
 }

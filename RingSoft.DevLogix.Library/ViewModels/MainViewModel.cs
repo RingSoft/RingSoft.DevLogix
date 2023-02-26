@@ -1,9 +1,12 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
+using RingSoft.DevLogix.Library.ViewModels.ProjectManagement;
+using RingSoft.DevLogix.Library.ViewModels.UserManagement;
 
 namespace RingSoft.DevLogix.Library.ViewModels
 {
@@ -34,6 +37,9 @@ namespace RingSoft.DevLogix.Library.ViewModels
     public class MainViewModel
     {
         public IMainView MainView { get; set; }
+
+        public List<UserMaintenanceViewModel> UserViewModels { get; } = new List<UserMaintenanceViewModel>();
+        public List<ProjectMaintenanceViewModel> ProjectViewModels { get; } = new List<ProjectMaintenanceViewModel>();
 
         public RelayCommand LogoutCommand { get; set; }
         public RelayCommand<TableDefinitionBase> ShowMaintenanceWindowCommand { get; }

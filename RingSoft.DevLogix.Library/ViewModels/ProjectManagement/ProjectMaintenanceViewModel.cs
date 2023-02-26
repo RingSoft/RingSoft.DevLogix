@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.DataEntryControls.Engine;
@@ -215,6 +216,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             {
                 View = projectView;
             }
+            AppGlobals.MainViewModel.ProjectViewModels.Add(this);
 
             base.Initialize();
         }
@@ -357,6 +359,17 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
             UsersGridManager.Grid?.RefreshGridView();
             RecordDirty = true;
+        }
+
+        public void RefreshCostGrid(Project project)
+        {
+            UsersGridManager.LoadGrid(project.ProjectUsers);
+        }
+
+        public override void OnWindowClosing(CancelEventArgs e)
+        {
+            AppGlobals.MainViewModel.ProjectViewModels.Remove(this);
+            base.OnWindowClosing(e);
         }
     }
 }
