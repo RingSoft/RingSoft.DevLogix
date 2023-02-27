@@ -116,5 +116,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             entity.MinutesSpent = MinutesSpent;
             entity.Cost = Cost;
         }
+
+        public void SetUser(int userId)
+        {
+            UserId = userId;
+            UserAutoFillValue = UserAutoFillSetup.GetAutoFillValueForIdValue(userId);
+        }
     }
 }

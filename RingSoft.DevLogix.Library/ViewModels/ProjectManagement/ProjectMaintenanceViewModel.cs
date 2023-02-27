@@ -40,6 +40,37 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
+        private string _timeSpent;
+
+        public string TimeSpent
+        {
+            get => _timeSpent;
+            set
+            {
+                if (_timeSpent == value)
+                    return;
+
+                _timeSpent = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private decimal _totalCost;
+
+        public decimal TotalCost
+        {
+            get => _totalCost;
+            set
+            {
+                if (_totalCost == value)
+                    return;
+
+                _totalCost = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         private DateTime _deadline;
 
         public DateTime Deadline
@@ -184,13 +215,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public RelayCommand RecalcCommand { get; set; }
 
+        public decimal MinutesSpent { get; set; }
+
         public ProjectMaintenanceViewModel()
         {
             ProductAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ProductId));
 
             PunchInCommand = new RelayCommand(() =>
             {
-                View.PunchIn(GetProject(Id));
+                PunchIn();
             });
 
             RecalcCommand = new RelayCommand(() =>
@@ -208,6 +241,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
             TimeClockLookup = timeClockLookup;
             TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
+
+            TablesToDelete.Add(AppGlobals.LookupContext.ProjectUsers);
         }
 
         protected override void Initialize()
@@ -231,7 +266,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             TimeClockLookup.FilterDefinition.ClearFixedFilters();
             TimeClockLookup.FilterDefinition.AddFixedFilter(p => p.ProjectId, Conditions.Equals, Id);
             TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
-            RecalcCommand.IsEnabled = true;
+            RecalcCommand.IsEnabled = TableDefinition.HasRight(RightTypes.AllowEdit);
+            PunchInCommand.IsEnabled = true;
 
             return project;
         }
@@ -288,6 +324,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             Notes = null;
             UsersGridManager.SetupForNewRecord();
             RecalcCommand.IsEnabled = false;
+            PunchInCommand.IsEnabled = false;
         }
 
         protected override bool SaveEntity(Project entity)
@@ -324,6 +361,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             var project = query.FirstOrDefault(p => p.Id == Id);
             if (project != null)
             {
+                var users = context.GetTable<ProjectUser>().Where(p => p.ProjectId == project.Id);
+                context.RemoveRange(users);
                 result = context.DeleteEntity(project, "Deleting Project");
             }
 
@@ -359,6 +398,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
             UsersGridManager.Grid?.RefreshGridView();
             RecordDirty = true;
+            var message = "Recalculation complete.";
+            ControlsGlobals.UserInterface.ShowMessageBox(message, "Recalculation", RsMessageBoxIcons.Information);
         }
 
         public void RefreshCostGrid(Project project)
@@ -370,6 +411,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         {
             AppGlobals.MainViewModel.ProjectViewModels.Remove(this);
             base.OnWindowClosing(e);
+        }
+
+        private void PunchIn()
+        {
+            if (UsersGridManager.ProcessPunchIn())
+            {
+                View.PunchIn(GetProject(Id));
+            }
         }
     }
 }

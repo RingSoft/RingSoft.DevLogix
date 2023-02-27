@@ -71,6 +71,7 @@
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
@@ -90,7 +91,15 @@
 
             <lc:AutoFillControl Grid.Row="0" Grid.Column="3" x:Name="NameControl" Width="200" HorizontalAlignment="Left"/>
 
-            <TabControl Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="5" x:Name="TabControl">
+            <Label Grid.Row="1" Grid.Column="0" Content="Time Spent"/>
+
+            <dec:StringReadOnlyBox Grid.Row="1" Grid.Column="1" Width="100" HorizontalAlignment="Left" Text="{Binding TimeSpent}"/>
+
+            <Label Grid.Row="1" Grid.Column="2" Content="Cost"/>
+
+            <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="3" Width="100" FormatType="Currency" HorizontalAlignment="Left" Value="{Binding TotalCost}"/>
+
+            <TabControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="5" x:Name="TabControl">
 
                 <TabItem x:Name="DetailsTabItem" Header="Details" VerticalAlignment="Stretch">
 
