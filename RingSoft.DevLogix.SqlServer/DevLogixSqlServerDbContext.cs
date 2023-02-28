@@ -9,6 +9,7 @@ using RingSoft.DbLookup.RecordLocking;
 using RingSoft.DevLogix.DataAccess;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
+using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 using IDbContext = RingSoft.DbLookup.IDbContext;
 
 namespace RingSoft.DevLogix.SqlServer
@@ -35,6 +36,7 @@ namespace RingSoft.DevLogix.SqlServer
         public DbSet<Error> Errors { get; set; }
         public DbSet<ErrorDeveloper> ErrorDevelopers { get; set; }
         public DbSet<ErrorQa> ErrorTesters { get; set; }
+        public DbSet<ErrorUser> ErrorUsers { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<ProjectUser> ProjectUsers { get; set; }
 

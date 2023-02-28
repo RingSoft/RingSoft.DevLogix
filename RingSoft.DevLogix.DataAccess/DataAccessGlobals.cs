@@ -27,6 +27,7 @@ namespace RingSoft.DevLogix.DataAccess
             modelBuilder.ApplyConfiguration(new ErrorConfiguration());
             modelBuilder.ApplyConfiguration(new ErrorDeveloperConfiguration());
             modelBuilder.ApplyConfiguration(new ErrorQaConfiguration());
+            modelBuilder.ApplyConfiguration(new ErrorUserConfiguration());
             modelBuilder.ApplyConfiguration(new ProjectConfiguration());
             modelBuilder.ApplyConfiguration(new ProjectUserConfiguration());
 

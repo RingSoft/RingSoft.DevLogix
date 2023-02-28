@@ -12,7 +12,9 @@ using RingSoft.DevLogix.DataAccess.LookupModel;
 using RingSoft.DevLogix.DataAccess.Model;
 using System;
 using RingSoft.DevLogix.DataAccess.LookupModel.ProjectManagement;
+using RingSoft.DevLogix.DataAccess.LookupModel.QualityAssurance;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
+using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 
 namespace RingSoft.DevLogix.DataAccess
 {
@@ -47,6 +49,7 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<Error> Errors { get; set; }
         public TableDefinition<ErrorDeveloper> ErrorDevelopers { get; set; }
         public TableDefinition<ErrorQa> ErrorTesters { get; set; }
+        public TableDefinition<ErrorUser> ErrorUsers { get; set; }
 
         public TableDefinition<Project> Projects { get; set; }
         public TableDefinition<ProjectUser> ProjectUsers { get; set; }
@@ -70,6 +73,7 @@ namespace RingSoft.DevLogix.DataAccess
         public LookupDefinition<ErrorLookup, Error> ErrorLookup { get; set; }
         public LookupDefinition<ErrorDeveloperLookup, ErrorDeveloper> ErrorDeveloperLookup { get; set; }
         public LookupDefinition<ErrorTesterLookup, ErrorQa> ErrorTesterLookup { get; set; }
+        public LookupDefinition<ErrorUserLookup, ErrorUser> ErrorUsersLookup { get; set; }
 
         public LookupDefinition<ProjectLookup, Project> ProjectLookup { get; set; }
         public LookupDefinition<ProjectUserLookup, ProjectUser> ProjectUserLookup { get; set; }
@@ -212,6 +216,13 @@ namespace RingSoft.DevLogix.DataAccess
             ErrorTesterLookup.Include(p => p.Tester)
                 .AddVisibleColumnDefinition(p => p.Tester, "Tester", p => p.Name, 60);
             ErrorTesters.HasLookupDefinition(ErrorTesterLookup);
+
+            ErrorUsersLookup = new LookupDefinition<ErrorUserLookup, ErrorUser>(ErrorUsers);
+            ErrorUsersLookup.Include(p => p.Error)
+                .AddVisibleColumnDefinition(p => p.ErrorId, "Error Id", p => p.ErrorId, 30);
+            ErrorUsersLookup.Include(p => p.User)
+                .AddVisibleColumnDefinition(p => p.UserName, "User", p => p.Name, 70);
+            ErrorUsers.HasLookupDefinition(ErrorUsersLookup);
 
             ProjectLookup = new LookupDefinition<ProjectLookup, Project>(Projects);
             ProjectLookup.AddVisibleColumnDefinition(p => p.Name, "Project Name", p => p.Name, 70);

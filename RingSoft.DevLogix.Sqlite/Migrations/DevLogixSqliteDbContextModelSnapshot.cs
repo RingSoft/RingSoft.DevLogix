@@ -666,6 +666,27 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.ToTable("ProjectUsers");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.ErrorUser", b =>
+                {
+                    b.Property<int>("ErrorId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("Cost")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("MinutesSpent")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("ErrorId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ErrorUsers");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.SystemMaster", b =>
                 {
                     b.Property<string>("OrganizationName")
@@ -1048,6 +1069,25 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.ErrorUser", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.Error", "Error")
+                        .WithMany("Users")
+                        .HasForeignKey("ErrorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "User")
+                        .WithMany("ErrorUsers")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Error");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.TimeClock", b =>
                 {
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.Error", "Error")
@@ -1149,6 +1189,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("Testers");
 
                     b.Navigation("TimeClocks");
+
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ErrorPriority", b =>
@@ -1208,6 +1250,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("ErrorDevelopers");
 
                     b.Navigation("ErrorTesters");
+
+                    b.Navigation("ErrorUsers");
 
                     b.Navigation("FoundByUserErrors");
 

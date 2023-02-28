@@ -2,6 +2,7 @@
 using RingSoft.DbLookup.EfCore;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
+using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 
 namespace RingSoft.DevLogix.DataAccess
 {
@@ -27,6 +28,7 @@ namespace RingSoft.DevLogix.DataAccess
         DbSet<Error> Errors { get; set; }
         DbSet<ErrorDeveloper> ErrorDevelopers { get; set; }
         DbSet<ErrorQa> ErrorTesters { get; set; }
+        DbSet<ErrorUser> ErrorUsers { get; set; }
 
         DbSet<Project> Projects { get; set; }
         DbSet<ProjectUser> ProjectUsers { get; set; }
