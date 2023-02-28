@@ -1,10 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Data;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
+using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.QueryBuilder;
@@ -18,6 +20,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
     public interface IProjectView
     {
         void PunchIn(Project project);
+
+        void SetupRecalcFilter(LookupDefinitionBase lookupDefinition);
+
+        string StartRecalcProcedure(LookupDefinitionBase lookupDefinition);
+
+        void UpdateRecalcProcedure(int currentProject, int totalProjects, string currentProjectText);
     }
 
     public class ProjectMaintenanceViewModel : DevLogixDbMaintenanceViewModel<Project>
@@ -51,7 +59,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     return;
 
                 _timeSpent = value;
-                OnPropertyChanged();
+                OnPropertyChanged(null, false);
             }
         }
 
@@ -66,7 +74,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     return;
 
                 _totalCost = value;
-                OnPropertyChanged();
+                OnPropertyChanged(null, false);
             }
         }
 
@@ -252,6 +260,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 View = projectView;
             }
             AppGlobals.MainViewModel.ProjectViewModels.Add(this);
+            RecalcCommand.IsEnabled = TableDefinition.HasRight(RightTypes.AllowEdit);
 
             base.Initialize();
         }
@@ -266,7 +275,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             TimeClockLookup.FilterDefinition.ClearFixedFilters();
             TimeClockLookup.FilterDefinition.AddFixedFilter(p => p.ProjectId, Conditions.Equals, Id);
             TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
-            RecalcCommand.IsEnabled = TableDefinition.HasRight(RightTypes.AllowEdit);
             PunchInCommand.IsEnabled = true;
 
             return project;
@@ -291,20 +299,30 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             IsBillable = entity.IsBillable;
             UsersGridManager.LoadGrid(entity.ProjectUsers);
             Notes = entity.Notes;
+            AppGlobals.CalculateProject(entity, entity.ProjectUsers.ToList());
+            MinutesSpent = entity.MinutesSpent;
+            TotalCost = entity.Cost;
+            TimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
         }
 
         protected override Project GetEntityData()
         {
-            var result = new Project
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var table = context.GetTable<Project>();
+            var result = new Project();
+            if (Id != 0)
             {
-                Id = Id,
-                Name = KeyAutoFillValue.Text,
-                Deadline = Deadline.ToUniversalTime(),
-                OriginalDeadline = OriginalDeadline.ToUniversalTime(),
-                ProductId = ProductAutoFillValue.GetEntity(AppGlobals.LookupContext.Products).Id,
-                IsBillable = IsBillable,
-                Notes = Notes,
-            };
+                result = table.FirstOrDefault(p => p.Id == Id);
+            }
+
+            result.Id = Id;
+            result.Name = KeyAutoFillValue.Text;
+            result.Deadline = Deadline.ToUniversalTime();
+            result.OriginalDeadline = OriginalDeadline.ToUniversalTime();
+            result.ProductId = ProductAutoFillValue.GetEntity(AppGlobals.LookupContext.Products).Id;
+            result.IsBillable = IsBillable;
+            result.Notes = Notes;
+            
 
             if (result.ProductId == 0)
             {
@@ -323,8 +341,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             TimeClockLookupCommand = GetLookupCommand(LookupCommands.Clear);
             Notes = null;
             UsersGridManager.SetupForNewRecord();
-            RecalcCommand.IsEnabled = false;
             PunchInCommand.IsEnabled = false;
+            MinutesSpent = 0;
+            TimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
+            TotalCost = 0;
         }
 
         protected override bool SaveEntity(Project entity)
@@ -371,40 +391,123 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         private void Recalc()
         {
-            var context = AppGlobals.DataRepository.GetDataContext();
-            var usersTable = context.GetTable<ProjectUser>();
-            var timeClocksTable = context.GetTable<TimeClock>();
-            var users = usersTable.Where(p => p.ProjectId == Id)
-                .Include(p => p.User);
+            var recalcFilter = ViewLookupDefinition.Clone();
+            View.SetupRecalcFilter(recalcFilter);
 
-            var usersRows = UsersGridManager.Rows.OfType<ProjectUsersGridRow>();
-
-            foreach (var user in users)
+            var result = View.StartRecalcProcedure(recalcFilter);
+            if (result.IsNullOrEmpty())
             {
-                var projectUser = new ProjectUser();
+                var message = "Recalculation complete.";
+                ControlsGlobals.UserInterface.ShowMessageBox(message, "Recalculation", RsMessageBoxIcons.Information);
+            }
+            else
+            {
+                ControlsGlobals.UserInterface.ShowMessageBox(result, "Recalculation Error", RsMessageBoxIcons.Error);
+            }
+        }
 
-                var totalMinutesSpent = timeClocksTable.Where(
-                        p => p.ProjectId == Id
-                             && p.MinutesSpent.HasValue
-                             && p.UserId == user.UserId).ToList()
-                    .Sum(p => p.MinutesSpent);
+        public string StartRecalcProcedure(LookupDefinitionBase recalcFilter)
+        {
+            var result = string.Empty;
+            DbDataProcessor.DontDisplayExceptions = true;
+            var lookupData = new LookupDataBase(recalcFilter, new LookupUserInterface()
+            {
+                PageSize = 10
+            });
+            var recordCount = lookupData.GetRecordCountWait();
+            var currentProject = 1;
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var projectTable = context.GetTable<Project>();
+            var timeClocksTable = context.GetTable<TimeClock>();
+            lookupData.PrintDataChanged += (sender, args) =>
+            {
+                var table = args.OutputTable;
+                foreach (DataRow tableRow in table.Rows)
+                {
+                    var projectPrimaryKey = new PrimaryKeyValue(TableDefinition);
+                    projectPrimaryKey.PopulateFromDataRow(tableRow);
+                    if (projectPrimaryKey.IsValid)
+                    {
+                        var project = TableDefinition.GetEntityFromPrimaryKeyValue(projectPrimaryKey);
+                        project = projectTable
+                            .Include(p => p.ProjectUsers)
+                            .ThenInclude(p => p.User)
+                            .FirstOrDefault(p => p.Id == project.Id);
 
-                var cost = user.User.HourlyRate * (totalMinutesSpent / 60);
-                user.MinutesSpent = totalMinutesSpent.Value;
-                user.Cost = cost.Value;
-                var userRow = usersRows.FirstOrDefault(p => p.UserId == user.UserId);
-                if (userRow != null) userRow.LoadFromEntity(user);
+                        View.UpdateRecalcProcedure(currentProject, recordCount, project.Name);
+                        project.MinutesSpent = 0;
+                        project.Cost = 0;
+                        foreach (var user in project.ProjectUsers)
+                        {
+                            var totalMinutesSpent = timeClocksTable
+                                .Where(p => p.ProjectId == project.Id 
+                                            && p.MinutesSpent.HasValue
+                                            && p.UserId == user.UserId).ToList()
+                                .Sum(p => p.MinutesSpent);
+
+                            var cost = user.User.HourlyRate * (totalMinutesSpent / 60);
+                            user.MinutesSpent = totalMinutesSpent.Value;
+                            user.Cost = Math.Round(cost.Value, 2);
+
+                            project.MinutesSpent += user.MinutesSpent;
+                            project.Cost += user.Cost;
+                        }
+
+                        if (!context.SaveNoCommitEntity(project, "Saving Project"))
+                        {
+                            args.Abort = true;
+                            result = DbDataProcessor.LastException;
+                            return;
+                        }
+
+                        if (project.Id == Id)
+                        {
+                            var usersRows = UsersGridManager.Rows.OfType<ProjectUsersGridRow>()
+                                .Where(p => p.IsNew == false);
+                            foreach (var userRow in usersRows)
+                            {
+                                var projectUser = project.ProjectUsers.FirstOrDefault(p => p.UserId
+                                    == userRow.UserId);
+                                if (projectUser != null) 
+                                    userRow.LoadFromEntity(projectUser);
+                            }
+                            var originalMinutesSpent = MinutesSpent;
+                            var originalCost = TotalCost;
+                            AppGlobals.CalculateProject(project, project.ProjectUsers.ToList());
+                            MinutesSpent = project.MinutesSpent;
+                            TimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
+                            TotalCost = project.Cost;
+                        }
+                    }
+                    currentProject++;
+                }
+            };
+            lookupData.GetPrintData();
+            if (result.IsNullOrEmpty())
+            {
+                if (context.Commit("Saving Projects"))
+                {
+                    UsersGridManager.Grid?.RefreshGridView();
+                }
+                else
+                {
+                    result = DbDataProcessor.LastException;
+                }
             }
 
-            UsersGridManager.Grid?.RefreshGridView();
-            RecordDirty = true;
-            var message = "Recalculation complete.";
-            ControlsGlobals.UserInterface.ShowMessageBox(message, "Recalculation", RsMessageBoxIcons.Information);
+            DbDataProcessor.DontDisplayExceptions = false;
+            return result;
         }
 
         public void RefreshCostGrid(Project project)
         {
+            var oldRecordDirty = RecordDirty;
+            MinutesSpent = project.MinutesSpent;
+            TimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
+            TotalCost = project.Cost;
+
             UsersGridManager.LoadGrid(project.ProjectUsers);
+            RecordDirty = oldRecordDirty;
         }
 
         public override void OnWindowClosing(CancelEventArgs e)
@@ -419,6 +522,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             {
                 View.PunchIn(GetProject(Id));
             }
+        }
+
+        protected override void OnRecordDirtyChanged(bool newValue)
+        {
+            if (newValue)
+            {
+                
+            }
+            base.OnRecordDirtyChanged(newValue);
         }
     }
 }

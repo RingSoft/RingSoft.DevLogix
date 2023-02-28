@@ -2,9 +2,15 @@
 using RingSoft.DbMaintenance;
 using System.Windows;
 using System.Windows.Controls;
+using RingSoft.App.Library;
+using RingSoft.DataEntryControls.Engine;
+using RingSoft.DbLookup;
+using RingSoft.DbLookup.Controls.WPF;
+using RingSoft.DbLookup.Lookup;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels.ProjectManagement;
+using RingSoft.DevLogix.QualityAssurance;
 
 namespace RingSoft.DevLogix.ProjectManagement
 {
@@ -36,6 +42,7 @@ namespace RingSoft.DevLogix.ProjectManagement
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Project";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;
+        public RecalcProcedure RecalcProcedure { get; set; }
 
         public ProjectMaintenanceWindow()
         {
@@ -74,6 +81,39 @@ namespace RingSoft.DevLogix.ProjectManagement
         public void PunchIn(Project project)
         {
             AppGlobals.MainViewModel.MainView.PunchIn(project);
+        }
+
+        public void SetupRecalcFilter(LookupDefinitionBase lookupDefinition)
+        {
+            var genericInput = new GenericReportLookupFilterInput
+            {
+                LookupDefinitionToFilter = lookupDefinition,
+                CodeNameToFilter = "Project",
+                KeyAutoFillValue = LocalViewModel.KeyAutoFillValue,
+                ProcessText = "Recalculate"
+            };
+            var genericWindow = new GenericReportFilterWindow(genericInput);
+            genericWindow.Owner = this;
+            genericWindow.ShowInTaskbar = false;
+            genericWindow.ShowDialog();
+        }
+
+        public string StartRecalcProcedure(LookupDefinitionBase lookupDefinition)
+        {
+            var result = string.Empty;
+            RecalcProcedure = new RecalcProcedure();
+            RecalcProcedure.StartRecalculate += (sender, args) =>
+            {
+                result = LocalViewModel.StartRecalcProcedure(lookupDefinition);
+            };
+            RecalcProcedure.Start();
+            return result;
+        }
+
+        public void UpdateRecalcProcedure(int currentProject, int totalProjects, string currentProjectText)
+        {
+            var progress = $"Recalculating Project {currentProjectText} {currentProject} / {totalProjects}";
+            RecalcProcedure.SplashWindow.SetProgress(progress);
         }
     }
 }

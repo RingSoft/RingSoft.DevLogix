@@ -16,6 +16,7 @@ using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DevLogix.DataAccess;
 using RingSoft.DevLogix.DataAccess.Model;
+using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using RingSoft.DevLogix.Library.ViewModels;
 using RingSoft.DevLogix.MasterData;
 using RingSoft.DevLogix.Sqlite;
@@ -339,5 +340,10 @@ namespace RingSoft.DevLogix.Library
             return result;
         }
 
+        public static void CalculateProject(Project project, List<ProjectUser> users)
+        {
+            project.MinutesSpent = users.Sum(p => p.MinutesSpent);
+            project.Cost = users.Sum(p => p.Cost);
+        }
     }
 }

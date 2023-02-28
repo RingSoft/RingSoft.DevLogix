@@ -577,6 +577,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
             if (result)
             {
+                AppGlobals.CalculateProject(project, project.ProjectUsers.ToList());
                 result = context.SaveNoCommitEntity(project, "Saving Project");
                 var projectPrimaryKey = AppGlobals.LookupContext.Projects
                     .GetPrimaryKeyValueFromEntity(project);
