@@ -12,6 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using RingSoft.App.Controls;
+using RingSoft.DbLookup;
+using RingSoft.DbLookup.Controls.WPF;
+using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model;
@@ -26,6 +29,8 @@ namespace RingSoft.DevLogix.QualityAssurance
     {
         public Button PunchInButton { get; set; }
 
+        public Button RecalculateButton { get; set; }
+
         static ErrorHeaderControl()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ErrorHeaderControl), new FrameworkPropertyMetadata(typeof(ErrorHeaderControl)));
@@ -34,6 +39,7 @@ namespace RingSoft.DevLogix.QualityAssurance
         public override void OnApplyTemplate()
         {
             PunchInButton = GetTemplateChild(nameof(PunchInButton)) as Button;
+            RecalculateButton = GetTemplateChild(nameof(RecalculateButton)) as Button;
 
             base.OnApplyTemplate();
         }
@@ -58,6 +64,8 @@ namespace RingSoft.DevLogix.QualityAssurance
                 {
                     errorHeaderControl.PunchInButton.Command =
                         LocalViewModel.PunchInCommand;
+                    errorHeaderControl.RecalculateButton.Command =
+                        LocalViewModel.RecalcCommand;
                 }
             };
 
@@ -116,6 +124,22 @@ namespace RingSoft.DevLogix.QualityAssurance
         public void PunchIn(Error error)
         {
             AppGlobals.MainViewModel.MainView.PunchIn(error);
+        }
+
+        public void ProcessRecalcLookupFilter(LookupDefinitionBase lookup)
+        {
+            var genericInput = new GenericReportLookupFilterInput
+            {
+                LookupDefinitionToFilter = lookup,
+                CodeNameToFilter = "Error",
+                KeyAutoFillValue = LocalViewModel.KeyAutoFillValue,
+                ProcessText = "Recalculate"
+            };
+            var dateFilterWindow = new DateLookupFilterWindow(genericInput);
+            dateFilterWindow.Owner = this;
+            dateFilterWindow.ShowInTaskbar = false;
+            dateFilterWindow.ShowDialog();
+
         }
     }
 }

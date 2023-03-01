@@ -51,7 +51,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         public override void LoadFromEntity(ErrorDeveloper entity)
         {
-            DeveloperAutoFillValue = DeveloperAutoFillSetup.GetAutoFillValueForIdValue(entity.DeveloperId);
+            DeveloperAutoFillValue = entity.Developer.GetAutoFillValue();
             FixedDate = entity.DateFixed.ToLocalTime();
             RowId = entity.Id;
         }

@@ -56,8 +56,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         public override void LoadFromEntity(ErrorQa entity)
         {
-            TesterAutoFillValue = TesterAutoFillSetup.GetAutoFillValueForIdValue(entity.TesterId);
-            NewStatusAutoFillValue = NewStatusAutoFillSetup.GetAutoFillValueForIdValue(entity.NewStatusId);
+            TesterAutoFillValue = entity.Tester.GetAutoFillValue();
+            NewStatusAutoFillValue = entity.NewErrorStatus.GetAutoFillValue();
+
             DateChanged = entity.DateChanged.ToLocalTime();
             RowId = entity.Id;
         }

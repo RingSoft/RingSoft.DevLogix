@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Metrics;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Bcpg.Sig;
 using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
@@ -25,6 +26,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         void CopyToClipboard(string text);
 
         void PunchIn(Error error);
+
+        void ProcessRecalcLookupFilter(LookupDefinitionBase lookup);
     }
 
     public class ErrorViewModel :DevLogixDbMaintenanceViewModel<Error>
@@ -455,10 +458,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         public RelayCommand PunchInCommand { get; set; }
 
+        public RelayCommand RecalcCommand { get; set; }
+
         public new IErrorView View { get; private set; }
 
         private IDbContext _makeErrorIdContext;
         private bool _makeErrorId;
+        private bool _loading;
 
         public ErrorViewModel()
         {
@@ -479,6 +485,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             {
                 View.PunchIn(GetError(Id));
             });
+            RecalcCommand = new RelayCommand(Recalc);
 
             PrintProcessingHeader += ErrorViewModel_PrintProcessingHeader;
 
@@ -542,10 +549,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 //{
                 //    FoundVersionAutoFillValue = GetVersionForUser();
                 //}
-                FoundVersionAutoFillValue = GetVersionForUser();
-                if (FixedVersionAutoFillValue != null)
+                if (!_loading)
                 {
-                    FixedVersionAutoFillValue = GetVersionForUser();
+                    FoundVersionAutoFillValue = GetVersionForUser();
+                    if (FixedVersionAutoFillValue != null)
+                    {
+                        FixedVersionAutoFillValue = GetVersionForUser();
+                    }
                 }
             }
         }
@@ -604,7 +614,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 }
                 _makeErrorIdContext = null;
                 _makeErrorId = false;
-                KeyAutoFillValue = KeyAutoFillSetup.GetAutoFillValueForIdValue(Id);
+                KeyAutoFillValue = result.GetAutoFillValue();
             }
 
             if (MaintenanceMode == DbMaintenanceModes.EditMode)
@@ -626,32 +636,50 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             var context = AppGlobals.DataRepository.GetDataContext();
             var errorTable = context.GetTable<Error>();
             var result = errorTable.Include(p => p.Developers)
+                .ThenInclude(p => p.Developer)
                 .Include(p => p.Testers)
+                .ThenInclude(p => p.Tester)
+                .Include(p => p.Testers)
+                .ThenInclude(p => p.NewErrorStatus)
+                .Include(p => p.ErrorStatus)
+                .Include(p => p.Product)
+                .Include(p => p.ErrorPriority)
+                .Include(p => p.FoundVersion)
+                .Include(p => p.FixedVersion)
                 .Include(p => p.FoundByUser)
+                .Include(p => p.AssignedDeveloper)
+                .Include(p => p.AssignedTester)
+                .Include(p => p.Users)
+                .ThenInclude(p => p.User)
                 .FirstOrDefault(p => p.Id == errorId);
             return result;
         }
 
         protected override void LoadFromEntity(Error entity)
         {
+            _loading = true;
             ErrorDate = entity.ErrorDate.ToLocalTime();
-            StatusAutoFillValue = StatusAutoFillSetup.GetAutoFillValueForIdValue(entity.ErrorStatusId);
-            ProductAutoFillValue = ProductAutoFillSetup.GetAutoFillValueForIdValue(entity.ProductId);
-            PriorityAutoFillValue = PriorityAutoFillSetup.GetAutoFillValueForIdValue(entity.ErrorPriorityId);
-            FoundVersionAutoFillValue = FoundVersionAutoFillSetup.GetAutoFillValueForIdValue(entity.FoundVersionId);
-            FixedVersionAutoFillValue = FixedVersionAutoFillSetup.GetAutoFillValueForIdValue(entity.FixedVersionId);
+            StatusAutoFillValue = entity.ErrorStatus.GetAutoFillValue();
 
-            FoundUserAutoFillValue =
-                AppGlobals.LookupContext.Users.GetAutoFillValueText(entity.FoundByUser, entity.FoundByUserId.ToString());
+            ProductAutoFillValue = entity.Product.GetAutoFillValue();
 
-            AssignedDeveloperAutoFillValue =
-                AssignedDeveloperAutoFillSetup.GetAutoFillValueForIdValue(entity.AssignedDeveloperId);
-            AssignedQualityAssuranceAutoFillValue =
-                AssignedQualityAssuranceAutoFillSetup.GetAutoFillValueForIdValue(entity.AssignedTesterId);
+            PriorityAutoFillValue = entity.ErrorPriority.GetAutoFillValue();
+
+            FoundVersionAutoFillValue = entity.FoundVersion.GetAutoFillValue();
+
+            FixedVersionAutoFillValue = entity.FixedVersion.GetAutoFillValue();
+
+            FoundUserAutoFillValue = entity.FoundByUser.GetAutoFillValue();
+
+            AssignedDeveloperAutoFillValue = entity.AssignedDeveloper.GetAutoFillValue();
+
+            AssignedQualityAssuranceAutoFillValue = entity.AssignedTester.GetAutoFillValue();
+
             Description = entity.Description;
             Resolution = entity.Resolution;
             DeveloperManager.LoadGrid(entity.Developers);
             ErrorQaManager.LoadGrid(entity.Testers);
+            _loading = false;
         }
 
         protected override Error GetEntityData()
@@ -660,14 +688,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             {
                 Id = Id,
                 ErrorDate = ErrorDate.ToUniversalTime(),
-                ErrorStatusId = StatusAutoFillValue.GetEntity(AppGlobals.LookupContext.ErrorStatuses).Id,
-                ProductId = ProductAutoFillValue.GetEntity(AppGlobals.LookupContext.Products).Id,
-                ErrorPriorityId = PriorityAutoFillValue.GetEntity(AppGlobals.LookupContext.ErrorPriorities).Id,
-                FoundByUserId = FoundUserAutoFillValue.GetEntity(AppGlobals.LookupContext.Users).Id,
-                FoundVersionId = FoundVersionAutoFillValue.GetEntity(AppGlobals.LookupContext.ProductVersions).Id,
-                FixedVersionId = FixedVersionAutoFillValue.GetEntity(AppGlobals.LookupContext.ProductVersions).Id,
-                AssignedDeveloperId = AssignedDeveloperAutoFillValue.GetEntity(AppGlobals.LookupContext.Users).Id,
-                AssignedTesterId = AssignedQualityAssuranceAutoFillValue.GetEntity(AppGlobals.LookupContext.Users).Id,
+                ErrorStatusId = StatusAutoFillValue.GetEntity<ErrorStatus>().Id,
+                ProductId = ProductAutoFillValue.GetEntity<Product>().Id,
+                ErrorPriorityId = PriorityAutoFillValue.GetEntity<ErrorPriority>().Id,
+                FoundByUserId = FoundUserAutoFillValue.GetEntity<User>().Id,
+                FoundVersionId = FoundVersionAutoFillValue.GetEntity<ProductVersion>().Id,
+                FixedVersionId = FixedVersionAutoFillValue.GetEntity<ProductVersion>().Id,
+                AssignedDeveloperId = AssignedDeveloperAutoFillValue.GetEntity<User>().Id,
+                AssignedTesterId = AssignedQualityAssuranceAutoFillValue.GetEntity<User>().Id,
                 Description = Description,
                 Resolution = Resolution,
             };
@@ -952,6 +980,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             }
 
             PrintingInteropGlobals.DetailsProcessor.AddChunk(detailsChunk, e.PrinterSetup.PrintingProperties);
+        }
+
+        private void Recalc()
+        {
+            var lookupFilter = ViewLookupDefinition.Clone();
+            View.ProcessRecalcLookupFilter(lookupFilter);
         }
     }
 }

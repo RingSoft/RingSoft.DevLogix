@@ -80,6 +80,7 @@ namespace RingSoft.DevLogix.Library
             AppSplashProgress?.Invoke(null, new AppProgressArgs("Initializing Database Structure."));
 
             LookupContext = new DevLogixLookupContext();
+            SystemGlobals.LookupContext = LookupContext;
             LookupContext.SqliteDataProcessor.FilePath = MasterDbContext.ProgramDataFolder;
             LookupContext.SqliteDataProcessor.FileName = MasterDbContext.DemoDataFileName;
             
