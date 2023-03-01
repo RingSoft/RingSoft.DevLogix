@@ -223,6 +223,25 @@
 
                 </TabItem>
 
+                <TabItem Header="Cost">
+
+                    <DockPanel>
+
+                        <deg:DataEntryGrid DataEntryCanUserAddRows="False" CanUserDeleteRows="False" Manager="{Binding ErrorUserGridManager}">
+
+                            <deg:DataEntryGrid.Columns>
+
+                                <deg:DataEntryGridTextColumn Header="User" Width="200" ColumnId="{x:Static vm:ErrorUserGridManager.UserColumnId}"/>
+
+                                <deg:DataEntryGridTextColumn Header="Time Spent" Width="100" ColumnId="{x:Static vm:ErrorUserGridManager.TimeSpentColumnId}"/>
+
+                                <deg:DataEntryGridTextColumn Header="Cost" Width="100" Alignment="Right" ColumnId="{x:Static vm:ErrorUserGridManager.CostColumnId}"/>
+
+                            </deg:DataEntryGrid.Columns>
+
+                        </deg:DataEntryGrid>
+                    </DockPanel>
+                </TabItem>
 
                 <TabItem Header="Developers">
 

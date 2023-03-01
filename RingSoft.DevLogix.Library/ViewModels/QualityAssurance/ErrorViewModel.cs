@@ -398,6 +398,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             }
         }
 
+        private ErrorUserGridManager _errorUserGridManager;
+
+        public ErrorUserGridManager ErrorUserGridManager
+        {
+            get => _errorUserGridManager;
+            set
+            {
+                if (_errorUserGridManager == value)
+                    return;
+
+                _errorUserGridManager = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         private ErrorDeveloperManager _developerManager;
 
         public ErrorDeveloperManager DeveloperManager
@@ -492,6 +508,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             AssignedQualityAssuranceAutoFillSetup =
                 new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.AssignedTesterId));
 
+            ErrorUserGridManager = new ErrorUserGridManager(this);
             DeveloperManager = new ErrorDeveloperManager(this);
             ErrorQaManager = new ErrorQaManager(this);
 
@@ -610,6 +627,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             var errorTable = context.GetTable<Error>();
             var result = errorTable.Include(p => p.Developers)
                 .Include(p => p.Testers)
+                .Include(p => p.FoundByUser)
                 .FirstOrDefault(p => p.Id == errorId);
             return result;
         }
@@ -622,7 +640,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             PriorityAutoFillValue = PriorityAutoFillSetup.GetAutoFillValueForIdValue(entity.ErrorPriorityId);
             FoundVersionAutoFillValue = FoundVersionAutoFillSetup.GetAutoFillValueForIdValue(entity.FoundVersionId);
             FixedVersionAutoFillValue = FixedVersionAutoFillSetup.GetAutoFillValueForIdValue(entity.FixedVersionId);
-            FoundUserAutoFillValue = FoundUserAutoFillSetup.GetAutoFillValueForIdValue(entity.FoundByUserId);
+
+            FoundUserAutoFillValue =
+                AppGlobals.LookupContext.Users.GetAutoFillValueText(entity.FoundByUser, entity.FoundByUserId.ToString());
+
             AssignedDeveloperAutoFillValue =
                 AssignedDeveloperAutoFillSetup.GetAutoFillValueForIdValue(entity.AssignedDeveloperId);
             AssignedQualityAssuranceAutoFillValue =
