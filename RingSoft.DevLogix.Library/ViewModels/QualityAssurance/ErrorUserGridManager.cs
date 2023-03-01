@@ -1,4 +1,5 @@
-﻿using RingSoft.DataEntryControls.Engine.DataEntryGrid;
+﻿using System.Linq;
+using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 
@@ -28,9 +29,35 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             throw new System.NotImplementedException();
         }
 
+        public void AddUserRow(ErrorUser user)
+        {
+            var userRow = new ErrorUserRow(this);
+            userRow.LoadFromEntity(user);
+            AddRow(userRow, Rows.Count - 1);
+            Grid?.RefreshGridView();
+        }
+
         protected override DbMaintenanceDataEntryGridRow<ErrorUser> ConstructNewRowFromEntity(ErrorUser entity)
         {
-            throw new System.NotImplementedException();
+            return new ErrorUserRow(this);
+        }
+
+        public void RefreshCost(ErrorUser errorUser)
+        {
+            var rows = Rows.OfType<ErrorUserRow>();
+            var userRow = rows.FirstOrDefault(p => p.UserId == errorUser.UserId);
+            if (userRow != null)
+            {
+                userRow.LoadFromEntity(errorUser);
+                Grid?.RefreshGridView();
+            }
+        }
+
+        public void GetTotals(out decimal minutesSpent, out decimal totalCost)
+        {
+            var rows = Rows.OfType<ErrorUserRow>();
+            minutesSpent = rows.Sum(p => p.MinutesSpent);
+            totalCost = rows.Sum(p => p.Cost);
         }
     }
 }

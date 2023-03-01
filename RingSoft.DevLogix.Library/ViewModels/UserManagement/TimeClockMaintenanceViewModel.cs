@@ -509,12 +509,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 }
                 else if (entity.ErrorId.HasValue)
                 {
-                    var error = context.GetTable<Error>().FirstOrDefault(p => p.Id == entity.ErrorId.Value);
+                    var error = context.GetTable<Error>()
+                        .Include(p => p.Users)
+                        .ThenInclude(p => p.User)
+                        .FirstOrDefault(p => p.Id == entity.ErrorId.Value);
                     if (error != null)
                     {
-                        error.MinutesSpent += entity.MinutesSpent.Value;
-                        result = context.SaveNoCommitEntity(error, "Saving Error");
-                        user.ErrorsMinutesSpent += GetNewMinutesSpent();
+                        result = UpdateError(entity, error, context, user);
                     }
                 }
 
@@ -563,6 +564,33 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             return result;
         }
 
+        private bool UpdateError(TimeClock entity, Error error, IDbContext context, User user)
+        {
+            var result = true;
+            error.MinutesSpent += entity.MinutesSpent.Value;
+            var errorUser = error.Users.FirstOrDefault(p => p.UserId == user.Id);
+            if (errorUser != null)
+            {
+                errorUser.MinutesSpent += GetNewMinutesSpent();
+                errorUser.Cost = Math.Round((errorUser.MinutesSpent / 60) * user.HourlyRate, 2);
+                result = context.SaveNoCommitEntity(errorUser, "Saving Error User");
+            }
+
+            if (result)
+            {
+                AppGlobals.CalculateError(error, error.Users.ToList());
+                result = context.SaveNoCommitEntity(error, "Saving Error");
+            }
+
+            var errorViewModels = AppGlobals.MainViewModel.ErrorViewModels.Where(p => p.Id == error.Id);
+            foreach (var errorViewModel in errorViewModels)
+            {
+                errorViewModel.RefreshCost(errorUser);
+            }
+            return result;
+
+        }
+
         private bool UpdateProject(TimeClock entity, Project project, IDbContext context, User user)
         {
             var result = true;
@@ -579,12 +607,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             {
                 AppGlobals.CalculateProject(project, project.ProjectUsers.ToList());
                 result = context.SaveNoCommitEntity(project, "Saving Project");
-                var projectPrimaryKey = AppGlobals.LookupContext.Projects
-                    .GetPrimaryKeyValueFromEntity(project);
-                if (projectPrimaryKey != null)
-                {
-                    projectPrimaryKey.CreateRecordLock();
-                }
             }
 
             return result;

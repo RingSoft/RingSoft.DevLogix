@@ -227,9 +227,30 @@
 
                 <TabItem Header="Cost">
 
-                    <DockPanel>
+                    <Grid>
 
-                        <deg:DataEntryGrid DataEntryCanUserAddRows="False" CanUserDeleteRows="False" Manager="{Binding ErrorUserGridManager}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Grid.Row="0" Grid.Column="0" Content="Total Time Spent"/>
+
+                        <dec:StringReadOnlyBox Grid.Row="0" Grid.Column="1" Width="100" Text="{Binding TotalTimeSpent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        <Label Grid.Row="0" Grid.Column="2" Content="Total Cost"/>
+
+                        <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="3" Width="100" Value="{Binding TotalCost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency"/>
+
+                        <deg:DataEntryGrid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" DataEntryCanUserAddRows="False" CanUserDeleteRows="False" Manager="{Binding ErrorUserGridManager}">
 
                             <deg:DataEntryGrid.Columns>
 
@@ -242,7 +263,7 @@
                             </deg:DataEntryGrid.Columns>
 
                         </deg:DataEntryGrid>
-                    </DockPanel>
+                    </Grid>
                 </TabItem>
 
                 <TabItem Header="Developers">

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics.Metrics;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,7 @@ using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.LookupModel;
 using RingSoft.DevLogix.DataAccess.Model;
+using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 using RingSoft.Printing.Interop;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -341,6 +343,37 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             }
         }
 
+        private string _totalTimeSpent;
+
+        public string TotalTimeSpent
+        {
+            get => _totalTimeSpent;
+            set
+            {
+                if (_totalTimeSpent == value)
+                    return;
+
+                _totalTimeSpent = value;
+                OnPropertyChanged(null, false);
+            }
+        }
+
+        private decimal _totalCost;
+
+        public decimal TotalCost
+        {
+            get => _totalCost;
+            set
+            {
+                if (_totalCost == value)
+                    return;
+
+                _totalCost = value;
+                OnPropertyChanged(null, false);
+            }
+        }
+
+
         private string _description;
 
         public string Description
@@ -462,6 +495,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         public new IErrorView View { get; private set; }
 
+        public decimal MinutesSpent { get; private set; }
+
         private IDbContext _makeErrorIdContext;
         private bool _makeErrorId;
         private bool _loading;
@@ -483,7 +518,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             FailCommand = new RelayCommand(FailError);
             PunchInCommand = new RelayCommand(() =>
             {
-                View.PunchIn(GetError(Id));
+                PunchIn();
             });
             RecalcCommand = new RelayCommand(Recalc);
 
@@ -499,6 +534,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         protected override void Initialize()
         {
+            AppGlobals.MainViewModel.ErrorViewModels.Add(this);
             if (base.View is IErrorView errorView)
             {
                 View = errorView;
@@ -521,6 +557,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
             TablesToDelete.Add(AppGlobals.LookupContext.ErrorDevelopers);
             TablesToDelete.Add(AppGlobals.LookupContext.ErrorTesters);
+            TablesToDelete.Add(AppGlobals.LookupContext.ErrorUsers);
 
             base.Initialize();
         }
@@ -679,6 +716,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             Resolution = entity.Resolution;
             DeveloperManager.LoadGrid(entity.Developers);
             ErrorQaManager.LoadGrid(entity.Testers);
+            ErrorUserGridManager.LoadGrid(entity.Users);
+            MinutesSpent = entity.MinutesSpent;
+            TotalCost = entity.Cost;
+            TotalTimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
             _loading = false;
         }
 
@@ -699,6 +740,19 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 Description = Description,
                 Resolution = Resolution,
             };
+
+            if (Id > 0)
+            {
+                var context = AppGlobals.DataRepository.GetDataContext();
+                var error = context.GetTable<Error>()
+                    .FirstOrDefault(p => p.Id == Id);
+                if (error != null)
+                {
+                    result.MinutesSpent = error.MinutesSpent;
+                    result.Cost = error.Cost;
+                }
+
+            }
 
             if (MaintenanceMode == DbMaintenanceModes.AddMode && KeyAutoFillValue.Text.IsNullOrEmpty())
             {
@@ -761,8 +815,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
             DeveloperManager.SetupForNewRecord();
             ErrorQaManager.SetupForNewRecord();
+            ErrorUserGridManager.SetupForNewRecord();
+
             WriteOffCommand.IsEnabled = ClipboardCopyCommand.IsEnabled = PassCommand.IsEnabled = FailCommand.IsEnabled = PunchInCommand.IsEnabled = false;
             TimeClockLookupCommand = GetLookupCommand(LookupCommands.Clear);
+            TotalCost = 0;
+            MinutesSpent = 0;
+            TotalTimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
         }
 
         protected override bool SaveEntity(Error entity)
@@ -814,6 +873,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 var testersQuery = context.GetTable<ErrorQa>();
                 var testers = testersQuery.Where(p => p.ErrorId == Id);
                 context.RemoveRange(testers);
+
+                var usersQuery = context.GetTable<ErrorUser>();
+                var users = usersQuery.Where(p => p.ErrorId == Id);
+                context.RemoveRange(users);
 
                 var table = TableDefinition;
                 var entity = context.GetTable<Error>().FirstOrDefault(p => p.Id == Id);
@@ -982,10 +1045,52 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             PrintingInteropGlobals.DetailsProcessor.AddChunk(detailsChunk, e.PrinterSetup.PrintingProperties);
         }
 
+        private void PunchIn()
+        {
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var table = context.GetTable<ErrorUser>();
+            var user = table.FirstOrDefault(p => p.ErrorId == Id
+                                                 && p.UserId == AppGlobals.LoggedInUser.Id);
+            if (user == null)
+            {
+                user = new ErrorUser
+                {
+                    ErrorId = Id,
+                    UserId = AppGlobals.LoggedInUser.Id,
+                };
+            }
+            context.AddRange(new List<ErrorUser>
+            {
+                user
+            });
+            if (context.Commit("Adding Error User"))
+            {
+                user.User = AppGlobals.LoggedInUser;
+                ErrorUserGridManager.AddUserRow(user);
+                View.PunchIn(GetError(Id));
+            }
+        }
+
+        public void RefreshCost(ErrorUser errorUser)
+        {
+            ErrorUserGridManager.RefreshCost(errorUser);
+            ErrorUserGridManager.GetTotals(out var minutesSpent, out var total);
+            MinutesSpent = minutesSpent;
+            TotalCost = total;
+            TotalTimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
+        }
+
         private void Recalc()
         {
             var lookupFilter = ViewLookupDefinition.Clone();
             View.ProcessRecalcLookupFilter(lookupFilter);
+        }
+
+        public override void OnWindowClosing(CancelEventArgs e)
+        {
+            AppGlobals.MainViewModel.ErrorViewModels.Remove(this);
+
+            base.OnWindowClosing(e);
         }
     }
 }

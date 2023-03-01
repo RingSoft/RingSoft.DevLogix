@@ -6,6 +6,7 @@ using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using RingSoft.DevLogix.Library.ViewModels.ProjectManagement;
+using RingSoft.DevLogix.Library.ViewModels.QualityAssurance;
 using RingSoft.DevLogix.Library.ViewModels.UserManagement;
 
 namespace RingSoft.DevLogix.Library.ViewModels
@@ -40,6 +41,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         public List<UserMaintenanceViewModel> UserViewModels { get; } = new List<UserMaintenanceViewModel>();
         public List<ProjectMaintenanceViewModel> ProjectViewModels { get; } = new List<ProjectMaintenanceViewModel>();
+        public List<ErrorViewModel> ErrorViewModels { get; } = new List<ErrorViewModel>();
 
         public RelayCommand LogoutCommand { get; set; }
         public RelayCommand<TableDefinitionBase> ShowMaintenanceWindowCommand { get; }
