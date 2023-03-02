@@ -53,6 +53,7 @@ namespace RingSoft.DevLogix.DataAccess
 
         public TableDefinition<Project> Projects { get; set; }
         public TableDefinition<ProjectUser> ProjectUsers { get; set; }
+        public TableDefinition<LaborPart> LaborParts { get; set; }
 
         public TableDefinition<AdvancedFind> AdvancedFinds { get; set; }
         public TableDefinition<AdvancedFindColumn> AdvancedFindColumns { get; set; }
@@ -77,6 +78,7 @@ namespace RingSoft.DevLogix.DataAccess
 
         public LookupDefinition<ProjectLookup, Project> ProjectLookup { get; set; }
         public LookupDefinition<ProjectUserLookup, ProjectUser> ProjectUserLookup { get; set; }
+        public LookupDefinition<LaborPartLookup, LaborPart> LaborPartLookup { get; set; }
 
         public LookupDefinition<AdvancedFindLookup, AdvancedFind> AdvancedFindLookup { get; set; }
         public LookupDefinition<RecordLockingLookup, RecordLock> RecordLockingLookup { get; set; }
@@ -235,6 +237,10 @@ namespace RingSoft.DevLogix.DataAccess
             ProjectUserLookup.Include(p => p.User)
                 .AddVisibleColumnDefinition(p => p.User, "User", p => p.Name, 50);
             ProjectUsers.HasLookupDefinition(ProjectUserLookup);
+
+            LaborPartLookup = new LookupDefinition<LaborPartLookup, LaborPart>(LaborParts);
+            LaborPartLookup.AddVisibleColumnDefinition(p => p.Name, "Labor Part", p => p.Name, 100);
+            LaborParts.HasLookupDefinition(LaborPartLookup);
 
         }
 

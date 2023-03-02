@@ -588,6 +588,27 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.ToTable("ProductVersionDepartments");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.LaborPart", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("MinutesCost")
+                        .HasColumnType("numeric");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LaborParts");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.Project", b =>
                 {
                     b.Property<int>("Id")
