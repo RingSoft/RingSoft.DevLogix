@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
 using System.Diagnostics.Metrics;
 using System.Linq;
+using System.Threading;
 using Microsoft.EntityFrameworkCore;
 using Org.BouncyCastle.Bcpg.Sig;
 using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
+using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.QueryBuilder;
@@ -29,7 +32,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         void PunchIn(Error error);
 
-        void ProcessRecalcLookupFilter(LookupDefinitionBase lookup);
+        bool ProcessRecalcLookupFilter(LookupDefinitionBase lookup);
+
+        string StartRecalcProcedure(LookupDefinitionBase lookup);
+
+        void UpdateRecalcProcedure(int currentError, int totalErrors, string currentErrorText);
     }
 
     public class ErrorViewModel :DevLogixDbMaintenanceViewModel<Error>
@@ -528,6 +535,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             timeClockLookup.AddVisibleColumnDefinition(p => p.PunchInDate, p => p.PunchInDate);
             timeClockLookup.Include(p => p.User)
                 .AddVisibleColumnDefinition(p => p.UserName, p => p.Name);
+            timeClockLookup.AddVisibleColumnDefinition(p => p.MinutesSpent, p => p.MinutesSpent);
             TimeClockLookup = timeClockLookup;
             TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
         }
@@ -1058,22 +1066,33 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                     ErrorId = Id,
                     UserId = AppGlobals.LoggedInUser.Id,
                 };
-            }
-            context.AddRange(new List<ErrorUser>
-            {
-                user
-            });
-            if (context.Commit("Adding Error User"))
-            {
+                context.AddRange(new List<ErrorUser>
+                {
+                    user
+                });
+                if (!context.Commit("Adding Error User"))
+                {
+                    return;
+                }
                 user.User = AppGlobals.LoggedInUser;
                 ErrorUserGridManager.AddUserRow(user);
-                View.PunchIn(GetError(Id));
             }
+            View.PunchIn(GetError(Id));
         }
 
+        public void RefreshCost(List<ErrorUser> users)
+        {
+            ErrorUserGridManager.RefreshCost(users);
+            GetTotals();
+        }
         public void RefreshCost(ErrorUser errorUser)
         {
             ErrorUserGridManager.RefreshCost(errorUser);
+            GetTotals();
+        }
+
+        private void GetTotals()
+        {
             ErrorUserGridManager.GetTotals(out var minutesSpent, out var total);
             MinutesSpent = minutesSpent;
             TotalCost = total;
@@ -1083,7 +1102,127 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         private void Recalc()
         {
             var lookupFilter = ViewLookupDefinition.Clone();
-            View.ProcessRecalcLookupFilter(lookupFilter);
+            if (!View.ProcessRecalcLookupFilter(lookupFilter))
+                return;
+            var result = View.StartRecalcProcedure(lookupFilter);
+            if (!result.IsNullOrEmpty())
+            {
+                ControlsGlobals.UserInterface.ShowMessageBox(result, "Error Recalculating", RsMessageBoxIcons.Error);
+            }
+        }
+
+        public string StartRecalcProcedure(LookupDefinitionBase lookupToFilter)
+        {
+            var result = string.Empty;
+            var lookupUi = new LookupUserInterface { PageSize = 10 };
+            var lookupData = new LookupDataBase(lookupToFilter, lookupUi);
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var errorsTable = context.GetTable<Error>();
+            var usersTable = context.GetTable<User>();
+            var timeClocksTable = context.GetTable<TimeClock>();
+            DbDataProcessor.DontDisplayExceptions = true;
+
+            var totalErrors = lookupData.GetRecordCountWait();
+            var currentError = 1;
+            lookupData.PrintDataChanged += (sender, e) =>
+            {
+                foreach (DataRow outputTableRow in e.OutputTable.Rows)
+                {
+                    var primaryKey = new PrimaryKeyValue(TableDefinition);
+                    primaryKey.PopulateFromDataRow(outputTableRow);
+                    var error = TableDefinition.GetEntityFromPrimaryKeyValue(primaryKey);
+                    if (error != null)
+                    {
+                        error = errorsTable
+                            .Include(p => p.Users)
+                            .ThenInclude(p => p.User)
+                            .FirstOrDefault(p => p.Id == error.Id);
+                    }
+
+                    if (error != null)
+                    {
+                        View.UpdateRecalcProcedure(currentError, totalErrors, error.ErrorId);
+                        var errorUsers = new List<ErrorUser>(error.Users);
+                        error.MinutesSpent = error.Cost = 0;
+                        var timeClockUsers = timeClocksTable
+                            .Where(p => p.ErrorId == error.Id)
+                            .Select(p => p.UserId)
+                            .Distinct();
+                        foreach (var timeClockUser in timeClockUsers)
+                        {
+                            var errorUser = error.Users.FirstOrDefault(p => p.UserId == timeClockUser);
+                            if (errorUser == null)
+                            {
+                                errorUser = new ErrorUser
+                                {
+                                    ErrorId = error.Id,
+                                    UserId = timeClockUser
+                                };
+                                UpdateErrorUserCost(usersTable, errorUser, timeClocksTable, error);
+                                context.AddRange(new List<ErrorUser>()
+                                {
+                                    errorUser
+                                });
+                                errorUsers.Add(errorUser);
+                            }
+                            else
+                            {
+                                UpdateErrorUserCost(usersTable, errorUser, timeClocksTable, error);
+
+                                if (!context.SaveNoCommitEntity(errorUser, "Saving Error User"))
+                                {
+                                    result = DbDataProcessor.LastException;
+                                    e.Abort = true;
+                                    return;
+                                }
+                            }
+                            error.MinutesSpent += errorUser.MinutesSpent;
+                            error.Cost += errorUser.Cost;
+                        }
+
+                        if (!context.SaveNoCommitEntity(error, "Saving Error"))
+                        {
+                            result = DbDataProcessor.LastException;
+                            e.Abort = true;
+                            return;
+                        }
+
+                        if (error.Id == Id)
+                        {
+                            RefreshCost(errorUsers);
+                        }
+                    }
+
+                    currentError++;
+                }
+            };
+            lookupData.GetPrintData();
+            if (result.IsNullOrEmpty())
+            {
+                if (!context.Commit("Recalculating Finished"))
+                {
+                    result = DbDataProcessor.LastException;
+                }
+            }
+
+            DbDataProcessor.DontDisplayExceptions = false;
+            return result;
+        }
+
+        private static void UpdateErrorUserCost(IQueryable<User> usersTable, ErrorUser errorUser, IQueryable<TimeClock> timeClocksTable,
+            Error error)
+        {
+            var user = usersTable.FirstOrDefault(p => p.Id == errorUser.UserId);
+            var errorUserMinutes = timeClocksTable
+                .Where(p => p.ErrorId == error.Id
+                            && p.UserId == errorUser.UserId)
+                .ToList()
+                .Sum(p => p.MinutesSpent);
+            if (errorUserMinutes != null)
+            {
+                errorUser.MinutesSpent = errorUserMinutes.Value;
+                errorUser.Cost = Math.Round((errorUser.MinutesSpent / 60) * user.HourlyRate, 2);
+            }
         }
 
         public override void OnWindowClosing(CancelEventArgs e)

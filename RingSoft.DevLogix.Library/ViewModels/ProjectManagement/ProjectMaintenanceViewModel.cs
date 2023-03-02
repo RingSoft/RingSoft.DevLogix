@@ -21,7 +21,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
     {
         void PunchIn(Project project);
 
-        void SetupRecalcFilter(LookupDefinitionBase lookupDefinition);
+        bool SetupRecalcFilter(LookupDefinitionBase lookupDefinition);
 
         string StartRecalcProcedure(LookupDefinitionBase lookupDefinition);
 
@@ -392,7 +392,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         private void Recalc()
         {
             var recalcFilter = ViewLookupDefinition.Clone();
-            View.SetupRecalcFilter(recalcFilter);
+            if (!View.SetupRecalcFilter(recalcFilter))
+                return;
 
             var result = View.StartRecalcProcedure(recalcFilter);
             if (result.IsNullOrEmpty())

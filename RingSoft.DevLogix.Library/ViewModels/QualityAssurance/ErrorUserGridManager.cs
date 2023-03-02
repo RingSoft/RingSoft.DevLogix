@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
@@ -42,6 +43,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             return new ErrorUserRow(this);
         }
 
+        public void RefreshCost(List<ErrorUser> users)
+        {
+            ClearRows();
+            LoadGrid(users);
+            Grid?.RefreshGridView();
+        }
         public void RefreshCost(ErrorUser errorUser)
         {
             var rows = Rows.OfType<ErrorUserRow>();

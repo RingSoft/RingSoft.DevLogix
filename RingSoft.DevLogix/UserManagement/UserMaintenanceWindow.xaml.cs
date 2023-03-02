@@ -14,6 +14,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using RingSoft.App.Controls;
 using RingSoft.DataEntryControls.Engine;
+using RingSoft.DbLookup.Controls.WPF;
+using RingSoft.DbLookup;
+using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.Library;
@@ -49,6 +52,8 @@ namespace RingSoft.DevLogix.UserManagement
     /// </summary>
     public partial class UserMaintenanceWindow : IUserView
     {
+        public RecalcProcedure RecalcProcedure { get; set; }
+
         public UserMaintenanceWindow()
         {
             InitializeComponent();
@@ -142,6 +147,40 @@ namespace RingSoft.DevLogix.UserManagement
         public void OnValGridFail()
         {
             TabControl.SelectedItem = GroupsTab;
+        }
+
+        public bool SetupRecalcFilter(LookupDefinitionBase lookupDefinition)
+        {
+            var genericInput = new GenericReportLookupFilterInput
+            {
+                LookupDefinitionToFilter = lookupDefinition,
+                CodeNameToFilter = "User",
+                KeyAutoFillValue = UserMaintenanceViewModel.KeyAutoFillValue,
+                ProcessText = "Recalculate"
+            };
+            var genericWindow = new GenericReportFilterWindow(genericInput);
+            genericWindow.Owner = this;
+            genericWindow.ShowInTaskbar = false;
+            genericWindow.ShowDialog();
+            return genericWindow.ViewModel.DialogReesult;
+        }
+
+        public string StartRecalcProcedure(LookupDefinitionBase lookupDefinition)
+        {
+            var result = string.Empty;
+            RecalcProcedure = new RecalcProcedure();
+            RecalcProcedure.StartRecalculate += (sender, args) =>
+            {
+                result = UserMaintenanceViewModel.StartRecalculateProcedure(lookupDefinition);
+            };
+            RecalcProcedure.Start();
+            return result;
+        }
+
+        public void UpdateRecalcProcedure(int currentUser, int totalUsers, string currentUserText)
+        {
+            var progress = $"Recalculating User {currentUserText} {currentUser} / {totalUsers}";
+            RecalcProcedure.SplashWindow.SetProgress(progress);
         }
 
 

@@ -53,6 +53,7 @@ namespace RingSoft.DevLogix.QualityAssurance
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Error";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;
+        public RecalcProcedure RecalcProcedure { get; set; }
 
         public ErrorMaintenanceWindow()
         {
@@ -126,19 +127,40 @@ namespace RingSoft.DevLogix.QualityAssurance
             AppGlobals.MainViewModel.MainView.PunchIn(error);
         }
 
-        public void ProcessRecalcLookupFilter(LookupDefinitionBase lookup)
+        public bool ProcessRecalcLookupFilter(LookupDefinitionBase lookup)
         {
-            var genericInput = new GenericReportLookupFilterInput
+            var genericInput = new DateFilterInput()
             {
                 LookupDefinitionToFilter = lookup,
                 CodeNameToFilter = "Error",
                 KeyAutoFillValue = LocalViewModel.KeyAutoFillValue,
-                ProcessText = "Recalculate"
+                ProcessText = "Recalculate",
+                DateFieldToFilter = AppGlobals.LookupContext.Errors.GetFieldDefinition(p => p.ErrorDate),
             };
             var dateFilterWindow = new DateLookupFilterWindow(genericInput);
             dateFilterWindow.Owner = this;
             dateFilterWindow.ShowInTaskbar = false;
             dateFilterWindow.ShowDialog();
+            return dateFilterWindow.LocalViewModel.DialogReesult;
+        }
+
+        public string StartRecalcProcedure(LookupDefinitionBase lookup)
+        {
+            var result = string.Empty;
+            RecalcProcedure = new RecalcProcedure();
+            RecalcProcedure.StartRecalculate += (sender, args) =>
+            {
+                result = LocalViewModel.StartRecalcProcedure(lookup);
+            };
+            RecalcProcedure.Start();
+            return result;
+
+        }
+
+        public void UpdateRecalcProcedure(int currentError, int totalErrors, string currentErrorText)
+        {
+            var progress = $"Recalculating Error {currentErrorText} {currentError} / {totalErrors}";
+            RecalcProcedure.SplashWindow.SetProgress(progress);
 
         }
     }

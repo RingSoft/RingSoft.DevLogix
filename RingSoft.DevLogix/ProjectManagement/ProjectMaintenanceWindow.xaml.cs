@@ -83,7 +83,7 @@ namespace RingSoft.DevLogix.ProjectManagement
             AppGlobals.MainViewModel.MainView.PunchIn(project);
         }
 
-        public void SetupRecalcFilter(LookupDefinitionBase lookupDefinition)
+        public bool SetupRecalcFilter(LookupDefinitionBase lookupDefinition)
         {
             var genericInput = new GenericReportLookupFilterInput
             {
@@ -96,6 +96,7 @@ namespace RingSoft.DevLogix.ProjectManagement
             genericWindow.Owner = this;
             genericWindow.ShowInTaskbar = false;
             genericWindow.ShowDialog();
+            return genericWindow.ViewModel.DialogReesult;
         }
 
         public string StartRecalcProcedure(LookupDefinitionBase lookupDefinition)

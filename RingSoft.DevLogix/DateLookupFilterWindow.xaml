@@ -28,24 +28,56 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
 
         <CheckBox Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" x:Name="CurrentCheckBox" Content="{Binding PrintCurrentCodeLabel}" VerticalAlignment="Center" IsChecked="{Binding Path=IsCurrentOnly, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-        <Label Grid.Row="1" Grid.Column="0" Content="{Binding CurrentCodeLabel}"/>
+        <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
 
-        <lc:AutoFillControl Grid.Row="1" Grid.Column="1" x:Name="CurrentControl" Width="200" Setup="{Binding CurrentAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding CurrentAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <Label Content="{Binding CurrentCodeLabel}"/>
 
-        <Label Grid.Row="2" Grid.Column="0" Content="{Binding BeginCodeLabel}"/>
+            <lc:AutoFillControl x:Name="CurrentControl" Width="200" Setup="{Binding CurrentAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding CurrentAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-        <lc:AutoFillControl Grid.Row="2" Grid.Column="1" x:Name="BeginningControl" Width="200"  Setup="{Binding BeginAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding BeginAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        </StackPanel>
 
-        <Label Grid.Row="2" Grid.Column="2" Content="{Binding EndCodeLabel}"/>
+        <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" x:Name="StartEndGrid">
 
-        <lc:AutoFillControl Grid.Row="2" Grid.Column="3" x:Name="EndingControl" Width="200" Setup="{Binding EndAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding EndAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Row="0" Grid.Column="1" Content="Start" HorizontalAlignment="Left"/>
+
+            <Label Grid.Row="0" Grid.Column="2" Content="End" HorizontalAlignment="Left"/>
+
+            <Label Grid.Row="1" Grid.Column="0" Content="{Binding BeginCodeLabel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right"/>
+
+            <lc:AutoFillControl Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" x:Name="BeginningControl" Width="200"  Setup="{Binding BeginAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding BeginAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <lc:AutoFillControl Grid.Row="1" Grid.Column="2" HorizontalAlignment="Left" x:Name="EndingControl" Width="200" Setup="{Binding EndAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding EndAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <Label Grid.Row="2" Grid.Column="0" Content="{Binding DateLabel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right"/>
+
+            <dec:DateEditControl Grid.Row="2" Grid.Column="1" Width="200" x:Name="StartDateControl" DateFormatType="DateTime" HorizontalAlignment="Left" Value="{Binding StartDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <dec:DateEditControl Grid.Row="2" Grid.Column="2" Width="200" DateFormatType="DateTime" HorizontalAlignment="Left" Value="{Binding EndDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        </Grid>
+
+        <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Right" Orientation="Horizontal" Margin="0,5,0,0">
+
+            <Button Content="_OK" Width="50" HorizontalAlignment="Right" IsDefault="True" Command="{Binding OkCommand}"/>
+
+            <Button Content="_Cancel" Width="50" HorizontalAlignment="Right" Margin="5,0,0,0" IsCancel="True" Command="{Binding CancelCommand}"/>
+
+        </StackPanel>
 
     </Grid>
 </dec:BaseWindow>

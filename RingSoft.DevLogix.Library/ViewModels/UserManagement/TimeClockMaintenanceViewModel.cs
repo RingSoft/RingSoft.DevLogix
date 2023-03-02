@@ -522,11 +522,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 if (result)
                 {
                     result = context.SaveNoCommitEntity(user, "Saving User");
-                    var userPrimaryKey = AppGlobals.LookupContext.Users.GetPrimaryKeyValueFromEntity(user);
-                    if (userPrimaryKey != null)
-                    {
-                        userPrimaryKey.CreateRecordLock();
-                    }
                 }
             }
 
@@ -567,6 +562,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         private bool UpdateError(TimeClock entity, Error error, IDbContext context, User user)
         {
             var result = true;
+            user.ErrorsMinutesSpent += entity.MinutesSpent.Value;
             error.MinutesSpent += entity.MinutesSpent.Value;
             var errorUser = error.Users.FirstOrDefault(p => p.UserId == user.Id);
             if (errorUser != null)

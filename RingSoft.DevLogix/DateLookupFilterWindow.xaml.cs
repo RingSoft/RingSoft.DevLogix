@@ -1,4 +1,6 @@
-﻿using RingSoft.DbLookup;
+﻿using System;
+using RingSoft.DbLookup;
+using RingSoft.DevLogix.Library;
 using System.Windows;
 
 namespace RingSoft.DevLogix
@@ -6,9 +8,9 @@ namespace RingSoft.DevLogix
     /// <summary>
     /// Interaction logic for DateLookupFilterWindow.xaml
     /// </summary>
-    public partial class DateLookupFilterWindow : IGenericReportFilterView
+    public partial class DateLookupFilterWindow : IDateFilterView
     {
-        public DateLookupFilterWindow(GenericReportLookupFilterInput input)
+        public DateLookupFilterWindow(DateFilterInput input)
         {
             InitializeComponent();
             Loaded += (sender, args) =>
@@ -20,7 +22,17 @@ namespace RingSoft.DevLogix
 
         public void RefreshView()
         {
-            
+            CurrentControl.IsEnabled = false;
+            StartEndGrid.IsEnabled = false;
+
+            if (LocalViewModel.IsCurrentOnly)
+            {
+                CurrentControl.IsEnabled = true;
+            }
+            else
+            {
+                StartEndGrid.IsEnabled = true;
+            }
         }
 
         public void CloseWindow()
@@ -35,7 +47,22 @@ namespace RingSoft.DevLogix
 
         public void FocusControl(GenericFocusControls control)
         {
-            
+            switch (control)
+            {
+                case GenericFocusControls.Current:
+                    CurrentControl.Focus();
+                    break;
+                case GenericFocusControls.Start:
+                    BeginningControl.Focus();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(control), control, null);
+            }
+        }
+
+        public void FocusDateControl(DateFilterFocusControls focusControl)
+        {
+            StartDateControl.Focus();
         }
     }
 }

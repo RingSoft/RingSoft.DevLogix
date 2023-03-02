@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,7 @@ using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
+using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.QueryBuilder;
@@ -28,6 +30,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         public void RefreshView();
 
         public void OnValGridFail();
+
+        bool SetupRecalcFilter(LookupDefinitionBase lookupDefinition);
+
+        string StartRecalcProcedure(LookupDefinitionBase lookupDefinition);
+
+        void UpdateRecalcProcedure(int currentProject, int totalProjects, string currentProjectText);
     }
     public class UserMaintenanceViewModel : DevLogixDbMaintenanceViewModel<User>
     {
@@ -412,7 +420,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             TimeClockLookup.FilterDefinition.AddFixedFilter(p => p.UserId, Conditions.Equals, Id);
             TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
 
-            RecalcCommand.IsEnabled = true;
             return result;
         }
 
@@ -470,6 +477,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         protected override User GetEntityData()
         {
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var table = context.GetTable<User>();
             var user = new User
             {
                 Id = Id,
@@ -480,10 +489,17 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 Notes = Notes,
                 SupervisorId = SupervisorAutoFillValue.GetEntity(AppGlobals.LookupContext.Users).Id,
                 HourlyRate = HourlyRate,
-                BillableProjectsMinutesSpent = BillabilityGridManager.GetMinutesSpent(UserBillabilityRows.BillableProjects),
-                NonBillableProjectsMinutesSpent = BillabilityGridManager.GetMinutesSpent(UserBillabilityRows.NonBillableProjects),
-                ErrorsMinutesSpent = BillabilityGridManager.GetMinutesSpent(UserBillabilityRows.Errors),
             };
+            if (Id != 0)
+            {
+                var existUser = table.FirstOrDefault(p => p.Id == Id);
+                if (existUser != null)
+                {
+                    user.BillableProjectsMinutesSpent = existUser.BillableProjectsMinutesSpent;
+                    user.NonBillableProjectsMinutesSpent = existUser.NonBillableProjectsMinutesSpent;
+                    user.ErrorsMinutesSpent = existUser.ErrorsMinutesSpent;
+                }
+            }
             if (DepartmentAutoFillValue.IsValid())
             {
                 user.DepartmentId = AppGlobals.LookupContext.Departments
@@ -521,8 +537,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             HourlyRate = 0;
 
             SetBillability(new User());
-
-            RecalcCommand.IsEnabled = false;
         }
 
         protected override bool ValidateEntity(User entity)
@@ -596,41 +610,90 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         }
 
-        private void Recalculate()
+        public string StartRecalculateProcedure(LookupDefinitionBase lookupToFilter)
         {
+            var result = string.Empty;
             var context = AppGlobals.DataRepository.GetDataContext();
             var query = context.GetTable<User>();
-            var user = query
-                .Include(p => p.TimeClocks)
-                .ThenInclude(p => p.Project)
-                .Include(p => p.TimeClocks)
-                .ThenInclude(p => p.Error)
-                .FirstOrDefault(p => p.Id == Id);
-
-            if (user != null)
+            var lookupUi = new LookupUserInterface { PageSize = 10 };
+            var lookupData = new LookupDataBase(lookupToFilter, lookupUi);
+            var usersToProcess = lookupData.GetRecordCountWait();
+            var userIndex = 1;
+            DbDataProcessor.DontDisplayExceptions = true;
+            lookupData.PrintDataChanged += (sender, args) =>
             {
-                var billableProjects = user.TimeClocks.Where(p => 
-                    p.ProjectId.HasValue
-                    && p.Project.IsBillable
-                    && p.MinutesSpent.HasValue);
-                user.BillableProjectsMinutesSpent = billableProjects.Sum(p => p.MinutesSpent.Value);
+                foreach (DataRow outputTableRow in args.OutputTable.Rows)
+                {
+                    var userPrimaryKey = new PrimaryKeyValue(TableDefinition);
+                    userPrimaryKey.PopulateFromDataRow(outputTableRow);
+                    var user = TableDefinition.GetEntityFromPrimaryKeyValue(userPrimaryKey);
+                    if (user != null)
+                    {
+                        user = query
+                            .Include(p => p.TimeClocks)
+                            .ThenInclude(p => p.Project)
+                            .Include(p => p.TimeClocks)
+                            .ThenInclude(p => p.Error)
+                            .FirstOrDefault(p => p.Id == user.Id);
+                    }
 
-                var nonBillableProjects = user.TimeClocks.Where(p => 
-                    p.ProjectId.HasValue
-                    && !p.Project.IsBillable
-                    && p.MinutesSpent.HasValue);
-                user.NonBillableProjectsMinutesSpent = nonBillableProjects.Sum(p => p.MinutesSpent.Value);
+                    if (user != null)
+                    {
+                        View.UpdateRecalcProcedure(userIndex, usersToProcess, user.Name);
+                        var billableProjects = user.TimeClocks.Where(p =>
+                            p.ProjectId.HasValue
+                            && p.Project.IsBillable
+                            && p.MinutesSpent.HasValue);
+                        user.BillableProjectsMinutesSpent = billableProjects.Sum(p => p.MinutesSpent.Value);
 
-                var errors = user.TimeClocks.Where(p => 
-                    p.ErrorId.HasValue
-                    && p.MinutesSpent.HasValue);
+                        var nonBillableProjects = user.TimeClocks.Where(p =>
+                            p.ProjectId.HasValue
+                            && !p.Project.IsBillable
+                            && p.MinutesSpent.HasValue);
+                        user.NonBillableProjectsMinutesSpent = nonBillableProjects.Sum(p => p.MinutesSpent.Value);
 
-                user.ErrorsMinutesSpent = errors.Sum(p => p.MinutesSpent.Value);
-                SetBillability(user);
-                RecordDirty = true;
+                        var errors = user.TimeClocks.Where(p =>
+                            p.ErrorId.HasValue
+                            && p.MinutesSpent.HasValue);
 
+                        user.ErrorsMinutesSpent = errors.Sum(p => p.MinutesSpent.Value);
+                        if (!context.SaveNoCommitEntity(user, "Saving User"))
+                        {
+                            result = DbDataProcessor.LastException;
+                            args.Abort = true;
+                            return;
+                        }
+                        if (Id == user.Id)
+                        {
+                            SetBillability(user);
+                        }
+                    }
+                    userIndex++;
+                }
+            };
+            lookupData.GetPrintData();
+            if (result.IsNullOrEmpty())
+            {
+                if (!context.Commit("Recalculating"))
+                {
+                    result = DbDataProcessor.LastException;
+                }
+            }
+            DbDataProcessor.DontDisplayExceptions = false;
+            return result;
+        }
+        private void Recalculate()
+        {
+            var lookupToFilter = ViewLookupDefinition.Clone();
+            if (!View.SetupRecalcFilter(lookupToFilter))
+            {
+                return;
+            }
+
+            var result = View.StartRecalcProcedure(lookupToFilter);
+            if (result.IsNullOrEmpty())
+            {
                 ControlsGlobals.UserInterface.ShowMessageBox("Billability recalculation complete.", "Recalculation Complete", RsMessageBoxIcons.Information);
-
             }
         }
 
