@@ -46,6 +46,34 @@
 
             <lc:AutoFillControl Grid.Row="0" Grid.Column="3" x:Name="KeyControl" Width="200" HorizontalAlignment="Left"/>
 
+            <Label Grid.Row="1" Grid.Column="0" Content="Project"/>
+
+            <lc:AutoFillControl Grid.Row="1" Grid.Column="1" x:Name="ProjectControl" Width="200" HorizontalAlignment="Left" Setup="{Binding ProjectAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding ProjectAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <Label Grid.Row="1" Grid.Column="2" Content="Assigned To"/>
+
+            <lc:AutoFillControl Grid.Row="1" Grid.Column="3" x:Name="UserControl" Width="200" HorizontalAlignment="Left" Setup="{Binding UserAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding UserAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <Label Grid.Row="2" Grid.Column="0" Content="Time Cost"/>
+
+            <dl:TimeControl Grid.Row="2" Grid.Column="1" Width="150" Minutes="{Binding MinutesCost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left"/>
+
+            <Label Grid.Row="2" Grid.Column="2" Content="Percent Complete"/>
+
+            <dec:DecimalEditControl Grid.Row="2" Grid.Column="3" Width="75" FormatType="Percent" Value="{Binding PercentComplete, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" TextAlignment="Left"/>
+
+            <TabControl Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="5">
+
+                <dec:DataEntryMemoTabItem Header="Notes" VerticalAlignment="Stretch">
+                    <DockPanel>
+
+                        <dec:DataEntryMemoEditor Text="{Binding Path=Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    </DockPanel>
+                </dec:DataEntryMemoTabItem>
+
+            </TabControl>
+
         </Grid>
 
     </DockPanel>

@@ -1,7 +1,13 @@
-﻿using RingSoft.App.Library;
+﻿using Microsoft.EntityFrameworkCore;
+using RingSoft.App.Library;
 using RingSoft.DbLookup;
+using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
+using System.Linq;
+using RingSoft.DataEntryControls.Engine;
+using RingSoft.DbLookup.QueryBuilder;
+using RingSoft.DevLogix.DataAccess.Model;
 
 namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 {
@@ -25,35 +31,260 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
+        private AutoFillSetup _projectAutoFillSetup;
+
+        public AutoFillSetup ProjectAutoFillSetup
+        {
+            get => _projectAutoFillSetup;
+            set
+            {
+                if (_projectAutoFillSetup == value)
+                {
+                    return;
+                }
+                _projectAutoFillSetup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private AutoFillValue _projectAutoFillValue;
+
+        public AutoFillValue ProjectAutoFillValue
+        {
+            get => _projectAutoFillValue;
+            set
+            {
+                if (_projectAutoFillValue == value)
+                    return;
+
+                _projectAutoFillValue = value;
+                SetUserFilter();
+                OnPropertyChanged();
+            }
+        }
+
+        private AutoFillSetup _userAutoFillSetup;
+
+        public AutoFillSetup UserAutoFillSetup
+        {
+            get => _userAutoFillSetup;
+            set
+            {
+                if (_userAutoFillSetup == value)
+                {
+                    return;
+                }
+                _userAutoFillSetup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private AutoFillValue _userAutoFillValue;
+
+        public AutoFillValue UserAutoFillValue
+        {
+            get => _userAutoFillValue;
+            set
+            {
+                if (_userAutoFillValue == value)
+                    return;
+
+                _userAutoFillValue = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private decimal _minutesCost;
+
+        public decimal MinutesCost
+        {
+            get => _minutesCost;
+            set
+            {
+                if (_minutesCost == value)
+                    return;
+
+                _minutesCost = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private decimal _percentComplete;
+
+        public decimal PercentComplete
+        {
+            get => _percentComplete;
+            set
+            {
+                if (_percentComplete == value)
+                    return;
+
+                _percentComplete = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string? _notes;
+
+        public string? Notes
+        {
+            get => _notes;
+            set
+            {
+                if (_notes == value)
+                    return;
+
+                _notes = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public AutoFillValue DefaultProjectAutoFillValue { get; private set; }
+
+        public ProjectTaskViewModel()
+        {
+            UserAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.UserId))
+            {
+                AllowLookupAdd = false,
+            };
+            ProjectAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ProjectId));
+        }
 
         protected override ProjectTask PopulatePrimaryKeyControls(ProjectTask newEntity, PrimaryKeyValue primaryKeyValue)
         {
-            return new ProjectTask();
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var result = context.GetTable<ProjectTask>()
+                .Include(p => p.User)
+                .Include(p => p.Project)
+                .FirstOrDefault(p => p.Id == newEntity.Id);
+            Id = result.Id;
+            KeyAutoFillValue = result.GetAutoFillValue();
+
+            return result;
+
         }
 
+        protected override void Initialize()
+        {
+            if (LookupAddViewArgs != null && LookupAddViewArgs.ParentWindowPrimaryKeyValue != null)
+            {
+                if (LookupAddViewArgs.ParentWindowPrimaryKeyValue.TableDefinition ==
+                    AppGlobals.LookupContext.Projects)
+                {
+                    var project =
+                        AppGlobals.LookupContext.Projects.GetEntityFromPrimaryKeyValue(LookupAddViewArgs
+                            .ParentWindowPrimaryKeyValue);
+                    DefaultProjectAutoFillValue =
+                        AppGlobals.LookupContext.OnAutoFillTextRequest(AppGlobals.LookupContext.Projects,
+                            project.Id.ToString());
+                }
+            }
+
+            base.Initialize();
+        }
+
+        private void SetUserFilter()
+        {
+            UserAutoFillSetup.LookupDefinition.FilterDefinition.ClearFixedFilters();
+            if (ProjectAutoFillValue.IsValid())
+            {
+                var project = ProjectAutoFillValue.GetEntity<Project>();
+                if (project != null)
+                {
+                    var formula = string.Empty;
+                    var selectQuery = new SelectQuery(AppGlobals.LookupContext.ProjectUsers.TableName);
+                    selectQuery.AddSelectColumn(AppGlobals.LookupContext.ProjectUsers.GetFieldDefinition(p => p.UserId).FieldName);
+                    selectQuery.AddWhereItem(AppGlobals.LookupContext.ProjectUsers.GetFieldDefinition(p => p.ProjectId).FieldName
+                        , Conditions.Equals, project.Id.ToString(), false, ValueTypes.Numeric);
+                    var selectStatement =
+                        TableDefinition.Context.DataProcessor.SqlGenerator.GenerateSelectStatement(selectQuery);
+                    formula = $"{AppGlobals.LookupContext.Users.GetFieldDefinition(p => p.Id).GetSqlFormatObject()} IN ({selectStatement})";
+                    UserAutoFillSetup.LookupDefinition.FilterDefinition.AddFixedFilter("User", null, "", formula);
+
+                }
+            }
+        }
         protected override void LoadFromEntity(ProjectTask entity)
         {
-            
+            ProjectAutoFillValue = entity.Project.GetAutoFillValue();
+            UserAutoFillValue = entity.User.GetAutoFillValue();
+            MinutesCost = entity.MinutesCost;
+            PercentComplete = entity.PercentComplete;
+            Notes = entity.Notes;
         }
 
         protected override ProjectTask GetEntityData()
         {
-            return new ProjectTask();
+            return new ProjectTask
+            {
+                Id = Id,
+                Name = KeyAutoFillValue.Text,
+                ProjectId = ProjectAutoFillValue.GetEntity<Project>().Id,
+                UserId = UserAutoFillValue.GetEntity<User>().Id,
+                MinutesCost = MinutesCost,
+                PercentComplete = PercentComplete,
+                Notes = Notes,
+            };
+        }
+
+        protected override bool ValidateEntity(ProjectTask entity)
+        {
+            if (entity.UserId == 0)
+            {
+                var message =
+                    "The Assigned To User is invalid.  Please select a valid User that is added to this project.";
+                var caption = "Invalid Assigned To User";
+
+                View.OnValidationFail(TableDefinition.GetFieldDefinition(p => p.UserId),
+                    message, caption);
+                return false;
+            }
+
+            if (entity.ProjectId == 0)
+            {
+                return base.ValidateEntity(entity);
+            }
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var table = context.GetTable<ProjectUser>();
+            if (table != null)
+            {
+                var projectUser = table.FirstOrDefault(p => p.UserId == entity.UserId
+                  && p.ProjectId == ProjectAutoFillValue.GetEntity<Project>().Id);
+                if (projectUser == null)
+                {
+                    var message =
+                        "The Assigned To User you have chosen has not been added to the project. Please select a user that has been added to the project.";
+                    var caption = "Invalid User";
+                    View.OnValidationFail(TableDefinition.GetFieldDefinition(p => p.UserId),
+                        message, caption);
+                    return false;
+                }
+            }
+            return base.ValidateEntity(entity);
         }
 
         protected override void ClearData()
         {
-            
+            Id = 0;
+            ProjectAutoFillValue = DefaultProjectAutoFillValue;
+            UserAutoFillValue = null;
+            MinutesCost = 0;
+            PercentComplete = 0;
+            Notes = string.Empty;
         }
 
         protected override bool SaveEntity(ProjectTask entity)
         {
-            throw new System.NotImplementedException();
+            var context = AppGlobals.DataRepository.GetDataContext();
+            return context.SaveEntity(entity, "Saving Project Task");
         }
 
         protected override bool DeleteEntity()
         {
-            throw new System.NotImplementedException();
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var entity = context.GetTable<ProjectTask>()
+                .FirstOrDefault(p => p.Id == Id);
+            return context.DeleteEntity(entity, "Deleting Project Task");
         }
     }
 }

@@ -10,7 +10,9 @@ using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.QueryBuilder;
+using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.LookupModel;
+using RingSoft.DevLogix.DataAccess.LookupModel.ProjectManagement;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using RingSoft.DevLogix.Library.ViewModels.QualityAssurance;
@@ -169,6 +171,36 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
+        private LookupDefinition<ProjectTaskLookup, ProjectTask> _taskLookup;
+
+        public LookupDefinition<ProjectTaskLookup, ProjectTask> TaskLookup
+        {
+            get => _taskLookup;
+            set
+            {
+                if (_taskLookup == value)
+                    return;
+
+                _taskLookup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private LookupCommand _taskLookupCommand;
+
+        public LookupCommand TaskLookupCommand
+        {
+            get => _taskLookupCommand;
+            set
+            {
+                if (_taskLookupCommand == value)
+                    return;
+
+                _taskLookupCommand = value;
+                OnPropertyChanged();
+            }
+        }
+
 
 
         private LookupDefinition<TimeClockLookup, TimeClock> _timeClockLookup;
@@ -223,6 +255,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public RelayCommand RecalcCommand { get; set; }
 
+        public RelayCommand TasksAddModifyCommand { get; set; }
+
         public decimal MinutesSpent { get; set; }
 
         public ProjectMaintenanceViewModel()
@@ -239,6 +273,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 Recalc();
             });
 
+            TasksAddModifyCommand = new RelayCommand(OnTasksAddModify);
+
             UsersGridManager = new ProjectUsersGridManager(this);
 
             var timeClockLookup = new LookupDefinition<TimeClockLookup, TimeClock>(AppGlobals.LookupContext.TimeClocks);
@@ -249,6 +285,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
             TimeClockLookup = timeClockLookup;
             TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
+
+            TaskLookup = AppGlobals.LookupContext.ProjectTaskLookup.Clone();
 
             TablesToDelete.Add(AppGlobals.LookupContext.ProjectUsers);
         }
@@ -276,6 +314,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             TimeClockLookup.FilterDefinition.AddFixedFilter(p => p.ProjectId, Conditions.Equals, Id);
             TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
             PunchInCommand.IsEnabled = true;
+
+            TaskLookup.FilterDefinition.ClearFixedFilters();
+            TaskLookup.FilterDefinition.AddFixedFilter(p => p.ProjectId, Conditions.Equals, Id);
+            TaskLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
 
             return project;
         }
@@ -345,6 +387,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             MinutesSpent = 0;
             TimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
             TotalCost = 0;
+            TaskLookupCommand = GetLookupCommand(LookupCommands.Clear);
         }
 
         protected override bool SaveEntity(Project entity)
@@ -524,6 +567,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 View.PunchIn(GetProject(Id));
             }
         }
+
+        private void OnTasksAddModify()
+        {
+            if (ExecuteAddModifyCommand() == DbMaintenanceResults.Success)
+                TaskLookupCommand = GetLookupCommand(LookupCommands.AddModify);
+
+        }
+
 
         protected override void OnRecordDirtyChanged(bool newValue)
         {
