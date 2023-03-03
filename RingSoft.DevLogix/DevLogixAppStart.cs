@@ -96,6 +96,7 @@ namespace RingSoft.DevLogix
             WindowRegistry.RegisterWindow<ErrorMaintenanceWindow>(AppGlobals.LookupContext.ErrorTesters);
 
             WindowRegistry.RegisterWindow<ProjectMaintenanceWindow>(AppGlobals.LookupContext.Projects);
+            WindowRegistry.RegisterWindow<LaborPartMaintenanceWindow>(AppGlobals.LookupContext.LaborParts);
 
             AppGlobals.LookupContext.CanProcessTableEvent += (sender, args) =>
             {

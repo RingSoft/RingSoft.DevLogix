@@ -275,6 +275,18 @@ namespace RingSoft.DevLogix
                         CommandParameter = AppGlobals.LookupContext.Projects,
                     });
                 }
+                if (AppGlobals.LookupContext.LaborParts.HasRight(RightTypes.AllowView))
+                {
+                    var categoryItem =
+                        projectCategory.Items.FirstOrDefault(
+                            p => p.TableDefinition == AppGlobals.LookupContext.LaborParts);
+                    menuItem.Items.Add(new MenuItem()
+                    {
+                        Header = "Add/Edit _Labor Parts...",
+                        Command = ViewModel.ShowMaintenanceWindowCommand,
+                        CommandParameter = AppGlobals.LookupContext.LaborParts,
+                    });
+                }
             }
         }
 

@@ -202,6 +202,7 @@ namespace RingSoft.DevLogix.Library
 
             category = new RightCategory("Project Management", MenuCategories.Projects);
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Projects", AppGlobals.LookupContext.Projects));
+            category.Items.Add(new RightCategoryItem(item: "Add/Edit Labor Parts", AppGlobals.LookupContext.LaborParts));
             Categories.Add(category);
 
             category = new RightCategory("Miscellaneous", MenuCategories.Tools);
