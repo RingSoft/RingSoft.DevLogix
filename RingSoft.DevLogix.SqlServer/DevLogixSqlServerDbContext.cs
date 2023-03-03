@@ -40,6 +40,7 @@ namespace RingSoft.DevLogix.SqlServer
         public DbSet<Project> Projects { get; set; }
         public DbSet<ProjectUser> ProjectUsers { get; set; }
         public DbSet<LaborPart> LaborParts { get; set; }
+        public DbSet<ProjectTask> ProjectTasks { get; set; }
 
         public bool IsDesignTime { get; set; }
 

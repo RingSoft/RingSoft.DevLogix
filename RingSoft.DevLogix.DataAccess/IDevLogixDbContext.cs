@@ -33,6 +33,7 @@ namespace RingSoft.DevLogix.DataAccess
         DbSet<Project> Projects { get; set; }
         DbSet<ProjectUser> ProjectUsers { get; set; }
         DbSet<LaborPart> LaborParts { get; set; }
+        DbSet<ProjectTask> ProjectTasks { get; set; }
 
         void SetLookupContext(DevLogixLookupContext lookupContext);
     }

@@ -11,6 +11,7 @@ using RingSoft.DbLookup.RecordLocking;
 using RingSoft.DevLogix.DataAccess.LookupModel;
 using RingSoft.DevLogix.DataAccess.Model;
 using System;
+using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using RingSoft.DevLogix.DataAccess.LookupModel.ProjectManagement;
 using RingSoft.DevLogix.DataAccess.LookupModel.QualityAssurance;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
@@ -54,6 +55,7 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<Project> Projects { get; set; }
         public TableDefinition<ProjectUser> ProjectUsers { get; set; }
         public TableDefinition<LaborPart> LaborParts { get; set; }
+        public TableDefinition<ProjectTask> ProjectTasks { get; set; }
 
         public TableDefinition<AdvancedFind> AdvancedFinds { get; set; }
         public TableDefinition<AdvancedFindColumn> AdvancedFindColumns { get; set; }
@@ -79,6 +81,7 @@ namespace RingSoft.DevLogix.DataAccess
         public LookupDefinition<ProjectLookup, Project> ProjectLookup { get; set; }
         public LookupDefinition<ProjectUserLookup, ProjectUser> ProjectUserLookup { get; set; }
         public LookupDefinition<LaborPartLookup, LaborPart> LaborPartLookup { get; set; }
+        public LookupDefinition<ProjectTaskLookup, ProjectTask> ProjectTaskLookup { get; set; }
 
         public LookupDefinition<AdvancedFindLookup, AdvancedFind> AdvancedFindLookup { get; set; }
         public LookupDefinition<RecordLockingLookup, RecordLock> RecordLockingLookup { get; set; }
@@ -242,6 +245,18 @@ namespace RingSoft.DevLogix.DataAccess
             LaborPartLookup.AddVisibleColumnDefinition(p => p.Name, "Labor Part", p => p.Name, 100);
             LaborParts.HasLookupDefinition(LaborPartLookup);
 
+            ProjectTaskLookup = new LookupDefinition<ProjectTaskLookup, ProjectTask>(ProjectTasks);
+            ProjectTaskLookup.AddVisibleColumnDefinition(p => p.Name, "Task Name", p => p.Name, 25);
+            ProjectTaskLookup.Include(p => p.Project)
+                .AddVisibleColumnDefinition(p => p.ProjectName, "Project", p => p.Name, 25);
+
+            ProjectTaskLookup.Include(p => p.User)
+                .AddVisibleColumnDefinition(p => p.UserName, "User", p => p.Name, 25);
+
+            ProjectTaskLookup.AddVisibleColumnDefinition(p => p.PercentComplete, "Percent Complete",
+                p => p.PercentComplete, 25);
+
+            ProjectTasks.HasLookupDefinition(ProjectTaskLookup);
         }
 
         public LookupDefinition<ProductVersionLookup, ProductVersion> MakeProductVersionLookupDefinition()
@@ -416,6 +431,12 @@ namespace RingSoft.DevLogix.DataAccess
             Projects.GetFieldDefinition(p => p.Notes).IsMemo();
             Projects.GetFieldDefinition(p => p.Deadline).HasDateType(DbDateTypes.DateTime);
             Projects.GetFieldDefinition(p => p.OriginalDeadline).HasDateType(DbDateTypes.DateTime);
+
+            LaborParts.PriorityLevel = 100;
+
+            ProjectTasks.PriorityLevel = 500;
+            ProjectTasks.GetFieldDefinition(p => p.Notes).IsMemo();
+            ProjectTasks.GetFieldDefinition(p => p.PercentComplete).HasDecimalFieldType(DecimalFieldTypes.Percent);
 
             ProjectUsers.PriorityLevel = 500;
         }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
 {
@@ -14,5 +15,10 @@ namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
 
         [Required]
         public decimal MinutesCost { get; set; }
+
+        public LaborPart()
+        {
+            
+        }
     }
 }

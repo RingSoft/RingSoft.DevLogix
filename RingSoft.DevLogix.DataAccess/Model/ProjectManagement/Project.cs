@@ -54,10 +54,13 @@ namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
 
         public virtual ICollection<ProjectUser> ProjectUsers { get; set; }
 
+        public virtual ICollection<ProjectTask> ProjectTasks { get; set; }
+
         public Project()
         {
             TimeClocks = new HashSet<TimeClock>();
             ProjectUsers = new HashSet<ProjectUser>();
+            ProjectTasks = new HashSet<ProjectTask>();
         }
     }
 }

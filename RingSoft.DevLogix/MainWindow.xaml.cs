@@ -275,6 +275,19 @@ namespace RingSoft.DevLogix
                         CommandParameter = AppGlobals.LookupContext.Projects,
                     });
                 }
+                if (AppGlobals.LookupContext.ProjectTasks.HasRight(RightTypes.AllowView))
+                {
+                    var categoryItem =
+                        projectCategory.Items.FirstOrDefault(
+                            p => p.TableDefinition == AppGlobals.LookupContext.ProjectTasks);
+                    menuItem.Items.Add(new MenuItem()
+                    {
+                        Header = "Add/Edit Projects _Tasks...",
+                        Command = ViewModel.ShowMaintenanceWindowCommand,
+                        CommandParameter = AppGlobals.LookupContext.ProjectTasks,
+                    });
+                }
+
                 if (AppGlobals.LookupContext.LaborParts.HasRight(RightTypes.AllowView))
                 {
                     var categoryItem =
