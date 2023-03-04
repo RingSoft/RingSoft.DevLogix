@@ -1,6 +1,8 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using RingSoft.DataEntryControls.WPF;
 using RingSoft.DevLogix.Library.ViewModels;
 
@@ -61,13 +63,75 @@ namespace RingSoft.DevLogix
             }
         }
 
+        private Brush _controlBrush;
+        public Brush ControlBrush
+        {
+            get => _controlBrush;
+            set
+            {
+                if (StringEditControl == null)
+                {
+                    _setBrush = value;
+                }
+                else
+                {
+                    StringEditControl.Background = value;
+                }
+                _controlBrush = value;
+            }
+        }
+
+        private Brush _selectionBrush;
+
+        public Brush SelectionBrush
+        {
+            get => _selectionBrush;
+            set
+            {
+                if (StringEditControl == null)
+                {
+                    _setSelectionBrush = value;
+                }
+                else
+                {
+                    StringEditControl.SelectionBrush = value;
+                }
+                _selectionBrush = value;
+            }
+        }
+
+        private Brush _foreground;
+
+        public Brush Foreground
+        {
+            get => _foreground;
+            set
+            {
+                if (StringEditControl == null)
+                {
+                    _setForegroundBrush = value;
+                }
+                else
+                {
+                    StringEditControl.Foreground = value;
+                }
+                _foreground = value;
+            }
+        }
+
+
+        public event EventHandler ControlDirty;
+
         public Border Border { get; private set; }
         public TimeControlViewModel ViewModel { get; private set; }
         public StringEditControl StringEditControl { get; private set; }
         public Button Button { get; private set; }
 
         private bool _setFocus;
-        public decimal? _setMinutes;
+        private decimal? _setMinutes;
+        private Brush _setBrush;
+        private Brush _setSelectionBrush;
+        private Brush _setForegroundBrush;
 
         static TimeControl()
         {
@@ -86,6 +150,24 @@ namespace RingSoft.DevLogix
                 StringEditControl.Focus();
                 StringEditControl.SelectAll();
                 _setFocus = false;
+            }
+
+            if (_setBrush != null)
+            {
+                StringEditControl.Background = _setBrush;
+                _setBrush = null;
+            }
+
+            if (_setSelectionBrush != null)
+            {
+                StringEditControl.SelectionBrush = _setSelectionBrush;
+                _setSelectionBrush = null;
+            }
+
+            if (_setForegroundBrush != null)
+            {
+                StringEditControl.Foreground = _setForegroundBrush;
+                _setForegroundBrush = null;
             }
             ViewModel.Initialize(this);
             if (_setMinutes != null)
@@ -132,6 +214,7 @@ namespace RingSoft.DevLogix
             {
                 Minutes = popup.ViewModel.Minutes;
                 StringEditControl.SelectAll();
+                ControlDirty?.Invoke(this, EventArgs.Empty);
             }
 
             return popup.ViewModel.DialogResult;

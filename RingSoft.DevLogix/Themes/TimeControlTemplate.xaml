@@ -24,8 +24,8 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
-                            <dec:StringEditControl Grid.Column="0" x:Name="StringEditControl" Text="{Binding TimeSpent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
-                            <Button Grid.Column="1" x:Name="Button" Content="..." Width="25" IsTabStop="False" Command="{Binding ShowPopupCommand}" Height="20"/>
+                            <dec:StringEditControl Grid.Column="0" x:Name="StringEditControl" Text="{Binding TimeSpent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" VerticalContentAlignment="Center"/>
+                            <Button Grid.Column="1" x:Name="Button" Content="..." Width="20" IsTabStop="False" Command="{Binding ShowPopupCommand}" Height="20" VerticalAlignment="Center"/>
 
                         </Grid>
                     </Border>

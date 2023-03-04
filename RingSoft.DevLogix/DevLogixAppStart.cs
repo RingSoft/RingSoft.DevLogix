@@ -4,6 +4,8 @@ using System.Linq;
 using System.Windows;
 using RingSoft.App.Controls;
 using RingSoft.App.Library;
+using RingSoft.DataEntryControls.WPF;
+using RingSoft.DataEntryControls.WPF.DataEntryGrid.EditingControlHost;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Controls.WPF.AdvancedFind;
@@ -131,6 +133,7 @@ namespace RingSoft.DevLogix
             AppGlobals.AppSplashProgress -= AppGlobals_AppSplashProgress;
 
             LookupControlsGlobals.DbMaintenanceProcessorFactory = new DevLogixDbMaintenanceFactory();
+            WPFControlsGlobals.DataEntryGridHostFactory = new DevLogixGridCellFactory();
 
             return base.DoProcess();
         }

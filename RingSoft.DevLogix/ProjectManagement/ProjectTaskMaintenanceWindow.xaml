@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
+        xmlns:deg="clr-namespace:RingSoft.DataEntryControls.WPF.DataEntryGrid;assembly=RingSoft.DataEntryControls.WPF"
         xmlns:lc="clr-namespace:RingSoft.DbLookup.Controls.WPF;assembly=RingSoft.DbLookup.Controls.WPF"
         xmlns:ac="clr-namespace:RingSoft.App.Controls;assembly=RingSoft.App.Controls"
         xmlns:dl="clr-namespace:RingSoft.DevLogix"
@@ -13,6 +14,29 @@
         Style="{StaticResource BaseWindowStyle}"
         Title="ProjectTaskMaintenanceWindow" Height="450" Width="800">
 
+    <Window.Resources>
+
+        <deg:DataEntryGridDisplayStyle x:Key="CommentCellStyle" DisplayId="{x:Static vm:ProjectTaskLaborPartsManager.LaborPartRowDisplayStyleId}" 
+                                       ForegroundBrush="White"
+                                       SelectionBrush="White">
+            <deg:DataEntryGridDisplayStyle.BackgroundBrush>
+                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                    <GradientStop Color="#FF0EB20E" Offset="0"/>
+                    <GradientStop Color="Green" Offset="1"/>
+                </LinearGradientBrush>
+            </deg:DataEntryGridDisplayStyle.BackgroundBrush>
+        </deg:DataEntryGridDisplayStyle>
+
+        <!--<deg:DataEntryGridDisplayStyle x:Key="NonInventoryCellStyle" DisplayId="{x:Static lib:AppGlobals.NonInventoryDisplayStyleId}" ForegroundBrush="White" SelectionBrush="White">
+            <deg:DataEntryGridDisplayStyle.BackgroundBrush>
+                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                    <GradientStop Color="#FF6D6DFD" Offset="0"/>
+                    <GradientStop Color="Blue" Offset="1"/>
+                </LinearGradientBrush>
+            </deg:DataEntryGridDisplayStyle.BackgroundBrush>
+        </deg:DataEntryGridDisplayStyle>-->
+
+    </Window.Resources>
     <Window.DataContext>
         <vm:ProjectTaskViewModel x:Name="LocalViewModel"/>
     </Window.DataContext>
@@ -63,6 +87,35 @@
             <dec:DecimalEditControl Grid.Row="2" Grid.Column="3" Width="75" FormatType="Percent" Value="{Binding PercentComplete, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" TextAlignment="Left"/>
 
             <TabControl Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="5">
+
+                <TabItem Header="Labor Parts">
+
+                    <DockPanel>
+
+                        <deg:DataEntryGrid Manager="{Binding LaborPartsManager}">
+
+                            <deg:DataEntryGrid.Columns>
+
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ProjectTaskLaborPartsManager.LineTypeColumnId}" Width="100" Header="Line Type"/>
+
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ProjectTaskLaborPartsManager.LaborPartColumnId}" Width="300" Header="Labor Part"/>
+
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ProjectTaskLaborPartsManager.MinutesCostColumnId}" Width="100" Header="Time Cost"/>
+
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ProjectTaskLaborPartsManager.QuantityColumnId}" Width="100" Header="Quantity"/>
+
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ProjectTaskLaborPartsManager.ExtendedMinutesColumnId}" Width="100" Header="Extended&#10;Time Cost"/>
+
+                            </deg:DataEntryGrid.Columns>
+
+                            <deg:DataEntryGrid.DisplayStyles>
+                                <StaticResource ResourceKey="CommentCellStyle"/>
+                            </deg:DataEntryGrid.DisplayStyles>
+
+                        </deg:DataEntryGrid>
+                    </DockPanel>
+
+                </TabItem>
 
                 <dec:DataEntryMemoTabItem Header="Notes" VerticalAlignment="Stretch">
                     <DockPanel>

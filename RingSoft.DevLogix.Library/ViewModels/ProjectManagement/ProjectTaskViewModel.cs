@@ -124,6 +124,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
+        private ProjectTaskLaborPartsManager _laborPartsManager;
+
+        public ProjectTaskLaborPartsManager LaborPartsManager
+        {
+            get => _laborPartsManager;
+            set
+            {
+                if (_laborPartsManager == value)
+                    return;
+
+                _laborPartsManager = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         private string? _notes;
 
         public string? Notes
@@ -148,6 +164,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 AllowLookupAdd = false,
             };
             ProjectAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ProjectId));
+
+            LaborPartsManager = new ProjectTaskLaborPartsManager(this);
         }
 
         protected override ProjectTask PopulatePrimaryKeyControls(ProjectTask newEntity, PrimaryKeyValue primaryKeyValue)
@@ -156,6 +174,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             var result = context.GetTable<ProjectTask>()
                 .Include(p => p.User)
                 .Include(p => p.Project)
+                .Include(p => p.LaborParts)
                 .FirstOrDefault(p => p.Id == newEntity.Id);
             Id = result.Id;
             KeyAutoFillValue = result.GetAutoFillValue();
@@ -211,6 +230,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             MinutesCost = entity.MinutesCost;
             PercentComplete = entity.PercentComplete;
             Notes = entity.Notes;
+            LaborPartsManager.LoadGrid(entity.LaborParts);
         }
 
         protected override ProjectTask GetEntityData()
