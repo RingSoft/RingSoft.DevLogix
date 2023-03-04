@@ -51,11 +51,12 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<ErrorDeveloper> ErrorDevelopers { get; set; }
         public TableDefinition<ErrorQa> ErrorTesters { get; set; }
         public TableDefinition<ErrorUser> ErrorUsers { get; set; }
-
+        
         public TableDefinition<Project> Projects { get; set; }
         public TableDefinition<ProjectUser> ProjectUsers { get; set; }
         public TableDefinition<LaborPart> LaborParts { get; set; }
         public TableDefinition<ProjectTask> ProjectTasks { get; set; }
+        public TableDefinition<ProjectTaskLaborPart> ProjectTaskLaborParts { get; set; }
 
         public TableDefinition<AdvancedFind> AdvancedFinds { get; set; }
         public TableDefinition<AdvancedFindColumn> AdvancedFindColumns { get; set; }
@@ -82,6 +83,7 @@ namespace RingSoft.DevLogix.DataAccess
         public LookupDefinition<ProjectUserLookup, ProjectUser> ProjectUserLookup { get; set; }
         public LookupDefinition<LaborPartLookup, LaborPart> LaborPartLookup { get; set; }
         public LookupDefinition<ProjectTaskLookup, ProjectTask> ProjectTaskLookup { get; set; }
+        public LookupDefinition<ProjectTaskLaborPartLookup, ProjectTaskLaborPart> ProjectTaskLaborPartLookup { get; set; }
 
         public LookupDefinition<AdvancedFindLookup, AdvancedFind> AdvancedFindLookup { get; set; }
         public LookupDefinition<RecordLockingLookup, RecordLock> RecordLockingLookup { get; set; }
@@ -257,6 +259,19 @@ namespace RingSoft.DevLogix.DataAccess
                 p => p.PercentComplete, 25);
 
             ProjectTasks.HasLookupDefinition(ProjectTaskLookup);
+
+            ProjectTaskLaborPartLookup =
+                new LookupDefinition<ProjectTaskLaborPartLookup, ProjectTaskLaborPart>(ProjectTaskLaborParts);
+
+            ProjectTaskLaborPartLookup.Include(p => p.ProjectTask)
+                .AddVisibleColumnDefinition(p => p.ProjectName, "Project"
+                    , p => p.Name, 34);
+            ProjectTaskLaborPartLookup.Include(p => p.LaborPart)
+                .AddVisibleColumnDefinition(p => p.LaborPart
+                    , "Labor Part", p => p.Name, 33);
+            ProjectTaskLaborPartLookup.AddVisibleColumnDefinition(p => p.Description
+                , "Descripion", p => p.Description, 33);
+            ProjectTaskLaborParts.HasLookupDefinition(ProjectTaskLaborPartLookup);
         }
 
         public LookupDefinition<ProductVersionLookup, ProductVersion> MakeProductVersionLookupDefinition()

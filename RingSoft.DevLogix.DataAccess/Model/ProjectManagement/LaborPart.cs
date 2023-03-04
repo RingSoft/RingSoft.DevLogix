@@ -10,15 +10,17 @@ namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
         public int Id { get; set; }
 
         [Required]
-        [StringLength(50)]
+        [MaxLength(50)]
         public string Name { get; set; }
 
         [Required]
         public decimal MinutesCost { get; set; }
 
+        public virtual ICollection<ProjectTaskLaborPart> ProjectTasks { get; set; }
+
         public LaborPart()
         {
-            
+            ProjectTasks = new HashSet<ProjectTaskLaborPart>();
         }
     }
 }

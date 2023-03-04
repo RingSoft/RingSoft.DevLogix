@@ -32,6 +32,7 @@ namespace RingSoft.DevLogix.DataAccess
             modelBuilder.ApplyConfiguration(new ProjectUserConfiguration());
             modelBuilder.ApplyConfiguration(new LaborPartConfiguration());
             modelBuilder.ApplyConfiguration(new ProjectTaskConfiguration());
+            modelBuilder.ApplyConfiguration(new ProjectTaskLaborPartConfiguration());
 
             AdvancedFindDataProcessorEfCore.ConfigureAdvancedFind(modelBuilder);
         }

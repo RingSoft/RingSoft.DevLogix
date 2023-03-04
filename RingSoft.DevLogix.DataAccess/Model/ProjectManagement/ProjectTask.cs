@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
 {
@@ -9,6 +10,7 @@ namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
         public int Id { get; set; }
 
         [Required]
+        [MaxLength(50)]
         public string Name { get; set; }
 
         [Required]
@@ -28,5 +30,12 @@ namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
         public decimal PercentComplete { get; set; }
 
         public string? Notes { get; set; }
+
+        public virtual ICollection<ProjectTaskLaborPart> LaborParts { get; set; }
+
+        public ProjectTask()
+        {
+            LaborParts = new HashSet<ProjectTaskLaborPart>();
+        }
     }
 }
