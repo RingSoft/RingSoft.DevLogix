@@ -11,6 +11,7 @@ using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbMaintenance;
+using RingSoft.DevLogix.DataAccess;
 using RingSoft.DevLogix.DataAccess.LookupModel;
 using RingSoft.DevLogix.DataAccess.LookupModel.ProjectManagement;
 using RingSoft.DevLogix.DataAccess.Model;
@@ -281,7 +282,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             timeClockLookup.AddVisibleColumnDefinition(p => p.PunchInDate, p => p.PunchInDate);
             timeClockLookup.Include(p => p.User)
                 .AddVisibleColumnDefinition(p => p.UserName, p => p.Name);
-            timeClockLookup.AddVisibleColumnDefinition(p => p.MinutesSpent, p => p.MinutesSpent);
+            var column = timeClockLookup.AddVisibleColumnDefinition(p => p.MinutesSpent, p => p.MinutesSpent);
+            column.HasSearchForHostId(DevLogixLookupContext.TimeSpentHostId);
 
             TimeClockLookup = timeClockLookup;
             TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;

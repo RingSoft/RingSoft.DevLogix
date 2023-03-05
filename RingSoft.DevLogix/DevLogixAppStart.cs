@@ -133,6 +133,7 @@ namespace RingSoft.DevLogix
             AppGlobals.AppSplashProgress -= AppGlobals_AppSplashProgress;
 
             LookupControlsGlobals.DbMaintenanceProcessorFactory = new DevLogixDbMaintenanceFactory();
+            LookupControlsGlobals.LookupControlSearchForFactory = new DevLogixLookupSearchFactory();
             WPFControlsGlobals.DataEntryGridHostFactory = new DevLogixGridCellFactory();
 
             return base.DoProcess();

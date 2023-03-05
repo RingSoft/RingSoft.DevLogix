@@ -205,7 +205,7 @@
 
                                 <lc:LookupColumn PropertyName="{lc:NameOf UserName, Type={x:Type lm:TimeClockLookup}}" Header="User" Width="350"/>
 
-                                <lc:LookupColumn PropertyName="{lc:NameOf MinutesSpent, Type={x:Type lm:TimeClockLookup}}" Header="Minutes Spent" TextAlignment="Right" Width="150"/>
+                                <lc:LookupColumn PropertyName="{lc:NameOf MinutesSpent, Type={x:Type lm:TimeClockLookup}}" Header="Time Spent" TextAlignment="Right" Width="150"/>
 
                             </lc:LookupControl.LookupColumns>
 

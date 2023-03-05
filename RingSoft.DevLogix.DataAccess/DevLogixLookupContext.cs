@@ -28,6 +28,7 @@ namespace RingSoft.DevLogix.DataAccess
     }
     public class DevLogixLookupContext : LookupContext, IAdvancedFindLookupContext
     {
+        public const int TimeSpentHostId = 100;
         public override DbDataProcessor DataProcessor => _dbDataProcessor;
         protected override DbContext DbContext => _dbContext;
         public LookupContextBase Context { get; }
@@ -165,7 +166,10 @@ namespace RingSoft.DevLogix.DataAccess
             TimeClockLookup.Include(p => p.User)
                 .AddVisibleColumnDefinition(p => p.UserName, "User", p => p.Name, 50);
             TimeClockLookup.AddVisibleColumnDefinition(p => p.PunchInDate, "Punch In Date", p => p.PunchInDate, 25);
-            TimeClockLookup.AddVisibleColumnDefinition(p => p.MinutesSpent, "Minutes Spent", p => p.MinutesSpent, 25);
+            var column =
+                TimeClockLookup.AddVisibleColumnDefinition(p => p.MinutesSpent, "Time Spent", p => p.MinutesSpent,
+                    25);
+            column.HasSearchForHostId(TimeSpentHostId);
             TimeClocks.HasLookupDefinition(TimeClockLookup);
 
             ErrorStatusLookup = new LookupDefinition<ErrorStatusLookup, ErrorStatus>(ErrorStatuses);
