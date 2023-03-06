@@ -16,7 +16,7 @@
 
     <Window.Resources>
 
-        <deg:DataEntryGridDisplayStyle x:Key="CommentCellStyle" DisplayId="{x:Static vm:ProjectTaskLaborPartsManager.LaborPartRowDisplayStyleId}" 
+        <deg:DataEntryGridDisplayStyle x:Key="CommentCellStyle" DisplayId="{x:Static vm:ProjectTaskLaborPartsManager.CommentRowDisplayStyleId}" 
                                        ForegroundBrush="White"
                                        SelectionBrush="White">
             <deg:DataEntryGridDisplayStyle.BackgroundBrush>
@@ -27,14 +27,14 @@
             </deg:DataEntryGridDisplayStyle.BackgroundBrush>
         </deg:DataEntryGridDisplayStyle>
 
-        <!--<deg:DataEntryGridDisplayStyle x:Key="NonInventoryCellStyle" DisplayId="{x:Static lib:AppGlobals.NonInventoryDisplayStyleId}" ForegroundBrush="White" SelectionBrush="White">
+        <deg:DataEntryGridDisplayStyle x:Key="MiscCellStyle" DisplayId="{x:Static vm:ProjectTaskLaborPartsManager.MiscRowDisplayStyleId}" ForegroundBrush="White" SelectionBrush="White">
             <deg:DataEntryGridDisplayStyle.BackgroundBrush>
                 <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
                     <GradientStop Color="#FF6D6DFD" Offset="0"/>
                     <GradientStop Color="Blue" Offset="1"/>
                 </LinearGradientBrush>
             </deg:DataEntryGridDisplayStyle.BackgroundBrush>
-        </deg:DataEntryGridDisplayStyle>-->
+        </deg:DataEntryGridDisplayStyle>
 
     </Window.Resources>
     <Window.DataContext>
@@ -110,6 +110,7 @@
 
                             <deg:DataEntryGrid.DisplayStyles>
                                 <StaticResource ResourceKey="CommentCellStyle"/>
+                                <StaticResource ResourceKey="MiscCellStyle"/>
                             </deg:DataEntryGrid.DisplayStyles>
 
                         </deg:DataEntryGrid>

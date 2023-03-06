@@ -7,10 +7,15 @@ using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using System.Linq;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup.QueryBuilder;
+using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model;
 
 namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 {
+    public interface IProjectTaskView : IDbMaintenanceView
+    {
+        void GetNewLineType(string text, out PrimaryKeyValue laborPartPkValue, out LaborPartLineTypes lineType);
+    }
     public class ProjectTaskViewModel : AppDbMaintenanceViewModel<ProjectTask>
     {
         public override TableDefinition<ProjectTask> TableDefinition => AppGlobals.LookupContext.ProjectTasks;
@@ -157,6 +162,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public AutoFillValue DefaultProjectAutoFillValue { get; private set; }
 
+        public new IProjectTaskView View { get; private set; }
+
         public ProjectTaskViewModel()
         {
             UserAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.UserId))
@@ -185,6 +192,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         protected override void Initialize()
         {
+            if (base.View is IProjectTaskView projectTaskView)
+            {
+                View = projectTaskView;
+            }
             if (LookupAddViewArgs != null && LookupAddViewArgs.ParentWindowPrimaryKeyValue != null)
             {
                 if (LookupAddViewArgs.ParentWindowPrimaryKeyValue.TableDefinition ==

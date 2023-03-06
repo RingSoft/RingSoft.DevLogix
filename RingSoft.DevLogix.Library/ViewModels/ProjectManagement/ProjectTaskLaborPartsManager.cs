@@ -20,7 +20,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         public const int MinutesCostColumnId = (int)ProjectTaskLaborPartColumns.MinutesCost;
         public const int ExtendedMinutesColumnId = (int)ProjectTaskLaborPartColumns.ExtendedMinutes;
 
-        public const int LaborPartRowDisplayStyleId = 100;
+        public const int MiscRowDisplayStyleId = 100;
+        public const int CommentRowDisplayStyleId = 101;
 
         public new ProjectTaskViewModel ViewModel { get; private set; }
 
@@ -31,7 +32,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         protected override DataEntryGridRow GetNewRow()
         {
-            return new ProjectTaskLaborPartLaborPartRow(this);
+            return new ProjectTaskLaborPartNewRow(this);
         }
 
         protected override DbMaintenanceDataEntryGridRow<ProjectTaskLaborPart> ConstructNewRowFromEntity(ProjectTaskLaborPart entity)

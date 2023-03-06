@@ -16,13 +16,14 @@ using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using RingSoft.DbMaintenance;
+using RingSoft.DevLogix.Library.ViewModels.ProjectManagement;
 
 namespace RingSoft.DevLogix.ProjectManagement
 {
     /// <summary>
     /// Interaction logic for ProjectTaskMaintenanceWindow.xaml
     /// </summary>
-    public partial class ProjectTaskMaintenanceWindow
+    public partial class ProjectTaskMaintenanceWindow : IProjectTaskView
     {
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Project Task";
@@ -62,7 +63,20 @@ namespace RingSoft.DevLogix.ProjectManagement
             {
                 KeyControl.Focus();
             }
-        base.OnValidationFail(fieldDefinition, text, caption);
+            base.OnValidationFail(fieldDefinition, text, caption);
         }
+
+        public void GetNewLineType(string text, out PrimaryKeyValue laborPartPkValue, out LaborPartLineTypes lineType)
+        {
+            var result = LaborPartLineTypes.LaborPart;
+            var window = new TaskLaborPartLtSelectorWindow(text);
+            window.Owner = this;
+            window.ShowInTaskbar = false;
+            window.ShowDialog();
+            laborPartPkValue = window.ViewModel.NewLaborPartPkValue;
+            lineType = window.ViewModel.NewLineType;
+
+        }
+
     }
 }
