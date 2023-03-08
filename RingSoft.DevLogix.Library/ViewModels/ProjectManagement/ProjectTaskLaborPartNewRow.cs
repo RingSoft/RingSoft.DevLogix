@@ -19,6 +19,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         }
 
         public override LaborPartLineTypes LaborPartLineType => LaborPartLineTypes.NewRow;
+        public override decimal GetExtendedMinutesCost()
+        {
+            return 0;
+        }
 
         public override DataEntryGridCellProps GetCellProps(int columnId)
         {
@@ -94,6 +98,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                                     Manager.ReplaceRow(this, newMiscRow);
                                     break;
                                 case LaborPartLineTypes.Comment:
+                                    var commentRow = new ProjectTaskLaborPartCommentRow(Manager);
+                                    Manager.ReplaceRow(this, commentRow);
+                                    commentRow.SetComment(autoFillCellProps.AutoFillValue.Text);
                                     break;
                                 default:
                                     throw new ArgumentOutOfRangeException();

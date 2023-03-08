@@ -23,6 +23,8 @@ namespace RingSoft.DevLogix.DataAccess.Configurations.ProjectManagement
             builder.Property(p => p.SaturdayHours).HasColumnType(DbConstants.DecimalColumnType);
             builder.Property(p => p.Notes).HasColumnType(DbConstants.MemoColumnType);
             builder.Property(p => p.IsBillable).HasColumnType(DbConstants.BoolColumnType);
+            builder.Property(p => p.EstimatedMinutes).HasColumnType(DbConstants.DecimalColumnType);
+            builder.Property(p => p.EstimatedCost).HasColumnType(DbConstants.DecimalColumnType);
             builder.Property(p => p.MinutesSpent).HasColumnType(DbConstants.DecimalColumnType);
             builder.Property(p => p.Cost).HasColumnType(DbConstants.DecimalColumnType);
 

@@ -13,6 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using RingSoft.App.Controls;
 using RingSoft.DataEntryControls.Engine;
+using RingSoft.DataEntryControls.Engine.DataEntryGrid;
+using RingSoft.DataEntryControls.WPF.DataEntryGrid;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using RingSoft.DbMaintenance;
@@ -66,6 +68,13 @@ namespace RingSoft.DevLogix.ProjectManagement
             base.OnValidationFail(fieldDefinition, text, caption);
         }
 
+        public override void ResetViewForNewRecord()
+        {
+            TabControl.SelectedItem = LaborPartsTabItem;
+            KeyControl.Focus();
+            base.ResetViewForNewRecord();
+        }
+
         public void GetNewLineType(string text, out PrimaryKeyValue laborPartPkValue, out LaborPartLineTypes lineType)
         {
             var result = LaborPartLineTypes.LaborPart;
@@ -77,6 +86,12 @@ namespace RingSoft.DevLogix.ProjectManagement
             lineType = window.ViewModel.NewLineType;
 
         }
-
+        public bool ShowCommentEditor(DataEntryGridMemoValue comment)
+        {
+            var memoEditor = new DataEntryGridMemoEditor(comment);
+            memoEditor.Owner = this;
+            memoEditor.Title = "Edit Comment";
+            return memoEditor.ShowDialog();
+        }
     }
 }

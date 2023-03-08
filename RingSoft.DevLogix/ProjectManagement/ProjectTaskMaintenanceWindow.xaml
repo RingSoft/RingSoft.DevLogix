@@ -51,6 +51,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
@@ -82,13 +83,21 @@
 
             <dl:TimeControl Grid.Row="2" Grid.Column="1" Width="150" Minutes="{Binding MinutesCost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left"/>
 
-            <Label Grid.Row="2" Grid.Column="2" Content="Percent Complete"/>
+            <Label Grid.Row="2" Grid.Column="2" Content="Cost"/>
 
-            <dec:DecimalEditControl Grid.Row="2" Grid.Column="3" Width="75" FormatType="Percent" Value="{Binding PercentComplete, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" TextAlignment="Left"/>
+            <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="3" Width="150" HorizontalAlignment="Left"/>
 
-            <TabControl Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="5">
+            <Label Grid.Row="3" Grid.Column="0" Content="Calculated Time Cost"/>
 
-                <TabItem Header="Labor Parts">
+            <dec:StringReadOnlyBox Grid.Row="3" Grid.Column="1" Width="150" HorizontalAlignment="Left" Text="{Binding TotalMinutesCostText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <Label Grid.Row="3" Grid.Column="2" Content="Percent Complete"/>
+
+            <dec:DecimalEditControl Grid.Row="3" Grid.Column="3" Width="75" FormatType="Percent" Value="{Binding PercentComplete, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" TextAlignment="Left"/>
+
+            <TabControl Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="5" x:Name="TabControl">
+
+                <TabItem Header="Labor Parts" x:Name="LaborPartsTabItem">
 
                     <DockPanel>
 

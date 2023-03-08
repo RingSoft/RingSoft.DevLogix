@@ -2,6 +2,7 @@
 using RingSoft.DbMaintenance;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
@@ -67,7 +68,12 @@ namespace RingSoft.DevLogix.ProjectManagement
         protected override void OnLoaded()
         {
             RegisterFormKeyControl(NameControl);
+            CostDiffControl.Value = -10;
+            CostDiffControl.Foreground = new SolidColorBrush(Colors.Red);
 
+            var minutesDiff = 10;
+            TimeDiffControl.Text = $"-{AppGlobals.MakeTimeSpent(minutesDiff)}";
+            TimeDiffControl.Foreground = new SolidColorBrush(Colors.Red);
             base.OnLoaded();
         }
 

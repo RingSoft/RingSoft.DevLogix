@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
@@ -25,6 +26,9 @@ namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
 
         [Required]
         public decimal MinutesCost { get; set; }
+
+        [DefaultValue(0)]
+        public decimal EstimatedCost { get; set; }
 
         [Required]
         public decimal PercentComplete { get; set; }

@@ -9,12 +9,15 @@ using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model;
+using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 
 namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 {
     public interface IProjectTaskView : IDbMaintenanceView
     {
         void GetNewLineType(string text, out PrimaryKeyValue laborPartPkValue, out LaborPartLineTypes lineType);
+
+        bool ShowCommentEditor(DataEntryGridMemoValue comment);
     }
     public class ProjectTaskViewModel : AppDbMaintenanceViewModel<ProjectTask>
     {
@@ -114,6 +117,33 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
+        private decimal _totalMinutesCost;
+
+        public decimal TotalMinutesCost
+        {
+            get => _totalMinutesCost;
+            set
+            {
+                _totalMinutesCost = value;
+                TotalMinutesCostText = AppGlobals.MakeTimeSpent(value);
+            }
+        }
+
+        private string _totalMinutesCostText;
+
+        public string TotalMinutesCostText
+        {
+            get => _totalMinutesCostText;
+            set
+            {
+                if (_totalMinutesCostText == value)
+                    return;
+
+                _totalMinutesCostText = value;
+                OnPropertyChanged(null, false);
+            }
+        }
+
         private decimal _percentComplete;
 
         public decimal PercentComplete
@@ -182,6 +212,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 .Include(p => p.User)
                 .Include(p => p.Project)
                 .Include(p => p.LaborParts)
+                .ThenInclude(p => p.LaborPart)
                 .FirstOrDefault(p => p.Id == newEntity.Id);
             Id = result.Id;
             KeyAutoFillValue = result.GetAutoFillValue();
@@ -242,6 +273,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             PercentComplete = entity.PercentComplete;
             Notes = entity.Notes;
             LaborPartsManager.LoadGrid(entity.LaborParts);
+            LaborPartsManager.CalculateTotalMinutesCost();
         }
 
         protected override ProjectTask GetEntityData()
@@ -302,12 +334,30 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             MinutesCost = 0;
             PercentComplete = 0;
             Notes = string.Empty;
+            LaborPartsManager.SetupForNewRecord();
+            LaborPartsManager.CalculateTotalMinutesCost();
         }
 
         protected override bool SaveEntity(ProjectTask entity)
         {
+            var details = LaborPartsManager.GetEntityList();
             var context = AppGlobals.DataRepository.GetDataContext();
-            return context.SaveEntity(entity, "Saving Project Task");
+            var result = context.SaveEntity(entity, "Saving Project Task");
+
+            if (result)
+            {
+                foreach (var projectTaskLaborPart in details)
+                {
+                    projectTaskLaborPart.ProjectTaskId = entity.Id;
+                }
+
+                var table = context.GetTable<ProjectTaskLaborPart>();
+                context.RemoveRange(table.Where(p => p.ProjectTaskId == entity.Id));
+                context.AddRange(details);
+                result = context.Commit("Saving Project Task");
+            }
+
+            return result;
         }
 
         protected override bool DeleteEntity()

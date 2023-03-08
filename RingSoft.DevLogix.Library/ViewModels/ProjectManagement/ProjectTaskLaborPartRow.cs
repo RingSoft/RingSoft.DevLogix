@@ -25,6 +25,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public abstract LaborPartLineTypes LaborPartLineType { get; }
 
+        public abstract decimal GetExtendedMinutesCost();
+
         public EnumFieldTranslation EnumTranslation { get; private set; } = new EnumFieldTranslation();
 
         public decimal MinutesCost { get; private set; }
@@ -88,6 +90,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     throw new ArgumentOutOfRangeException();
             }
             base.SetCellValue(value);
+        }
+
+        public override void SaveToEntity(ProjectTaskLaborPart entity, int rowIndex)
+        {
+            entity.DetailId = rowIndex;
+            entity.RowId = RowId;
         }
     }
 }

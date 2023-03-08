@@ -45,6 +45,12 @@ namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
         public bool IsBillable { get; set; }
 
         [DefaultValue(0)]
+        public decimal EstimatedMinutes { get; set; }
+
+        [DefaultValue(0)]
+        public decimal EstimatedCost { get; set; }
+
+        [DefaultValue(0)]
         public decimal MinutesSpent { get; set; }
 
         [DefaultValue(0)]

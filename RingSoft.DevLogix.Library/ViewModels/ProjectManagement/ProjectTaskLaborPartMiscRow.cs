@@ -8,6 +8,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
     public class ProjectTaskLaborPartMiscRow : ProjectTaskLaborPartRow
     {
         public override LaborPartLineTypes LaborPartLineType => LaborPartLineTypes.Miscellaneous;
+        public override decimal GetExtendedMinutesCost()
+        {
+            return Minutes * Quantity;
+        }
 
         public string Description { get; private set; }
 
@@ -19,6 +23,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public ProjectTaskLaborPartMiscRow(ProjectTaskLaborPartsManager manager) : base(manager)
         {
+            DisplayStyleId = ProjectTaskLaborPartsManager.MiscRowDisplayStyleId;
         }
 
         public void SetDescription(string description)
@@ -54,14 +59,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         public override DataEntryGridCellStyle GetCellStyle(int columnId)
         {
             var displayStyle = new DataEntryGridCellStyle();
-            displayStyle.DisplayStyleId = ProjectTaskLaborPartsManager.MiscRowDisplayStyleId;
 
             var column = (ProjectTaskLaborPartColumns)columnId;
             switch (column)
             {
                 case ProjectTaskLaborPartColumns.LineType:
                     displayStyle.State = DataEntryGridCellStates.Disabled;
-                    displayStyle.DisplayStyleId = 0;
                     break;
                 case ProjectTaskLaborPartColumns.LaborPart:
                     displayStyle.ColumnHeader = "Description";
@@ -72,7 +75,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     break;
                 case ProjectTaskLaborPartColumns.ExtendedMinutes:
                     displayStyle.State = DataEntryGridCellStates.Disabled;
-                    displayStyle.DisplayStyleId = 0;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -96,23 +98,28 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     if (value is DataEntryGridIntegerCellProps integerCellProps)
                     {
                         Quantity = integerCellProps.Value.Value;
-                        CaalculateRow();
+                        if (Quantity == 0)
+                        {
+                            Quantity = 1;
+                        }
+                        CalculateRow();
                     }
                     break;
                 case ProjectTaskLaborPartColumns.MinutesCost:
                     if (value is TimeCostCellProps timeCostCellProps)
                     {
                         Minutes = timeCostCellProps.Minutes;
-                        CaalculateRow();
+                        CalculateRow();
                     }
                     break;
             }
             base.SetCellValue(value);
         }
 
-        private void CaalculateRow()
+        private void CalculateRow()
         {
             ExtendedMinutes = Quantity * Minutes;
+            Manager.CalculateTotalMinutesCost();
         }
 
         public override void LoadFromEntity(ProjectTaskLaborPart entity)

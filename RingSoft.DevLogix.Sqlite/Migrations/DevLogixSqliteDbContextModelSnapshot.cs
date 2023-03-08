@@ -592,6 +592,12 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<DateTime>("Deadline")
                         .HasColumnType("datetime");
 
+                    b.Property<decimal>("EstimatedCost")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("EstimatedMinutes")
+                        .HasColumnType("numeric");
+
                     b.Property<decimal?>("FridayHours")
                         .HasColumnType("numeric");
 
@@ -646,6 +652,9 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
+                    b.Property<decimal>("EstimatedCost")
+                        .HasColumnType("numeric");
+
                     b.Property<decimal>("MinutesCost")
                         .HasColumnType("numeric");
 
@@ -683,6 +692,9 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<int>("DetailId")
                         .HasColumnType("integer");
 
+                    b.Property<bool?>("CommentCrLf")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Description")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
@@ -690,11 +702,23 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<int?>("LaborPartId")
                         .HasColumnType("integer");
 
+                    b.Property<byte>("LineType")
+                        .HasColumnType("smallint");
+
                     b.Property<decimal>("MinutesCost")
                         .HasColumnType("numeric");
 
+                    b.Property<string>("ParentRowId")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
                     b.Property<int?>("Quantity")
                         .HasColumnType("integer");
+
+                    b.Property<string>("RowId")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
 
                     b.HasKey("ProjectTaskId", "DetailId");
 

@@ -1,4 +1,8 @@
-﻿using RingSoft.DataEntryControls.Engine.DataEntryGrid;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Linq;
+using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 
@@ -35,9 +39,37 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             return new ProjectTaskLaborPartNewRow(this);
         }
 
-        protected override DbMaintenanceDataEntryGridRow<ProjectTaskLaborPart> ConstructNewRowFromEntity(ProjectTaskLaborPart entity)
+        protected override DbMaintenanceDataEntryGridRow<ProjectTaskLaborPart> 
+            ConstructNewRowFromEntity(ProjectTaskLaborPart entity)
         {
+            var lineType = (LaborPartLineTypes)entity.LineType;
+            switch (lineType)
+            {
+                case LaborPartLineTypes.NewRow:
+                    break;
+                case LaborPartLineTypes.LaborPart:
+                    return new ProjectTaskLaborPartLaborPartRow(this);
+                case LaborPartLineTypes.Miscellaneous:
+                    return new ProjectTaskLaborPartMiscRow(this);
+                case LaborPartLineTypes.Comment:
+                    return new ProjectTaskLaborPartCommentRow(this);
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
             return new ProjectTaskLaborPartLaborPartRow(this);
+        }
+
+        public void CalculateTotalMinutesCost()
+        {
+            var rows = Rows.OfType<ProjectTaskLaborPartRow>().ToList();
+            var total = rows.Sum(p => p.GetExtendedMinutesCost());
+            ViewModel.TotalMinutesCost = total;
+        }
+
+        protected override void OnRowsChanged(NotifyCollectionChangedEventArgs e)
+        {
+            CalculateTotalMinutesCost();
+            base.OnRowsChanged(e);
         }
     }
 }

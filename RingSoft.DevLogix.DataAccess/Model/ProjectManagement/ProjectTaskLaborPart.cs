@@ -13,6 +13,18 @@ namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
         [Required]
         public int DetailId { get; set; }
 
+        [Required]
+        public byte LineType { get; set; }
+
+        [Required]
+        [MaxLength(50)]
+        public string  RowId { get; set; }
+
+        [MaxLength(50)]
+        public string? ParentRowId { get; set; }
+
+        public bool? CommentCrLf { get; set; }
+
         public int? LaborPartId { get; set; }
 
         public virtual LaborPart LaborPart { get; set; }

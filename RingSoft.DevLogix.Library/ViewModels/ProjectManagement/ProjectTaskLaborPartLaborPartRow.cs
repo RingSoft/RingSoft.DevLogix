@@ -11,6 +11,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
     public class ProjectTaskLaborPartLaborPartRow : ProjectTaskLaborPartRow
     {
         public override LaborPartLineTypes LaborPartLineType => LaborPartLineTypes.LaborPart;
+        public override decimal GetExtendedMinutesCost()
+        {
+            return MinutesCost * Quantity;
+        }
 
         public AutoFillSetup LaborPartAutoFillSetup { get; private set; }
 
@@ -48,7 +52,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 if (laborPart != null)
                 {
                     MinutesCost = laborPart.MinutesCost;
-                    ExtendedMinutesCost = MinutesCost * Quantity;
+                    CalculateRow();
                 }
             }
         }
@@ -106,13 +110,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     if (value is DataEntryGridIntegerCellProps integerCellProps)
                     {
                         Quantity = integerCellProps.Value.Value;
-                        ExtendedMinutesCost = MinutesCost * Quantity;
+                        CalculateRow();
                     }
                     break;
                 case ProjectTaskLaborPartColumns.MinutesCost:
                     if (value is TimeCostCellProps timeCostCellProps)
                     {
                         MinutesCost = timeCostCellProps.Minutes;
+                        CalculateRow();
                     }
                     break;
                 case ProjectTaskLaborPartColumns.ExtendedMinutes:
@@ -123,9 +128,18 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             base.SetCellValue(value);
         }
 
+        private void CalculateRow()
+        {
+            ExtendedMinutesCost = Quantity * MinutesCost;
+            Manager.CalculateTotalMinutesCost();
+        }
+
         public override void LoadFromEntity(ProjectTaskLaborPart entity)
         {
-            throw new System.NotImplementedException();
+            LaborPartAutoFillValue = entity.LaborPart.GetAutoFillValue();
+            MinutesCost = entity.MinutesCost;
+            Quantity = entity.Quantity.Value;
+            ExtendedMinutesCost = GetExtendedMinutesCost();
         }
 
         public override bool ValidateRow()
@@ -135,7 +149,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public override void SaveToEntity(ProjectTaskLaborPart entity, int rowIndex)
         {
-            throw new System.NotImplementedException();
+            entity.LaborPartId = LaborPartAutoFillValue.GetEntity<LaborPart>().Id;
+            entity.MinutesCost = MinutesCost;
+            entity.Quantity = Quantity;
+
+            base.SaveToEntity(entity, rowIndex);
         }
     }
 }
