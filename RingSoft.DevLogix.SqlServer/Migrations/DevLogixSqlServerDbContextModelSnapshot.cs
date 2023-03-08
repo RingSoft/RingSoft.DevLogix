@@ -688,6 +688,9 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<decimal>("EstimatedCost")
                         .HasColumnType("numeric");
 
+                    b.Property<decimal>("HourlyRate")
+                        .HasColumnType("numeric");
+
                     b.Property<decimal>("MinutesCost")
                         .HasColumnType("numeric");
 

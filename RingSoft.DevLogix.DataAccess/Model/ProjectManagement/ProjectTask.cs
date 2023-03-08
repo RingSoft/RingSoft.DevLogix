@@ -33,6 +33,10 @@ namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
         [Required]
         public decimal PercentComplete { get; set; }
 
+        [Required]
+        [DefaultValue(0)]
+        public decimal HourlyRate { get; set; }
+
         public string? Notes { get; set; }
 
         public virtual ICollection<ProjectTaskLaborPart> LaborParts { get; set; }

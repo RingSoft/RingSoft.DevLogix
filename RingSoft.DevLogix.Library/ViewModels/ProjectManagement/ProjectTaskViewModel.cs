@@ -203,6 +203,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             ProjectAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ProjectId));
 
             LaborPartsManager = new ProjectTaskLaborPartsManager(this);
+            TablesToDelete.Add(AppGlobals.LookupContext.ProjectTaskLaborParts);
         }
 
         protected override ProjectTask PopulatePrimaryKeyControls(ProjectTask newEntity, PrimaryKeyValue primaryKeyValue)
@@ -363,8 +364,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         protected override bool DeleteEntity()
         {
             var context = AppGlobals.DataRepository.GetDataContext();
+
             var entity = context.GetTable<ProjectTask>()
                 .FirstOrDefault(p => p.Id == Id);
+
+            var table = context.GetTable<ProjectTaskLaborPart>();
+            context.RemoveRange(table.Where(p => p.ProjectTaskId == entity.Id));
+
             return context.DeleteEntity(entity, "Deleting Project Task");
         }
     }
