@@ -36,10 +36,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         string StartRecalcProcedure(LookupDefinitionBase lookupDefinition);
 
         void UpdateRecalcProcedure(int currentProject, int totalProjects, string currentProjectText);
+
+        void SetUserReadOnlyMode(bool value);
     }
     public class UserMaintenanceViewModel : DevLogixDbMaintenanceViewModel<User>
     {
         public override TableDefinition<User> TableDefinition => AppGlobals.LookupContext.Users;
+
+        public override bool SetReadOnlyMode => false;
 
         private int _id;
 
@@ -419,6 +423,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             TimeClockLookup.FilterDefinition.ClearFixedFilters();
             TimeClockLookup.FilterDefinition.AddFixedFilter(p => p.UserId, Conditions.Equals, Id);
             TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
+
+            if (!TableDefinition.HasRight(RightTypes.AllowEdit))
+            {
+                var readOnlyMode = AppGlobals.LoggedInUser.Id != Id;
+                View.SetUserReadOnlyMode(readOnlyMode);
+                SaveButtonEnabled = !readOnlyMode;
+            }
 
             return result;
         }

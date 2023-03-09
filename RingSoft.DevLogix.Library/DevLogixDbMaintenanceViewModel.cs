@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 using RingSoft.App.Library;
+using RingSoft.DbMaintenance;
 
 namespace RingSoft.DevLogix.Library
 {
     public abstract class DevLogixDbMaintenanceViewModel<TEntity> : AppDbMaintenanceViewModel<TEntity> where TEntity : new()
     {
+        public virtual bool SetReadOnlyMode { get; } = true;
         protected override void Initialize()
         {
             base.Initialize();
@@ -18,8 +20,8 @@ namespace RingSoft.DevLogix.Library
                 }
                 else
                 {
-                    appDbMaintenanceProcessor.WindowReadOnlyMode = true;
-                    ReadOnlyMode = true;
+                    appDbMaintenanceProcessor.WindowReadOnlyMode = SetReadOnlyMode;
+                    ReadOnlyMode = SetReadOnlyMode;
                 }
             }
         }

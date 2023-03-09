@@ -28,8 +28,6 @@ namespace RingSoft.DevLogix.UserManagement
     {
         public Button ClockOutButton { get; set; }
 
-        public Button ChangeChartButton { get; set; }
-
         public Button RecalcButton { get; set; }
 
         static UserHeaderControl()
@@ -40,7 +38,7 @@ namespace RingSoft.DevLogix.UserManagement
         public override void OnApplyTemplate()
         {
             ClockOutButton = GetTemplateChild(nameof(ClockOutButton)) as Button;
-            ChangeChartButton = GetTemplateChild(nameof(ChangeChartButton)) as Button;
+
             RecalcButton = GetTemplateChild(nameof(RecalcButton)) as Button;
 
             base.OnApplyTemplate();
@@ -62,9 +60,6 @@ namespace RingSoft.DevLogix.UserManagement
             {
                 if (TopHeaderControl.CustomPanel is UserHeaderControl userHeaderControl)
                 {
-                    userHeaderControl.ChangeChartButton.Command =
-                        UserMaintenanceViewModel.ChangeChartCommand;
-
                     userHeaderControl.ClockOutButton.Command = UserMaintenanceViewModel.ClockOutCommand;
 
                     userHeaderControl.RecalcButton.Command = UserMaintenanceViewModel.RecalcCommand;
@@ -142,6 +137,16 @@ namespace RingSoft.DevLogix.UserManagement
             }
 
             GroupsTab.Visibility = !AppGlobals.LookupContext.Groups.HasRight(RightTypes.AllowView) ? Visibility.Collapsed : Visibility.Visible;
+
+            if (UserMaintenanceViewModel.TableDefinition.HasRight(RightTypes.AllowEdit))
+            {
+                RightsTab.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                RightsTab.Visibility = Visibility.Collapsed;
+            }
+
         }
 
         public void OnValGridFail()
@@ -181,6 +186,18 @@ namespace RingSoft.DevLogix.UserManagement
         {
             var progress = $"Recalculating User {currentUserText} {currentUser} / {totalUsers}";
             RecalcProcedure.SplashWindow.SetProgress(progress);
+        }
+
+        public void SetUserReadOnlyMode(bool value)
+        {
+            NameControl.SetReadOnlyMode(true);
+            DepartmentControl.SetReadOnlyMode(true);
+            SupervisorControl.SetReadOnlyMode(true);
+            DefaultChartControl.SetReadOnlyMode(value);
+            EmailAddressControl.IsEnabled = !value;
+            PhoneControl.IsEnabled = !value;
+            HourlyRateControl.IsEnabled = false;
+            NotesControl.SetReadOnlyMode(value);
         }
 
 

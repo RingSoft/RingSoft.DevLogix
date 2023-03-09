@@ -6,7 +6,7 @@ using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 
 namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 {
-    public class LaborPartViewModel : AppDbMaintenanceViewModel<LaborPart>
+    public class LaborPartViewModel : DevLogixDbMaintenanceViewModel<LaborPart>
     {
         public override TableDefinition<LaborPart> TableDefinition => AppGlobals.LookupContext.LaborParts;
 

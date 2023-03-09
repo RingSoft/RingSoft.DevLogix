@@ -10,6 +10,7 @@ using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
+using MySqlX.XDevAPI.Common;
 
 namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 {
@@ -18,10 +19,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         void GetNewLineType(string text, out PrimaryKeyValue laborPartPkValue, out LaborPartLineTypes lineType);
 
         bool ShowCommentEditor(DataEntryGridMemoValue comment);
+
+        void SetTaskReadOnlyMode(bool value);
     }
-    public class ProjectTaskViewModel : AppDbMaintenanceViewModel<ProjectTask>
+    public class ProjectTaskViewModel : DevLogixDbMaintenanceViewModel<ProjectTask>
     {
         public override TableDefinition<ProjectTask> TableDefinition => AppGlobals.LookupContext.ProjectTasks;
+
+        public override bool SetReadOnlyMode => false;
 
         private int _id;
 
@@ -129,6 +134,21 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
+        private decimal _hourlyRate;
+
+        public decimal HourlyRate
+        {
+            get => _hourlyRate;
+            set
+            {
+                if (_hourlyRate == value)
+                    return;
+
+                _hourlyRate = value;
+                OnPropertyChanged();
+            }
+        }
+
         private string _totalMinutesCostText;
 
         public string TotalMinutesCostText
@@ -174,7 +194,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
-
         private string? _notes;
 
         public string? Notes
@@ -218,6 +237,20 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             Id = result.Id;
             KeyAutoFillValue = result.GetAutoFillValue();
 
+            var hasEditRight = TableDefinition.HasRight(RightTypes.AllowEdit);
+            if (!hasEditRight)
+            {
+                if (result.UserId == AppGlobals.LoggedInUser.Id)
+                {
+                    SaveButtonEnabled = true;
+                    View.SetTaskReadOnlyMode(false);
+                }
+                else
+                {
+                    SaveButtonEnabled = false;
+                    View.SetTaskReadOnlyMode(true);
+                }
+            }
             return result;
 
         }

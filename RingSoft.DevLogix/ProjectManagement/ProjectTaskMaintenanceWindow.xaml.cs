@@ -36,7 +36,7 @@ namespace RingSoft.DevLogix.ProjectManagement
         public ProjectTaskMaintenanceWindow()
         {
             InitializeComponent();
-            RegisterFormKeyControl(KeyControl);
+            
             UserControl.GotFocus += (sender, args) =>
             {
                 if (!LocalViewModel.ProjectAutoFillValue.IsValid() && !_settingUserFocus)
@@ -49,6 +49,12 @@ namespace RingSoft.DevLogix.ProjectManagement
                     ProjectControl.Focus();
                 }
             };
+        }
+
+        protected override void OnLoaded()
+        {
+            RegisterFormKeyControl(KeyControl);
+            base.OnLoaded();
         }
 
         public override void OnValidationFail(FieldDefinition fieldDefinition, string text, string caption)
@@ -92,6 +98,18 @@ namespace RingSoft.DevLogix.ProjectManagement
             memoEditor.Owner = this;
             memoEditor.Title = "Edit Comment";
             return memoEditor.ShowDialog();
+        }
+
+        public void SetTaskReadOnlyMode(bool value)
+        {
+            KeyControl.SetReadOnlyMode(true);
+            UserControl.SetReadOnlyMode(true);
+            ProjectControl.SetReadOnlyMode(true);
+            HourlyRateControl.IsEnabled = false;
+            TimeControl.IsEnabled = false;
+            LaborPartsGrid.SetReadOnlyMode(true);
+            PercentCompleteControl.IsEnabled = !value;
+            NotesControl.SetReadOnlyMode(value);
         }
     }
 }
