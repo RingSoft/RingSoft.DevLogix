@@ -139,7 +139,7 @@ namespace RingSoft.DevLogix
             }
             else
             {
-                _rightsString += rightsString;
+                _rightsString = rightsString;
                 _rightsMode = RightsModes.Load;
             }
         }

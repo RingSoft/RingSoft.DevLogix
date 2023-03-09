@@ -15,7 +15,12 @@ namespace RingSoft.DevLogix.ProjectManagement
         public LaborPartMaintenanceWindow()
         {
             InitializeComponent();
+        }
+
+        protected override void OnLoaded()
+        {
             RegisterFormKeyControl(KeyControl);
+            base.OnLoaded();
         }
 
         public override void ResetViewForNewRecord()

@@ -25,5 +25,14 @@ namespace RingSoft.DevLogix.Library
                 }
             }
         }
+
+        protected override bool CheckKeyValueTextChanged()
+        {
+            if (!TableDefinition.HasRight(RightTypes.AllowEdit))
+            {
+                return true;
+            }
+            return base.CheckKeyValueTextChanged();
+        }
     }
 }

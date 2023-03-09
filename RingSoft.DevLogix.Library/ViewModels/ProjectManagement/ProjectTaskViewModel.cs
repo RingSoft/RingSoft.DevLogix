@@ -312,7 +312,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         protected override ProjectTask GetEntityData()
         {
-            return new ProjectTask
+            var result = new ProjectTask
             {
                 Id = Id,
                 Name = KeyAutoFillValue.Text,
@@ -322,6 +322,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 PercentComplete = PercentComplete,
                 Notes = Notes,
             };
+            if (!TableDefinition.HasRight(RightTypes.AllowEdit) && Entity != null)
+            {
+                result.Name = Entity.Name;
+            }
+            return result;
         }
 
         protected override bool ValidateEntity(ProjectTask entity)

@@ -502,6 +502,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 HourlyRate = HourlyRate,
             };
             if (Id != 0)
+
+                if (!TableDefinition.HasRight(RightTypes.AllowEdit))
+                {
+                    if (Entity != null)
+                    {
+                        user.Name= Entity.Name;
+                    }
+                }
+
             {
                 var existUser = table.FirstOrDefault(p => p.Id == Id);
                 if (existUser != null)

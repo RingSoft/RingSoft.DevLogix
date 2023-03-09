@@ -190,7 +190,6 @@ namespace RingSoft.DevLogix.UserManagement
 
         public void SetUserReadOnlyMode(bool value)
         {
-            NameControl.SetReadOnlyMode(true);
             DepartmentControl.SetReadOnlyMode(true);
             SupervisorControl.SetReadOnlyMode(true);
             DefaultChartControl.SetReadOnlyMode(value);

@@ -102,7 +102,6 @@ namespace RingSoft.DevLogix.ProjectManagement
 
         public void SetTaskReadOnlyMode(bool value)
         {
-            KeyControl.SetReadOnlyMode(true);
             UserControl.SetReadOnlyMode(true);
             ProjectControl.SetReadOnlyMode(true);
             HourlyRateControl.IsEnabled = false;
