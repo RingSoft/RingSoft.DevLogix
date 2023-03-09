@@ -36,7 +36,7 @@ namespace RingSoft.DevLogix.ProjectManagement
         public ProjectTaskMaintenanceWindow()
         {
             InitializeComponent();
-            
+
             UserControl.GotFocus += (sender, args) =>
             {
                 if (!LocalViewModel.ProjectAutoFillValue.IsValid() && !_settingUserFocus)
@@ -61,22 +61,33 @@ namespace RingSoft.DevLogix.ProjectManagement
         {
             if (fieldDefinition == LocalViewModel.TableDefinition.GetFieldDefinition(p => p.ProjectId))
             {
+                SetFocusToTab(DetailsTabItem);
                 ProjectControl.Focus();
             }
             else if (fieldDefinition == LocalViewModel.TableDefinition.GetFieldDefinition(p => p.UserId))
             {
+                SetFocusToTab(DetailsTabItem);
+                _settingUserFocus = true;
                 UserControl.Focus();
+                _settingUserFocus = false;
             }
             else if (fieldDefinition == LocalViewModel.TableDefinition.GetFieldDefinition(p => p.Name))
             {
                 KeyControl.Focus();
             }
+
             base.OnValidationFail(fieldDefinition, text, caption);
         }
 
-        public override void ResetViewForNewRecord()
+        private void SetFocusToTab(TabItem tabItem)
         {
-            TabControl.SelectedItem = LaborPartsTabItem;
+            TabControl.SelectedItem = tabItem;
+            tabItem.UpdateLayout();
+        }
+
+    public override void ResetViewForNewRecord()
+        {
+            TabControl.SelectedItem = DetailsTabItem;
             KeyControl.Focus();
             base.ResetViewForNewRecord();
         }

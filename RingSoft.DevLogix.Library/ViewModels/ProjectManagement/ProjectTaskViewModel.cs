@@ -209,6 +209,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
+        private ProjectTotalsManager _projectTotalsManager;
+
+        public ProjectTotalsManager ProjectTotalsManager
+        {
+            get => _projectTotalsManager;
+            set
+            {
+                if (_projectTotalsManager == value)
+                    return;
+
+                _projectTotalsManager = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         public AutoFillValue DefaultProjectAutoFillValue { get; private set; }
 
         public new IProjectTaskView View { get; private set; }
@@ -220,6 +236,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 AllowLookupAdd = false,
             };
             ProjectAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ProjectId));
+
+            ProjectTotalsManager = new ProjectTotalsManager();
 
             LaborPartsManager = new ProjectTaskLaborPartsManager(this);
             TablesToDelete.Add(AppGlobals.LookupContext.ProjectTaskLaborParts);
@@ -274,7 +292,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                             project.Id.ToString());
                 }
             }
-
+            ProjectTotalsManager.Initialize();
             base.Initialize();
         }
 

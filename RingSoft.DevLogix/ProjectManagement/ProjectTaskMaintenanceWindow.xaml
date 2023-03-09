@@ -49,10 +49,6 @@
             
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
@@ -72,43 +68,86 @@
 
             <lc:AutoFillControl Grid.Row="0" Grid.Column="3" x:Name="KeyControl" Width="200" HorizontalAlignment="Left"/>
 
-            <Label Grid.Row="1" Grid.Column="0" Content="Project"/>
-
-            <lc:AutoFillControl Grid.Row="1" Grid.Column="1" x:Name="ProjectControl" Width="200" HorizontalAlignment="Left" Setup="{Binding ProjectAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding ProjectAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-
-            <Label Grid.Row="1" Grid.Column="2" Content="Assigned To"/>
-
-            <lc:AutoFillControl Grid.Row="1" Grid.Column="3" x:Name="UserControl" Width="200" HorizontalAlignment="Left" Setup="{Binding UserAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding UserAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-
-            <Label Grid.Row="2" Grid.Column="0" Content="Time Cost"/>
-
-            <dl:TimeControl Grid.Row="2" Grid.Column="1" x:Name="TimeControl" Width="150" Minutes="{Binding MinutesCost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left"/>
-
-            <CheckBox Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2" Content="Time Cost Edited" IsEnabled="False" VerticalAlignment="Center"/>
-
-            <Label Grid.Row="3" Grid.Column="0" Content="Percent Complete"/>
-
-            <dec:DecimalEditControl Grid.Row="3" Grid.Column="1" x:Name="PercentCompleteControl" Width="75" FormatType="Percent" Value="{Binding PercentComplete, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" TextAlignment="Left"/>
-
-            <Label Grid.Row="3" Grid.Column="2" Content="Hourly Rate"/>
-
-            <dec:DecimalEditControl Grid.Row="3" Grid.Column="3" x:Name="HourlyRateControl" Width="150" HorizontalAlignment="Left" Value="{Binding HourlyRate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency" TextAlignment="Left"/>
-
-            <Label Grid.Row="4" Grid.Column="0" Content="Calculated Time Cost"/>
-
-            <dec:StringReadOnlyBox Grid.Row="4" Grid.Column="1" Width="150" HorizontalAlignment="Left" Text="{Binding TotalMinutesCostText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-
-            <Label Grid.Row="4" Grid.Column="2" Content="Cost"/>
-
-            <dec:DecimalReadOnlyBox Grid.Row="4" Grid.Column="3" Width="150" HorizontalAlignment="Left"/>
 
             <TabControl Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="5" x:Name="TabControl">
 
+                <TabItem Header="Details" x:Name="DetailsTabItem">
+
+                    <Grid>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Grid.Row="0" Grid.Column="0" Content="Project"/>
+
+                        <lc:AutoFillControl Grid.Row="0" Grid.Column="1" x:Name="ProjectControl" Width="200" HorizontalAlignment="Left" Setup="{Binding ProjectAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding ProjectAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        <Label Grid.Row="0" Grid.Column="2" Content="Assigned To"/>
+
+                        <lc:AutoFillControl Grid.Row="0" Grid.Column="3" x:Name="UserControl" Width="200" HorizontalAlignment="Left" Setup="{Binding UserAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding UserAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        <Label Grid.Row="1" Grid.Column="0" Content="Time Cost"/>
+
+                        <dl:TimeControl Grid.Row="1" Grid.Column="1" x:Name="TimeControl" Width="150" Minutes="{Binding MinutesCost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left"/>
+
+                        <CheckBox Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" Content="Time Cost Edited" IsEnabled="False" VerticalAlignment="Center"/>
+
+                        <Label Grid.Row="2" Grid.Column="0" Content="Percent Complete"/>
+
+                        <dec:DecimalEditControl Grid.Row="2" Grid.Column="1" x:Name="PercentCompleteControl" Width="75" FormatType="Percent" Value="{Binding PercentComplete, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" TextAlignment="Left"/>
+
+                        <Label Grid.Row="2" Grid.Column="2" Content="Hourly Rate"/>
+
+                        <dec:DecimalEditControl Grid.Row="2" Grid.Column="3" x:Name="HourlyRateControl" Width="150" HorizontalAlignment="Left" Value="{Binding HourlyRate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency" TextAlignment="Left"/>
+
+                        <deg:DataEntryGrid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" Manager="{Binding ProjectTotalsManager}" DataEntryCanUserAddRows="False" HorizontalAlignment="Left" Margin="5">
+
+                            <deg:DataEntryGrid.Columns>
+
+                                <deg:DataEntryGridTextColumn Header="Item Type" ColumnId="{x:Static vm:ProjectTotalsManager.TypeColumnId}" Width="100"/>
+
+                                <deg:DataEntryGridTextColumn Header="Time" ColumnId="{x:Static vm:ProjectTotalsManager.TotalTimeColumnId}" Width="125"/>
+
+                                <deg:DataEntryGridTextColumn Header="Cost" ColumnId="{x:Static vm:ProjectTotalsManager.TotalCostColumnId}" Width="150"/>
+
+                            </deg:DataEntryGrid.Columns>
+                        </deg:DataEntryGrid>
+
+                    </Grid>
+
+                </TabItem>
+
                 <TabItem Header="Labor Parts" x:Name="LaborPartsTabItem">
 
-                    <DockPanel>
+                    <Grid>
 
-                        <deg:DataEntryGrid x:Name="LaborPartsGrid" Manager="{Binding LaborPartsManager}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Grid.Row="0" Grid.Column="0" Content="Calculated Time Cost"/>
+
+                        <dec:StringReadOnlyBox Grid.Row="0" Grid.Column="1" Width="150" HorizontalAlignment="Left" Text="{Binding TotalMinutesCostText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        <deg:DataEntryGrid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" x:Name="LaborPartsGrid" Manager="{Binding LaborPartsManager}">
 
                             <deg:DataEntryGrid.Columns>
 
@@ -130,7 +169,7 @@
                             </deg:DataEntryGrid.DisplayStyles>
 
                         </deg:DataEntryGrid>
-                    </DockPanel>
+                    </Grid>
 
                 </TabItem>
 
