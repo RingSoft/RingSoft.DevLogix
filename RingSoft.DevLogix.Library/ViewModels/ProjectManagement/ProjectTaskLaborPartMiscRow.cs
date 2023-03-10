@@ -124,7 +124,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public override void LoadFromEntity(ProjectTaskLaborPart entity)
         {
-            throw new System.NotImplementedException();
+            Description = entity.Description;
+            Minutes = entity.MinutesCost;
+            Quantity = entity.Quantity.Value;
+            ExtendedMinutes = GetExtendedMinutesCost();
         }
 
         public override bool ValidateRow()
@@ -134,7 +137,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public override void SaveToEntity(ProjectTaskLaborPart entity, int rowIndex)
         {
-            throw new System.NotImplementedException();
+            entity.Description = Description;
+            entity.MinutesCost = Minutes;
+            entity.Quantity = Quantity;
+
+            base.SaveToEntity(entity, rowIndex);
         }
     }
 }

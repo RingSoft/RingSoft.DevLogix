@@ -96,6 +96,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         {
             entity.DetailId = rowIndex;
             entity.RowId = RowId;
+            entity.LineType = (byte)LaborPartLineType;
         }
     }
 }

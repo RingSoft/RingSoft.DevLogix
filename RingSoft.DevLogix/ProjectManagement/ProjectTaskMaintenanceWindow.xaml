@@ -12,7 +12,7 @@
         xmlns:local="clr-namespace:RingSoft.DevLogix.ProjectManagement"
         mc:Ignorable="d"
         Style="{StaticResource BaseWindowStyle}"
-        Title="ProjectTaskMaintenanceWindow" Height="550" Width="800">
+        Title="Project Task Maintenance Window" Height="550" Width="800">
 
     <Window.Resources>
 
@@ -101,7 +101,7 @@
 
                         <dl:TimeControl Grid.Row="1" Grid.Column="1" x:Name="TimeControl" Width="150" Minutes="{Binding MinutesCost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left"/>
 
-                        <CheckBox Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" Content="Time Cost Edited" IsEnabled="False" VerticalAlignment="Center"/>
+                        <CheckBox Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" Content="Time Cost Edited" IsEnabled="False" VerticalAlignment="Center" IsChecked="{Binding TimeEdited, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                         <Label Grid.Row="2" Grid.Column="0" Content="Percent Complete"/>
 
@@ -119,7 +119,7 @@
 
                                 <deg:DataEntryGridTextColumn Header="Time" ColumnId="{x:Static vm:ProjectTotalsManager.TotalTimeColumnId}" Width="125"/>
 
-                                <deg:DataEntryGridTextColumn Header="Cost" ColumnId="{x:Static vm:ProjectTotalsManager.TotalCostColumnId}" Width="150"/>
+                                <deg:DataEntryGridTextColumn Header="Cost" ColumnId="{x:Static vm:ProjectTotalsManager.TotalCostColumnId}" Width="150" Alignment="Right"/>
 
                             </deg:DataEntryGrid.Columns>
                         </deg:DataEntryGrid>

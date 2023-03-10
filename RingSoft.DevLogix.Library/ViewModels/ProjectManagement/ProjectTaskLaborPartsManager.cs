@@ -27,6 +27,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         public const int MiscRowDisplayStyleId = 100;
         public const int CommentRowDisplayStyleId = 101;
 
+        public decimal TotalMinutes { get; private set; }
+
+        public IEnumerable<ProjectTaskLaborPart> Details { get; private set; }
+
         public new ProjectTaskViewModel ViewModel { get; private set; }
 
         public ProjectTaskLaborPartsManager(ProjectTaskViewModel viewModel) : base(viewModel)
@@ -61,15 +65,28 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public void CalculateTotalMinutesCost()
         {
+            
             var rows = Rows.OfType<ProjectTaskLaborPartRow>().ToList();
             var total = rows.Sum(p => p.GetExtendedMinutesCost());
-            ViewModel.TotalMinutesCost = total;
+            TotalMinutes = total;
+            ViewModel.SetTotalMinutesCost(total);
         }
 
         protected override void OnRowsChanged(NotifyCollectionChangedEventArgs e)
         {
             CalculateTotalMinutesCost();
             base.OnRowsChanged(e);
+        }
+
+        public override void LoadGrid(IEnumerable<ProjectTaskLaborPart> entityList)
+        {
+            Details = entityList;
+            base.LoadGrid(entityList);
+        }
+
+        protected override string GetParentRowIdFromEntity(ProjectTaskLaborPart entity)
+        {
+            return entity.ParentRowId;
         }
     }
 }

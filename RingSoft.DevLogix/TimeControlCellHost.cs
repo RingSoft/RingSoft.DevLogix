@@ -61,6 +61,8 @@ namespace RingSoft.DevLogix
             {
                 OnControlDirty();
             };
+
+            control.StringEditControl.SelectAll();
         }
 
         protected override void ImportDataGridCellProperties(DataGridCell dataGridCell)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using MySqlX.XDevAPI.Common;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
@@ -138,7 +139,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             UpdateFromValue();
         }
 
-        private void UpdateFromValue()
+        private void UpdateFromValue(bool loading = false)
         {
             DeleteDescendants();
             var firstLine = true;
@@ -199,8 +200,28 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public override void LoadFromEntity(ProjectTaskLaborPart entity)
         {
-            throw new System.NotImplementedException();
+            if (entity.ParentRowId.IsNullOrEmpty())
+            {
+                var gridMemoValue = new DataEntryGridMemoValue(MaxCharactersPerLine);
+                gridMemoValue.AddLine(entity.Description, entity.CommentCrLf.Value);
+
+                var children = GetDetailChildren(entity);
+                foreach (var child in children)
+                {
+                    gridMemoValue.AddLine(child.Description, child.CommentCrLf.Value);
+                }
+
+                SetValue(gridMemoValue);
+            }
         }
+
+        private IEnumerable<ProjectTaskLaborPart> GetDetailChildren(ProjectTaskLaborPart entity)
+        {
+            var result = Manager.Details.Where(w =>
+                w.ParentRowId != null && w.ParentRowId == entity.RowId).OrderBy(p => p.DetailId);
+            return result;
+        }
+
 
         public override bool ValidateRow()
         {
@@ -209,7 +230,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public override void SaveToEntity(ProjectTaskLaborPart entity, int rowIndex)
         {
-            throw new System.NotImplementedException();
+            entity.ParentRowId = ParentRowId;
+            entity.Description = Comment;
+            entity.CommentCrLf = CommentCrLf;
+
+            base.SaveToEntity(entity, rowIndex);
         }
     }
 }

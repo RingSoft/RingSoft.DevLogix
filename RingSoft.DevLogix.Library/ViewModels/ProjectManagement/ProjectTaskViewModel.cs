@@ -103,6 +103,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     return;
 
                 _userAutoFillValue = value;
+                SetUser();
                 OnPropertyChanged();
             }
         }
@@ -118,7 +119,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     return;
 
                 _minutesCost = value;
-                OnPropertyChanged();
+                if (!_calculating)
+                {
+                    TimeEdited = true;
+                }
+                if (!_loading)
+                {
+                    RefreshTotals();
+                }
+                OnPropertyChanged(null, !_calculating);
             }
         }
 
@@ -129,23 +138,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             get => _totalMinutesCost;
             set
             {
-                _totalMinutesCost = value;
-                TotalMinutesCostText = AppGlobals.MakeTimeSpent(value);
-            }
-        }
-
-        private decimal _hourlyRate;
-
-        public decimal HourlyRate
-        {
-            get => _hourlyRate;
-            set
-            {
-                if (_hourlyRate == value)
+                if (_totalMinutesCost == value)
                     return;
 
-                _hourlyRate = value;
-                OnPropertyChanged();
+                _totalMinutesCost = value;
+                TotalMinutesCostText = AppGlobals.MakeTimeSpent(value);
             }
         }
 
@@ -164,6 +161,42 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
+        private bool _timeEdited;
+
+        public bool TimeEdited
+        {
+            get => _timeEdited;
+            set
+            {
+                if (_timeEdited == value)
+                    return;
+
+                _timeEdited = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+        private decimal _hourlyRate;
+
+        public decimal HourlyRate
+        {
+            get => _hourlyRate;
+            set
+            {
+                if (_hourlyRate == value)
+                    return;
+
+                _hourlyRate = value;
+                if (!_loading)
+                {
+                    RefreshTotals();
+                }
+
+                OnPropertyChanged();
+            }
+        }
+
         private decimal _percentComplete;
 
         public decimal PercentComplete
@@ -175,6 +208,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     return;
 
                 _percentComplete = value;
+                if (!_loading)
+                {
+                    RefreshTotals();
+                }
                 OnPropertyChanged();
             }
         }
@@ -229,6 +266,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public new IProjectTaskView View { get; private set; }
 
+        private bool _calculating;
+        private bool _loading;
+
         public ProjectTaskViewModel()
         {
             UserAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.UserId))
@@ -241,6 +281,30 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
             LaborPartsManager = new ProjectTaskLaborPartsManager(this);
             TablesToDelete.Add(AppGlobals.LookupContext.ProjectTaskLaborParts);
+        }
+
+
+        protected override void Initialize()
+        {
+            if (base.View is IProjectTaskView projectTaskView)
+            {
+                View = projectTaskView;
+            }
+            if (LookupAddViewArgs != null && LookupAddViewArgs.ParentWindowPrimaryKeyValue != null)
+            {
+                if (LookupAddViewArgs.ParentWindowPrimaryKeyValue.TableDefinition ==
+                    AppGlobals.LookupContext.Projects)
+                {
+                    var project =
+                        AppGlobals.LookupContext.Projects.GetEntityFromPrimaryKeyValue(LookupAddViewArgs
+                            .ParentWindowPrimaryKeyValue);
+                    DefaultProjectAutoFillValue =
+                        AppGlobals.LookupContext.OnAutoFillTextRequest(AppGlobals.LookupContext.Projects,
+                            project.Id.ToString());
+                }
+            }
+            ProjectTotalsManager.Initialize();
+            base.Initialize();
         }
 
         protected override ProjectTask PopulatePrimaryKeyControls(ProjectTask newEntity, PrimaryKeyValue primaryKeyValue)
@@ -273,28 +337,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         }
 
-        protected override void Initialize()
-        {
-            if (base.View is IProjectTaskView projectTaskView)
-            {
-                View = projectTaskView;
-            }
-            if (LookupAddViewArgs != null && LookupAddViewArgs.ParentWindowPrimaryKeyValue != null)
-            {
-                if (LookupAddViewArgs.ParentWindowPrimaryKeyValue.TableDefinition ==
-                    AppGlobals.LookupContext.Projects)
-                {
-                    var project =
-                        AppGlobals.LookupContext.Projects.GetEntityFromPrimaryKeyValue(LookupAddViewArgs
-                            .ParentWindowPrimaryKeyValue);
-                    DefaultProjectAutoFillValue =
-                        AppGlobals.LookupContext.OnAutoFillTextRequest(AppGlobals.LookupContext.Projects,
-                            project.Id.ToString());
-                }
-            }
-            ProjectTotalsManager.Initialize();
-            base.Initialize();
-        }
 
         private void SetUserFilter()
         {
@@ -319,13 +361,17 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         }
         protected override void LoadFromEntity(ProjectTask entity)
         {
+            _loading = true;
             ProjectAutoFillValue = entity.Project.GetAutoFillValue();
             UserAutoFillValue = entity.User.GetAutoFillValue();
             MinutesCost = entity.MinutesCost;
             PercentComplete = entity.PercentComplete;
             Notes = entity.Notes;
+            TimeEdited = entity.MinutesEdited;
+            HourlyRate = entity.HourlyRate;
             LaborPartsManager.LoadGrid(entity.LaborParts);
             LaborPartsManager.CalculateTotalMinutesCost();
+            _loading = false;
         }
 
         protected override ProjectTask GetEntityData()
@@ -338,6 +384,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 UserId = UserAutoFillValue.GetEntity<User>().Id,
                 MinutesCost = MinutesCost,
                 PercentComplete = PercentComplete,
+                HourlyRate = HourlyRate,
+                MinutesEdited = TimeEdited,
                 Notes = Notes,
             };
             if (!TableDefinition.HasRight(RightTypes.AllowEdit) && Entity != null)
@@ -391,6 +439,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             MinutesCost = 0;
             PercentComplete = 0;
             Notes = string.Empty;
+            TimeEdited = false;
+            HourlyRate = 0;
             LaborPartsManager.SetupForNewRecord();
             LaborPartsManager.CalculateTotalMinutesCost();
         }
@@ -428,6 +478,50 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             context.RemoveRange(table.Where(p => p.ProjectTaskId == entity.Id));
 
             return context.DeleteEntity(entity, "Deleting Project Task");
+        }
+
+        public void SetTotalMinutesCost(decimal total)
+        {
+            _calculating = true;
+            TotalMinutesCost = total;
+            if (!TimeEdited)
+            {
+                MinutesCost = total;
+            }
+
+            RefreshTotals();
+            
+            _calculating = false;
+        }
+
+        private void RefreshTotals()
+        {
+            var hourCost = MinutesCost / 60;
+            ProjectTotalsManager.EstimatedRow.Minutes = MinutesCost;
+            ProjectTotalsManager.EstimatedRow.Cost = hourCost * HourlyRate;
+
+            ProjectTotalsManager.RemainingRow.Minutes = MinutesCost * (1 - PercentComplete);
+            ProjectTotalsManager.RemainingRow.Cost = ProjectTotalsManager.EstimatedRow.Cost * (1 - PercentComplete);
+            ProjectTotalsManager.RefreshGrid();
+        }
+
+        private void SetUser()
+        {
+            if (!_loading && UserAutoFillValue.IsValid())
+            {
+                var context = AppGlobals.DataRepository.GetDataContext();
+                var user = UserAutoFillValue.GetEntity<User>();
+                if (user != null)
+                {
+                    user = context.GetTable<User>()
+                        .FirstOrDefault(p => p.Id == user.Id);
+                }
+
+                if (user != null)
+                {
+                    HourlyRate = user.HourlyRate;
+                }
+            }
         }
     }
 }
