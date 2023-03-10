@@ -69,6 +69,7 @@ namespace RingSoft.DevLogix.DataAccess.Model
         public virtual ICollection<ErrorUser> ErrorUsers { get; set; }
         public virtual ICollection<TimeClock> TimeClocks { get; set; }
         public virtual ICollection<User> Underlings { get; set; }
+        public virtual ICollection<Project> Projects { get; set; }
         public virtual ICollection<ProjectUser> ProjectUsers { get; set; }
         public virtual ICollection<ProjectTask> ProjectTasks { get; set; }
 
@@ -81,6 +82,7 @@ namespace RingSoft.DevLogix.DataAccess.Model
             ErrorTesters = new HashSet<ErrorQa>();
             TimeClocks = new HashSet<TimeClock>();
             Underlings = new HashSet<User>();
+            Projects = new HashSet<Project>();
             ProjectUsers = new HashSet<ProjectUser>();
             ErrorUsers = new HashSet<ErrorUser>();
             ProjectTasks = new HashSet<ProjectTask>();

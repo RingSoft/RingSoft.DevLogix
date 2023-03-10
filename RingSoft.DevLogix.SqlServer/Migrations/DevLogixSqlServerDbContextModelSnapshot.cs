@@ -635,6 +635,9 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<bool>("IsBillable")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("ManagerId")
+                        .HasColumnType("integer");
+
                     b.Property<decimal>("MinutesSpent")
                         .HasColumnType("numeric");
 
@@ -671,6 +674,8 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .HasColumnType("numeric");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ManagerId");
 
                     b.HasIndex("ProductId");
 
@@ -1191,10 +1196,17 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.Project", b =>
                 {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "Manager")
+                        .WithMany("Projects")
+                        .HasForeignKey("ManagerId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.Product", "Product")
                         .WithMany("Projects")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("Manager");
 
                     b.Navigation("Product");
                 });
@@ -1458,6 +1470,8 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("ProjectTasks");
 
                     b.Navigation("ProjectUsers");
+
+                    b.Navigation("Projects");
 
                     b.Navigation("TimeClocks");
 

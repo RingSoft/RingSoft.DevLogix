@@ -15,6 +15,10 @@ namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
         [MaxLength(50)]
         public string Name { get; set; }
 
+        public int? ManagerId { get; set; }
+
+        public virtual User Manager { get; set; }
+
         [Required]
         public DateTime Deadline { get; set; }
 

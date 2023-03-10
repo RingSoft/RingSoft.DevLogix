@@ -94,30 +94,6 @@
 
             <lc:AutoFillControl Grid.Row="0" Grid.Column="3" x:Name="NameControl" Width="200" HorizontalAlignment="Left"/>
 
-            <Label Grid.Row="1" Grid.Column="0" Content=" Estimated Time"/>
-
-            <dec:StringReadOnlyBox Grid.Row="1" Grid.Column="1" Width="100" HorizontalAlignment="Left"/>
-
-            <Label Grid.Row="1" Grid.Column="2" Content="Estimated Cost"/>
-
-            <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="3" Width="100" FormatType="Currency" HorizontalAlignment="Left"/>
-
-            <Label Grid.Row="2" Grid.Column="0" Content="Time Spent"/>
-
-            <dec:StringReadOnlyBox Grid.Row="2" Grid.Column="1" Width="100" HorizontalAlignment="Left" Text="{Binding TimeSpent}"/>
-
-            <Label Grid.Row="2" Grid.Column="2" Content="Cost"/>
-
-            <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="3" Width="100" FormatType="Currency" HorizontalAlignment="Left" Value="{Binding TotalCost}"/>
-
-            <Label Grid.Row="3" Grid.Column="0" Content="Time Difference"/>
-
-            <dec:StringReadOnlyBox Grid.Row="3" Grid.Column="1" x:Name="TimeDiffControl" Width="100" HorizontalAlignment="Left"/>
-
-            <Label Grid.Row="3" Grid.Column="2" Content="Cost Difference"/>
-
-            <dec:DecimalReadOnlyBox Grid.Row="3" Grid.Column="3" x:Name="CostDiffControl" Width="100" FormatType="Currency" HorizontalAlignment="Left"/>
-
             <TabControl Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="5" x:Name="TabControl">
 
                 <TabItem x:Name="DetailsTabItem" Header="Details" VerticalAlignment="Stretch">
@@ -127,6 +103,8 @@
                         <Grid>
 
                             <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
@@ -139,19 +117,36 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
 
-                            <Label Grid.Row="0" Grid.Column="0" Content="Deadline"/>
+                            <Label Grid.Row="0" Grid.Column="0" Content="Manager"/>
 
-                            <dec:DateEditControl Grid.Row="0" Grid.Column="1" x:Name="DeadlineControl" DateFormatType="DateTime" HorizontalAlignment="Left" Width="200" Value="{Binding Deadline, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <lc:AutoFillControl Grid.Row="0" Grid.Column="1" x:Name="ManagerControl" Setup="{Binding ManagerAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding ManagerAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-                            <Label Grid.Row="0" Grid.Column="2" Content="Original Deadline"/>
+                            <Label Grid.Row="1" Grid.Column="0" Content="Deadline"/>
 
-                            <dec:DateEditControl Grid.Row="0" Grid.Column="3" x:Name="OriginalDeadlineControl" DateFormatType="DateTime" HorizontalAlignment="Left" Width="200" Value="{Binding OriginalDeadline, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <dec:DateEditControl Grid.Row="1" Grid.Column="1" x:Name="DeadlineControl" DateFormatType="DateTime" HorizontalAlignment="Left" Width="200" Value="{Binding Deadline, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-                            <Label Grid.Row="1" Grid.Column="0" Content="Product"/>
+                            <Label Grid.Row="1" Grid.Column="2" Content="Original Deadline"/>
 
-                            <lc:AutoFillControl Grid.Row="1" Grid.Column="1" x:Name="ProductControl" Setup="{Binding ProductAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding ProductAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <dec:DateEditControl Grid.Row="1" Grid.Column="3" x:Name="OriginalDeadlineControl" DateFormatType="DateTime" HorizontalAlignment="Left" Width="200" Value="{Binding OriginalDeadline, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-                            <CheckBox Grid.Row="1" Grid.Column="2" Content="Is Billable" IsChecked="{Binding IsBillable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <Label Grid.Row="2" Grid.Column="0" Content="Product"/>
+
+                            <lc:AutoFillControl Grid.Row="2" Grid.Column="1" x:Name="ProductControl" Setup="{Binding ProductAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding ProductAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                            <CheckBox Grid.Row="2" Grid.Column="2" Content="Is Billable" IsChecked="{Binding IsBillable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                            <deg:DataEntryGrid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" Manager="{Binding ProjectTotalsManager}" DataEntryCanUserAddRows="False" HorizontalAlignment="Left" Margin="5">
+
+                                <deg:DataEntryGrid.Columns>
+
+                                    <deg:DataEntryGridTextColumn Header="Item Type" ColumnId="{x:Static vm:ProjectTotalsManager.TypeColumnId}" Width="100"/>
+
+                                    <deg:DataEntryGridTextColumn Header="Time" ColumnId="{x:Static vm:ProjectTotalsManager.TotalTimeColumnId}" Width="125"/>
+
+                                    <deg:DataEntryGridTextColumn Header="Cost" ColumnId="{x:Static vm:ProjectTotalsManager.TotalCostColumnId}" Width="150" Alignment="Right"/>
+
+                                </deg:DataEntryGrid.Columns>
+                            </deg:DataEntryGrid>
 
                         </Grid>
 

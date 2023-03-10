@@ -51,6 +51,37 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
+        private AutoFillSetup _managerAutoFillSetup;
+
+        public AutoFillSetup ManagerAutoFillSetup
+        {
+            get => _managerAutoFillSetup;
+            set
+            {
+                if (_managerAutoFillSetup == value)
+                    return;
+
+                _managerAutoFillSetup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private AutoFillValue _managerAutoFillValue;
+
+        public AutoFillValue ManagerAutoFillValue
+        {
+            get => _managerAutoFillValue;
+            set
+            {
+                if (_managerAutoFillValue == value)
+                    return;
+
+                _managerAutoFillValue = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         private string _timeSpent;
 
         public string TimeSpent
@@ -157,6 +188,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
+        private ProjectTotalsManager _projectTotalsManager;
+
+        public ProjectTotalsManager ProjectTotalsManager
+        {
+            get => _projectTotalsManager;
+            set
+            {
+                if (_projectTotalsManager == value)
+                    return;
+
+                _projectTotalsManager = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         private ProjectUsersGridManager _usersGridManager;
 
         public ProjectUsersGridManager UsersGridManager
@@ -260,8 +307,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public decimal MinutesSpent { get; set; }
 
+        public ProjectTotalsRow ActualRow { get; private set; }
+
+        public ProjectTotalsRow StatusRow { get; private set; }
+
         public ProjectMaintenanceViewModel()
         {
+            ManagerAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ManagerId));
             ProductAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ProductId));
 
             PunchInCommand = new RelayCommand(() =>
@@ -275,6 +327,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             });
 
             TasksAddModifyCommand = new RelayCommand(OnTasksAddModify);
+
+            ProjectTotalsManager = new ProjectTotalsManager();
 
             UsersGridManager = new ProjectUsersGridManager(this);
 
@@ -301,6 +355,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
             AppGlobals.MainViewModel.ProjectViewModels.Add(this);
             RecalcCommand.IsEnabled = TableDefinition.HasRight(RightTypes.AllowEdit);
+
+            ProjectTotalsManager.Initialize();
+
+            ActualRow = new ProjectTotalsRow(ProjectTotalsManager);
+            ActualRow.RowTitle = "Actual";
+            ProjectTotalsManager.InsertRow(ActualRow);
+
+            StatusRow = new ProjectTotalsRow(ProjectTotalsManager);
+            StatusRow.RowTitle = "Status";
+            ProjectTotalsManager.InsertRow(StatusRow);
 
             base.Initialize();
         }
@@ -329,6 +393,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             var context = AppGlobals.DataRepository.GetDataContext();
             var projectTable = context.GetTable<Project>();
             var result = projectTable
+                .Include(p => p.Manager)
+                .Include(p => p.Product)
                 .Include(p => p.ProjectUsers)
                 .FirstOrDefault(p => p.Id == projectId);
             return result;
@@ -337,9 +403,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         protected override void LoadFromEntity(Project entity)
         {
+            ManagerAutoFillValue = entity.Manager.GetAutoFillValue();
             Deadline = entity.Deadline.ToLocalTime();
             OriginalDeadline = entity.OriginalDeadline.ToLocalTime();
-            ProductAutoFillValue = ProductAutoFillSetup.GetAutoFillValueForIdValue(entity.ProductId);
+            ProductAutoFillValue = entity.Product.GetAutoFillValue();
             IsBillable = entity.IsBillable;
             UsersGridManager.LoadGrid(entity.ProjectUsers);
             Notes = entity.Notes;
@@ -361,12 +428,17 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
             result.Id = Id;
             result.Name = KeyAutoFillValue.Text;
+            result.ManagerId = ManagerAutoFillValue.GetEntity<User>().Id;
             result.Deadline = Deadline.ToUniversalTime();
             result.OriginalDeadline = OriginalDeadline.ToUniversalTime();
             result.ProductId = ProductAutoFillValue.GetEntity(AppGlobals.LookupContext.Products).Id;
             result.IsBillable = IsBillable;
             result.Notes = Notes;
-            
+
+            if (result.ManagerId == 0)
+            {
+                result.ManagerId = null;
+            }
 
             if (result.ProductId == 0)
             {
@@ -378,7 +450,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         protected override void ClearData()
         {
             Id = 0;
+            ManagerAutoFillValue = null;
             KeyAutoFillValue = null;
+            ManagerAutoFillValue = null;
             OriginalDeadline = Deadline = DateTime.Now;
             ProductAutoFillValue = null;
             IsBillable = false;
