@@ -435,11 +435,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             result.IsBillable = IsBillable;
             result.Notes = Notes;
 
-            if (result.ManagerId == 0)
-            {
-                result.ManagerId = null;
-            }
-
             if (result.ProductId == 0)
             {
                 result.ProductId = null;

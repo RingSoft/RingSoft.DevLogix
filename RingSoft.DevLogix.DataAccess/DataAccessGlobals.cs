@@ -2,8 +2,11 @@
 using RingSoft.DbLookup.EfCore;
 using RingSoft.DevLogix.DataAccess.Configurations;
 using System.Collections.Generic;
+using System.Linq;
 using RingSoft.DevLogix.DataAccess.Configurations.ProjectManagement;
 using RingSoft.DevLogix.DataAccess.Configurations.QualityAssurance;
+using Microsoft.EntityFrameworkCore.Migrations;
+using RingSoft.DevLogix.DataAccess.Model;
 
 namespace RingSoft.DevLogix.DataAccess
 {
@@ -36,6 +39,21 @@ namespace RingSoft.DevLogix.DataAccess
             modelBuilder.ApplyConfiguration(new ProjectTaskLaborPartConfiguration());
 
             AdvancedFindDataProcessorEfCore.ConfigureAdvancedFind(modelBuilder);
+        }
+
+        public static void UpgradeProjects(MigrationBuilder migrationBuilder)
+        {
+            var userSet = DbContext.Set<User>();
+            var firstUser = userSet.FirstOrDefault();
+            if (firstUser != null)
+            {
+                migrationBuilder.UpdateData(
+                    table: "Projects",
+                    keyColumn: "ManagerId",
+                    keyValue: null,
+                    column: "ManagerId",
+                    value: firstUser.Id);
+            }
         }
 
         public static bool SaveNoCommitEntity<TEntity>(TEntity entity, string message) where TEntity : class

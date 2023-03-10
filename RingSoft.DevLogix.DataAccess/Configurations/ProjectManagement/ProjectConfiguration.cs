@@ -38,8 +38,7 @@ namespace RingSoft.DevLogix.DataAccess.Configurations.ProjectManagement
             builder.HasOne(p => p.Manager)
                 .WithMany(p => p.Projects)
                 .HasForeignKey(p => p.ManagerId)
-                .OnDelete(DeleteBehavior.NoAction)
-                .IsRequired(false);
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

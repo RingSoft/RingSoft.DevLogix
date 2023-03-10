@@ -604,7 +604,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<bool>("IsBillable")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("ManagerId")
+                    b.Property<int>("ManagerId")
                         .HasColumnType("integer");
 
                     b.Property<decimal>("MinutesSpent")
@@ -1162,7 +1162,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "Manager")
                         .WithMany("Projects")
                         .HasForeignKey("ManagerId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.Product", "Product")
                         .WithMany("Projects")
