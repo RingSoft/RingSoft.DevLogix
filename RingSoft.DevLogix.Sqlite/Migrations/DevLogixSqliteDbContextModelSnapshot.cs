@@ -669,6 +669,36 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.ToTable("Projects");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectMaterial", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("ActualCost")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("Cost")
+                        .HasColumnType("numeric");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("ntext");
+
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("ProjectMaterials");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectTask", b =>
                 {
                     b.Property<int>("Id")
@@ -1192,6 +1222,17 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectMaterial", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.Project", "Project")
+                        .WithMany("ProjectMaterialParts")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Project");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectTask", b =>
                 {
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.Project", "Project")
@@ -1422,6 +1463,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.Project", b =>
                 {
+                    b.Navigation("ProjectMaterialParts");
+
                     b.Navigation("ProjectTasks");
 
                     b.Navigation("ProjectUsers");

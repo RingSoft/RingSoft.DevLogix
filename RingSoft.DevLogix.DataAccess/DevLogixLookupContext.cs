@@ -59,6 +59,7 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<ProjectTask> ProjectTasks { get; set; }
         public TableDefinition<ProjectTaskLaborPart> ProjectTaskLaborParts { get; set; }
         public TableDefinition<MaterialPart> MaterialParts { get; set; }
+        public TableDefinition<ProjectMaterial> ProjectMaterials { get; set; }
 
         public TableDefinition<AdvancedFind> AdvancedFinds { get; set; }
         public TableDefinition<AdvancedFindColumn> AdvancedFindColumns { get; set; }
@@ -87,6 +88,7 @@ namespace RingSoft.DevLogix.DataAccess
         public LookupDefinition<ProjectTaskLookup, ProjectTask> ProjectTaskLookup { get; set; }
         public LookupDefinition<ProjectTaskLaborPartLookup, ProjectTaskLaborPart> ProjectTaskLaborPartLookup { get; set; }
         public LookupDefinition<MaterialPartLookup, MaterialPart> MaterialPartLookup { get; set; }
+        public LookupDefinition<ProjectMaterialLookup, ProjectMaterial> ProjectMaterialLookup { get; set; }
 
         public LookupDefinition<AdvancedFindLookup, AdvancedFind> AdvancedFindLookup { get; set; }
         public LookupDefinition<RecordLockingLookup, RecordLock> RecordLockingLookup { get; set; }
@@ -283,6 +285,13 @@ namespace RingSoft.DevLogix.DataAccess
             MaterialPartLookup.AddVisibleColumnDefinition(p => p.Name, "Name", p => p.Name, 70);
             MaterialPartLookup.AddVisibleColumnDefinition(p => p.Cost, "Cost", p => p.Cost, 30);
             MaterialParts.HasLookupDefinition(MaterialPartLookup);
+
+            ProjectMaterialLookup = new LookupDefinition<ProjectMaterialLookup, ProjectMaterial>(ProjectMaterials);
+            ProjectMaterialLookup.AddVisibleColumnDefinition(p => p.Name, "Name", p => p.Name, 50);
+            ProjectMaterialLookup.AddVisibleColumnDefinition(p => p.Cost, "Cost", p => p.Cost, 25);
+            ProjectMaterialLookup.AddVisibleColumnDefinition(p => p.ActualCost, "Actual Cost", p => p.ActualCost, 25);
+            ProjectMaterials.HasLookupDefinition(ProjectMaterialLookup);
+
         }
 
         public LookupDefinition<ProductVersionLookup, ProductVersion> MakeProductVersionLookupDefinition()
