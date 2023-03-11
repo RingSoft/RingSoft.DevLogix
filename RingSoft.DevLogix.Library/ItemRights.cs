@@ -247,19 +247,15 @@ namespace RingSoft.DevLogix.Library
 
             AddSpecialRight((int)ProjectSpecialRights.AllowMaterialsPost, "Allow Materials Post"
             , AppGlobals.LookupContext.Projects);
-            AddSpecialRight((int)ProjectSpecialRights.Test, "Test"
-                , AppGlobals.LookupContext.Projects);
-
+ 
             category.Items.Add(categoryItem);
             categoryItem = new RightCategoryItem(item: "Add/Edit Project Tasks", AppGlobals.LookupContext.ProjectTasks);
-            AddSpecialRight((int)ProjectTaskSpecialRights.Test1, "Test1"
-                , AppGlobals.LookupContext.ProjectTasks);
-            AddSpecialRight((int)ProjectTaskSpecialRights.Test2, "Test2"
-                , AppGlobals.LookupContext.ProjectTasks);
-
-
             category.Items.Add(categoryItem);
+
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Labor Parts", AppGlobals.LookupContext.LaborParts));
+            Categories.Add(category);
+
+            category.Items.Add(new RightCategoryItem(item: "Add/Edit Material Parts", AppGlobals.LookupContext.MaterialParts));
             Categories.Add(category);
 
             category = new RightCategory("Miscellaneous", MenuCategories.Tools);

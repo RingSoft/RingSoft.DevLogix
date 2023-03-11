@@ -1,18 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Linq;
-using System.Timers;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Forms;
-using System.Windows.Input;
-using Google.Protobuf.WellKnownTypes;
-using RingSoft.App.Controls;
+﻿using RingSoft.App.Controls;
 using RingSoft.DataEntryControls.Engine;
-using RingSoft.DataEntryControls.WPF;
-using RingSoft.DbLookup;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Controls.WPF.AdvancedFind;
 using RingSoft.DbLookup.DataProcessor;
@@ -23,11 +10,14 @@ using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels;
 using RingSoft.DevLogix.UserManagement;
-using ScottPlot;
 using ScottPlot.Plottable;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using Application = System.Windows.Application;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Forms;
 using Error = RingSoft.DevLogix.DataAccess.Model.Error;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MessageBox = System.Windows.Forms.MessageBox;
@@ -300,6 +290,20 @@ namespace RingSoft.DevLogix
                         CommandParameter = AppGlobals.LookupContext.LaborParts,
                     });
                 }
+
+                if (AppGlobals.LookupContext.MaterialParts.HasRight(RightTypes.AllowView))
+                {
+                    var categoryItem =
+                        projectCategory.Items.FirstOrDefault(
+                            p => p.TableDefinition == AppGlobals.LookupContext.MaterialParts);
+                    menuItem.Items.Add(new MenuItem()
+                    {
+                        Header = "Add/Edit _Material Parts...",
+                        Command = ViewModel.ShowMaintenanceWindowCommand,
+                        CommandParameter = AppGlobals.LookupContext.MaterialParts,
+                    });
+                }
+
             }
         }
 
