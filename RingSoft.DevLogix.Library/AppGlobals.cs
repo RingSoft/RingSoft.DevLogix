@@ -305,6 +305,13 @@ namespace RingSoft.DevLogix.Library
         }
         public static string MakeTimeSpent(decimal minutesSpent)
         {
+            var negative = false;
+            if (minutesSpent < 0)
+            {
+                minutesSpent = Math.Abs(minutesSpent);
+                negative = true;
+            }
+
             var timeSpent = "0 Minutes";
             var hoursSpent = (decimal)0;
             var daysSpent = (decimal)0;
@@ -329,6 +336,9 @@ namespace RingSoft.DevLogix.Library
                 daysSpent = Math.Round(hoursSpent / 24, 2);
                 timeSpent = $"{FormatValue(daysSpent, DecimalFieldTypes.Decimal)} Days";
             }
+
+            if (negative)
+                timeSpent = $"-{timeSpent}";
 
             return timeSpent;
         }

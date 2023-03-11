@@ -364,6 +364,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
             StatusRow = new ProjectTotalsRow(ProjectTotalsManager);
             StatusRow.RowTitle = "Status";
+            StatusRow.NegativeDisplayStyleId = ProjectTotalsManager.NegativeDisplayStyleId;
+            StatusRow.PositiveDisplayStyleId = ProjectTotalsManager.PositiveDisplayStyleId;
             ProjectTotalsManager.InsertRow(StatusRow);
 
             base.Initialize();
@@ -414,6 +416,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             MinutesSpent = entity.MinutesSpent;
             TotalCost = entity.Cost;
             TimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
+            CalcTotals();
         }
 
         protected override Project GetEntityData()
@@ -431,7 +434,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             result.ManagerId = ManagerAutoFillValue.GetEntity<User>().Id;
             result.Deadline = Deadline.ToUniversalTime();
             result.OriginalDeadline = OriginalDeadline.ToUniversalTime();
-            result.ProductId = ProductAutoFillValue.GetEntity(AppGlobals.LookupContext.Products).Id;
+            result.ProductId = ProductAutoFillValue.GetEntity<Product>().Id;
             result.IsBillable = IsBillable;
             result.Notes = Notes;
 
@@ -459,6 +462,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             TimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
             TotalCost = 0;
             TaskLookupCommand = GetLookupCommand(LookupCommands.Clear);
+            ProjectTotalsManager.ClearTotals();
         }
 
         protected override bool SaveEntity(Project entity)
@@ -620,6 +624,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             MinutesSpent = project.MinutesSpent;
             TimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
             TotalCost = project.Cost;
+            CalcTotals();
 
             UsersGridManager.LoadGrid(project.ProjectUsers);
             RecordDirty = oldRecordDirty;
@@ -654,6 +659,33 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 
             }
             base.OnRecordDirtyChanged(newValue);
+        }
+
+        public void CalcTotals()
+        {
+            var table = AppGlobals.DataRepository.GetDataContext().GetTable<ProjectTask>();
+            var tasks = table.Where(p => p.ProjectId == Id);
+            var estimatedMinutes = (decimal)0;
+            var estimatedCost = (decimal)0;
+            var remainingMinutes = (decimal)0;
+            var remainingCost = (decimal)0;
+            foreach (var task in tasks)
+            {
+                estimatedMinutes += task.MinutesCost;
+                estimatedCost += task.EstimatedCost;
+                var taskRemainingMinutes = task.MinutesCost * (1 - task.PercentComplete);
+                remainingMinutes += taskRemainingMinutes;
+                remainingCost += task.EstimatedCost * (1 - task.PercentComplete);
+            }
+            ProjectTotalsManager.EstimatedRow.Minutes = estimatedMinutes;
+            ProjectTotalsManager.EstimatedRow.Cost = estimatedCost;
+            ProjectTotalsManager.RemainingRow.Minutes = remainingMinutes;
+            ProjectTotalsManager.RemainingRow.Cost = remainingCost;
+            ActualRow.Minutes = MinutesSpent;
+            ActualRow.Cost = TotalCost;
+            StatusRow.Minutes = remainingMinutes - ActualRow.Minutes;
+            StatusRow.Cost = remainingCost - ActualRow.Cost;
+            ProjectTotalsManager.RefreshGrid();
         }
     }
 }

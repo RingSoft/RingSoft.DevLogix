@@ -146,6 +146,14 @@
                                     <deg:DataEntryGridTextColumn Header="Cost" ColumnId="{x:Static vm:ProjectTotalsManager.TotalCostColumnId}" Width="150" Alignment="Right"/>
 
                                 </deg:DataEntryGrid.Columns>
+
+                                <deg:DataEntryGrid.DisplayStyles>
+
+                                    <deg:DataEntryGridDisplayStyle DisplayId="{x:Static vm:ProjectTotalsManager.NegativeDisplayStyleId}" ForegroundBrush="Red"/>
+
+                                    <deg:DataEntryGridDisplayStyle DisplayId="{x:Static vm:ProjectTotalsManager.PositiveDisplayStyleId}" ForegroundBrush="Green"/>
+
+                                </deg:DataEntryGrid.DisplayStyles>
                             </deg:DataEntryGrid>
 
                         </Grid>

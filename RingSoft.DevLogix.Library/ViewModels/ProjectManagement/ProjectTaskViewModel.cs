@@ -387,6 +387,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 HourlyRate = HourlyRate,
                 MinutesEdited = TimeEdited,
                 Notes = Notes,
+                EstimatedCost = ProjectTotalsManager.EstimatedRow.Cost,
             };
             if (!TableDefinition.HasRight(RightTypes.AllowEdit) && Entity != null)
             {
@@ -462,6 +463,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 context.RemoveRange(table.Where(p => p.ProjectTaskId == entity.Id));
                 context.AddRange(details);
                 result = context.Commit("Saving Project Task");
+
+                if (result)
+                {
+                    var projectId = ProjectAutoFillValue.GetEntity<Project>().Id;
+                    var projectViewModels = AppGlobals.MainViewModel.ProjectViewModels.Where(p => p.Id == projectId);
+                    foreach (var projectMaintenanceViewModel in projectViewModels)
+                    {
+                        projectMaintenanceViewModel.CalcTotals();
+                    }
+                }
             }
 
             return result;

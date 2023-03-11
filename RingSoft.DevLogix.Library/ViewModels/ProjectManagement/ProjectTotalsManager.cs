@@ -1,4 +1,6 @@
-﻿using RingSoft.DataEntryControls.Engine.DataEntryGrid;
+﻿using System.Linq;
+using MySqlX.XDevAPI.Relational;
+using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 
 namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 {
@@ -13,6 +15,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         public const int TypeColumnId = (int)TotalsColumns.Type;
         public const int TotalTimeColumnId = (int)TotalsColumns.Time;
         public const int TotalCostColumnId = (int)TotalsColumns.Cost;
+
+        public const int NegativeDisplayStyleId = 101;
+        public const int PositiveDisplayStyleId = 102;
 
         public ProjectTotalsRow EstimatedRow { get; private set; }
         public ProjectTotalsRow RemainingRow { get; private set; }
@@ -40,6 +45,17 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public void RefreshGrid()
         {
+            Grid?.RefreshGridView();
+        }
+
+        public void ClearTotals()
+        {
+            var rows = Rows.OfType<ProjectTotalsRow>();
+            foreach (var row in rows)
+            {
+                row.Minutes = 0;
+                row.Cost = 0;
+            }
             Grid?.RefreshGridView();
         }
     }

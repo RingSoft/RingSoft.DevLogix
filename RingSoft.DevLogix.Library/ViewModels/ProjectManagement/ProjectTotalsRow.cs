@@ -47,14 +47,45 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         public override DataEntryGridCellStyle GetCellStyle(int columnId)
         {
             var displayStyleId = 0;
-            if (NegativeDisplayStyleId > 0)
+            var column = (TotalsColumns)columnId;
+            switch (column)
             {
-                displayStyleId = NegativeDisplayStyleId;
-            }
-
-            if (PositiveDisplayStyleId > 0)
-            {
-                displayStyleId = PositiveDisplayStyleId;
+                case TotalsColumns.Type:
+                    break;
+                case TotalsColumns.Time:
+                    if (Minutes < 0)
+                    {
+                        if (NegativeDisplayStyleId > 0)
+                        {
+                            displayStyleId = NegativeDisplayStyleId;
+                        }
+                    }
+                    else
+                    {
+                        if (PositiveDisplayStyleId > 0)
+                        {
+                            displayStyleId = PositiveDisplayStyleId;
+                        }
+                    }
+                    break;
+                case TotalsColumns.Cost:
+                    if (Cost < 0)
+                    {
+                        if (NegativeDisplayStyleId > 0)
+                        {
+                            displayStyleId = NegativeDisplayStyleId;
+                        }
+                    }
+                    else
+                    {
+                        if (PositiveDisplayStyleId > 0)
+                        {
+                            displayStyleId = PositiveDisplayStyleId;
+                        }
+                    }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
             return new DataEntryGridCellStyle
             {
