@@ -58,6 +58,7 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<LaborPart> LaborParts { get; set; }
         public TableDefinition<ProjectTask> ProjectTasks { get; set; }
         public TableDefinition<ProjectTaskLaborPart> ProjectTaskLaborParts { get; set; }
+        public TableDefinition<MaterialPart> MaterialParts { get; set; }
 
         public TableDefinition<AdvancedFind> AdvancedFinds { get; set; }
         public TableDefinition<AdvancedFindColumn> AdvancedFindColumns { get; set; }
@@ -85,6 +86,7 @@ namespace RingSoft.DevLogix.DataAccess
         public LookupDefinition<LaborPartLookup, LaborPart> LaborPartLookup { get; set; }
         public LookupDefinition<ProjectTaskLookup, ProjectTask> ProjectTaskLookup { get; set; }
         public LookupDefinition<ProjectTaskLaborPartLookup, ProjectTaskLaborPart> ProjectTaskLaborPartLookup { get; set; }
+        public LookupDefinition<MaterialPartLookup, MaterialPart> MaterialPartLookup { get; set; }
 
         public LookupDefinition<AdvancedFindLookup, AdvancedFind> AdvancedFindLookup { get; set; }
         public LookupDefinition<RecordLockingLookup, RecordLock> RecordLockingLookup { get; set; }
@@ -276,6 +278,11 @@ namespace RingSoft.DevLogix.DataAccess
             ProjectTaskLaborPartLookup.AddVisibleColumnDefinition(p => p.Description
                 , "Descripion", p => p.Description, 33);
             ProjectTaskLaborParts.HasLookupDefinition(ProjectTaskLaborPartLookup);
+
+            MaterialPartLookup = new LookupDefinition<MaterialPartLookup, MaterialPart>(MaterialParts);
+            MaterialPartLookup.AddVisibleColumnDefinition(p => p.Name, "Name", p => p.Name, 70);
+            MaterialPartLookup.AddVisibleColumnDefinition(p => p.Cost, "Cost", p => p.Cost, 30);
+            MaterialParts.HasLookupDefinition(MaterialPartLookup);
         }
 
         public LookupDefinition<ProductVersionLookup, ProductVersion> MakeProductVersionLookupDefinition()

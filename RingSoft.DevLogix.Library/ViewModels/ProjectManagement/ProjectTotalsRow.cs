@@ -41,6 +41,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
             return new DataEntryGridTextCellProps(this, columnId);
         }
 
@@ -53,45 +54,42 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 case TotalsColumns.Type:
                     break;
                 case TotalsColumns.Time:
-                    if (Minutes < 0)
-                    {
-                        if (NegativeDisplayStyleId > 0)
-                        {
-                            displayStyleId = NegativeDisplayStyleId;
-                        }
-                    }
-                    else
-                    {
-                        if (PositiveDisplayStyleId > 0)
-                        {
-                            displayStyleId = PositiveDisplayStyleId;
-                        }
-                    }
+                    displayStyleId = GetDisplayStyleId(Minutes);
                     break;
                 case TotalsColumns.Cost:
-                    if (Cost < 0)
-                    {
-                        if (NegativeDisplayStyleId > 0)
-                        {
-                            displayStyleId = NegativeDisplayStyleId;
-                        }
-                    }
-                    else
-                    {
-                        if (PositiveDisplayStyleId > 0)
-                        {
-                            displayStyleId = PositiveDisplayStyleId;
-                        }
-                    }
+                    displayStyleId = GetDisplayStyleId(Cost);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
             return new DataEntryGridCellStyle
             {
                 State = DataEntryGridCellStates.ReadOnly,
                 DisplayStyleId = displayStyleId,
             };
         }
-    }
+
+        public int GetDisplayStyleId(decimal value)
+        {
+            var result = 0;
+
+            if (value < 0)
+            {
+                if (NegativeDisplayStyleId > 0)
+                {
+                    result = NegativeDisplayStyleId;
+                }
+            }
+            else if (value > 0)
+            {
+                if (PositiveDisplayStyleId > 0)
+                {
+                    result = PositiveDisplayStyleId;
+                }
+            }
+
+            return result;
+        }
+}
 }

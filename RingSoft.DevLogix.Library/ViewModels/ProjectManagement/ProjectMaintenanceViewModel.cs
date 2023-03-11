@@ -683,8 +683,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             ProjectTotalsManager.RemainingRow.Cost = remainingCost;
             ActualRow.Minutes = MinutesSpent;
             ActualRow.Cost = TotalCost;
-            StatusRow.Minutes = remainingMinutes - ActualRow.Minutes;
-            StatusRow.Cost = remainingCost - ActualRow.Cost;
+            StatusRow.Minutes = estimatedMinutes - (ActualRow.Minutes + remainingMinutes);
+            StatusRow.Cost = estimatedCost - (ActualRow.Cost + remainingCost);
             ProjectTotalsManager.RefreshGrid();
         }
     }

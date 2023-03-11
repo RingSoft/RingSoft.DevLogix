@@ -580,6 +580,25 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.ToTable("LaborParts");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.MaterialPart", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("Cost")
+                        .HasColumnType("numeric");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MaterialParts");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.Project", b =>
                 {
                     b.Property<int>("Id")
