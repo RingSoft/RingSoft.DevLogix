@@ -20,11 +20,6 @@ using RingSoft.DevLogix.Library.ViewModels.QualityAssurance;
 
 namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 {
-    public enum ProjectSpecialRights
-    {
-        AllowMaterialsEdit = 1,
-    }
-
     public interface IProjectView
     {
         void PunchIn(Project project);
@@ -360,8 +355,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
             AppGlobals.MainViewModel.ProjectViewModels.Add(this);
             RecalcCommand.IsEnabled = TableDefinition.HasRight(RightTypes.AllowEdit);
-
-            var test = TableDefinition.HasSpecialRight((int)ProjectSpecialRights.AllowMaterialsEdit);
 
             ProjectTotalsManager.Initialize();
 

@@ -1,0 +1,121 @@
+﻿<ac:DbMaintenanceWindow x:Class="RingSoft.DevLogix.ProjectManagement.ProjectMaterialMaintenanceWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
+        xmlns:deg="clr-namespace:RingSoft.DataEntryControls.WPF.DataEntryGrid;assembly=RingSoft.DataEntryControls.WPF"
+        xmlns:lc="clr-namespace:RingSoft.DbLookup.Controls.WPF;assembly=RingSoft.DbLookup.Controls.WPF"
+        xmlns:ac="clr-namespace:RingSoft.App.Controls;assembly=RingSoft.App.Controls"
+        xmlns:dl="clr-namespace:RingSoft.DevLogix"
+        xmlns:vm="clr-namespace:RingSoft.DevLogix.Library.ViewModels.ProjectManagement;assembly=RingSoft.DevLogix.Library"
+        xmlns:local="clr-namespace:RingSoft.DevLogix.ProjectManagement"
+        mc:Ignorable="d"
+        Style="{StaticResource BaseWindowStyle}"
+        Title="Project Material Maintenance Window" Height="450" Width="800">
+
+    <Window.Resources>
+
+        <deg:DataEntryGridDisplayStyle x:Key="CommentCellStyle" DisplayId="{x:Static vm:ProjectTaskLaborPartsManager.CommentRowDisplayStyleId}" 
+                                       ForegroundBrush="White"
+                                       SelectionBrush="White">
+            <deg:DataEntryGridDisplayStyle.BackgroundBrush>
+                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                    <GradientStop Color="#FF0EB20E" Offset="0"/>
+                    <GradientStop Color="Green" Offset="1"/>
+                </LinearGradientBrush>
+            </deg:DataEntryGridDisplayStyle.BackgroundBrush>
+        </deg:DataEntryGridDisplayStyle>
+
+        <deg:DataEntryGridDisplayStyle x:Key="OverheadCellStyle" DisplayId="{x:Static vm:ProjectTaskLaborPartsManager.MiscRowDisplayStyleId}" ForegroundBrush="White" SelectionBrush="White">
+            <deg:DataEntryGridDisplayStyle.BackgroundBrush>
+                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                    <GradientStop Color="#FF6D6DFD" Offset="0"/>
+                    <GradientStop Color="Blue" Offset="1"/>
+                </LinearGradientBrush>
+            </deg:DataEntryGridDisplayStyle.BackgroundBrush>
+        </deg:DataEntryGridDisplayStyle>
+
+    </Window.Resources>
+
+    <Window.DataContext>
+        <vm:ProjectMaterialViewModel x:Name="LocalViewModel"/>
+    </Window.DataContext>
+
+    <DockPanel>
+
+        <ac:DbMaintenanceTopHeaderControl x:Name="TopHeaderControl" DockPanel.Dock="Top"/>
+
+        <Grid Margin="5">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Row="0" Grid.Column="0" Content="Task ID"/>
+
+            <dec:StringReadOnlyBox Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" Width="50" Text="{Binding Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <Label Grid.Row="0" Grid.Column="2" Content="Name"/>
+
+            <lc:AutoFillControl Grid.Row="0" Grid.Column="3" x:Name="KeyControl" Width="200" HorizontalAlignment="Left"/>
+
+            <TabControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" x:Name="TabControl">
+                <TabItem Header="Details" x:Name="DetailsTabItem">
+
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Grid.Row="0" Grid.Column="0" Content="Project"/>
+
+                        <lc:AutoFillControl Grid.Row="0" Grid.Column="1" x:Name="ProjectControl" Width="200" HorizontalAlignment="Left" Setup="{Binding ProjectAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding ProjectAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        <Label Grid.Row="1" Grid.Column="0" Content="Cost"/>
+
+                        <StackPanel Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Orientation="Horizontal">
+
+                            <dec:DecimalEditControl x:Name="CostControl" FormatType="Currency" Value="{Binding Cost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" HorizontalAlignment="Left"/>
+
+                            <CheckBox Content="Cost Edited" IsEnabled="False" VerticalAlignment="Center" IsChecked="{Binding IsCostEdited, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        </StackPanel>
+
+                        <Label Grid.Row="2" Grid.Column="0" Content="Actual Cost"/>
+
+                        <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="1" FormatType="Currency" Value="{Binding ActualCost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" HorizontalAlignment="Left"/>
+                    </Grid>
+                </TabItem>
+
+                <dec:DataEntryMemoTabItem Header="Notes" VerticalAlignment="Stretch">
+                    <DockPanel>
+
+                        <dec:DataEntryMemoEditor x:Name="NotesControl" Text="{Binding Path=Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    </DockPanel>
+                </dec:DataEntryMemoTabItem>
+
+            </TabControl>
+        </Grid>
+    </DockPanel>
+
+</ac:DbMaintenanceWindow>

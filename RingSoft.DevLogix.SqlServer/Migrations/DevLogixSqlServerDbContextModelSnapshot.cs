@@ -716,6 +716,9 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<decimal>("Cost")
                         .HasColumnType("numeric");
 
+                    b.Property<bool>("IsCostEdited")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)

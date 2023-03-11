@@ -99,6 +99,7 @@ namespace RingSoft.DevLogix
 
             WindowRegistry.RegisterWindow<ProjectMaintenanceWindow>(AppGlobals.LookupContext.Projects);
             WindowRegistry.RegisterWindow<ProjectTaskMaintenanceWindow>(AppGlobals.LookupContext.ProjectTasks);
+            WindowRegistry.RegisterWindow<ProjectMaterialMaintenanceWindow>(AppGlobals.LookupContext.ProjectMaterials);
             WindowRegistry.RegisterWindow<LaborPartMaintenanceWindow>(AppGlobals.LookupContext.LaborParts);
             WindowRegistry.RegisterWindow<MaterialPartMaintenanceWindow>(AppGlobals.LookupContext.MaterialParts);
 

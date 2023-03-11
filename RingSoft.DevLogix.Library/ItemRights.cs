@@ -244,13 +244,16 @@ namespace RingSoft.DevLogix.Library
 
             category = new RightCategory("Project Management", MenuCategories.Projects);
             var categoryItem = new RightCategoryItem(item: "Add/Edit Projects", AppGlobals.LookupContext.Projects);
-
-            AddSpecialRight((int)ProjectSpecialRights.AllowMaterialsEdit, "Allow Materials Edit"
-            , AppGlobals.LookupContext.Projects);
- 
             category.Items.Add(categoryItem);
+
             categoryItem = new RightCategoryItem(item: "Add/Edit Project Tasks", AppGlobals.LookupContext.ProjectTasks);
             category.Items.Add(categoryItem);
+
+            categoryItem = new RightCategoryItem(item: "Add/Edit Project Materials", AppGlobals.LookupContext.ProjectMaterials);
+            category.Items.Add(categoryItem);
+
+            AddSpecialRight((int)ProjectMaterialSpecialRights.AllowMaterialPost, "Allow Post Cost"
+                , AppGlobals.LookupContext.ProjectMaterials);
 
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Labor Parts", AppGlobals.LookupContext.LaborParts));
             

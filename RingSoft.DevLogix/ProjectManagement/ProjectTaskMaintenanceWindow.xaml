@@ -69,7 +69,7 @@
             <lc:AutoFillControl Grid.Row="0" Grid.Column="3" x:Name="KeyControl" Width="200" HorizontalAlignment="Left"/>
 
 
-            <TabControl Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="5" x:Name="TabControl">
+            <TabControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" x:Name="TabControl">
 
                 <TabItem Header="Details" x:Name="DetailsTabItem">
 
