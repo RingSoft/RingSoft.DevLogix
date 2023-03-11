@@ -467,8 +467,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .HasColumnType("nvarchar");
 
                     b.Property<string>("Rights")
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("ntext");
 
                     b.HasKey("Id");
 
@@ -923,8 +922,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .HasColumnType("nvarchar");
 
                     b.Property<string>("Rights")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("ntext");
 
                     b.Property<int?>("SupervisorId")
                         .HasColumnType("integer");

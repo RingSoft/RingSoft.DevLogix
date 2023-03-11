@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DevLogix.DataAccess.Model;
+using RingSoft.DevLogix.Library.ViewModels.ProjectManagement;
 
 namespace RingSoft.DevLogix.Library
 {
@@ -23,6 +24,7 @@ namespace RingSoft.DevLogix.Library
         AllowAdd = 1,
         AllowEdit = 2,
         AllowDelete = 3,
+        Special = 4,
     }
 
     public enum ItemRightTypes
@@ -31,9 +33,39 @@ namespace RingSoft.DevLogix.Library
         Group = 1,
     }
 
+    public class SpecialRight
+    {
+        public TableDefinitionBase TableDefinition { get; internal set; }
+
+        public string Description { get; internal set; }
+
+        public int RightId { get; internal set; }
+
+        private bool _hasRight;
+
+        public bool HasRight
+        {
+            get => _hasRight;
+            internal set
+            {
+                if (_hasRight == value)
+                {
+                    return;
+                }
+                _hasRight = value;
+            }
+        }
+
+        public SpecialRight()
+        {
+            
+        }
+    }
     public class Right : INotifyPropertyChanged
     {
         public TableDefinitionBase TableDefinition { get; set; }
+
+        public List<SpecialRight> SpecialRights { get; private set; } = new List<SpecialRight>();
 
         private bool _allowDelete;
 
@@ -134,6 +166,13 @@ namespace RingSoft.DevLogix.Library
         {
             AllowDelete = true;
         }
+
+        public void AddSpecialRight(SpecialRight specialRight)
+        {
+            specialRight.TableDefinition = TableDefinition;
+            specialRight.HasRight = true;
+            SpecialRights.Add(specialRight);
+        }
         public override string ToString()
         {
             return TableDefinition.ToString();
@@ -179,6 +218,9 @@ namespace RingSoft.DevLogix.Library
     {
         public ObservableCollection<Right> Rights { get; set; }
 
+        public List<SpecialRight> SpecialRights { get; private set; } = new List<SpecialRight>();
+
+
         public List<RightCategory> Categories { get; set; } = new List<RightCategory>();
 
         public ItemRights()
@@ -201,8 +243,22 @@ namespace RingSoft.DevLogix.Library
             Categories.Add(category);
 
             category = new RightCategory("Project Management", MenuCategories.Projects);
-            category.Items.Add(new RightCategoryItem(item: "Add/Edit Projects", AppGlobals.LookupContext.Projects));
-            category.Items.Add(new RightCategoryItem(item: "Add/Edit Project Tasks", AppGlobals.LookupContext.ProjectTasks));
+            var categoryItem = new RightCategoryItem(item: "Add/Edit Projects", AppGlobals.LookupContext.Projects);
+
+            AddSpecialRight((int)ProjectSpecialRights.AllowMaterialsPost, "Allow Materials Post"
+            , AppGlobals.LookupContext.Projects);
+            AddSpecialRight((int)ProjectSpecialRights.Test, "Test"
+                , AppGlobals.LookupContext.Projects);
+
+            category.Items.Add(categoryItem);
+            categoryItem = new RightCategoryItem(item: "Add/Edit Project Tasks", AppGlobals.LookupContext.ProjectTasks);
+            AddSpecialRight((int)ProjectTaskSpecialRights.Test1, "Test1"
+                , AppGlobals.LookupContext.ProjectTasks);
+            AddSpecialRight((int)ProjectTaskSpecialRights.Test2, "Test2"
+                , AppGlobals.LookupContext.ProjectTasks);
+
+
+            category.Items.Add(categoryItem);
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Labor Parts", AppGlobals.LookupContext.LaborParts));
             Categories.Add(category);
 
@@ -224,25 +280,51 @@ namespace RingSoft.DevLogix.Library
             {
                 if (tableDefinition.PrimaryKeyFields[0].ParentJoinForeignKeyDefinition == null)
                 {
-                    Rights.Add(new Right
+                    var right = new Right
                     {
                         TableDefinition = tableDefinition,
-                    });
+                    };
+                    var specialRights = SpecialRights.Where(p => p.TableDefinition == tableDefinition);
+                    foreach (var specialRight in specialRights)
+                    {
+                        right.AddSpecialRight(specialRight);
+                    }
+                    Rights.Add(right);
                 }
             }
         }
 
+        public void AddSpecialRight(int specialRightId, string description, TableDefinitionBase tableDefinition)
+        {
+            SpecialRights.Add(new SpecialRight
+            {
+                TableDefinition = tableDefinition,
+                RightId = specialRightId,
+                Description = description,
+            });
+        }
         public void Reset()
         {
             foreach (var right in Rights)
             {
                 right.AllowDelete = true;
+                foreach (var specialRight in right.SpecialRights)
+                {
+                    specialRight.HasRight = true;
+                }
             }
         }
 
         public Right GetRight(TableDefinitionBase tableDefinition)
         {
             var right = Rights.FirstOrDefault(p => p.TableDefinition == tableDefinition);
+            return right;
+        }
+
+        public SpecialRight GetSpecialRight(TableDefinitionBase tableDefinition, int rightType)
+        {
+            var right = SpecialRights.FirstOrDefault(p => p.TableDefinition == tableDefinition
+                                                          && p.RightId == rightType);
             return right;
         }
 
@@ -268,8 +350,20 @@ namespace RingSoft.DevLogix.Library
             }
         }
 
+        public bool HasSpecialRight(TableDefinitionBase tableDefinition, int rightType)
+        {
+            var right = GetSpecialRight(tableDefinition, rightType);
+            if (right != null)
+            {
+                return right.HasRight;
+            }
+            return false;
+        }
+
         public string GetRightsString()
         {
+            var specialRightsBits = string.Empty;
+
             var result = string.Empty;
 
             foreach (var right in Rights)
@@ -302,8 +396,21 @@ namespace RingSoft.DevLogix.Library
                 }
                 result += rightBit;
 
+                var first = true;
+                foreach (var specialRight in right.SpecialRights)
+                {
+                    if (first)
+                    {
+                        specialRightsBits += $"@{right.TableDefinition.TableName}";
+                    }
+
+                    rightBit = specialRight.HasRight ? "1" : "0";
+                    specialRightsBits += rightBit;
+                    first = false;
+                }
             }
 
+            result += specialRightsBits;
             return result;
         }
 
@@ -314,6 +421,13 @@ namespace RingSoft.DevLogix.Library
             {
                 return;
             }
+
+            var tableRights = rightsString;
+            var tableRightsPos = rightsString.IndexOf("@");
+            if (tableRightsPos >= 0)
+            {
+                tableRights = rightsString.LeftStr(tableRightsPos);
+            }
             foreach (var right in Rights)
             {
                 var rightIndex = Rights.IndexOf(right);
@@ -323,14 +437,14 @@ namespace RingSoft.DevLogix.Library
                     rightStringIndex = rightIndex * 4;
                 }
 
-                if (rightStringIndex > rightsString.Length - 1)
+                if (rightStringIndex > tableRights.Length - 1)
                 {
                     return;
                 }
                 var counter = 0;
                 while (counter < 4)
                 {
-                    var rightBit = rightsString[rightStringIndex].ToString();
+                    var rightBit = tableRights[rightStringIndex].ToString();
                     if (counter == 0)
                     {
                         right.AllowDelete = rightBit.ToBool();
@@ -351,6 +465,33 @@ namespace RingSoft.DevLogix.Library
                     counter++;
                     rightStringIndex++;
                 }
+
+                var specialBitIndex = 0;
+                foreach (var specialRight in right.SpecialRights)
+                {
+                    var search = $"@{right.TableDefinition.TableName}";
+                    var beginningPos = rightsString.IndexOf(search);
+                    if (beginningPos != -1)
+                    {
+                        var beginningRight = rightsString.GetRightText(beginningPos + 1, 0);
+                        var endingPos = beginningRight.IndexOf("@");
+                        if (endingPos != -1)
+                        {
+                            beginningRight = beginningRight.LeftStr(endingPos);
+                        }
+                        var tablePos = beginningRight.IndexOf(right.TableDefinition.TableName);
+                        beginningRight = beginningRight.GetRightText(tablePos
+                            , right.TableDefinition.TableName.Length);
+                        if (specialBitIndex < beginningRight.Length)
+                        {
+                            var specialRightChar = beginningRight[specialBitIndex];
+                            specialRight.HasRight = specialRightChar.ToString().ToBool();
+                        }
+
+                        specialBitIndex++;
+                    }
+                }
+
             }
         }
     }
@@ -373,5 +514,11 @@ namespace RingSoft.DevLogix.Library
             return UserRights.HasRight(tableDefinition, rightType) ||
                    GroupRights.Any(p => p.HasRight(tableDefinition, rightType));
         }
-    }
+
+        public bool HasSpecialRight(TableDefinitionBase tableDefinition, int rightType)
+        {
+            return UserRights.HasSpecialRight(tableDefinition, rightType) ||
+                   GroupRights.Any(p => p.HasSpecialRight(tableDefinition, rightType));
+        }
+}
 }

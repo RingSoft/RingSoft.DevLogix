@@ -13,7 +13,6 @@ namespace RingSoft.DevLogix.DataAccess.Model
         [MaxLength(50)]
         public string Name { get; set; }
 
-        [MaxLength(250)]
         public string? Rights { get; set; }
 
         public virtual ICollection<UsersGroup> UserGroups { get; set; }

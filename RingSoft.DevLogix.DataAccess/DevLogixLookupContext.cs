@@ -397,7 +397,7 @@ namespace RingSoft.DevLogix.DataAccess
             chartAdvFindField.SetParentField(advancedField, advancedField.PropertyName);
 
             Groups.PriorityLevel = 100;
-            Groups.GetFieldDefinition(p => p.Rights).DoSkipPrint();
+            Groups.GetFieldDefinition(p => p.Rights).DoSkipPrint().IsMemo();
 
             ErrorStatuses.PriorityLevel = 100;
             ErrorPriorities.PriorityLevel = 100;
@@ -413,7 +413,7 @@ namespace RingSoft.DevLogix.DataAccess
 
             Users.PriorityLevel = 300;
             Users.GetFieldDefinition(p => p.SupervisorId).DoesAllowRecursion(false);
-            Users.GetFieldDefinition(p => p.Rights).DoSkipPrint();
+            Users.GetFieldDefinition(p => p.Rights).DoSkipPrint().IsMemo();
 
             UsersGroups.PriorityLevel = 400;
 

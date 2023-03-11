@@ -21,6 +21,8 @@ namespace RingSoft.DevLogix.Library
 
         public TableDefinitionBase TableDefinition { get; set; }
 
+        public SpecialRight SpecialRight { get; set; }
+
         public override string ToString()
         {
             return Text;
@@ -205,14 +207,40 @@ namespace RingSoft.DevLogix.Library
                     var item = new TreeViewItem(rightCategoryItem.Description, false, categoryItem);
                     categoryItem.Items.Add(item);
 
-                    //var item = new TreeViewItem(right.TableDefinition.Description, right.AllowView, tableItem);
-
                     var viewItem = new TreeViewItem("Allow View", right.AllowView, item)
                         {RightType = RightTypes.AllowView, TableDefinition = right.TableDefinition};
                     viewItem.CheckChanged += (sender, args) => right.AllowView = viewItem.IsChecked.Value;
                     right.AllowViewChanged += (sender, args) => viewItem.IsChecked = right.AllowView;
                     _rightsItems.Add(viewItem);
                     item.Items.Add(viewItem);
+
+                    foreach (var rightSpecialRight in right.SpecialRights)
+                    {
+                        var specialRightItem = new TreeViewItem(rightSpecialRight.Description,
+                            rightSpecialRight.HasRight, item);
+                        specialRightItem.SpecialRight = rightSpecialRight;
+                        right.AllowViewChanged += (sender, args) =>
+                        {
+                            if (!right.AllowView)
+                            {
+                                specialRightItem.IsChecked = right.AllowView;
+                            }
+                        };
+                        right.AllowEditChanged += (sender, args) =>
+                        {
+                            specialRightItem.IsChecked = right.AllowEdit;
+                        };
+                        specialRightItem.CheckChanged += (sender, args) =>
+                        {
+                            specialRightItem.SpecialRight.HasRight = specialRightItem.IsChecked.Value;
+                            if (specialRightItem.IsChecked.Value)
+                            {
+                                right.AllowView = true;
+                            }
+                        };
+                        _rightsItems.Add(specialRightItem);
+                        item.Items.Add(specialRightItem);
+                    }
 
                     var editItem = new TreeViewItem("Allow Edit", right.AllowEdit, item)
                         {RightType = RightTypes.AllowEdit, TableDefinition = right.TableDefinition};
@@ -260,7 +288,19 @@ namespace RingSoft.DevLogix.Library
             }
         }
 
-        public void Reset() => Rights.Reset();
+        public void Reset()
+        {
+            Rights.Reset();
+            foreach (var rightsRight in Rights.Rights)
+            {
+                foreach (var specialRight in rightsRight.SpecialRights)
+                {
+                    var tableSpecialRight = _rightsItems.FirstOrDefault(p =>
+                        p.SpecialRight == specialRight);
+                    if (tableSpecialRight != null) tableSpecialRight.IsChecked = specialRight.HasRight;
+                }
+            }
+        }
 
         public void LoadRights(string rightsString)
         {
@@ -291,6 +331,13 @@ namespace RingSoft.DevLogix.Library
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();
+                    }
+
+                    foreach (var specialRight in rightsRight.SpecialRights)
+                    {
+                        var tableSpecialRight = _rightsItems.FirstOrDefault(p =>
+                            p.SpecialRight == specialRight);
+                        if (tableSpecialRight != null) tableSpecialRight.IsChecked = specialRight.HasRight;
                     }
                 }
             }

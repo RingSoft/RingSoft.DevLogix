@@ -27,7 +27,6 @@ namespace RingSoft.DevLogix.DataAccess.Model
         [MaxLength(255)]
         public string? Password { get; set; }
 
-        [MaxLength(255)]
         public string? Rights { get; set; }
 
         [MaxLength(255)]

@@ -17,6 +17,11 @@ namespace RingSoft.DevLogix.Library
             return AppGlobals.Rights.HasRight(tableDefinition, rightType);
         }
 
+        public static bool HasSpecialRight(this TableDefinitionBase tableDefinition, int rightType)
+        {
+            return AppGlobals.Rights.HasSpecialRight(tableDefinition, rightType);
+        }
+
         public static bool IsSupervisor(this User user, IQueryable<User> userQuery = null)
         {
             if (user == null)
