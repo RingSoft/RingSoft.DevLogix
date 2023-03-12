@@ -16,7 +16,7 @@
 
     <Window.Resources>
 
-        <deg:DataEntryGridDisplayStyle x:Key="CommentCellStyle" DisplayId="{x:Static vm:ProjectTaskLaborPartsManager.CommentRowDisplayStyleId}" 
+        <deg:DataEntryGridDisplayStyle x:Key="CommentCellStyle" DisplayId="{x:Static vm:ProjectMaterialPartManager.CommentRowDisplayStyleId}" 
                                        ForegroundBrush="White"
                                        SelectionBrush="White">
             <deg:DataEntryGridDisplayStyle.BackgroundBrush>
@@ -27,11 +27,20 @@
             </deg:DataEntryGridDisplayStyle.BackgroundBrush>
         </deg:DataEntryGridDisplayStyle>
 
-        <deg:DataEntryGridDisplayStyle x:Key="OverheadCellStyle" DisplayId="{x:Static vm:ProjectTaskLaborPartsManager.MiscRowDisplayStyleId}" ForegroundBrush="White" SelectionBrush="White">
+        <deg:DataEntryGridDisplayStyle x:Key="MiscCellStyle" DisplayId="{x:Static vm:ProjectMaterialPartManager.MiscRowDisplayStyleId}" ForegroundBrush="White" SelectionBrush="White">
             <deg:DataEntryGridDisplayStyle.BackgroundBrush>
                 <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
                     <GradientStop Color="#FF6D6DFD" Offset="0"/>
                     <GradientStop Color="Blue" Offset="1"/>
+                </LinearGradientBrush>
+            </deg:DataEntryGridDisplayStyle.BackgroundBrush>
+        </deg:DataEntryGridDisplayStyle>
+
+        <deg:DataEntryGridDisplayStyle x:Key="OverheadCellStyle" DisplayId="{x:Static vm:ProjectMaterialPartManager.OverheadRowDisplayStyleId}" ForegroundBrush="White" SelectionBrush="White">
+            <deg:DataEntryGridDisplayStyle.BackgroundBrush>
+                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                    <GradientStop Color="LightCoral" Offset="0"/>
+                    <GradientStop Color="Orange" Offset="1"/>
                 </LinearGradientBrush>
             </deg:DataEntryGridDisplayStyle.BackgroundBrush>
         </deg:DataEntryGridDisplayStyle>
@@ -105,6 +114,53 @@
                         <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="1" FormatType="Currency" Value="{Binding ActualCost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" HorizontalAlignment="Left"/>
                     </Grid>
                 </TabItem>
+
+                <TabItem Header="Material Parts" x:Name="MaterialPartsTabItem">
+
+                    <Grid>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Grid.Row="0" Grid.Column="0" Content="Calculated Cost"/>
+
+                        <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="1" FormatType="Currency" Width="150" HorizontalAlignment="Left" TextAlignment="Left"/>
+
+                        <deg:DataEntryGrid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" x:Name="MaterialPartsGrid" Manager="{Binding ProjectMaterialPartManager}">
+
+                            <deg:DataEntryGrid.Columns>
+
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ProjectMaterialPartManager.LineTypeColumnId}" Width="100" Header="Line Type"/>
+
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ProjectMaterialPartManager.MaterialPartColumnId}" Width="250" Header="Material Part"/>
+
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ProjectMaterialPartManager.QuantityColumnId}" Width="100" Header="Quantity"/>
+
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ProjectMaterialPartManager.CostColumnId}" Width="150" Header="Cost"/>
+
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ProjectMaterialPartManager.ExtendedColumnId}" Width="150" Header="Extended&#10;Cost"/>
+
+                            </deg:DataEntryGrid.Columns>
+
+                            <deg:DataEntryGrid.DisplayStyles>
+                                <StaticResource ResourceKey="CommentCellStyle"/>
+                                <StaticResource ResourceKey="MiscCellStyle"/>
+                                <StaticResource ResourceKey="OverheadCellStyle"/>
+                            </deg:DataEntryGrid.DisplayStyles>
+
+                        </deg:DataEntryGrid>
+                    </Grid>
+
+                </TabItem>
+
 
                 <dec:DataEntryMemoTabItem Header="Notes" VerticalAlignment="Stretch">
                     <DockPanel>

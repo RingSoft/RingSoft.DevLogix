@@ -113,6 +113,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
+        private ProjectMaterialPartManager _projectMaterialPartManager;
+
+        public ProjectMaterialPartManager ProjectMaterialPartManager
+        {
+            get => _projectMaterialPartManager;
+            set
+            {
+                if (_projectMaterialPartManager == value)
+                    return;
+
+                _projectMaterialPartManager = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         private string? _notes;
 
         public string? Notes
@@ -134,7 +150,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         public ProjectMaterialViewModel()
         {
             ProjectAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ProjectId));
-
+            ProjectMaterialPartManager = new ProjectMaterialPartManager(this);
         }
         protected override ProjectMaterial PopulatePrimaryKeyControls(ProjectMaterial newEntity, PrimaryKeyValue primaryKeyValue)
         {
@@ -184,6 +200,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             IsCostEdited = false;
             ActualCost = 0;
             Notes = string.Empty;
+            ProjectMaterialPartManager.SetupForNewRecord();
         }
 
         protected override bool SaveEntity(ProjectMaterial entity)
