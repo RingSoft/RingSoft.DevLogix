@@ -52,10 +52,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 case MaterialPartLineTypes.MaterialPart:
                     return new ProjectMaterialPartMaterialPartRow(this);
                 case MaterialPartLineTypes.Miscellaneous:
-                    break;
+                    return new ProjectMaterialPartMiscRow(this);
                 case MaterialPartLineTypes.Overhead:
                     return new ProjectMaterialPartOverheadRow(this);
-                    break;
+                
                 case MaterialPartLineTypes.Comment:
                     break;
                 default:

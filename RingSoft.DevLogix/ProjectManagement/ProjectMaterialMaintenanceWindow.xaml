@@ -36,7 +36,7 @@
             </deg:DataEntryGridDisplayStyle.BackgroundBrush>
         </deg:DataEntryGridDisplayStyle>
 
-        <deg:DataEntryGridDisplayStyle x:Key="OverheadCellStyle" DisplayId="{x:Static vm:ProjectMaterialPartManager.OverheadRowDisplayStyleId}" ForegroundBrush="White" SelectionBrush="White">
+        <deg:DataEntryGridDisplayStyle x:Key="OverheadCellStyle" DisplayId="{x:Static vm:ProjectMaterialPartManager.OverheadRowDisplayStyleId}">
             <deg:DataEntryGridDisplayStyle.BackgroundBrush>
                 <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
                     <GradientStop Color="LightCoral" Offset="0"/>

@@ -103,12 +103,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                                     }
                                     break;
 
-                                    //case LaborPartLineTypes.Miscellaneous:
-                                    //    if (newRow is ProjectTaskLaborPartMiscRow newMiscRow)
-                                    //    {
-                                    //        newMiscRow.SetDescription(autoFillCellProps.AutoFillValue.Text);
-                                    //    }
-                                    //    break;
+                                case MaterialPartLineTypes.Miscellaneous:
+                                    if (newRow is ProjectMaterialPartMiscRow newMiscRow)
+                                    {
+                                        newMiscRow.SetDescription(autoFillCellProps.AutoFillValue.Text);
+                                    }
+                                    break;
                                     //case LaborPartLineTypes.Comment:
                                     //    if (newRow is ProjectTaskLaborPartCommentRow commentRow)
                                     //    {
