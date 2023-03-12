@@ -287,6 +287,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             var entity = table.FirstOrDefault(p => p.Id == Id);
             if (entity != null)
             {
+                var origParts = context.GetTable<ProjectMaterialPart>()
+                    .Where(p => p.ProjectMaterialId == Id).ToList();
+                context.RemoveRange(origParts);
+
                 return context.DeleteEntity(entity, "Deleting Project Material");
             }
 

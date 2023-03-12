@@ -54,6 +54,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 case MaterialPartLineTypes.Miscellaneous:
                     break;
                 case MaterialPartLineTypes.Overhead:
+                    return new ProjectMaterialPartOverheadRow(this);
                     break;
                 case MaterialPartLineTypes.Comment:
                     break;

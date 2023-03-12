@@ -96,20 +96,27 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                                         materialPartRow.SetAutoFillValue(autoFillValue);
                                     }
                                     break;
-                                //case LaborPartLineTypes.Miscellaneous:
-                                //    if (newRow is ProjectTaskLaborPartMiscRow newMiscRow)
-                                //    {
-                                //        newMiscRow.SetDescription(autoFillCellProps.AutoFillValue.Text);
-                                //    }
-                                //    break;
-                                //case LaborPartLineTypes.Comment:
-                                //    if (newRow is ProjectTaskLaborPartCommentRow commentRow)
-                                //    {
-                                //        commentRow.SetComment(autoFillCellProps.AutoFillValue.Text);
-                                //    }
-                                //    break;
-                                //default:
-                                //    throw new ArgumentOutOfRangeException();
+                                case MaterialPartLineTypes.Overhead:
+                                    if (newRow is ProjectMaterialPartOverheadRow newOverheadRow)
+                                    {
+                                        newOverheadRow.SetDescription(autoFillCellProps.AutoFillValue.Text);
+                                    }
+                                    break;
+
+                                    //case LaborPartLineTypes.Miscellaneous:
+                                    //    if (newRow is ProjectTaskLaborPartMiscRow newMiscRow)
+                                    //    {
+                                    //        newMiscRow.SetDescription(autoFillCellProps.AutoFillValue.Text);
+                                    //    }
+                                    //    break;
+                                    //case LaborPartLineTypes.Comment:
+                                    //    if (newRow is ProjectTaskLaborPartCommentRow commentRow)
+                                    //    {
+                                    //        commentRow.SetComment(autoFillCellProps.AutoFillValue.Text);
+                                    //    }
+                                    //    break;
+                                    //default:
+                                    //    throw new ArgumentOutOfRangeException();
                             }
                             Manager.Grid?.UpdateRow(newRow);
 
