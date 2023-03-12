@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
@@ -69,6 +70,49 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                                 newMaterialPartRow.SetAutoFillValue(autoFillCellProps.AutoFillValue);
                                 Manager.Grid?.UpdateRow(newRow);
                             }
+                        }
+                        else
+                        {
+                            Manager.ViewModel.View.GetNewLineType(autoFillCellProps.AutoFillValue.Text, 
+                                out var materialPartPkValue, out var lineType);
+                            var newRow = Manager.ConstructRowFromLineType(lineType);
+                            Manager.ReplaceRow(this, newRow);
+                            switch (lineType)
+                            {
+                                case MaterialPartLineTypes.NewRow:
+                                    autoFillCellProps.OverrideCellMovement = true;
+                                    break;
+                                case MaterialPartLineTypes.MaterialPart:
+                                    var materialPart =
+                                        AppGlobals.LookupContext.MaterialParts.GetEntityFromPrimaryKeyValue(
+                                            materialPartPkValue);
+
+                                    if (materialPart != null && newRow is ProjectMaterialPartMaterialPartRow materialPartRow)
+                                    {
+                                        var context = AppGlobals.DataRepository.GetDataContext();
+                                        materialPart = context.GetTable<MaterialPart>()
+                                            .FirstOrDefault(p => p.Id == materialPart.Id);
+                                        var autoFillValue = materialPart.GetAutoFillValue();
+                                        materialPartRow.SetAutoFillValue(autoFillValue);
+                                    }
+                                    break;
+                                //case LaborPartLineTypes.Miscellaneous:
+                                //    if (newRow is ProjectTaskLaborPartMiscRow newMiscRow)
+                                //    {
+                                //        newMiscRow.SetDescription(autoFillCellProps.AutoFillValue.Text);
+                                //    }
+                                //    break;
+                                //case LaborPartLineTypes.Comment:
+                                //    if (newRow is ProjectTaskLaborPartCommentRow commentRow)
+                                //    {
+                                //        commentRow.SetComment(autoFillCellProps.AutoFillValue.Text);
+                                //    }
+                                //    break;
+                                //default:
+                                //    throw new ArgumentOutOfRangeException();
+                            }
+                            Manager.Grid?.UpdateRow(newRow);
+
                         }
                     }
                     break;

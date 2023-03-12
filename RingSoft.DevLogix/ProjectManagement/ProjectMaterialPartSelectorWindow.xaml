@@ -1,0 +1,35 @@
+﻿<dec:BaseWindow x:Class="RingSoft.DevLogix.ProjectManagement.ProjectMaterialPartSelectorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:RingSoft.DevLogix.Library.ViewModels.ProjectManagement;assembly=RingSoft.DevLogix.Library"
+        xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
+        xmlns:local="clr-namespace:RingSoft.DevLogix.ProjectManagement"
+        mc:Ignorable="d"
+        Style="{StaticResource BaseWindowStyle}"
+        Title="Material Part Selector Window" SizeToContent="WidthAndHeight"
+        ResizeMode="NoResize" WindowStartupLocation="CenterOwner">
+
+    <Window.DataContext>
+        <vm:ProjectMaterialPartSelectorViewModel x:Name="ViewModel"/>
+    </Window.DataContext>
+    <Window.Resources>
+        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Width" Value="200"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+    </Window.Resources>
+
+    <StackPanel Orientation="Vertical">
+        <TextBlock MaxWidth="200" TextWrapping="WrapWithOverflow" Text="{Binding LabelText}" HorizontalAlignment="Left"/>
+        <Button Content="Add New _Material Part" Command="{Binding AddNewMaterialPartCommand}"/>
+        <Button Content="Add New M_iscellaneous Row" Command="{Binding AddNewMiscRowCommand}"/>
+        <Button Content="Add New _Overhead Row" Command="{Binding AddNewOverheadRowCommand}"/>
+        <Button Content="Add New Comme_nt Row" Command="{Binding AddCommentRowCommand}"/>
+        <Button Content="_Cancel" Command="{Binding CancelCommand}"/>
+    </StackPanel>
+</dec:BaseWindow>
