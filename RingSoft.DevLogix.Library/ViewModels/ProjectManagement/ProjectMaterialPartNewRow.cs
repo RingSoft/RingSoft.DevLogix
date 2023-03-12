@@ -109,14 +109,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                                         newMiscRow.SetDescription(autoFillCellProps.AutoFillValue.Text);
                                     }
                                     break;
-                                    //case LaborPartLineTypes.Comment:
-                                    //    if (newRow is ProjectTaskLaborPartCommentRow commentRow)
-                                    //    {
-                                    //        commentRow.SetComment(autoFillCellProps.AutoFillValue.Text);
-                                    //    }
-                                    //    break;
-                                    //default:
-                                    //    throw new ArgumentOutOfRangeException();
+                                case MaterialPartLineTypes.Comment:
+                                    if (newRow is ProjectMaterialPartCommentRow commentRow)
+                                    {
+                                        commentRow.SetComment(autoFillCellProps.AutoFillValue.Text);
+                                    }
+                                    break;
+                                default:
+                                    throw new ArgumentOutOfRangeException();
                             }
                             Manager.Grid?.UpdateRow(newRow);
 

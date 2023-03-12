@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbMaintenance;
@@ -28,6 +29,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         public const int OverheadRowDisplayStyleId = 102;
 
         public new ProjectMaterialViewModel ViewModel { get; set; }
+        public IEnumerable<ProjectMaterialPart> Details { get; private set; }
+
         public ProjectMaterialPartManager(ProjectMaterialViewModel viewModel) : base(viewModel)
         {
             ViewModel = viewModel;
@@ -55,9 +58,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     return new ProjectMaterialPartMiscRow(this);
                 case MaterialPartLineTypes.Overhead:
                     return new ProjectMaterialPartOverheadRow(this);
-                
                 case MaterialPartLineTypes.Comment:
-                    break;
+                    return new ProjectMaterialPartCommentRow(this);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(lineType), lineType, null);
             }
@@ -75,6 +77,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         protected override string GetParentRowIdFromEntity(ProjectMaterialPart entity)
         {
             return entity.ParentRowId;
+        }
+
+        public override void LoadGrid(IEnumerable<ProjectMaterialPart> entityList)
+        {
+            Details = entityList;
+            base.LoadGrid(entityList);
         }
     }
 }
