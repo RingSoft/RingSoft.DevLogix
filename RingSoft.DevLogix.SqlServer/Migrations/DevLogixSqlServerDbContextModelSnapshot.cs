@@ -637,6 +637,9 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<decimal?>("ContractCost")
+                        .HasColumnType("numeric");
+
                     b.Property<decimal>("Cost")
                         .HasColumnType("numeric");
 
@@ -735,6 +738,49 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.HasIndex("ProjectId");
 
                     b.ToTable("ProjectMaterials");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectMaterialPart", b =>
+                {
+                    b.Property<int>("ProjectMaterialId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("DetailId")
+                        .HasColumnType("integer");
+
+                    b.Property<bool?>("CommentCrLf")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal?>("Cost")
+                        .HasColumnType("numeric");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<byte>("LineType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<int?>("MaterialPartId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ParentRowId")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<int?>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("RowId")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.HasKey("ProjectMaterialId", "DetailId");
+
+                    b.HasIndex("MaterialPartId");
+
+                    b.ToTable("ProjectMaterialParts");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectTask", b =>
@@ -1277,6 +1323,24 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("Project");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectMaterialPart", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.MaterialPart", "MaterialPart")
+                        .WithMany("ProjectMaterialParts")
+                        .HasForeignKey("MaterialPartId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectMaterial", "ProjectMaterial")
+                        .WithMany("Parts")
+                        .HasForeignKey("ProjectMaterialId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("MaterialPart");
+
+                    b.Navigation("ProjectMaterial");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectTask", b =>
                 {
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.Project", "Project")
@@ -1505,6 +1569,11 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("ProjectTasks");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.MaterialPart", b =>
+                {
+                    b.Navigation("ProjectMaterialParts");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.Project", b =>
                 {
                     b.Navigation("ProjectMaterialParts");
@@ -1514,6 +1583,11 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("ProjectUsers");
 
                     b.Navigation("TimeClocks");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectMaterial", b =>
+                {
+                    b.Navigation("Parts");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectTask", b =>

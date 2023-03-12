@@ -81,6 +81,21 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
+        private decimal _contractCost;
+
+        public decimal ContractCost
+        {
+            get => _contractCost;
+            set
+            {
+                if (_contractCost == value)
+                    return;
+
+                _contractCost = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         private string _timeSpent;
 
@@ -406,6 +421,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         protected override void LoadFromEntity(Project entity)
         {
             ManagerAutoFillValue = entity.Manager.GetAutoFillValue();
+            if (entity.ContractCost != null) ContractCost = entity.ContractCost.Value;
             Deadline = entity.Deadline.ToLocalTime();
             OriginalDeadline = entity.OriginalDeadline.ToLocalTime();
             ProductAutoFillValue = entity.Product.GetAutoFillValue();
@@ -432,6 +448,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             result.Id = Id;
             result.Name = KeyAutoFillValue.Text;
             result.ManagerId = ManagerAutoFillValue.GetEntity<User>().Id;
+            result.ContractCost = ContractCost;
             result.Deadline = Deadline.ToUniversalTime();
             result.OriginalDeadline = OriginalDeadline.ToUniversalTime();
             result.ProductId = ProductAutoFillValue.GetEntity<Product>().Id;
@@ -449,6 +466,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         {
             Id = 0;
             ManagerAutoFillValue = null;
+            ContractCost = 0;
             KeyAutoFillValue = null;
             ManagerAutoFillValue = null;
             OriginalDeadline = Deadline = DateTime.Now;

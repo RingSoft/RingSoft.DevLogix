@@ -19,6 +19,8 @@ namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
 
         public virtual User Manager { get; set; }
 
+        public decimal? ContractCost { get; set; }
+
         [Required]
         public DateTime Deadline { get; set; }
 

@@ -12,6 +12,7 @@ namespace RingSoft.DevLogix.DataAccess.Configurations.ProjectManagement
             builder.Property(p => p.Id).HasColumnType(DbConstants.IntegerColumnType);
             builder.Property(p => p.Name).HasColumnType(DbConstants.StringColumnType);
             builder.Property(p => p.ManagerId).HasColumnType(DbConstants.IntegerColumnType);
+            builder.Property(p => p.ContractCost).HasColumnType(DbConstants.DecimalColumnType);
             builder.Property(p => p.Deadline).HasColumnType(DbConstants.DateColumnType);
             builder.Property(p => p.OriginalDeadline).HasColumnType(DbConstants.DateColumnType);
             builder.Property(p => p.ProductId).HasColumnType(DbConstants.IntegerColumnType);

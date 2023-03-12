@@ -60,6 +60,7 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<ProjectTaskLaborPart> ProjectTaskLaborParts { get; set; }
         public TableDefinition<MaterialPart> MaterialParts { get; set; }
         public TableDefinition<ProjectMaterial> ProjectMaterials { get; set; }
+        public TableDefinition<ProjectMaterialPart> ProjectMaterialParts { get; set; }
 
         public TableDefinition<AdvancedFind> AdvancedFinds { get; set; }
         public TableDefinition<AdvancedFindColumn> AdvancedFindColumns { get; set; }
@@ -89,6 +90,7 @@ namespace RingSoft.DevLogix.DataAccess
         public LookupDefinition<ProjectTaskLaborPartLookup, ProjectTaskLaborPart> ProjectTaskLaborPartLookup { get; set; }
         public LookupDefinition<MaterialPartLookup, MaterialPart> MaterialPartLookup { get; set; }
         public LookupDefinition<ProjectMaterialLookup, ProjectMaterial> ProjectMaterialLookup { get; set; }
+        public LookupDefinition<ProjectMaterialPartLookup, ProjectMaterialPart> ProjectMaterialPartLookup { get; set; }
 
         public LookupDefinition<AdvancedFindLookup, AdvancedFind> AdvancedFindLookup { get; set; }
         public LookupDefinition<RecordLockingLookup, RecordLock> RecordLockingLookup { get; set; }
@@ -278,7 +280,7 @@ namespace RingSoft.DevLogix.DataAccess
                 .AddVisibleColumnDefinition(p => p.LaborPart
                     , "Labor Part", p => p.Name, 33);
             ProjectTaskLaborPartLookup.AddVisibleColumnDefinition(p => p.Description
-                , "Descripion", p => p.Description, 33);
+                , "Description", p => p.Description, 33);
             ProjectTaskLaborParts.HasLookupDefinition(ProjectTaskLaborPartLookup);
 
             MaterialPartLookup = new LookupDefinition<MaterialPartLookup, MaterialPart>(MaterialParts);
@@ -291,6 +293,19 @@ namespace RingSoft.DevLogix.DataAccess
             ProjectMaterialLookup.AddVisibleColumnDefinition(p => p.Cost, "Cost", p => p.Cost, 25);
             ProjectMaterialLookup.AddVisibleColumnDefinition(p => p.ActualCost, "Actual Cost", p => p.ActualCost, 25);
             ProjectMaterials.HasLookupDefinition(ProjectMaterialLookup);
+
+            ProjectMaterialPartLookup =
+                new LookupDefinition<ProjectMaterialPartLookup, ProjectMaterialPart>(ProjectMaterialParts);
+
+            ProjectMaterialPartLookup.Include(p => p.ProjectMaterial)
+                .AddVisibleColumnDefinition(p => p.ProjectName, "Project"
+                    , p => p.Name, 34);
+            ProjectMaterialPartLookup.Include(p => p.MaterialPart)
+                .AddVisibleColumnDefinition(p => p.MaterialPart
+                    , "Material Part", p => p.Name, 33);
+            ProjectMaterialPartLookup.AddVisibleColumnDefinition(p => p.Description
+                , "Description", p => p.Description, 33);
+            ProjectMaterialParts.HasLookupDefinition(ProjectMaterialPartLookup);
 
         }
 

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
@@ -29,5 +30,12 @@ namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
         public decimal ActualCost { get; set; }
 
         public string? Notes { get; set; }
+
+        public ICollection<ProjectMaterialPart> Parts { get; set; }
+
+        public ProjectMaterial()
+        {
+            Parts = new HashSet<ProjectMaterialPart>();
+        }
     }
 }
