@@ -142,11 +142,11 @@
 
                                 <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ProjectMaterialPartManager.MaterialPartColumnId}" Width="250" Header="Material Part"/>
 
-                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ProjectMaterialPartManager.QuantityColumnId}" Width="100" Header="Quantity"/>
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ProjectMaterialPartManager.QuantityColumnId}" Width="100" Header="Quantity" Alignment="Right"/>
 
-                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ProjectMaterialPartManager.CostColumnId}" Width="150" Header="Cost"/>
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ProjectMaterialPartManager.CostColumnId}" Width="150" Header="Cost" Alignment="Right"/>
 
-                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ProjectMaterialPartManager.ExtendedColumnId}" Width="150" Header="Extended&#10;Cost"/>
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ProjectMaterialPartManager.ExtendedColumnId}" Width="150" Header="Extended&#10;Cost" Alignment="Right"/>
 
                             </deg:DataEntryGrid.Columns>
 

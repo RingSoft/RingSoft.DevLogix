@@ -40,7 +40,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         protected override DbMaintenanceDataEntryGridRow<ProjectMaterialPart> ConstructNewRowFromEntity(ProjectMaterialPart entity)
         {
-            throw new System.NotImplementedException();
+            return ConstructRowFromLineType((MaterialPartLineTypes)entity.LineType);
         }
 
         public ProjectMaterialPartRow ConstructRowFromLineType(MaterialPartLineTypes lineType)
@@ -71,5 +71,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             ViewModel.SetTotalCost(total);
         }
 
+        protected override string GetParentRowIdFromEntity(ProjectMaterialPart entity)
+        {
+            return entity.ParentRowId;
+        }
     }
 }

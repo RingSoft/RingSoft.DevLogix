@@ -176,6 +176,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         {
             ProjectAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ProjectId));
             ProjectMaterialPartManager = new ProjectMaterialPartManager(this);
+
+            TablesToDelete.Add(AppGlobals.LookupContext.ProjectMaterialParts);
         }
 
         protected override void Initialize()
@@ -193,6 +195,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             var context = AppGlobals.DataRepository.GetDataContext();
             result = context.GetTable<ProjectMaterial>()
                 .Include(p => p.Project)
+                .Include(p => p.Parts)
+                .ThenInclude(p => p.MaterialPart)
                 .FirstOrDefault(p => p.Id == newEntity.Id);
             if (result != null)
             {
@@ -210,6 +214,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             ActualCost = entity.ActualCost;
             IsCostEdited = entity.IsCostEdited;
             Notes = entity.Notes;
+            ProjectMaterialPartManager.LoadGrid(entity.Parts);
+            ProjectMaterialPartManager.CalculateTotalCost();
             _loading = false;
         }
 
@@ -254,7 +260,24 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         protected override bool SaveEntity(ProjectMaterial entity)
         {
             var context = AppGlobals.DataRepository.GetDataContext();
-            return context.SaveEntity(entity, "Saving Project Material");
+            var result = context.SaveEntity(entity, "Saving Project Material");
+            if (result)
+            {
+                var parts = ProjectMaterialPartManager.GetEntityList();
+                foreach (var projectMaterialPart in parts)
+                {
+                    projectMaterialPart.ProjectMaterialId = entity.Id;
+                }
+
+                var origParts = context.GetTable<ProjectMaterialPart>()
+                    .Where(p => p.ProjectMaterialId == Id).ToList();
+                context.RemoveRange(origParts);
+                context.AddRange(parts);
+
+            }
+
+            result = context.Commit("Committing Project Material");
+            return result;
         }
 
         protected override bool DeleteEntity()

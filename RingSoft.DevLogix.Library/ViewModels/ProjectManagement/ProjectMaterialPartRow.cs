@@ -73,5 +73,18 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
             return base.GetCellStyle(columnId);
         }
+
+        public override void SaveToEntity(ProjectMaterialPart entity, int rowIndex)
+        {
+            entity.DetailId = rowIndex;
+            entity.LineType = (byte)LineType;
+            entity.RowId = RowId;
+            entity.ParentRowId = ParentRowId;
+        }
+
+        public override void LoadFromEntity(ProjectMaterialPart entity)
+        {
+            
+        }
     }
 }

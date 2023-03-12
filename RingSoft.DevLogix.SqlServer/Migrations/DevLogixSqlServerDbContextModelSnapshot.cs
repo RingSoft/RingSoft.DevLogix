@@ -768,8 +768,8 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
-                    b.Property<int?>("Quantity")
-                        .HasColumnType("integer");
+                    b.Property<decimal?>("Quantity")
+                        .HasColumnType("numeric");
 
                     b.Property<string>("RowId")
                         .IsRequired()
@@ -857,8 +857,8 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
-                    b.Property<int?>("Quantity")
-                        .HasColumnType("integer");
+                    b.Property<decimal?>("Quantity")
+                        .HasColumnType("numeric");
 
                     b.Property<string>("RowId")
                         .IsRequired()

@@ -32,7 +32,7 @@ namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
         [MaxLength(50)]
         public string? Description { get; set; }
 
-        public int? Quantity { get; set; }
+        public decimal? Quantity { get; set; }
 
         [Required]
         public decimal MinutesCost { get; set; }

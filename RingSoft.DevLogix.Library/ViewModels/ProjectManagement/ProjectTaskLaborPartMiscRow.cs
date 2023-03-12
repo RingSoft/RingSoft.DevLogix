@@ -15,7 +15,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public string Description { get; private set; }
 
-        public int Quantity { get; private set; } = 1;
+        public decimal Quantity { get; private set; } = 1;
 
         public decimal Minutes { get; private set; }
 
@@ -41,10 +41,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 case ProjectTaskLaborPartColumns.LaborPart:
                     return new DataEntryGridTextCellProps(this, columnId, Description);
                 case ProjectTaskLaborPartColumns.Quantity:
-                    return new DataEntryGridIntegerCellProps(this, columnId, new IntegerEditControlSetup
+                    return new DataEntryGridDecimalCellProps(this, columnId, new DecimalEditControlSetup
                     {
                         AllowNullValue = false,
-                        MinimumValue = 1,
+                        FormatType = DecimalEditFormatTypes.Number,
                     }, Quantity);
                 case ProjectTaskLaborPartColumns.MinutesCost:
                     return new TimeCostCellProps(this, columnId, Minutes);
@@ -95,9 +95,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     }
                     break;
                 case ProjectTaskLaborPartColumns.Quantity:
-                    if (value is DataEntryGridIntegerCellProps integerCellProps)
+                    if (value is DataEntryGridDecimalCellProps decimalCellProps)
                     {
-                        Quantity = integerCellProps.Value.Value;
+                        Quantity = decimalCellProps.Value.Value;
                         if (Quantity == 0)
                         {
                             Quantity = 1;
