@@ -484,9 +484,22 @@ namespace RingSoft.DevLogix.DataAccess
 
             LaborParts.PriorityLevel = 100;
 
+            MaterialParts.GetFieldDefinition(p => p.Cost).HasDecimalFieldType(DecimalFieldTypes.Currency);
+            MaterialParts.PriorityLevel = 100;
+
+            ProjectMaterials.GetFieldDefinition(p => p.Cost).HasDecimalFieldType(DecimalFieldTypes.Currency);
+
+            ProjectMaterials.PriorityLevel = 500;
+
+            ProjectMaterialParts.PriorityLevel = 600;
+
+            ProjectMaterialParts.GetFieldDefinition(p => p.Cost).HasDecimalFieldType(DecimalFieldTypes.Currency);
+
             ProjectTasks.PriorityLevel = 500;
             ProjectTasks.GetFieldDefinition(p => p.Notes).IsMemo();
             ProjectTasks.GetFieldDefinition(p => p.PercentComplete).HasDecimalFieldType(DecimalFieldTypes.Percent);
+
+            ProjectTaskLaborParts.PriorityLevel = 600;
 
             ProjectUsers.PriorityLevel = 500;
         }

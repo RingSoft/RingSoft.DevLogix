@@ -1,4 +1,6 @@
-﻿using RingSoft.DataEntryControls.Engine.DataEntryGrid;
+﻿using System;
+using System.Linq;
+using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 
@@ -40,5 +42,34 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         {
             throw new System.NotImplementedException();
         }
+
+        public ProjectMaterialPartRow ConstructRowFromLineType(MaterialPartLineTypes lineType)
+        {
+            switch (lineType)
+            {
+                case MaterialPartLineTypes.NewRow:
+                    break;
+                case MaterialPartLineTypes.MaterialPart:
+                    return new ProjectMaterialPartMaterialPartRow(this);
+                case MaterialPartLineTypes.Miscellaneous:
+                    break;
+                case MaterialPartLineTypes.Overhead:
+                    break;
+                case MaterialPartLineTypes.Comment:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(lineType), lineType, null);
+            }
+
+            return new ProjectMaterialPartNewRow(this);
+        }
+
+        public void CalculateTotalCost()
+        {
+            var rows = Rows.OfType<ProjectMaterialPartRow>().ToList();
+            var total = rows.Sum(p => p.GetExtendedCost());
+            ViewModel.SetTotalCost(total);
+        }
+
     }
 }

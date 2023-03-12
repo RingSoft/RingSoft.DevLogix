@@ -71,6 +71,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                         {
                             Manager.ViewModel.View.GetNewLineType(autoFillCellProps.AutoFillValue.Text,
                                 out var laborPartPkValue, out var lineType);
+                            var newRow = Manager.ConstructRowFromLineType(lineType);
+                            Manager.ReplaceRow(this, newRow);
                             switch (lineType)
                             {
                                 case LaborPartLineTypes.NewRow:
@@ -81,36 +83,41 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                                         AppGlobals.LookupContext.LaborParts.GetEntityFromPrimaryKeyValue(
                                             laborPartPkValue);
 
-                                    if (laborPart != null)
+                                    if (laborPart != null && newRow is ProjectTaskLaborPartLaborPartRow laborPartRow)
                                     {
                                         var context = AppGlobals.DataRepository.GetDataContext();
                                         laborPart = context.GetTable<LaborPart>()
                                             .FirstOrDefault(p => p.Id == laborPart.Id);
                                         var autoFillValue = laborPart.GetAutoFillValue();
-                                        var newRow = new ProjectTaskLaborPartLaborPartRow(Manager);
-                                        newRow.SetAutoFillValue(autoFillValue);
-                                        Manager.ReplaceRow(this, newRow);
+                                        laborPartRow.SetAutoFillValue(autoFillValue);
                                     }
                                     break;
                                 case LaborPartLineTypes.Miscellaneous:
-                                    var newMiscRow = new ProjectTaskLaborPartMiscRow(Manager);
-                                    newMiscRow.SetDescription(autoFillCellProps.AutoFillValue.Text);
-                                    Manager.ReplaceRow(this, newMiscRow);
+                                    if (newRow is ProjectTaskLaborPartMiscRow newMiscRow)
+                                    {
+                                        newMiscRow.SetDescription(autoFillCellProps.AutoFillValue.Text);
+                                    }
                                     break;
                                 case LaborPartLineTypes.Comment:
-                                    var commentRow = new ProjectTaskLaborPartCommentRow(Manager);
-                                    Manager.ReplaceRow(this, commentRow);
-                                    commentRow.SetComment(autoFillCellProps.AutoFillValue.Text);
+                                    if (newRow is ProjectTaskLaborPartCommentRow commentRow)
+                                    {
+                                        commentRow.SetComment(autoFillCellProps.AutoFillValue.Text);
+                                    }
                                     break;
                                 default:
                                     throw new ArgumentOutOfRangeException();
                             }
+                            Manager.Grid?.UpdateRow(newRow);
                         }
                         else
                         {
-                            var newRow = new ProjectTaskLaborPartLaborPartRow(Manager);
-                            newRow.SetAutoFillValue(autoFillCellProps.AutoFillValue);
+                            var newRow = Manager.ConstructRowFromLineType(LaborPartLineTypes.LaborPart);
                             Manager.ReplaceRow(this, newRow);
+                            if (newRow is ProjectTaskLaborPartLaborPartRow newLaborPartRow)
+                            {
+                                newLaborPartRow.SetAutoFillValue(autoFillCellProps.AutoFillValue);
+                                Manager.Grid?.UpdateRow(newLaborPartRow);
+                            }
                         }
                     }
 

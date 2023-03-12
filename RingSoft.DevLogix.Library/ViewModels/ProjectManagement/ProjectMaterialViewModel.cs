@@ -1,12 +1,20 @@
 ﻿using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.ModelDefinition;
+using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 
 namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 {
+    public interface IProjectMaterialView : IDbMaintenanceView
+    {
+        void GetNewLineType(string text, out PrimaryKeyValue materialPartPkValue, out MaterialPartLineTypes lineType);
+
+        bool ShowCommentEditor(DataEntryGridMemoValue comment);
+    }
     public enum ProjectMaterialSpecialRights
     {
         AllowMaterialPost = 1,
@@ -113,6 +121,21 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
+        private decimal _totalCost;
+
+        public decimal TotalCost
+        {
+            get => _totalCost;
+            set
+            {
+                if (_totalCost == value)
+                    return;
+
+                _totalCost = value;
+                OnPropertyChanged();
+            }
+        }
+
         private ProjectMaterialPartManager _projectMaterialPartManager;
 
         public ProjectMaterialPartManager ProjectMaterialPartManager
@@ -144,6 +167,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
+        public new IProjectMaterialView View { get; private set; }
+
         private bool _loading;
         private bool _calculating;
 
@@ -152,6 +177,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             ProjectAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ProjectId));
             ProjectMaterialPartManager = new ProjectMaterialPartManager(this);
         }
+
+        protected override void Initialize()
+        {
+            if (base.View is IProjectMaterialView projectMaterialView)
+            {
+                View = projectMaterialView;
+            }
+            base.Initialize();
+        }
+
         protected override ProjectMaterial PopulatePrimaryKeyControls(ProjectMaterial newEntity, PrimaryKeyValue primaryKeyValue)
         {
             var result = new ProjectMaterial();
@@ -202,6 +237,19 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             Notes = string.Empty;
             ProjectMaterialPartManager.SetupForNewRecord();
         }
+
+        public void SetTotalCost(decimal total)
+        {
+            _calculating = true;
+            TotalCost = total;
+            if (!IsCostEdited)
+            {
+                Cost = total;
+            }
+
+            _calculating = false;
+        }
+
 
         protected override bool SaveEntity(ProjectMaterial entity)
         {

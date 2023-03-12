@@ -132,7 +132,7 @@
 
                         <Label Grid.Row="0" Grid.Column="0" Content="Calculated Cost"/>
 
-                        <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="1" FormatType="Currency" Width="150" HorizontalAlignment="Left" TextAlignment="Left"/>
+                        <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="1" FormatType="Currency" Width="150" HorizontalAlignment="Left" TextAlignment="Left" Value="{Binding TotalCost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                         <deg:DataEntryGrid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" x:Name="MaterialPartsGrid" Manager="{Binding ProjectMaterialPartManager}">
 

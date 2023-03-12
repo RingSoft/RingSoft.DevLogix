@@ -47,6 +47,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             ConstructNewRowFromEntity(ProjectTaskLaborPart entity)
         {
             var lineType = (LaborPartLineTypes)entity.LineType;
+            return ConstructRowFromLineType(lineType);
+
+        }
+
+        public ProjectTaskLaborPartRow ConstructRowFromLineType(LaborPartLineTypes lineType)
+        {
             switch (lineType)
             {
                 case LaborPartLineTypes.NewRow:
