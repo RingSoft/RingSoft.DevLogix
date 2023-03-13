@@ -36,30 +36,30 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             return new ProjectUsersGridRow(this);
         }
 
-        public bool ProcessPunchIn()
-        {
-            var result = true;
+        //public bool ProcessPunchIn()
+        //{
+        //    var result = true;
 
-            var userRows = Rows.OfType<ProjectUsersGridRow>();
-            if (!userRows.Any(p => p.UserId == AppGlobals.LoggedInUser.Id))
-            {
-                if (!ViewModel.TableDefinition.HasRight(RightTypes.AllowEdit))
-                {
-                    var message =
-                        "You're not listed as a user to this project and you do not have the right to edit projects. Please contact someone who has the right to edit projects to add you as a user to this project in order to punch in.";
-                    var caption = "Punch In Validation";
-                    ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
-                    return false;
-                }
+        //    var userRows = Rows.OfType<ProjectUsersGridRow>();
+        //    if (!userRows.Any(p => p.UserId == AppGlobals.LoggedInUser.Id))
+        //    {
+        //        if (!ViewModel.TableDefinition.HasRight(RightTypes.AllowEdit))
+        //        {
+        //            var message =
+        //                "You're not listed as a user to this project and you do not have the right to edit projects. Please contact someone who has the right to edit projects to add you as a user to this project in order to punch in.";
+        //            var caption = "Punch In Validation";
+        //            ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
+        //            return false;
+        //        }
 
-                var userRow = new ProjectUsersGridRow(this);
-                userRow.SetUser(AppGlobals.LoggedInUser.Id);
-                AddRow(userRow, Rows.Count - 1);
-                Grid?.RefreshGridView();
-                ViewModel.DoSave();
-            }
+        //        var userRow = new ProjectUsersGridRow(this);
+        //        userRow.SetUser(AppGlobals.LoggedInUser.Id);
+        //        AddRow(userRow, Rows.Count - 1);
+        //        Grid?.RefreshGridView();
+        //        ViewModel.DoSave();
+        //    }
 
-            return result;
-        }
+        //    return result;
+        //}
     }
 }

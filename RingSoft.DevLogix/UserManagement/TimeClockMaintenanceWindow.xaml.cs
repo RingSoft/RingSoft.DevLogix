@@ -26,9 +26,9 @@ namespace RingSoft.DevLogix.UserManagement
         public Error Error { get; set; }
     }
 
-    public class GetProjectEventArgs
+    public class GetProjectTaskEventArgs
     {
-        public Project Project { get; set; }
+        public ProjectTask ProjectTask { get; set; }
     }
 
     public class TimeClockHeaderControl : DbMaintenanceCustomPanel
@@ -58,7 +58,7 @@ namespace RingSoft.DevLogix.UserManagement
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;
 
         public event EventHandler<GetErrorEventArgs> GetTimeClockError;
-        public event EventHandler<GetProjectEventArgs> GetTimeClockProject;
+        public event EventHandler<GetProjectTaskEventArgs> GetTimeClockProjectTask;
 
         public TimeClockMaintenanceWindow()
         {
@@ -102,17 +102,17 @@ namespace RingSoft.DevLogix.UserManagement
             return args.Error;
         }
 
-        public Project GetProject()
+        public ProjectTask GetProjectTask()
         {
-            var args = new GetProjectEventArgs();
-            GetTimeClockProject?.Invoke(this, args);
-            return args.Project;
+            var args = new GetProjectTaskEventArgs();
+            GetTimeClockProjectTask?.Invoke(this, args);
+            return args.ProjectTask;
         }
 
         public void SetTimeClockMode(TimeClockModes timeClockMode)
         {
             ErrorControl.Visibility = Visibility.Collapsed;
-            ProjectControl.Visibility = Visibility.Collapsed;
+            ProjectTaskControl.Visibility = Visibility.Collapsed;
 
             switch (timeClockMode)
             {
@@ -120,9 +120,9 @@ namespace RingSoft.DevLogix.UserManagement
                     KeyLabel.Content = "Error";
                     ErrorControl.Visibility = Visibility.Visible;
                     break;
-                case TimeClockModes.Project:
-                    KeyLabel.Content = "Project";
-                    ProjectControl.Visibility = Visibility.Visible;
+                case TimeClockModes.ProjectTask:
+                    KeyLabel.Content = "Project Task";
+                    ProjectTaskControl.Visibility = Visibility.Visible;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(timeClockMode), timeClockMode, null);

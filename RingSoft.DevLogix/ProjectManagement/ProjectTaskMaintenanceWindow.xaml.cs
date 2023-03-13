@@ -16,12 +16,36 @@ using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DataEntryControls.WPF.DataEntryGrid;
 using RingSoft.DbLookup;
+using RingSoft.DbLookup.Controls.WPF;
+using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using RingSoft.DbMaintenance;
+using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
+using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels.ProjectManagement;
 
 namespace RingSoft.DevLogix.ProjectManagement
 {
+    public class ProjectTaskHeaderControl : DbMaintenanceCustomPanel
+    {
+        public Button PunchInButton { get; set; }
+
+        public Button RecalcButton { get; set; }
+
+        static ProjectTaskHeaderControl()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(ProjectTaskHeaderControl), new FrameworkPropertyMetadata(typeof(ProjectHeaderControl)));
+        }
+
+        public override void OnApplyTemplate()
+        {
+            PunchInButton = GetTemplateChild(nameof(PunchInButton)) as Button;
+            RecalcButton = GetTemplateChild(nameof(RecalcButton)) as Button;
+
+            base.OnApplyTemplate();
+        }
+    }
+
     /// <summary>
     /// Interaction logic for ProjectTaskMaintenanceWindow.xaml
     /// </summary>
@@ -30,12 +54,29 @@ namespace RingSoft.DevLogix.ProjectManagement
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Project Task";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;
+        public RecalcProcedure RecalcProcedure { get; set; }
 
         private bool _settingUserFocus;
 
         public ProjectTaskMaintenanceWindow()
         {
             InitializeComponent();
+
+            TopHeaderControl.Loaded += (sender, args) =>
+            {
+                if (TopHeaderControl.CustomPanel is ProjectTaskHeaderControl projectHeaderControl)
+                {
+                    projectHeaderControl.PunchInButton.Command =
+                        LocalViewModel.PunchInCommand;
+
+                    if (!LocalViewModel.TableDefinition.HasRight(RightTypes.AllowEdit))
+                    {
+                        projectHeaderControl.RecalcButton.Visibility = Visibility.Collapsed;
+                    }
+                    projectHeaderControl.RecalcButton.Command = LocalViewModel.RecalcCommand;
+                }
+            };
+
 
             UserControl.GotFocus += (sender, args) =>
             {
@@ -120,6 +161,45 @@ namespace RingSoft.DevLogix.ProjectManagement
             LaborPartsGrid.SetReadOnlyMode(true);
             PercentCompleteControl.IsEnabled = !value;
             NotesControl.SetReadOnlyMode(value);
+        }
+
+        public void PunchIn(ProjectTask projectTask)
+        {
+            AppGlobals.MainViewModel.MainView.PunchIn(projectTask);
+        }
+
+        public bool SetupRecalcFilter(LookupDefinitionBase lookupDefinition)
+        {
+            var genericInput = new GenericReportLookupFilterInput
+            {
+                LookupDefinitionToFilter = lookupDefinition,
+                CodeNameToFilter = "Project Task",
+                KeyAutoFillValue = LocalViewModel.KeyAutoFillValue,
+                ProcessText = "Recalculate"
+            };
+            var genericWindow = new GenericReportFilterWindow(genericInput);
+            genericWindow.Owner = this;
+            genericWindow.ShowInTaskbar = false;
+            genericWindow.ShowDialog();
+            return genericWindow.ViewModel.DialogReesult;
+        }
+
+        public string StartRecalcProcedure(LookupDefinitionBase lookupDefinition)
+        {
+            var result = string.Empty;
+            RecalcProcedure = new RecalcProcedure();
+            RecalcProcedure.StartRecalculate += (sender, args) =>
+            {
+                result = LocalViewModel.StartRecalcProcedure(lookupDefinition);
+            };
+            RecalcProcedure.Start();
+            return result;
+        }
+
+        public void UpdateRecalcProcedure(int currentProjectTask, int totalProjectTasks, string currentProjectTaskText)
+        {
+            var progress = $"Recalculating Project {currentProjectTaskText} {currentProjectTask} / {totalProjectTasks}";
+            RecalcProcedure.SplashWindow.SetProgress(progress);
         }
     }
 }

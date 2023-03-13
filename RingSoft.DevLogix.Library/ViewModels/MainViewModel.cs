@@ -27,7 +27,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         void PunchIn(Error error);
 
-        void PunchIn(Project project);
+        void PunchIn(ProjectTask projectTask);
 
         bool PunchOut(bool clockOut, int userId = 0);
 
@@ -41,6 +41,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         public List<UserMaintenanceViewModel> UserViewModels { get; } = new List<UserMaintenanceViewModel>();
         public List<ProjectMaintenanceViewModel> ProjectViewModels { get; } = new List<ProjectMaintenanceViewModel>();
+        public List<ProjectTaskViewModel> ProjectTaskViewModels { get; } = new List<ProjectTaskViewModel>();
         public List<ErrorViewModel> ErrorViewModels { get; } = new List<ErrorViewModel>();
 
         public RelayCommand LogoutCommand { get; set; }

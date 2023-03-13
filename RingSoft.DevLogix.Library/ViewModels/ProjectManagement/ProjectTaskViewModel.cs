@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.ComponentModel;
+using Microsoft.EntityFrameworkCore;
 using RingSoft.App.Library;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
@@ -11,6 +12,9 @@ using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using MySqlX.XDevAPI.Common;
+using RingSoft.DbLookup.Lookup;
+using RingSoft.DbLookup.DataProcessor;
+using System.Data;
 
 namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 {
@@ -21,6 +25,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         bool ShowCommentEditor(DataEntryGridMemoValue comment);
 
         void SetTaskReadOnlyMode(bool value);
+
+        void PunchIn(ProjectTask projectTask);
+
+        bool SetupRecalcFilter(LookupDefinitionBase lookupDefinition);
+
+        string StartRecalcProcedure(LookupDefinitionBase lookupDefinition);
+
+        void UpdateRecalcProcedure(int currentProjectTask, int totalProjectTasks, string currentProjectTaskText);
     }
     public class ProjectTaskViewModel : DevLogixDbMaintenanceViewModel<ProjectTask>
     {
@@ -266,11 +278,23 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public new IProjectTaskView View { get; private set; }
 
+        public RelayCommand PunchInCommand { get; private set; }
+
+        public RelayCommand RecalcCommand { get; private set; }
+
+        public ProjectTotalsRow ActualRow { get; private set; }
+
+        public ProjectTotalsRow StatusRow { get; private set; }
+
         private bool _calculating;
         private bool _loading;
 
         public ProjectTaskViewModel()
         {
+            PunchInCommand = new RelayCommand(PunchIn);
+
+            RecalcCommand = new RelayCommand(Recalc);
+
             UserAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.UserId))
             {
                 AllowLookupAdd = false,
@@ -286,6 +310,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         protected override void Initialize()
         {
+            AppGlobals.MainViewModel.ProjectTaskViewModels.Add(this);
             if (base.View is IProjectTaskView projectTaskView)
             {
                 View = projectTaskView;
@@ -304,18 +329,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 }
             }
             ProjectTotalsManager.Initialize();
+            ActualRow = new ProjectTotalsRow(ProjectTotalsManager);
+            ActualRow.RowTitle = "Actual";
+            ProjectTotalsManager.InsertRow(ActualRow);
+
+            StatusRow = new ProjectTotalsRow(ProjectTotalsManager);
+            StatusRow.RowTitle = "Status";
+            StatusRow.NegativeDisplayStyleId = ProjectTotalsManager.NegativeDisplayStyleId;
+            StatusRow.PositiveDisplayStyleId = ProjectTotalsManager.PositiveDisplayStyleId;
+            ProjectTotalsManager.InsertRow(StatusRow);
+
             base.Initialize();
         }
 
         protected override ProjectTask PopulatePrimaryKeyControls(ProjectTask newEntity, PrimaryKeyValue primaryKeyValue)
         {
-            var context = AppGlobals.DataRepository.GetDataContext();
-            var result = context.GetTable<ProjectTask>()
-                .Include(p => p.User)
-                .Include(p => p.Project)
-                .Include(p => p.LaborParts)
-                .ThenInclude(p => p.LaborPart)
-                .FirstOrDefault(p => p.Id == newEntity.Id);
+            var result = GetProjectTask(newEntity.Id);
             Id = result.Id;
             KeyAutoFillValue = result.GetAutoFillValue();
 
@@ -333,8 +362,24 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     View.SetTaskReadOnlyMode(true);
                 }
             }
-            return result;
 
+            PunchInCommand.IsEnabled = true;
+
+            return result;
+        }
+
+        private ProjectTask? GetProjectTask(int taskId)
+        {
+            ProjectTask newEntity;
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var result = context.GetTable<ProjectTask>()
+                .Include(p => p.User)
+                .Include(p => p.Project)
+                .ThenInclude(p => p.ProjectUsers)
+                .Include(p => p.LaborParts)
+                .ThenInclude(p => p.LaborPart)
+                .FirstOrDefault(p => p.Id == taskId);
+            return result;
         }
 
 
@@ -371,6 +416,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             HourlyRate = entity.HourlyRate;
             LaborPartsManager.LoadGrid(entity.LaborParts);
             LaborPartsManager.CalculateTotalMinutesCost();
+            ActualRow.Minutes = entity.MinutesSpent;
+            ActualRow.Cost = entity.Cost;
+            RefreshTotals();
             _loading = false;
         }
 
@@ -437,11 +485,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             Id = 0;
             ProjectAutoFillValue = DefaultProjectAutoFillValue;
             UserAutoFillValue = null;
+            ActualRow.ClearData();
+            StatusRow.ClearData();
             MinutesCost = 0;
             PercentComplete = 0;
             Notes = string.Empty;
             TimeEdited = false;
             HourlyRate = 0;
+            PunchInCommand.IsEnabled = false;
             LaborPartsManager.SetupForNewRecord();
             LaborPartsManager.CalculateTotalMinutesCost();
         }
@@ -513,6 +564,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
             ProjectTotalsManager.RemainingRow.Minutes = MinutesCost * (1 - PercentComplete);
             ProjectTotalsManager.RemainingRow.Cost = ProjectTotalsManager.EstimatedRow.Cost * (1 - PercentComplete);
+
+            StatusRow.Minutes = MinutesCost
+                                - (ActualRow.Minutes + ProjectTotalsManager.RemainingRow.Minutes);
+            StatusRow.Cost = ProjectTotalsManager.EstimatedRow.Cost - (ActualRow.Cost + ProjectTotalsManager.RemainingRow.Cost);
+
             ProjectTotalsManager.RefreshGrid();
         }
 
@@ -533,6 +589,120 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     HourlyRate = user.HourlyRate;
                 }
             }
+        }
+
+        public void PunchIn()
+        {
+            var projectTask = GetProjectTask(Id);
+            if (projectTask != null)
+            {
+                var projectUser = projectTask.Project.ProjectUsers
+                    .FirstOrDefault(p => p.UserId == AppGlobals.LoggedInUser.Id);
+                if (projectUser == null)
+                {
+                    var message =
+                        "You're not listed as a user to this project.  Please contact someone who has the right to edit projects to add you as a user to this project in order to punch in.";
+                    var caption = "Punch In Validation";
+                    ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
+                }
+                else
+                {
+                    View.PunchIn(projectTask);
+                }
+            }
+        }
+
+        public void Recalc()
+        {
+            var recalcFilter = ViewLookupDefinition.Clone();
+            if (!View.SetupRecalcFilter(recalcFilter))
+                return;
+
+            var result = View.StartRecalcProcedure(recalcFilter);
+            if (result.IsNullOrEmpty())
+            {
+                var message = "Recalculation complete.";
+                ControlsGlobals.UserInterface.ShowMessageBox(message, "Recalculation", RsMessageBoxIcons.Information);
+            }
+            else
+            {
+                ControlsGlobals.UserInterface.ShowMessageBox(result, "Recalculation Error", RsMessageBoxIcons.Error);
+            }
+        }
+
+        public string StartRecalcProcedure(LookupDefinitionBase recalcFilter)
+        {
+            var result = string.Empty;
+            DbDataProcessor.DontDisplayExceptions = true;
+            var lookupData = new LookupDataBase(recalcFilter, new LookupUserInterface()
+            {
+                PageSize = 10
+            });
+            var recordCount = lookupData.GetRecordCountWait();
+            var currentProjectTask = 1;
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var projectTaskTable = context.GetTable<ProjectTask>();
+            var timeClocksTable = context.GetTable<TimeClock>();
+            lookupData.PrintDataChanged += (sender, args) =>
+            {
+                var table = args.OutputTable;
+                foreach (DataRow tableRow in table.Rows)
+                {
+                    var projectTaskPrimaryKey = new PrimaryKeyValue(TableDefinition);
+                    projectTaskPrimaryKey.PopulateFromDataRow(tableRow);
+                    if (projectTaskPrimaryKey.IsValid)
+                    {
+                        var projectTask = TableDefinition.GetEntityFromPrimaryKeyValue(projectTaskPrimaryKey);
+                        projectTask = projectTaskTable.FirstOrDefault(p => p.Id == projectTask.Id);
+                        if (projectTask != null)
+                        {
+                            var timeClocks = timeClocksTable.Where(p => p.ProjectTaskId == projectTask.Id
+                            && p.MinutesSpent != null).ToList();
+                            var actualMinutes = timeClocks.Sum(p => p.MinutesSpent.Value);
+                            projectTask.MinutesSpent = actualMinutes;
+                            projectTask.Cost = (actualMinutes / 60) * projectTask.HourlyRate;
+                            if (!context.SaveNoCommitEntity(projectTask, "Updating Project Task"))
+                            {
+                                result = DbDataProcessor.LastException;
+                                args.Abort = true;
+                                return;
+                            }
+
+                            if (projectTask.Id == Id)
+                            {
+                                RefreshCostGrid(projectTask);
+                            }
+                            View.UpdateRecalcProcedure(currentProjectTask, recordCount, projectTask.Name);
+                        }
+
+                    }
+                }
+            };
+            lookupData.GetPrintData();
+            if (result.IsNullOrEmpty())
+            {
+                if (!context.Commit("Saving Project Tasks"))
+                {
+                    result = DbDataProcessor.LastException;
+                }
+            }
+
+
+            DbDataProcessor.DontDisplayExceptions = false;
+            return result;
+        }
+
+        public void RefreshCostGrid(ProjectTask projectTask)
+        {
+            ActualRow.Minutes = projectTask.MinutesSpent;
+            ActualRow.Cost = projectTask.Cost;
+            RefreshTotals();
+        }
+
+        public override void OnWindowClosing(CancelEventArgs e)
+        {
+            AppGlobals.MainViewModel.ProjectTaskViewModels.Remove(this);
+            base.OnWindowClosing(e);
         }
     }
 }

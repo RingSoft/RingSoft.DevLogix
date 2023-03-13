@@ -62,8 +62,6 @@ namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
         [DefaultValue(0)]
         public decimal Cost { get; set; }
 
-        public virtual ICollection<TimeClock> TimeClocks { get; set; }
-
         public virtual ICollection<ProjectUser> ProjectUsers { get; set; }
 
         public virtual ICollection<ProjectTask> ProjectTasks { get; set; }
@@ -72,7 +70,6 @@ namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
 
         public Project()
         {
-            TimeClocks = new HashSet<TimeClock>();
             ProjectUsers = new HashSet<ProjectUser>();
             ProjectTasks = new HashSet<ProjectTask>();
             ProjectMaterialParts = new HashSet<ProjectMaterial>();

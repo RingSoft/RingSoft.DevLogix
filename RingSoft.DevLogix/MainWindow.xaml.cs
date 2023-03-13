@@ -444,14 +444,14 @@ namespace RingSoft.DevLogix
             }
         }
 
-        public void PunchIn(Project project)
+        public void PunchIn(ProjectTask projectTask)
         {
             var timeClockWindow = GetTimeClockWindow();
             if (timeClockWindow != null)
             {
-                timeClockWindow.GetTimeClockProject += (sender, args) =>
+                timeClockWindow.GetTimeClockProjectTask += (sender, args) =>
                 {
-                    args.Project = project;
+                    args.ProjectTask = projectTask;
                 };
                 ShowTimeClockWindow(timeClockWindow);
             }

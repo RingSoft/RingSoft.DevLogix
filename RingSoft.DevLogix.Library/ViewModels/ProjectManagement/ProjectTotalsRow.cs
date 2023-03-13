@@ -91,5 +91,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
             return result;
         }
-}
+
+        public void ClearData()
+        {
+            Minutes = 0;
+            Cost = 0;
+        }
+    }
 }

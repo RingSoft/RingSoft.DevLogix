@@ -17,8 +17,6 @@ namespace RingSoft.DevLogix.ProjectManagement
 {
     public class ProjectHeaderControl : DbMaintenanceCustomPanel
     {
-        public Button PunchInButton { get; set; }
-
         public Button RecalcButton { get; set; }
 
         static ProjectHeaderControl()
@@ -28,7 +26,6 @@ namespace RingSoft.DevLogix.ProjectManagement
 
         public override void OnApplyTemplate()
         {
-            PunchInButton = GetTemplateChild(nameof(PunchInButton)) as Button;
             RecalcButton = GetTemplateChild(nameof(RecalcButton)) as Button;
 
             base.OnApplyTemplate();
@@ -52,9 +49,6 @@ namespace RingSoft.DevLogix.ProjectManagement
             {
                 if (TopHeaderControl.CustomPanel is ProjectHeaderControl projectHeaderControl)
                 {
-                    projectHeaderControl.PunchInButton.Command =
-                        LocalViewModel.PunchInCommand;
-
                     if (!LocalViewModel.TableDefinition.HasRight(RightTypes.AllowEdit))
                     {
                         projectHeaderControl.RecalcButton.Visibility = Visibility.Collapsed;
@@ -76,11 +70,6 @@ namespace RingSoft.DevLogix.ProjectManagement
             NameControl.Focus();
 
             base.ResetViewForNewRecord();
-        }
-
-        public void PunchIn(Project project)
-        {
-            AppGlobals.MainViewModel.MainView.PunchIn(project);
         }
 
         public bool SetupRecalcFilter(LookupDefinitionBase lookupDefinition)

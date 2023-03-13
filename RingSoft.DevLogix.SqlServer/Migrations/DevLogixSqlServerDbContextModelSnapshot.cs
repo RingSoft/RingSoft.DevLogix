@@ -791,6 +791,9 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<decimal>("Cost")
+                        .HasColumnType("numeric");
+
                     b.Property<decimal>("EstimatedCost")
                         .HasColumnType("numeric");
 
@@ -802,6 +805,9 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
                     b.Property<bool>("MinutesEdited")
                         .HasColumnType("bit");
+
+                    b.Property<decimal>("MinutesSpent")
+                        .HasColumnType("numeric");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -969,7 +975,7 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<string>("Notes")
                         .HasColumnType("ntext");
 
-                    b.Property<int?>("ProjectId")
+                    b.Property<int?>("ProjectTaskId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("PunchInDate")
@@ -985,7 +991,7 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
                     b.HasIndex("ErrorId");
 
-                    b.HasIndex("ProjectId");
+                    b.HasIndex("ProjectTaskId");
 
                     b.HasIndex("UserId");
 
@@ -1423,9 +1429,9 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .HasForeignKey("ErrorId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.Project", "Project")
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectTask", "ProjectTask")
                         .WithMany("TimeClocks")
-                        .HasForeignKey("ProjectId")
+                        .HasForeignKey("ProjectTaskId")
                         .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "User")
@@ -1436,7 +1442,7 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
                     b.Navigation("Error");
 
-                    b.Navigation("Project");
+                    b.Navigation("ProjectTask");
 
                     b.Navigation("User");
                 });
@@ -1581,8 +1587,6 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("ProjectTasks");
 
                     b.Navigation("ProjectUsers");
-
-                    b.Navigation("TimeClocks");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectMaterial", b =>
@@ -1593,6 +1597,8 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectTask", b =>
                 {
                     b.Navigation("LaborParts");
+
+                    b.Navigation("TimeClocks");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.User", b =>

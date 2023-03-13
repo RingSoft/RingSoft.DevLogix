@@ -90,7 +90,7 @@
 
             <lc:AutoFillReadOnlyControl Grid.Row="1" Grid.Column="3" x:Name="ErrorControl" Setup="{Binding ErrorAutoFillSetup}" Value="{Binding ErrorAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
 
-            <lc:AutoFillReadOnlyControl Grid.Row="1" Grid.Column="3" x:Name="ProjectControl" Setup="{Binding ProjectAutoFillSetup}" Value="{Binding ProjectAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
+            <lc:AutoFillReadOnlyControl Grid.Row="1" Grid.Column="3" x:Name="ProjectTaskControl" Setup="{Binding ProjectTaskAutoFillSetup}" Value="{Binding ProjectTaskAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
 
             <Label Grid.Row="2" Grid.Column="0" Content="Punch In Date"/>
 

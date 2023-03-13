@@ -15,7 +15,7 @@ namespace RingSoft.DevLogix.DataAccess.Configurations
             builder.Property(p => p.MinutesSpent).HasColumnType(DbConstants.DecimalColumnType);
             builder.Property(p => p.UserId).HasColumnType(DbConstants.IntegerColumnType);
             builder.Property(p => p.ErrorId).HasColumnType(DbConstants.IntegerColumnType);
-            builder.Property(p => p.ProjectId).HasColumnType(DbConstants.IntegerColumnType);
+            builder.Property(p => p.ProjectTaskId).HasColumnType(DbConstants.IntegerColumnType);
             builder.Property(p => p.Notes).HasColumnType(DbConstants.MemoColumnType);
             builder.Property(p => p.AreDatesEdited).HasColumnType(DbConstants.BoolColumnType);
 
@@ -30,9 +30,9 @@ namespace RingSoft.DevLogix.DataAccess.Configurations
                 .HasForeignKey(p => p.UserId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.HasOne(p => p.Project)
+            builder.HasOne(p => p.ProjectTask)
                 .WithMany(p => p.TimeClocks)
-                .HasForeignKey(p => p.ProjectId)
+                .HasForeignKey(p => p.ProjectTaskId)
                 .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired(false);
         }

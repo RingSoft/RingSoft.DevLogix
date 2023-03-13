@@ -17,13 +17,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
     public enum TimeClockModes
     {
         Error = 1,
-        Project = 2,
+        ProjectTask = 2,
     }
     public interface ITimeClockView : IDbMaintenanceView
     {
         Error GetError();
 
-        Project GetProject();
+        ProjectTask GetProjectTask();
 
         void SetTimeClockMode(TimeClockModes timeClockMode);
 
@@ -140,36 +140,36 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
         }
 
-        private AutoFillSetup _projectAutoFillSetup;
+        private AutoFillSetup _projectTaskAutoFillSetup;
 
-        public AutoFillSetup ProjectAutoFillSetup
+        public AutoFillSetup ProjectTaskAutoFillSetup
         {
-            get => _projectAutoFillSetup;
+            get => _projectTaskAutoFillSetup;
             set
             {
-                if (_projectAutoFillSetup == value)
+                if (_projectTaskAutoFillSetup == value)
                 {
                     return;
                 }
 
-                _projectAutoFillSetup = value;
+                _projectTaskAutoFillSetup = value;
                 OnPropertyChanged();
             }
         }
 
-        private AutoFillValue _projectAutoFillValue;
+        private AutoFillValue _projectTaskAutoFillValue;
 
-        public AutoFillValue ProjectAutoFillValue
+        public AutoFillValue ProjectTaskAutoFillValue
         {
-            get => _projectAutoFillValue;
+            get => _projectTaskAutoFillValue;
             set
             {
-                if (_projectAutoFillValue == value)
+                if (_projectTaskAutoFillValue == value)
                 {
                     return;
                 }
 
-                _projectAutoFillValue = value;
+                _projectTaskAutoFillValue = value;
                 OnPropertyChanged(null, false);
             }
         }
@@ -285,12 +285,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         private void SetError(Error error)
         {
-            ErrorAutoFillValue = ErrorAutoFillSetup.GetAutoFillValueForIdValue(error.Id);
+            ErrorAutoFillValue = error.GetAutoFillValue();
         }
 
-        private void SetProject(Project project)
+        private void SetProjectTask(ProjectTask projectTask)
         {
-            ProjectAutoFillValue = ProjectAutoFillSetup.GetAutoFillValueForIdValue(project.Id);
+            ProjectTaskAutoFillValue = projectTask.GetAutoFillValue();
         }
 
         protected override void Initialize()
@@ -309,7 +309,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             };
 
             ErrorAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ErrorId));
-            ProjectAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ProjectId));
+            ProjectTaskAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ProjectTaskId));
 
             if (base.View is ITimeClockView timeClockView)
             {
@@ -322,12 +322,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     SetError(error);
                     punchIn = true;
                 }
-                var project = View.GetProject();
-                if (project != null)
+                var projectTask = View.GetProjectTask();
+                if (projectTask != null)
                 {
-                    SetProject(project);
+                    SetProjectTask(projectTask);
                     punchIn = true;
-                    timeClockMode = TimeClockModes.Project;
+                    timeClockMode = TimeClockModes.ProjectTask;
                 }
 
                 View.SetTimeClockMode(timeClockMode);
@@ -365,7 +365,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         protected override TimeClock PopulatePrimaryKeyControls(TimeClock newEntity, PrimaryKeyValue primaryKeyValue)
         {
             var context = AppGlobals.DataRepository.GetDataContext();
-            var timeClock = context.GetTable<TimeClock>().Include(p => p.User)
+            var timeClock = context.GetTable<TimeClock>()
+                .Include(p => p.User)
+                .Include(p => p.ProjectTask)
+                .Include(p => p.Error)
                 .FirstOrDefault(p => p.Id == newEntity.Id);
             Id = newEntity.Id;
             if (timeClock.MinutesSpent != null) 
@@ -396,9 +399,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         protected override void LoadFromEntity(TimeClock entity)
         {
             _loading = true;
-            UserAutoFillValue = UserAutoFillSetup.GetAutoFillValueForIdValue(entity.UserId);
-            ErrorAutoFillValue = ErrorAutoFillSetup.GetAutoFillValueForIdValue(entity.ErrorId);
-            ProjectAutoFillValue = ProjectAutoFillSetup.GetAutoFillValueForIdValue(entity.ProjectId);
+            UserAutoFillValue = entity.User.GetAutoFillValue();
+            ErrorAutoFillValue = entity.Error.GetAutoFillValue();
+            ProjectTaskAutoFillValue = entity.ProjectTask.GetAutoFillValue();
 
             var timeClockMode = TimeClockModes.Error;
 
@@ -406,9 +409,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             {
                 timeClockMode = TimeClockModes.Error;
             }
-            else if (ProjectAutoFillValue.IsValid())
+            else if (ProjectTaskAutoFillValue.IsValid())
             {
-                timeClockMode = TimeClockModes.Project;
+                timeClockMode = TimeClockModes.ProjectTask;
             }
             View.SetTimeClockMode(timeClockMode);
             
@@ -451,7 +454,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 Id = Id,
                 UserId = UserAutoFillValue.GetEntity(AppGlobals.LookupContext.Users).Id,
                 ErrorId = ErrorAutoFillValue.GetEntity(AppGlobals.LookupContext.Errors).Id,
-                ProjectId =ProjectAutoFillValue.GetEntity(AppGlobals.LookupContext.Projects).Id,
+                ProjectTaskId = ProjectTaskAutoFillValue.GetEntity(AppGlobals.LookupContext.ProjectTasks).Id,
                 PunchInDate = PunchInDate.ToUniversalTime(),
                 PunchOutDate = PunchOutDate,
                 MinutesSpent = MinutesSpent,
@@ -468,9 +471,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 timeClock.ErrorId = null;
             }
 
-            if (timeClock.ProjectId == 0)
+            if (timeClock.ProjectTaskId == 0)
             {
-                timeClock.ProjectId = null;
+                timeClock.ProjectTaskId = null;
             }
 
             return timeClock;
@@ -485,19 +488,20 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             var saveChildren = entity.Id != 0;
             var context = AppGlobals.DataRepository.GetDataContext();
             var user = context.GetTable<User>().FirstOrDefault(p => p.Id == entity.UserId);
-            Project project = null;
+            ProjectTask projectTask = null;
             var result = context.SaveNoCommitEntity(entity, "Saving Time Clock");
             if (result && saveChildren)
             {
-                if (entity.ProjectId.HasValue)
+                if (entity.ProjectTaskId.HasValue)
                 {
-                    project = context.GetTable<Project>()
-                        .Include(p => p.ProjectUsers)
-                        .FirstOrDefault(p => p.Id == entity.ProjectId.Value);
-                    if (project != null)
+                    projectTask = context.GetTable<ProjectTask>()
+                        .Include(p => p.Project)
+                        .ThenInclude(p => p.ProjectUsers)
+                        .FirstOrDefault(p => p.Id == entity.ProjectTaskId.Value);
+                    if (projectTask != null)
                     {
-                        result = UpdateProject(entity, project, context, user);
-                        if (result && project.IsBillable)
+                        result = UpdateProjectTask(entity, projectTask, context, user);
+                        if (result && projectTask.Project.IsBillable)
                         {
                             user.BillableProjectsMinutesSpent += GetNewMinutesSpent();
                         }
@@ -540,17 +544,24 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                         }
                     }
 
-                    if (project != null)
+                    if (projectTask != null)
                     {
-                        var projectViewModels = AppGlobals.MainViewModel.ProjectViewModels
-                            .Where(p => p.Id == project.Id);
+                        var projectTaskViewModels = AppGlobals.MainViewModel.ProjectTaskViewModels
+                            .Where(p => p.Id == projectTask.Id);
 
-                        if (projectViewModels.Any())
+                        if (projectTaskViewModels.Any())
                         {
-                            foreach (var model in projectViewModels)
+                            foreach (var model in projectTaskViewModels)
                             {
-                                model.RefreshCostGrid(project);
+                                model.RefreshCostGrid(projectTask);
                             }
+                        }
+
+                        var projectViewModels = AppGlobals.MainViewModel.ProjectViewModels
+                            .Where(p => p.Id == projectTask.ProjectId);
+                        foreach (var projectViewModel in projectViewModels)
+                        {
+                            projectViewModel.RefreshCostGrid(projectTask.Project);
                         }
                     }
                 }
@@ -587,11 +598,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         }
 
-        private bool UpdateProject(TimeClock entity, Project project, IDbContext context, User user)
+        private bool UpdateProjectTask(TimeClock entity, ProjectTask projectTask, IDbContext context, User user)
         {
             var result = true;
-            project.MinutesSpent += entity.MinutesSpent.Value;
-            var projectUser = project.ProjectUsers.FirstOrDefault(p => p.UserId == user.Id);
+            projectTask.MinutesSpent += entity.MinutesSpent.Value;
+            var cost = (projectTask.MinutesSpent / 60) * projectTask.HourlyRate;
+            projectTask.Cost = cost;
+
+            var projectUser = projectTask.Project.ProjectUsers.FirstOrDefault(p => p.UserId == user.Id);
             if (projectUser != null)
             {
                 projectUser.MinutesSpent += GetNewMinutesSpent();
@@ -601,8 +615,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
             if (result)
             {
-                AppGlobals.CalculateProject(project, project.ProjectUsers.ToList());
-                result = context.SaveNoCommitEntity(project, "Saving Project");
+                AppGlobals.CalculateProject(projectTask.Project, projectTask.Project.ProjectUsers.ToList());
+                result = context.SaveNoCommitEntity(projectTask.Project, "Saving Project");
+            }
+            if (result)
+            {
+                result = context.SaveNoCommitEntity(projectTask, "Saving Project Task");
             }
 
             return result;

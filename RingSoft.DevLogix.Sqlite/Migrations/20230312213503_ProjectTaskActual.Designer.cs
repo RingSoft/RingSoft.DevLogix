@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RingSoft.DevLogix.Sqlite;
 
@@ -10,9 +11,11 @@ using RingSoft.DevLogix.Sqlite;
 namespace RingSoft.DevLogix.Sqlite.Migrations
 {
     [DbContext(typeof(DevLogixSqliteDbContext))]
-    partial class DevLogixSqliteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230312213503_ProjectTaskActual")]
+    partial class ProjectTaskActual
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.1");
@@ -936,7 +939,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<string>("Notes")
                         .HasColumnType("ntext");
 
-                    b.Property<int?>("ProjectTaskId")
+                    b.Property<int?>("ProjectId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("PunchInDate")
@@ -952,7 +955,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("ErrorId");
 
-                    b.HasIndex("ProjectTaskId");
+                    b.HasIndex("ProjectId");
 
                     b.HasIndex("UserId");
 
@@ -1388,9 +1391,9 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .HasForeignKey("ErrorId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectTask", "ProjectTask")
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.Project", "Project")
                         .WithMany("TimeClocks")
-                        .HasForeignKey("ProjectTaskId")
+                        .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "User")
@@ -1401,7 +1404,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.Navigation("Error");
 
-                    b.Navigation("ProjectTask");
+                    b.Navigation("Project");
 
                     b.Navigation("User");
                 });
@@ -1546,6 +1549,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("ProjectTasks");
 
                     b.Navigation("ProjectUsers");
+
+                    b.Navigation("TimeClocks");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectMaterial", b =>
@@ -1556,8 +1561,6 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectTask", b =>
                 {
                     b.Navigation("LaborParts");
-
-                    b.Navigation("TimeClocks");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.User", b =>

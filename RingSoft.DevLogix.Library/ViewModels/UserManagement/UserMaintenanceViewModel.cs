@@ -651,6 +651,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     {
                         user = query
                             .Include(p => p.TimeClocks)
+                            .ThenInclude(p => p.ProjectTask)
                             .ThenInclude(p => p.Project)
                             .Include(p => p.TimeClocks)
                             .ThenInclude(p => p.Error)
@@ -661,14 +662,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     {
                         View.UpdateRecalcProcedure(userIndex, usersToProcess, user.Name);
                         var billableProjects = user.TimeClocks.Where(p =>
-                            p.ProjectId.HasValue
-                            && p.Project.IsBillable
+                            p.ProjectTaskId.HasValue
+                            && p.ProjectTask.Project.IsBillable
                             && p.MinutesSpent.HasValue);
                         user.BillableProjectsMinutesSpent = billableProjects.Sum(p => p.MinutesSpent.Value);
 
                         var nonBillableProjects = user.TimeClocks.Where(p =>
-                            p.ProjectId.HasValue
-                            && !p.Project.IsBillable
+                            p.ProjectTaskId.HasValue
+                            && !p.ProjectTask.Project.IsBillable
                             && p.MinutesSpent.HasValue);
                         user.NonBillableProjectsMinutesSpent = nonBillableProjects.Sum(p => p.MinutesSpent.Value);
 

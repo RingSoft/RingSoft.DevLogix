@@ -26,9 +26,9 @@ namespace RingSoft.DevLogix.DataAccess.Model
 
         public virtual Error Error { get; set; }
 
-        public int? ProjectId { get; set; }
+        public int? ProjectTaskId { get; set; }
 
-        public virtual Project Project { get; set; }
+        public virtual ProjectTask ProjectTask { get; set; }
 
         public string? Notes { get; set; }
 

@@ -34,6 +34,12 @@ namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
         [DefaultValue(0)]
         public decimal EstimatedCost { get; set; }
 
+        [DefaultValue(0)]
+        public decimal MinutesSpent { get; set; }
+
+        [DefaultValue(0)]
+        public decimal Cost { get; set; }
+
         [Required]
         public decimal PercentComplete { get; set; }
 
@@ -43,10 +49,12 @@ namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
 
         public string? Notes { get; set; }
 
+        public virtual ICollection<TimeClock> TimeClocks { get; set; }
         public virtual ICollection<ProjectTaskLaborPart> LaborParts { get; set; }
 
         public ProjectTask()
         {
+            TimeClocks = new HashSet<TimeClock>();
             LaborParts = new HashSet<ProjectTaskLaborPart>();
         }
     }

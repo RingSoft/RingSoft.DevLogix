@@ -22,8 +22,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 {
     public interface IProjectView
     {
-        void PunchIn(Project project);
-
         bool SetupRecalcFilter(LookupDefinitionBase lookupDefinition);
 
         string StartRecalcProcedure(LookupDefinitionBase lookupDefinition);
@@ -314,8 +312,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public new IProjectView View { get; private set; }
 
-        public RelayCommand PunchInCommand { get; set; }
-
         public RelayCommand RecalcCommand { get; set; }
 
         public RelayCommand TasksAddModifyCommand { get; set; }
@@ -330,11 +326,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         {
             ManagerAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ManagerId));
             ProductAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ProductId));
-
-            PunchInCommand = new RelayCommand(() =>
-            {
-                PunchIn();
-            });
 
             RecalcCommand = new RelayCommand(() =>
             {
@@ -393,10 +384,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             Id = project.Id;
             KeyAutoFillValue = KeyAutoFillSetup.GetAutoFillValueForIdValue(project.Id);
 
-            TimeClockLookup.FilterDefinition.ClearFixedFilters();
-            TimeClockLookup.FilterDefinition.AddFixedFilter(p => p.ProjectId, Conditions.Equals, Id);
-            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
-            PunchInCommand.IsEnabled = true;
+            //TimeClockLookup.FilterDefinition.ClearFixedFilters();
+            //TimeClockLookup.FilterDefinition.AddFixedFilter(p => p.ProjectId, Conditions.Equals, Id);
+            //TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
 
             TaskLookup.FilterDefinition.ClearFixedFilters();
             TaskLookup.FilterDefinition.AddFixedFilter(p => p.ProjectId, Conditions.Equals, Id);
@@ -428,7 +418,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             IsBillable = entity.IsBillable;
             UsersGridManager.LoadGrid(entity.ProjectUsers);
             Notes = entity.Notes;
-            AppGlobals.CalculateProject(entity, entity.ProjectUsers.ToList());
             MinutesSpent = entity.MinutesSpent;
             TotalCost = entity.Cost;
             TimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
@@ -475,7 +464,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             TimeClockLookupCommand = GetLookupCommand(LookupCommands.Clear);
             Notes = null;
             UsersGridManager.SetupForNewRecord();
-            PunchInCommand.IsEnabled = false;
             MinutesSpent = 0;
             TimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
             TotalCost = 0;
@@ -576,8 +564,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                         project.Cost = 0;
                         foreach (var user in project.ProjectUsers)
                         {
-                            var totalMinutesSpent = timeClocksTable
-                                .Where(p => p.ProjectId == project.Id 
+                            decimal? totalMinutesSpent = null;
+                            totalMinutesSpent = timeClocksTable
+                                .Include(p => p.ProjectTask)
+                                .ThenInclude(p => p.Project)
+                                .Where(p => p.ProjectTask.ProjectId == project.Id
                                             && p.MinutesSpent.HasValue
                                             && p.UserId == user.UserId).ToList()
                                 .Sum(p => p.MinutesSpent);
@@ -605,12 +596,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                             {
                                 var projectUser = project.ProjectUsers.FirstOrDefault(p => p.UserId
                                     == userRow.UserId);
-                                if (projectUser != null) 
+                                if (projectUser != null)
                                     userRow.LoadFromEntity(projectUser);
                             }
                             var originalMinutesSpent = MinutesSpent;
                             var originalCost = TotalCost;
-                            AppGlobals.CalculateProject(project, project.ProjectUsers.ToList());
                             MinutesSpent = project.MinutesSpent;
                             TimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
                             TotalCost = project.Cost;
@@ -625,6 +615,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 if (context.Commit("Saving Projects"))
                 {
                     UsersGridManager.Grid?.RefreshGridView();
+                    CalcTotals();
                 }
                 else
                 {
@@ -652,14 +643,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         {
             AppGlobals.MainViewModel.ProjectViewModels.Remove(this);
             base.OnWindowClosing(e);
-        }
-
-        private void PunchIn()
-        {
-            if (UsersGridManager.ProcessPunchIn())
-            {
-                View.PunchIn(GetProject(Id));
-            }
         }
 
         private void OnTasksAddModify()
