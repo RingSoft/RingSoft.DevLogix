@@ -169,6 +169,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public new IProjectMaterialView View { get; private set; }
 
+        public AutoFillValue DefaultProjectAutoFillValue { get; private set; }
+
         private bool _loading;
         private bool _calculating;
 
@@ -185,6 +187,20 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             if (base.View is IProjectMaterialView projectMaterialView)
             {
                 View = projectMaterialView;
+            }
+
+            if (LookupAddViewArgs != null && LookupAddViewArgs.ParentWindowPrimaryKeyValue != null)
+            {
+                if (LookupAddViewArgs.ParentWindowPrimaryKeyValue.TableDefinition ==
+                    AppGlobals.LookupContext.Projects)
+                {
+                    var project =
+                        AppGlobals.LookupContext.Projects.GetEntityFromPrimaryKeyValue(LookupAddViewArgs
+                            .ParentWindowPrimaryKeyValue);
+                    DefaultProjectAutoFillValue =
+                        AppGlobals.LookupContext.OnAutoFillTextRequest(AppGlobals.LookupContext.Projects,
+                            project.Id.ToString());
+                }
             }
             base.Initialize();
         }
@@ -237,7 +253,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         protected override void ClearData()
         {
             Id = 0;
-            ProjectAutoFillValue = null;
+            ProjectAutoFillValue = DefaultProjectAutoFillValue;
             Cost = 0;
             IsCostEdited = false;
             ActualCost = 0;

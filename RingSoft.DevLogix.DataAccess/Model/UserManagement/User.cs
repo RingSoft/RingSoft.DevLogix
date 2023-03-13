@@ -71,6 +71,7 @@ namespace RingSoft.DevLogix.DataAccess.Model
         public virtual ICollection<Project> Projects { get; set; }
         public virtual ICollection<ProjectUser> ProjectUsers { get; set; }
         public virtual ICollection<ProjectTask> ProjectTasks { get; set; }
+        public virtual ICollection<ProjectMaterialHistory> ProjectMaterialHistory { get; set; }
 
         public User()
         {
@@ -85,6 +86,7 @@ namespace RingSoft.DevLogix.DataAccess.Model
             ProjectUsers = new HashSet<ProjectUser>();
             ErrorUsers = new HashSet<ErrorUser>();
             ProjectTasks = new HashSet<ProjectTask>();
+            ProjectMaterialHistory = new HashSet<ProjectMaterialHistory>();
         }
     }
 }

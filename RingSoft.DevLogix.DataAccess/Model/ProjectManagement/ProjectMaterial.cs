@@ -33,9 +33,12 @@ namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
 
         public ICollection<ProjectMaterialPart> Parts { get; set; }
 
+        public ICollection<ProjectMaterialHistory> History { get; set; }
+
         public ProjectMaterial()
         {
             Parts = new HashSet<ProjectMaterialPart>();
+            History = new HashSet<ProjectMaterialHistory>();
         }
     }
 }

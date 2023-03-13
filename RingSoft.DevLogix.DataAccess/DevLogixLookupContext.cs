@@ -61,6 +61,7 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<MaterialPart> MaterialParts { get; set; }
         public TableDefinition<ProjectMaterial> ProjectMaterials { get; set; }
         public TableDefinition<ProjectMaterialPart> ProjectMaterialParts { get; set; }
+        public TableDefinition<ProjectMaterialHistory> ProjectMaterialHistory { get; set; }
 
         public TableDefinition<AdvancedFind> AdvancedFinds { get; set; }
         public TableDefinition<AdvancedFindColumn> AdvancedFindColumns { get; set; }
@@ -91,6 +92,7 @@ namespace RingSoft.DevLogix.DataAccess
         public LookupDefinition<MaterialPartLookup, MaterialPart> MaterialPartLookup { get; set; }
         public LookupDefinition<ProjectMaterialLookup, ProjectMaterial> ProjectMaterialLookup { get; set; }
         public LookupDefinition<ProjectMaterialPartLookup, ProjectMaterialPart> ProjectMaterialPartLookup { get; set; }
+        public LookupDefinition<ProjectMaterialHistoryLookup, ProjectMaterialHistory> ProjectMaterialHistoryLookup { get; set; }
 
         public LookupDefinition<AdvancedFindLookup, AdvancedFind> AdvancedFindLookup { get; set; }
         public LookupDefinition<RecordLockingLookup, RecordLock> RecordLockingLookup { get; set; }
@@ -307,6 +309,15 @@ namespace RingSoft.DevLogix.DataAccess
                 , "Description", p => p.Description, 33);
             ProjectMaterialParts.HasLookupDefinition(ProjectMaterialPartLookup);
 
+            ProjectMaterialHistoryLookup =
+                new LookupDefinition<ProjectMaterialHistoryLookup, ProjectMaterialHistory>(ProjectMaterialHistory);
+            ProjectMaterialHistoryLookup.AddVisibleColumnDefinition(p => p.Date, "Date", p => p.Date, 20);
+            ProjectMaterialHistoryLookup.Include(p => p.User)
+                .AddVisibleColumnDefinition(p => p.UserName, "User", p => p.Name, 40);
+            ProjectMaterialHistoryLookup.AddVisibleColumnDefinition(p => p.Quantity, "Quantity", p => p.Quantity, 20);
+
+            ProjectMaterialHistoryLookup.AddVisibleColumnDefinition(p => p.Cost, "Cost", p => p.Cost, 20);
+            ProjectMaterialHistory.HasLookupDefinition(ProjectMaterialHistoryLookup);
         }
 
         public LookupDefinition<ProductVersionLookup, ProductVersion> MakeProductVersionLookupDefinition()
@@ -492,6 +503,11 @@ namespace RingSoft.DevLogix.DataAccess
             ProjectMaterials.PriorityLevel = 500;
 
             ProjectMaterialParts.PriorityLevel = 600;
+
+            ProjectMaterialHistory.PriorityLevel = 600;
+            ProjectMaterialHistory.GetFieldDefinition(p => p.Date).HasDateType(DbDateTypes.DateTime)
+                .DoConvertToLocalTime();
+            ProjectMaterialHistory.GetFieldDefinition(p => p.Cost).HasDecimalFieldType(DecimalFieldTypes.Currency);
 
             ProjectMaterialParts.GetFieldDefinition(p => p.Cost).HasDecimalFieldType(DecimalFieldTypes.Currency);
 

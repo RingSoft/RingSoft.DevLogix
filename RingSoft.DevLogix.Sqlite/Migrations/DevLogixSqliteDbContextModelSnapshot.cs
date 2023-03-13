@@ -705,6 +705,36 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.ToTable("ProjectMaterials");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectMaterialHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("Cost")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime");
+
+                    b.Property<int>("ProjectMaterialId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectMaterialId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ProjectMaterialHistory");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectMaterialPart", b =>
                 {
                     b.Property<int>("ProjectMaterialId")
@@ -1288,6 +1318,25 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("Project");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectMaterialHistory", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectMaterial", "ProjectMaterial")
+                        .WithMany("History")
+                        .HasForeignKey("ProjectMaterialId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "User")
+                        .WithMany("ProjectMaterialHistory")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("ProjectMaterial");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectMaterialPart", b =>
                 {
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.MaterialPart", "MaterialPart")
@@ -1550,6 +1599,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectMaterial", b =>
                 {
+                    b.Navigation("History");
+
                     b.Navigation("Parts");
                 });
 
@@ -1573,6 +1624,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("ErrorUsers");
 
                     b.Navigation("FoundByUserErrors");
+
+                    b.Navigation("ProjectMaterialHistory");
 
                     b.Navigation("ProjectTasks");
 

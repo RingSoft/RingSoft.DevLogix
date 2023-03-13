@@ -366,7 +366,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     var project =
                         AppGlobals.LookupContext.Projects.GetEntityFromPrimaryKeyValue(LookupAddViewArgs
                             .ParentWindowPrimaryKeyValue);
-                    DefaultProjectAutoFillValue =
+                    DefaultProjectAutoFillValue = 
                         AppGlobals.LookupContext.OnAutoFillTextRequest(AppGlobals.LookupContext.Projects,
                             project.Id.ToString());
                 }
