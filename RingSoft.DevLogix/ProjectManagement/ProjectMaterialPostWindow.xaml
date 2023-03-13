@@ -21,6 +21,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
@@ -38,6 +39,31 @@
         <Label Grid.Row="0" Grid.Column="2" Content="User"/>
 
         <lc:AutoFillReadOnlyControl Grid.Row="0" Grid.Column="3" Width="200" HorizontalAlignment="Left" Setup="{Binding UserAutoFillSetup}" Value="{Binding UserAutoFillValue}" />
+
+        <deg:DataEntryGrid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" x:Name="DataEntryGrid" Manager="{Binding MaterialPostManager}" HorizontalAlignment="Left" Width="750" Height="500" EnterToTab="False">
+
+            <deg:DataEntryGrid.Columns>
+
+                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ProjectMaterialPostManager.DateColumnId}" Width="200" Header="Date"/>
+
+                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ProjectMaterialPostManager.MaterialColumnId}" Header="Material" Width="200"/>
+
+                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ProjectMaterialPostManager.QuantityColumnId}" Header="Quantity" Width="100" Alignment="Right"/>
+
+                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ProjectMaterialPostManager.CostColumnId}" Header="Cost" Width="100" Alignment="Right"/>
+
+                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ProjectMaterialPostManager.ExtendedColumnId}" Header="Extended&#10;Cost" Width="100" Alignment="Right"/>
+
+            </deg:DataEntryGrid.Columns>
+
+        </deg:DataEntryGrid>
+
+        <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="5" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,5,0,0">
+
+            <Button Command="{Binding OkCommand}" Content="_OK" HorizontalAlignment="Left" Width="75" IsDefault="True"/>
+
+            <Button x:Name="CancelButton" Content="_Cancel" HorizontalAlignment="Left" Width="75" Margin="5,0,0,0"/>
+        </StackPanel>
 
     </Grid>
 </dec:BaseWindow>

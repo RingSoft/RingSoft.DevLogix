@@ -111,7 +111,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <Label Grid.Row="0" Grid.Column="0" Content="Task ID"/>
+            <Label Grid.Row="0" Grid.Column="0" Content="Material ID"/>
 
             <dec:StringReadOnlyBox Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" Width="50" Text="{Binding Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
