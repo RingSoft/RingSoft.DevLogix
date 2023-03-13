@@ -15,6 +15,8 @@ using MySqlX.XDevAPI.Common;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.DataProcessor;
 using System.Data;
+using RingSoft.DevLogix.DataAccess.LookupModel;
+using RingSoft.DevLogix.DataAccess;
 
 namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 {
@@ -243,6 +245,37 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
+        private LookupDefinition<TimeClockLookup, TimeClock> _timeClockLookup;
+
+        public LookupDefinition<TimeClockLookup, TimeClock> TimeClockLookup
+        {
+            get => _timeClockLookup;
+            set
+            {
+                if (_timeClockLookup == value)
+                    return;
+
+                _timeClockLookup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private LookupCommand _timeClockLookupCommand;
+
+        public LookupCommand TimeClockLookupCommand
+        {
+            get => _timeClockLookupCommand;
+            set
+            {
+                if (_timeClockLookupCommand == value)
+                    return;
+
+                _timeClockLookupCommand = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         private string? _notes;
 
         public string? Notes
@@ -305,6 +338,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
             LaborPartsManager = new ProjectTaskLaborPartsManager(this);
             TablesToDelete.Add(AppGlobals.LookupContext.ProjectTaskLaborParts);
+
+            var timeClockLookup = new LookupDefinition<TimeClockLookup, TimeClock>(AppGlobals.LookupContext.TimeClocks);
+            timeClockLookup.AddVisibleColumnDefinition(p => p.PunchInDate, p => p.PunchInDate);
+            timeClockLookup.Include(p => p.User)
+                .AddVisibleColumnDefinition(p => p.UserName, p => p.Name);
+            var column = timeClockLookup.AddVisibleColumnDefinition(p => p.MinutesSpent, p => p.MinutesSpent);
+            column.HasSearchForHostId(DevLogixLookupContext.TimeSpentHostId);
+
+            TimeClockLookup = timeClockLookup;
+            TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
         }
 
 
@@ -362,6 +405,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     View.SetTaskReadOnlyMode(true);
                 }
             }
+
+            TimeClockLookup.FilterDefinition.ClearFixedFilters();
+            TimeClockLookup.FilterDefinition.AddFixedFilter(p => p.ProjectTaskId, Conditions.Equals, Id);
+            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
 
             PunchInCommand.IsEnabled = true;
 
@@ -487,6 +534,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             UserAutoFillValue = null;
             ActualRow.ClearData();
             StatusRow.ClearData();
+            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Clear);
             MinutesCost = 0;
             PercentComplete = 0;
             Notes = string.Empty;

@@ -342,6 +342,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             timeClockLookup.AddVisibleColumnDefinition(p => p.PunchInDate, p => p.PunchInDate);
             timeClockLookup.Include(p => p.User)
                 .AddVisibleColumnDefinition(p => p.UserName, p => p.Name);
+            timeClockLookup.Include(p => p.ProjectTask)
+                .AddVisibleColumnDefinition(p => p.ProjectTask, p => p.Name);
             var column = timeClockLookup.AddVisibleColumnDefinition(p => p.MinutesSpent, p => p.MinutesSpent);
             column.HasSearchForHostId(DevLogixLookupContext.TimeSpentHostId);
 
@@ -384,9 +386,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             Id = project.Id;
             KeyAutoFillValue = KeyAutoFillSetup.GetAutoFillValueForIdValue(project.Id);
 
-            //TimeClockLookup.FilterDefinition.ClearFixedFilters();
-            //TimeClockLookup.FilterDefinition.AddFixedFilter(p => p.ProjectId, Conditions.Equals, Id);
-            //TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
+            TimeClockLookup.FilterDefinition.ClearFixedFilters();
+            TimeClockLookup.FilterDefinition.Include(p => p.ProjectTask)
+                .AddFixedFilter(p => p.ProjectId, Conditions.Equals, Id);
+            
+            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
 
             TaskLookup.FilterDefinition.ClearFixedFilters();
             TaskLookup.FilterDefinition.AddFixedFilter(p => p.ProjectId, Conditions.Equals, Id);
