@@ -201,6 +201,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             if (result != null)
             {
                 Id = result.Id;
+                KeyAutoFillValue = result.GetAutoFillValue();
             }
 
             return result;

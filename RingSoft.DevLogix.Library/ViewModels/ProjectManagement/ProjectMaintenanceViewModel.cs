@@ -262,6 +262,35 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
+        private LookupDefinition<ProjectMaterialLookup, ProjectMaterial> _materialLookup;
+
+        public LookupDefinition<ProjectMaterialLookup, ProjectMaterial> MaterialLookup
+        {
+            get => _materialLookup;
+            set
+            {
+                if (_materialLookup == value)
+                    return;
+
+                _materialLookup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private LookupCommand _materialLookupCommand;
+
+        public LookupCommand MaterialLookupCommand
+        {
+            get => _materialLookupCommand;
+            set
+            {
+                if (_materialLookupCommand == value)
+                    return;
+
+                _materialLookupCommand = value;
+                OnPropertyChanged();
+            }
+        }
 
 
         private LookupDefinition<TimeClockLookup, TimeClock> _timeClockLookup;
@@ -316,6 +345,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public RelayCommand TasksAddModifyCommand { get; set; }
 
+        public RelayCommand MaterialsAddModifyCommand { get; set; }
+
         public decimal MinutesSpent { get; set; }
 
         public ProjectTotalsRow ActualRow { get; private set; }
@@ -334,6 +365,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
             TasksAddModifyCommand = new RelayCommand(OnTasksAddModify);
 
+            MaterialsAddModifyCommand = new RelayCommand(OnMaterialsAddModify);
+
             ProjectTotalsManager = new ProjectTotalsManager();
 
             UsersGridManager = new ProjectUsersGridManager(this);
@@ -351,6 +384,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
 
             TaskLookup = AppGlobals.LookupContext.ProjectTaskLookup.Clone();
+            MaterialLookup = AppGlobals.LookupContext.ProjectMaterialLookup.Clone();
 
             TablesToDelete.Add(AppGlobals.LookupContext.ProjectUsers);
         }
@@ -395,6 +429,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             TaskLookup.FilterDefinition.ClearFixedFilters();
             TaskLookup.FilterDefinition.AddFixedFilter(p => p.ProjectId, Conditions.Equals, Id);
             TaskLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
+
+            MaterialLookup.FilterDefinition.ClearFixedFilters();
+            MaterialLookup.FilterDefinition.AddFixedFilter(p => p.ProjectId, Conditions.Equals, Id);
+            MaterialLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
 
             return project;
         }
@@ -472,6 +510,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             TimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
             TotalCost = 0;
             TaskLookupCommand = GetLookupCommand(LookupCommands.Clear);
+            MaterialLookupCommand = GetLookupCommand(LookupCommands.Clear);
             ProjectTotalsManager.ClearTotals();
         }
 
@@ -656,6 +695,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         }
 
+        private void OnMaterialsAddModify()
+        {
+            if (ExecuteAddModifyCommand() == DbMaintenanceResults.Success)
+                MaterialLookupCommand = GetLookupCommand(LookupCommands.AddModify);
+
+        }
 
         protected override void OnRecordDirtyChanged(bool newValue)
         {

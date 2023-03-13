@@ -216,6 +216,40 @@
                     </Grid>
 
                 </TabItem>
+                <TabItem Header="Materials" x:Name="MaterialsTab" VerticalAlignment="Stretch">
+
+                    <Grid>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button Grid.Row="0" Grid.Column="0" x:Name="MaterialsAddModifyButton" Content="Add/Modify" Command="{Binding MaterialsAddModifyCommand}"/>
+
+                        <lc:LookupControl  Grid.Row="0" Grid.Column="1" Grid.RowSpan="2"  LookupDefinition="{Binding MaterialLookup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Command="{Binding MaterialLookupCommand, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+
+                            <lc:LookupControl.LookupColumns>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf Name, Type={x:Type projectManagement:ProjectMaterialLookup}}" Header="Material" Width="300"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf Cost, Type={x:Type projectManagement:ProjectMaterialLookup}}" Header="Cost" Width="150" TextAlignment="Right"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf ActualCost, Type={x:Type projectManagement:ProjectMaterialLookup}}" Header="Actual Cost" TextAlignment="Right" Width="150"/>
+
+                            </lc:LookupControl.LookupColumns>
+
+                        </lc:LookupControl>
+
+                    </Grid>
+
+                </TabItem>
+
                 <TabItem Header="Time Clocks" x:Name="TimeClockTab" VerticalAlignment="Stretch">
 
                     <DockPanel>
