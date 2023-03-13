@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
@@ -14,6 +15,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         void GetNewLineType(string text, out PrimaryKeyValue materialPartPkValue, out MaterialPartLineTypes lineType);
 
         bool ShowCommentEditor(DataEntryGridMemoValue comment);
+
+        bool DoPostCosts(Project project);
     }
     public enum ProjectMaterialSpecialRights
     {
@@ -171,6 +174,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public AutoFillValue DefaultProjectAutoFillValue { get; private set; }
 
+        public RelayCommand RecalcCommand { get; private set; }
+
+        public RelayCommand PostCommand { get; private set; }
+
         private bool _loading;
         private bool _calculating;
 
@@ -178,6 +185,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         {
             ProjectAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ProjectId));
             ProjectMaterialPartManager = new ProjectMaterialPartManager(this);
+
+            RecalcCommand = new RelayCommand(Recalc);
+
+            PostCommand = new RelayCommand(PostCost);
 
             TablesToDelete.Add(AppGlobals.LookupContext.ProjectMaterialParts);
         }
@@ -228,6 +239,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             _loading = true;
             Cost = entity.Cost;
             ProjectAutoFillValue = entity.Project.GetAutoFillValue();
+            PostCommand.IsEnabled = true;
             ActualCost = entity.ActualCost;
             IsCostEdited = entity.IsCostEdited;
             Notes = entity.Notes;
@@ -259,6 +271,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             ActualCost = 0;
             Notes = string.Empty;
             ProjectMaterialPartManager.SetupForNewRecord();
+            PostCommand.IsEnabled = ProjectAutoFillValue.IsValid();
         }
 
         public void SetTotalCost(decimal total)
@@ -312,6 +325,20 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
 
             return true;
+        }
+
+        public void Recalc()
+        {
+
+        }
+
+        public void PostCost()
+        {
+            var project = ProjectAutoFillValue.GetEntity<Project>();
+            if (View.DoPostCosts(project))
+            {
+                
+            }
         }
     }
 }

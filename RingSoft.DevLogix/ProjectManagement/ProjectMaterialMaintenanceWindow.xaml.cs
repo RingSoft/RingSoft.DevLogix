@@ -16,10 +16,32 @@ using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DataEntryControls.WPF.DataEntryGrid;
 using RingSoft.DbLookup;
 using RingSoft.DbMaintenance;
+using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
+using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels.ProjectManagement;
 
 namespace RingSoft.DevLogix.ProjectManagement
 {
+    public class ProjectMaterialHeaderControl : DbMaintenanceCustomPanel
+    {
+        public Button RecalcButton { get; set; }
+
+        public Button PostButton { get; set; }
+
+        static ProjectMaterialHeaderControl()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(ProjectMaterialHeaderControl), new FrameworkPropertyMetadata(typeof(ProjectMaterialHeaderControl)));
+        }
+
+        public override void OnApplyTemplate()
+        {
+            RecalcButton = GetTemplateChild(nameof(RecalcButton)) as Button;
+            PostButton = GetTemplateChild(nameof(PostButton)) as Button;
+
+            base.OnApplyTemplate();
+        }
+    }
+
     /// <summary>
     /// Interaction logic for ProjectMaterialMaintenanceWindow.xaml
     /// </summary>
@@ -32,6 +54,25 @@ namespace RingSoft.DevLogix.ProjectManagement
         public ProjectMaterialMaintenanceWindow()
         {
             InitializeComponent();
+            TopHeaderControl.Loaded += (sender, args) =>
+            {
+                if (TopHeaderControl.CustomPanel is ProjectMaterialHeaderControl projectMaterialHeaderControl)
+                {
+                    if (!LocalViewModel.TableDefinition.HasRight(RightTypes.AllowEdit))
+                    {
+                        projectMaterialHeaderControl.RecalcButton.Visibility = Visibility.Collapsed;
+                    }
+
+                    if (!LocalViewModel.TableDefinition.HasSpecialRight((int)ProjectMaterialSpecialRights
+                            .AllowMaterialPost))
+                    {
+                        projectMaterialHeaderControl.PostButton.Visibility = Visibility.Collapsed;
+                    }
+                    projectMaterialHeaderControl.RecalcButton.Command = LocalViewModel.RecalcCommand;
+                    projectMaterialHeaderControl.PostButton.Command = LocalViewModel.PostCommand;
+                }
+            };
+
         }
 
         protected override void OnLoaded()
@@ -65,6 +106,15 @@ namespace RingSoft.DevLogix.ProjectManagement
             memoEditor.Owner = this;
             memoEditor.Title = "Edit Comment";
             return memoEditor.ShowDialog();
+        }
+
+        public bool DoPostCosts(Project project)
+        {
+            var postCostWindow = new ProjectMaterialPostWindow(project);
+            postCostWindow.Owner = this;
+            postCostWindow.ShowInTaskbar = false;
+            postCostWindow.ShowDialog();
+            return true;
         }
     }
 }

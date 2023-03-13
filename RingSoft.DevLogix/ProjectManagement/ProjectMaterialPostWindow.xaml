@@ -1,0 +1,43 @@
+﻿<dec:BaseWindow x:Class="RingSoft.DevLogix.ProjectManagement.ProjectMaterialPostWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
+        xmlns:deg="clr-namespace:RingSoft.DataEntryControls.WPF.DataEntryGrid;assembly=RingSoft.DataEntryControls.WPF"
+        xmlns:lc="clr-namespace:RingSoft.DbLookup.Controls.WPF;assembly=RingSoft.DbLookup.Controls.WPF"
+        xmlns:vm="clr-namespace:RingSoft.DevLogix.Library.ViewModels.ProjectManagement;assembly=RingSoft.DevLogix.Library"
+        xmlns:local="clr-namespace:RingSoft.DevLogix.ProjectManagement"
+        mc:Ignorable="d"
+        Style="{StaticResource BaseWindowStyle}"
+        Title="Project Material Post Window" SizeToContent="WidthAndHeight">
+
+    <Window.DataContext>
+        <vm:ProjectMaterialPostViewModel x:Name="ViewModel"/>
+    </Window.DataContext>
+
+    <Grid Margin="5">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Label Grid.Row="0" Grid.Column="0" Content="Project"/>
+
+        <lc:AutoFillReadOnlyControl Grid.Row="0" Grid.Column="1" Width="200" HorizontalAlignment="Left" Setup="{Binding ProjectAutoFillSetup}" Value="{Binding ProjectAutoFillValue}"/>
+
+        <Label Grid.Row="0" Grid.Column="2" Content="User"/>
+
+        <lc:AutoFillReadOnlyControl Grid.Row="0" Grid.Column="3" Width="200" HorizontalAlignment="Left" Setup="{Binding UserAutoFillSetup}" Value="{Binding UserAutoFillValue}" />
+
+    </Grid>
+</dec:BaseWindow>
