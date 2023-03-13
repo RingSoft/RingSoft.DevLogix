@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.ComponentModel;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
@@ -120,7 +121,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     return;
 
                 _actualCost = value;
-                OnPropertyChanged();
+                OnPropertyChanged(null, false);
             }
         }
 
@@ -213,6 +214,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                             project.Id.ToString());
                 }
             }
+            AppGlobals.MainViewModel.MaterialViewModels.Add(this);
             base.Initialize();
         }
 
@@ -250,6 +252,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         protected override ProjectMaterial GetEntityData()
         {
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var table = context.GetTable<ProjectMaterial>();
+            var existingMaterial = table.FirstOrDefault(p => p.Id == Id);
+            if (existingMaterial != null)
+            {
+                ActualCost = existingMaterial.ActualCost;
+            }
             return new ProjectMaterial
             {
                 Id = Id,
@@ -339,6 +348,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             {
                 
             }
+        }
+
+        public override void OnWindowClosing(CancelEventArgs e)
+        {
+            AppGlobals.MainViewModel.MaterialViewModels.Remove(this);
+            base.OnWindowClosing(e);
         }
     }
 }

@@ -122,6 +122,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         private void OnOk()
         {
+            if (!MaterialPostManager.Post())
+            {
+                return;
+            }
             DialogResult = true;
             View.CloseWindow();
         }

@@ -42,6 +42,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
         public List<UserMaintenanceViewModel> UserViewModels { get; } = new List<UserMaintenanceViewModel>();
         public List<ProjectMaintenanceViewModel> ProjectViewModels { get; } = new List<ProjectMaintenanceViewModel>();
         public List<ProjectTaskViewModel> ProjectTaskViewModels { get; } = new List<ProjectTaskViewModel>();
+        public List<ProjectMaterialViewModel> MaterialViewModels { get; } = new List<ProjectMaterialViewModel>();
         public List<ErrorViewModel> ErrorViewModels { get; } = new List<ErrorViewModel>();
 
         public RelayCommand LogoutCommand { get; set; }

@@ -135,5 +135,18 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
             base.SetCellValue(value);
         }
+
+        public bool Validate()
+        {
+            if (!MaterialAutoFillValue.IsValid())
+            {
+                var message = $"The Material code is invalid.";
+                var caption = "Validation Error";
+                Manager.Grid?.GotoCell(this, (int)ProjectMaterialPostColumns.Material);
+                ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
+                return false;
+            }
+            return true;
+        }
     }
 }
