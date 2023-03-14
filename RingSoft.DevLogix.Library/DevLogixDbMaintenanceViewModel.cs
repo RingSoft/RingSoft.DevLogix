@@ -9,12 +9,15 @@ namespace RingSoft.DevLogix.Library
     public abstract class DevLogixDbMaintenanceViewModel<TEntity> : AppDbMaintenanceViewModel<TEntity> where TEntity : new()
     {
         public virtual bool SetReadOnlyMode { get; } = true;
+
+        public virtual bool AllowEdit { get; } = true;
+
         protected override void Initialize()
         {
             base.Initialize();
             if (Processor is IAppDbMaintenanceProcessor appDbMaintenanceProcessor)
             {
-                if (TableDefinitionBase.HasRight(RightTypes.AllowEdit))
+                if (TableDefinitionBase.HasRight(RightTypes.AllowEdit) && AllowEdit)
                 {
                     SaveButtonEnabled = true;
                 }

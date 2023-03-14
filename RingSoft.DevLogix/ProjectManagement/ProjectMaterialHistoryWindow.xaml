@@ -1,0 +1,69 @@
+﻿<ac:DbMaintenanceWindow x:Class="RingSoft.DevLogix.ProjectManagement.ProjectMaterialHistoryWindow"
+                        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                        xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
+                        xmlns:lc="clr-namespace:RingSoft.DbLookup.Controls.WPF;assembly=RingSoft.DbLookup.Controls.WPF"
+                        xmlns:ac="clr-namespace:RingSoft.App.Controls;assembly=RingSoft.App.Controls"
+                        xmlns:vm="clr-namespace:RingSoft.DevLogix.Library.ViewModels.ProjectManagement;assembly=RingSoft.DevLogix.Library"
+                        xmlns:local="clr-namespace:RingSoft.DevLogix.ProjectManagement"
+                        mc:Ignorable="d"
+                        Style="{StaticResource BaseWindowStyle}"
+                        Title="Project Material History Window" SizeToContent="WidthAndHeight">
+
+    <Window.DataContext>
+        <vm:ProjectMaterialHistoryViewModel x:Name="LocalViewModel"/>
+    </Window.DataContext>
+
+    <DockPanel>
+
+        <ac:DbMaintenanceTopHeaderControl x:Name="TopHeaderControl" DockPanel.Dock="Top"/>
+
+        <Grid Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Row="0" Grid.Column="0" Content="Project Material History ID"/>
+
+            <dec:StringReadOnlyBox Grid.Row="0" Grid.Column="1" Text="{Binding Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="50" HorizontalAlignment="Left"/>
+
+            <Label Grid.Row="0" Grid.Column="2" Content="Date"/>
+
+            <dec:DateReadOnlyBox Grid.Row="0" Grid.Column="3" DateFormatType="DateTime" Value="{Binding Date, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left"/>
+
+            <Label Grid.Row="1" Grid.Column="0" Content="Project Material"/>
+
+            <lc:AutoFillReadOnlyControl Grid.Row="1" Grid.Column="1" Setup="{Binding ProjectMaterialAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding ProjectMaterialAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left"/>
+
+            <Label Grid.Row="1" Grid.Column="2" Content="User"/>
+
+            <lc:AutoFillReadOnlyControl Grid.Row="1" Grid.Column="3" Setup="{Binding UserAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding UserAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left"/>
+
+            <Label Grid.Row="2" Grid.Column="0" Content="Quantity"/>
+
+            <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="1" Value="{Binding Quantity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Number" TextAlignment="Left" Width="100" HorizontalAlignment="Left"/>
+
+            <Label Grid.Row="2" Grid.Column="2" Content="Cost"/>
+
+            <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="3" Value="{Binding Cost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency" TextAlignment="Left" Width="100" HorizontalAlignment="Left"/>
+
+            <Label Grid.Row="3" Grid.Column="0" Content="Extended Cost"/>
+
+            <dec:DecimalReadOnlyBox Grid.Row="3" Grid.Column="1" Value="{Binding ExtendedCost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency" TextAlignment="Left" HorizontalAlignment="Left" Width="100"/>
+
+        </Grid>
+
+    </DockPanel>
+</ac:DbMaintenanceWindow>

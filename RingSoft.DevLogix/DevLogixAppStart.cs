@@ -102,6 +102,7 @@ namespace RingSoft.DevLogix
             WindowRegistry.RegisterWindow<ProjectMaterialMaintenanceWindow>(AppGlobals.LookupContext.ProjectMaterials);
             WindowRegistry.RegisterWindow<LaborPartMaintenanceWindow>(AppGlobals.LookupContext.LaborParts);
             WindowRegistry.RegisterWindow<MaterialPartMaintenanceWindow>(AppGlobals.LookupContext.MaterialParts);
+            WindowRegistry.RegisterWindow<ProjectMaterialHistoryWindow>(AppGlobals.LookupContext.ProjectMaterialHistory);
 
             AppGlobals.LookupContext.CanProcessTableEvent += (sender, args) =>
             {

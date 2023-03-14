@@ -34,6 +34,8 @@ namespace RingSoft.DevLogix.Library.ViewModels
         void ShowMainChart(bool show = true);
 
         object GetOwnerWindow();
+
+        void ShowHistoryPrintFilterWindow(HistoryPrintFilterCallBack callBack);
     }
     public class MainViewModel
     {

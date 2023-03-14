@@ -280,6 +280,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 HistoryLookup.FilterDefinition.ClearFixedFilters();
                 HistoryLookup.FilterDefinition.AddFixedFilter(p => p.ProjectMaterialId, Conditions.Equals, Id);
                 HistoryLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
+                PostCommand.IsEnabled = true;
             }
 
             return result;
@@ -290,7 +291,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             _loading = true;
             Cost = entity.Cost;
             ProjectAutoFillValue = entity.Project.GetAutoFillValue();
-            PostCommand.IsEnabled = true;
             ActualCost = entity.ActualCost;
             IsCostEdited = entity.IsCostEdited;
             Notes = entity.Notes;

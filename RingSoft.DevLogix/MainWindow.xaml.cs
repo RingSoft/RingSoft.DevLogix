@@ -1,5 +1,6 @@
 ﻿using RingSoft.App.Controls;
 using RingSoft.DataEntryControls.Engine;
+using RingSoft.DataEntryControls.WPF;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Controls.WPF.AdvancedFind;
 using RingSoft.DbLookup.DataProcessor;
@@ -517,6 +518,15 @@ namespace RingSoft.DevLogix
         public object GetOwnerWindow()
         {
             return this;
+        }
+
+        public void ShowHistoryPrintFilterWindow(HistoryPrintFilterCallBack callBack)
+        {
+            var window = new HistoryPrintFilterWindow(callBack);
+            window.Owner = WPFControlsGlobals.ActiveWindow;
+            window.ShowInTaskbar = false;
+            window.ShowDialog();
+
         }
 
         private TimeClockMaintenanceWindow GetTimeClockWindow()
