@@ -5,8 +5,12 @@ using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
+using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition;
+using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbMaintenance;
+using RingSoft.DevLogix.DataAccess.LookupModel;
+using RingSoft.DevLogix.DataAccess.LookupModel.ProjectManagement;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 
 namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
@@ -155,6 +159,36 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
+        private LookupDefinition<ProjectMaterialHistoryLookup, ProjectMaterialHistory> _historyLookup;
+
+        public LookupDefinition<ProjectMaterialHistoryLookup, ProjectMaterialHistory> HistoryLookup
+        {
+            get => _historyLookup;
+            set
+            {
+                if (_historyLookup == value)
+                    return;
+
+                _historyLookup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private LookupCommand _historyLookupCommand;
+
+        public LookupCommand HistoryLookupCommand
+        {
+            get => _historyLookupCommand;
+            set
+            {
+                if (_historyLookupCommand == value)
+                    return;
+
+                _historyLookupCommand = value;
+                OnPropertyChanged(null, false);
+            }
+        }
+
 
         private string? _notes;
 
@@ -215,6 +249,18 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 }
             }
             AppGlobals.MainViewModel.MaterialViewModels.Add(this);
+
+            var historyLookup =
+                new LookupDefinition<ProjectMaterialHistoryLookup, ProjectMaterialHistory>(AppGlobals.LookupContext
+                    .ProjectMaterialHistory);
+            historyLookup.AddVisibleColumnDefinition(p => p.Date, p => p.Date);
+            historyLookup.Include(p => p.User)
+                .AddVisibleColumnDefinition(p => p.UserName, p => p.Name);
+            historyLookup.AddVisibleColumnDefinition(p => p.Quantity, p => p.Quantity);
+            historyLookup.AddVisibleColumnDefinition(p => p.Cost, p => p.Cost);
+            historyLookup.InitialOrderByType = OrderByTypes.Descending;
+            HistoryLookup = historyLookup;
+
             base.Initialize();
         }
 
@@ -231,6 +277,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             {
                 Id = result.Id;
                 KeyAutoFillValue = result.GetAutoFillValue();
+                HistoryLookup.FilterDefinition.ClearFixedFilters();
+                HistoryLookup.FilterDefinition.AddFixedFilter(p => p.ProjectMaterialId, Conditions.Equals, Id);
+                HistoryLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
             }
 
             return result;
@@ -281,6 +330,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             Notes = string.Empty;
             ProjectMaterialPartManager.SetupForNewRecord();
             PostCommand.IsEnabled = ProjectAutoFillValue.IsValid();
+            HistoryLookupCommand = GetLookupCommand(LookupCommands.Clear);
         }
 
         public void SetTotalCost(decimal total)
@@ -350,6 +400,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
+        public void RefreshCost(decimal cost)
+        {
+            ActualCost = cost;
+            var primaryKey = TableDefinition.GetPrimaryKeyValueFromEntity(Entity);
+            HistoryLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKey);
+        }
         public override void OnWindowClosing(CancelEventArgs e)
         {
             AppGlobals.MainViewModel.MaterialViewModels.Remove(this);

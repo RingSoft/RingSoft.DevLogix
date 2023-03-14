@@ -9,6 +9,7 @@
         xmlns:ac="clr-namespace:RingSoft.App.Controls;assembly=RingSoft.App.Controls"
         xmlns:dl="clr-namespace:RingSoft.DevLogix"
         xmlns:vm="clr-namespace:RingSoft.DevLogix.Library.ViewModels.ProjectManagement;assembly=RingSoft.DevLogix.Library"
+        xmlns:plm="clr-namespace:RingSoft.DevLogix.DataAccess.LookupModel.ProjectManagement;assembly=RingSoft.DevLogix.DataAccess"
         xmlns:local="clr-namespace:RingSoft.DevLogix.ProjectManagement"
         mc:Ignorable="d"
         Style="{StaticResource BaseWindowStyle}"
@@ -199,6 +200,30 @@
 
                         </deg:DataEntryGrid>
                     </Grid>
+
+                </TabItem>
+
+                <TabItem Header="History" x:Name="HistoryTab" VerticalAlignment="Stretch">
+
+                    <DockPanel>
+
+                        <lc:LookupControl LookupDefinition="{Binding HistoryLookup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Command="{Binding HistoryLookupCommand, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+
+                            <lc:LookupControl.LookupColumns>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf Date, Type={x:Type plm:ProjectMaterialHistoryLookup}}" Header="Date" Width="150"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf UserName, Type={x:Type plm:ProjectMaterialHistoryLookup}}" Header="User" Width="250"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf Quantity, Type={x:Type plm:ProjectMaterialHistoryLookup}}" Header="Quantity" TextAlignment="Right" Width="150"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf Cost, Type={x:Type plm:ProjectMaterialHistoryLookup}}" Header="Cost" TextAlignment="Right" Width="150"/>
+
+                            </lc:LookupControl.LookupColumns>
+
+                        </lc:LookupControl>
+
+                    </DockPanel>
 
                 </TabItem>
 

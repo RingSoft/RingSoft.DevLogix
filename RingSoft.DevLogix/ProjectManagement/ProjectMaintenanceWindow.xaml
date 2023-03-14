@@ -10,6 +10,7 @@
                             xmlns:ac="clr-namespace:RingSoft.App.Controls;assembly=RingSoft.App.Controls"
                             xmlns:vm="clr-namespace:RingSoft.DevLogix.Library.ViewModels.ProjectManagement;assembly=RingSoft.DevLogix.Library"
                             xmlns:lm="clr-namespace:RingSoft.DevLogix.DataAccess.LookupModel;assembly=RingSoft.DevLogix.DataAccess"
+                            xmlns:plm="clr-namespace:RingSoft.DevLogix.DataAccess.LookupModel.ProjectManagement;assembly=RingSoft.DevLogix.DataAccess"
                             xmlns:local="clr-namespace:RingSoft.DevLogix.ProjectManagement"
                             xmlns:projectManagement="clr-namespace:RingSoft.DevLogix.DataAccess.LookupModel.ProjectManagement;assembly=RingSoft.DevLogix.DataAccess"
                             mc:Ignorable="d"
@@ -266,6 +267,32 @@
                                 <lc:LookupColumn PropertyName="{lc:NameOf ProjectTask, Type={x:Type lm:TimeClockLookup}}" Header="Project Task" Width="200"/>
 
                                 <lc:LookupColumn PropertyName="{lc:NameOf MinutesSpent, Type={x:Type lm:TimeClockLookup}}" Header="Time Spent" TextAlignment="Right" Width="150"/>
+
+                            </lc:LookupControl.LookupColumns>
+
+                        </lc:LookupControl>
+
+                    </DockPanel>
+
+                </TabItem>
+
+                <TabItem Header="Material History" x:Name="HistoryTab" VerticalAlignment="Stretch">
+
+                    <DockPanel>
+
+                        <lc:LookupControl LookupDefinition="{Binding HistoryLookup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Command="{Binding HistoryLookupCommand, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+
+                            <lc:LookupControl.LookupColumns>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf Date, Type={x:Type plm:ProjectMaterialHistoryLookup}}" Header="Date" Width="150"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf UserName, Type={x:Type plm:ProjectMaterialHistoryLookup}}" Header="User" Width="150"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf ProjectMaterial, Type={x:Type plm:ProjectMaterialHistoryLookup}}" Header="Material" Width="150"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf Quantity, Type={x:Type plm:ProjectMaterialHistoryLookup}}" Header="Quantity" TextAlignment="Right" Width="100"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf Cost, Type={x:Type plm:ProjectMaterialHistoryLookup}}" Header="Cost" TextAlignment="Right" Width="100"/>
 
                             </lc:LookupControl.LookupColumns>
 

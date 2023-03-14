@@ -339,6 +339,36 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
+        private LookupDefinition<ProjectMaterialHistoryLookup, ProjectMaterialHistory> _historyLookup;
+
+        public LookupDefinition<ProjectMaterialHistoryLookup, ProjectMaterialHistory> HistoryLookup
+        {
+            get => _historyLookup;
+            set
+            {
+                if (_historyLookup == value)
+                    return;
+
+                _historyLookup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private LookupCommand _historyLookupCommand;
+
+        public LookupCommand HistoryLookupCommand
+        {
+            get => _historyLookupCommand;
+            set
+            {
+                if (_historyLookupCommand == value)
+                    return;
+
+                _historyLookupCommand = value;
+                OnPropertyChanged(null, false);
+            }
+        }
+
         public new IProjectView View { get; private set; }
 
         public RelayCommand RecalcCommand { get; set; }
@@ -383,6 +413,18 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             TimeClockLookup = timeClockLookup;
             TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
 
+            var historyLookup =
+                new LookupDefinition<ProjectMaterialHistoryLookup, ProjectMaterialHistory>(AppGlobals.LookupContext
+                    .ProjectMaterialHistory);
+            historyLookup.AddVisibleColumnDefinition(p => p.Date, p => p.Date);
+            historyLookup.Include(p => p.User)
+                .AddVisibleColumnDefinition(p => p.UserName, p => p.Name);
+            historyLookup.Include(p => p.ProjectMaterial)
+                .AddVisibleColumnDefinition(p => p.ProjectMaterial, p => p.Name);
+            historyLookup.AddVisibleColumnDefinition(p => p.Quantity, p => p.Quantity);
+            historyLookup.AddVisibleColumnDefinition(p => p.Cost, p => p.Cost);
+            historyLookup.InitialOrderByType = OrderByTypes.Descending;
+            HistoryLookup = historyLookup;
             TaskLookup = AppGlobals.LookupContext.ProjectTaskLookup.Clone();
             MaterialLookup = AppGlobals.LookupContext.ProjectMaterialLookup.Clone();
 
@@ -433,6 +475,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             MaterialLookup.FilterDefinition.ClearFixedFilters();
             MaterialLookup.FilterDefinition.AddFixedFilter(p => p.ProjectId, Conditions.Equals, Id);
             MaterialLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
+
+            HistoryLookup.FilterDefinition.ClearFixedFilters();
+            HistoryLookup.FilterDefinition.Include(p => p.ProjectMaterial)
+                .AddFixedFilter(p => p.ProjectId, Conditions.Equals, Id);
+            HistoryLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
 
             return project;
         }
@@ -504,6 +551,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             ProductAutoFillValue = null;
             IsBillable = false;
             TimeClockLookupCommand = GetLookupCommand(LookupCommands.Clear);
+            HistoryLookupCommand = GetLookupCommand(LookupCommands.Clear);
             Notes = null;
             UsersGridManager.SetupForNewRecord();
             MinutesSpent = 0;
@@ -624,6 +672,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                             project.Cost += user.Cost;
                         }
 
+                        var materialsTable = context.GetTable<ProjectMaterial>();
+                        var materials = materialsTable.Where(p => p.ProjectId == project.Id).ToList();
+                        project.Cost += materials.Sum(p => p.ActualCost);
+
                         if (!context.SaveNoCommitEntity(project, "Saving Project"))
                         {
                             args.Abort = true;
@@ -679,6 +731,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             CalcTotals();
 
             UsersGridManager.LoadGrid(project.ProjectUsers);
+            var primaryKey = TableDefinition.GetPrimaryKeyValueFromEntity(Entity);
+            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKey);
+            HistoryLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKey);
             RecordDirty = oldRecordDirty;
         }
 
@@ -713,7 +768,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public void CalcTotals()
         {
-            var table = AppGlobals.DataRepository.GetDataContext().GetTable<ProjectTask>();
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var table = context.GetTable<ProjectTask>();
             var tasks = table.Where(p => p.ProjectId == Id);
             var estimatedMinutes = (decimal)0;
             var estimatedCost = (decimal)0;
@@ -727,10 +783,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 remainingMinutes += taskRemainingMinutes;
                 remainingCost += task.EstimatedCost * (1 - task.PercentComplete);
             }
+
+            var materialsTable = context.GetTable<ProjectMaterial>();
+            var materials = materialsTable.Where(p => p.ProjectId == Id)
+                .ToList();
+            var materialsCost = materials.Sum(p => p.Cost);
+            var actualMaterialCost = materials.Sum(p => p.ActualCost);
+            var remainingMaterialsCost = materialsCost - actualMaterialCost;
+            if (remainingMaterialsCost < 0)
+            {
+                remainingMaterialsCost = 0;
+            }
+
             ProjectTotalsManager.EstimatedRow.Minutes = estimatedMinutes;
-            ProjectTotalsManager.EstimatedRow.Cost = estimatedCost;
+            ProjectTotalsManager.EstimatedRow.Cost = estimatedCost + materialsCost;
             ProjectTotalsManager.RemainingRow.Minutes = remainingMinutes;
-            ProjectTotalsManager.RemainingRow.Cost = remainingCost;
+            ProjectTotalsManager.RemainingRow.Cost = remainingCost + remainingMaterialsCost;
             ActualRow.Minutes = MinutesSpent;
             ActualRow.Cost = TotalCost;
             StatusRow.Minutes = estimatedMinutes - (ActualRow.Minutes + remainingMinutes);

@@ -8,7 +8,7 @@ namespace RingSoft.DevLogix.DataAccess.LookupModel.ProjectManagement
 
         public DateTime Date { get; set; }
 
-        public string Project { get; set; }
+        public string ProjectMaterial { get; set; }
 
         public decimal Quantity { get; set; }
 

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbLookup;
@@ -51,6 +52,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
             var projectMaterialList = new List<ProjectMaterial>();
             var context = AppGlobals.DataRepository.GetDataContext();
+            var project = ViewModel.ProjectAutoFillValue.GetEntity<Project>();
+            project = context.GetTable<Project>()
+                .Include(p => p.ProjectUsers)
+                .FirstOrDefault(p => p.Id == project.Id);
             var table = context.GetTable<ProjectMaterial>();
             foreach (var projectMaterialPostRow in rows)
             {
@@ -66,8 +71,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 }
                 var extendedCost = projectMaterialPostRow.Quantity * projectMaterialPostRow.Cost;
                 existingMaterial.ActualCost += extendedCost;
-
-                historyItem.Date = projectMaterialPostRow.Date;
+                if (project != null) 
+                    project.Cost += extendedCost;
+                historyItem.Date = projectMaterialPostRow.Date.ToUniversalTime();
                 historyItem.UserId = ViewModel.UserAutoFillValue.GetEntity<User>().Id;
                 historyItem.Quantity = projectMaterialPostRow.Quantity;
                 historyItem.Cost = projectMaterialPostRow.Cost;
@@ -79,18 +85,39 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
             foreach (var projectMaterial in projectMaterialList)
             {
-                var materialViewModel =
-                    AppGlobals.MainViewModel.MaterialViewModels.FirstOrDefault(p => p.Id == projectMaterial.Id);
-                if (materialViewModel != null)
-                {
-                    materialViewModel.ActualCost = projectMaterial.ActualCost;
-                }
                 if (!context.SaveNoCommitEntity(projectMaterial, "Saving Project Material"))
                 {
                     return false;
                 }
             }
-            return context.Commit("Committing History");
+
+            if (project != null)
+            {
+                if (!context.SaveNoCommitEntity(project, "Saving Project"))
+                {
+                    return false;
+                }
+            }
+            var result = context.Commit("Committing History");
+            if (result)
+            {
+                foreach(var projectMaterial in projectMaterialList)
+                {
+                    var materialViewModels =
+                        AppGlobals.MainViewModel.MaterialViewModels.Where(p => p.Id == projectMaterial.Id);
+                    foreach (var materialViewModel in materialViewModels)
+                    {
+                        materialViewModel.RefreshCost(projectMaterial.ActualCost);
+                    }
+                }
+
+                var projectViewModels = AppGlobals.MainViewModel.ProjectViewModels.Where(p => p.Id == project.Id);
+                foreach (var projectViewModel in projectViewModels)
+                {
+                    projectViewModel.RefreshCostGrid(project);
+                }
+            }
+            return result;
         }
     }
 }
