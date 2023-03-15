@@ -225,39 +225,6 @@
                     </Grid>
 
                 </TabItem>
-                <TabItem Header="Tasks" x:Name="TasksTab" VerticalAlignment="Stretch">
-
-                    <Grid>
-
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <Button Grid.Row="0" Grid.Column="0" x:Name="AddModifyButton" Content="Add/Modify" Command="{Binding TasksAddModifyCommand}"/>
-
-                        <lc:LookupControl  Grid.Row="0" Grid.Column="1" Grid.RowSpan="2"  LookupDefinition="{Binding TaskLookup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Command="{Binding TaskLookupCommand, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-
-                            <lc:LookupControl.LookupColumns>
-
-                                <lc:LookupColumn PropertyName="{lc:NameOf Name, Type={x:Type projectManagement:ProjectTaskLookup}}" Header="Task" Width="200"/>
-
-                                <lc:LookupColumn PropertyName="{lc:NameOf UserName, Type={x:Type projectManagement:ProjectTaskLookup}}" Header="User" Width="200"/>
-
-                                <lc:LookupColumn PropertyName="{lc:NameOf PercentComplete, Type={x:Type projectManagement:ProjectTaskLookup}}" Header="Percent Complete" TextAlignment="Right" Width="150"/>
-
-                            </lc:LookupControl.LookupColumns>
-
-                        </lc:LookupControl>
-
-                    </Grid>
-
-                </TabItem>
 
                 <TabItem Header="Time Clocks" x:Name="TimeClockTab" VerticalAlignment="Stretch">
 

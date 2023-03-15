@@ -1,10 +1,12 @@
 ﻿using System.ComponentModel;
+using System.Data;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
+using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.QueryBuilder;
@@ -22,6 +24,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         bool ShowCommentEditor(DataEntryGridMemoValue comment);
 
         bool DoPostCosts(Project project);
+
+        bool SetupRecalcFilter(LookupDefinitionBase lookupDefinition);
+
+        string StartRecalcProcedure(LookupDefinitionBase lookupDefinition);
+
+        void UpdateRecalcProcedure(int currentProjectTask, int totalProjectTasks, string currentProjectTaskText);
     }
     public enum ProjectMaterialSpecialRights
     {
@@ -388,7 +396,79 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public void Recalc()
         {
+            var recalcFilter = ViewLookupDefinition.Clone();
+            if (!View.SetupRecalcFilter(recalcFilter))
+                return;
 
+            var result = View.StartRecalcProcedure(recalcFilter);
+            if (result.IsNullOrEmpty())
+            {
+                var message = "Recalculation complete.";
+                ControlsGlobals.UserInterface.ShowMessageBox(message, "Recalculation", RsMessageBoxIcons.Information);
+            }
+            else
+            {
+                ControlsGlobals.UserInterface.ShowMessageBox(result, "Recalculation Error", RsMessageBoxIcons.Error);
+            }
+        }
+
+        public string StartRecalcProcedure(LookupDefinitionBase recalcFilter)
+        {
+            var result = string.Empty;
+            DbDataProcessor.DontDisplayExceptions = true;
+            var lookupData = new LookupDataBase(recalcFilter, new LookupUserInterface()
+            {
+                PageSize = 10
+            });
+            var recordCount = lookupData.GetRecordCountWait();
+            var currentProjectMaterial = 1;
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var projectMaterialTable = context.GetTable<ProjectMaterial>();
+            
+            lookupData.PrintDataChanged += (sender, args) =>
+            {
+                var table = args.OutputTable;
+                foreach (DataRow tableRow in table.Rows)
+                {
+                    var projectMaterialPrimaryKey = new PrimaryKeyValue(TableDefinition);
+                    projectMaterialPrimaryKey.PopulateFromDataRow(tableRow);
+                    if (projectMaterialPrimaryKey.IsValid)
+                    {
+                        var projectMaterial = TableDefinition.GetEntityFromPrimaryKeyValue(projectMaterialPrimaryKey);
+                        projectMaterial = projectMaterialTable
+                            .Include(p => p.History)
+                            .FirstOrDefault(p => p.Id == projectMaterial.Id);
+                        if (projectMaterial != null)
+                        {
+                            var historyItems = projectMaterial.History.ToList();
+                            projectMaterial.ActualCost = historyItems.Sum(p => p.Quantity * p.Cost);
+                            if (!context.SaveNoCommitEntity(projectMaterial, "Saving Project Material"))
+                            {
+                                result = DbDataProcessor.LastException;
+                                args.Abort = true;
+                                return;
+                            }
+
+                            if (projectMaterial.Id == Id)
+                            {
+                                ActualCost = projectMaterial.ActualCost;
+                            }
+                        }
+                    }
+                }
+            };
+            lookupData.GetPrintData();
+            if (result.IsNullOrEmpty())
+            {
+                if (!context.Commit("Saving Project Materials"))
+                {
+                    result = DbDataProcessor.LastException;
+                }
+            }
+
+
+            DbDataProcessor.DontDisplayExceptions = false;
+            return result;
         }
 
         public void PostCost()

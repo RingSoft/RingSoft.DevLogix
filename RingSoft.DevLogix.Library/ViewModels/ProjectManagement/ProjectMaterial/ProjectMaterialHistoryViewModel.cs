@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.App.Library;
@@ -7,6 +8,7 @@ using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.QueryBuilder;
+using RingSoft.DbLookup.TableProcessing;
 using RingSoft.DevLogix.DataAccess.LookupModel.ProjectManagement;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 
@@ -232,12 +234,21 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
             var callBack = new HistoryPrintFilterCallBack();
             callBack.FilterDate = Date;
+            var fieldFilters =
+                printerSetup.LookupDefinition.FilterDefinition.FixedFilters.OfType<FieldFilterDefinition>();
+            var filters = new List<FieldFilterDefinition>(fieldFilters);
 
             callBack.PrintOutput += (sender, model) =>
             {
                 if (printerSetup.LookupDefinition is
                     LookupDefinition<ProjectMaterialHistoryLookup, ProjectMaterialHistory> historyLookup)
                 {
+                    historyLookup.FilterDefinition.ClearFixedFilters();
+                    foreach (var fieldFilter in filters)
+                    {
+                        historyLookup.FilterDefinition.AddFixedFieldFilter(fieldFilter.FieldDefinition, fieldFilter.Condition,
+                            fieldFilter.Value);
+                    }
                     if (model.BeginningDate.HasValue)
                     {
                         var beginDate = model.BeginningDate.Value;
