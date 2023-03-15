@@ -258,7 +258,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     return;
 
                 _taskLookupCommand = value;
-                OnPropertyChanged();
+                OnPropertyChanged(null, false);
             }
         }
 
@@ -288,7 +288,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     return;
 
                 _materialLookupCommand = value;
-                OnPropertyChanged();
+                OnPropertyChanged(null, false);
             }
         }
 
@@ -319,7 +319,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     return;
 
                 _timeClockLookupCommand = value;
-                OnPropertyChanged();
+                OnPropertyChanged(null, false);
             }
         }
 

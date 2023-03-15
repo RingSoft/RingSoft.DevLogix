@@ -404,7 +404,7 @@ namespace RingSoft.DevLogix
 
             MainMenu.Items.Add(new MenuItem()
             {
-                Header = "_About DevLogix...",
+                Header = "A_bout DevLogix...",
                 Command = AboutCommand,
             });
         }
