@@ -488,6 +488,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             {
                 result.Name = Entity.Name;
             }
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var table = context.GetTable<ProjectTask>();
+            var existTask = table.FirstOrDefault(p => p.Id == Id);
+            if (existTask != null)
+            {
+                result.MinutesSpent = existTask.MinutesSpent;
+                result.Cost = existTask.Cost;
+            }
+
             return result;
         }
 
