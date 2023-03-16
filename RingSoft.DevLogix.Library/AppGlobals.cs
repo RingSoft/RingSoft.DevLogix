@@ -236,7 +236,7 @@ namespace RingSoft.DevLogix.Library
             AppSplashProgress?.Invoke(null, new AppProgressArgs($"Connecting to the {organization.Name} Database."));
             var selectQuery = new SelectQuery(LookupContext.SystemMaster.TableName);
             LookupContext.DataProcessor.GetData(selectQuery, false);
-
+            DataAccessGlobals.SetupSysPrefs();
             return string.Empty;
         }
 

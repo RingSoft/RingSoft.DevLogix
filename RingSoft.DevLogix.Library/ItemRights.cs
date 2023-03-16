@@ -265,6 +265,7 @@ namespace RingSoft.DevLogix.Library
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Charts", AppGlobals.LookupContext.DevLogixCharts));
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Advanced Finds", AppGlobals.LookupContext.AdvancedFinds));
             category.Items.Add(new RightCategoryItem(item: "View Record Locks", AppGlobals.LookupContext.RecordLocks));
+            category.Items.Add(new RightCategoryItem(item: "View/Edit System Preferences", AppGlobals.LookupContext.SystemPreferences));
             Categories.Add(category);
 
             Initialize();

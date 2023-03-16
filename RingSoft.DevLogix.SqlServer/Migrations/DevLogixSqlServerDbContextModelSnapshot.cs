@@ -987,6 +987,37 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.ToTable("SystemMaster");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.SystemPreferences", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SystemPreferences");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.SystemPreferencesHolidays", b =>
+                {
+                    b.Property<int>("SystemPreferencesId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.HasKey("SystemPreferencesId", "Date");
+
+                    b.ToTable("SystemPreferencesHolidays");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.TimeClock", b =>
                 {
                     b.Property<int>("Id")
@@ -1473,6 +1504,17 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.SystemPreferencesHolidays", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.SystemPreferences", "SystemPreferences")
+                        .WithMany("Holidays")
+                        .HasForeignKey("SystemPreferencesId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("SystemPreferences");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.TimeClock", b =>
                 {
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.Error", "Error")
@@ -1652,6 +1694,11 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("LaborParts");
 
                     b.Navigation("TimeClocks");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.SystemPreferences", b =>
+                {
+                    b.Navigation("Holidays");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.User", b =>

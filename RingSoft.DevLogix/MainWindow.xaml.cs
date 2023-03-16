@@ -392,14 +392,42 @@ namespace RingSoft.DevLogix
             MakeQaMenu();
             MakeProjectMenu();
 
-            if (AppGlobals.LookupContext.DevLogixCharts.HasRight(RightTypes.AllowView))
+            var toolsCategory =
+                AppGlobals.Rights.UserRights.Categories.FirstOrDefault(p =>
+                    p.MenuCategory == MenuCategories.Tools);
+
+            var items = toolsCategory.Items.Where(p => p.TableDefinition.HasRight(RightTypes.AllowView));
+            if (items.Any())
             {
-                MainMenu.Items.Add(new MenuItem()
+                var menuItem = new MenuItem() { Header = "_Tools" };
+                MainMenu.Items.Add(menuItem);
+
+                if (AppGlobals.LookupContext.DevLogixCharts.HasRight(RightTypes.AllowView))
                 {
-                    Header ="_Charts",
-                    Command = ViewModel.ShowMaintenanceWindowCommand,
-                    CommandParameter = AppGlobals.LookupContext.DevLogixCharts,
-                });
+                    var categoryItem =
+                        toolsCategory.Items.FirstOrDefault(
+                            p => p.TableDefinition == AppGlobals.LookupContext.DevLogixCharts);
+                    menuItem.Items.Add(new MenuItem()
+                    {
+                        Header = "_Charts",
+                        Command = ViewModel.ShowMaintenanceWindowCommand,
+                        CommandParameter = AppGlobals.LookupContext.DevLogixCharts,
+                    });
+                }
+
+                if (AppGlobals.LookupContext.SystemPreferences.HasRight(RightTypes.AllowView))
+                {
+                    var categoryItem =
+                        toolsCategory.Items.FirstOrDefault(
+                            p => p.TableDefinition == AppGlobals.LookupContext.SystemPreferences);
+                    menuItem.Items.Add(new MenuItem()
+                    {
+                        Header = "_System Preferences",
+                        Command = ViewModel.ShowMaintenanceWindowCommand,
+                        CommandParameter = AppGlobals.LookupContext.SystemPreferences,
+                    });
+                }
+
             }
 
             MainMenu.Items.Add(new MenuItem()

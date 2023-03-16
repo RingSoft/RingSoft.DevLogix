@@ -41,6 +41,8 @@ namespace RingSoft.DevLogix.DataAccess
             modelBuilder.ApplyConfiguration(new ProjectMaterialConfiguration());
             modelBuilder.ApplyConfiguration(new ProjectMaterialPartConfiguration());
             modelBuilder.ApplyConfiguration(new ProjectMaterialHistoryConfiguration());
+            modelBuilder.ApplyConfiguration(new SystemPreferencesConfiguration());
+            modelBuilder.ApplyConfiguration(new SystemPreferencesHolidaysConfiguration());
 
             AdvancedFindDataProcessorEfCore.ConfigureAdvancedFind(modelBuilder);
         }
@@ -57,6 +59,17 @@ namespace RingSoft.DevLogix.DataAccess
                     keyValue: null,
                     column: "ManagerId",
                     value: firstUser.Id);
+            }
+        }
+
+        public static void SetupSysPrefs()
+        {
+            var sysPrefsSet = DbContext.Set<SystemPreferences>();
+            var sysPrefsRecord = sysPrefsSet.FirstOrDefault();
+            if (sysPrefsRecord == null)
+            {
+                sysPrefsRecord = new SystemPreferences();
+                SaveEntity(sysPrefsRecord, "Creating New System Preferences Record");
             }
         }
 

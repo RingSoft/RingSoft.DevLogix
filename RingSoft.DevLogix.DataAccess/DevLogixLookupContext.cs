@@ -37,6 +37,9 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<SystemMaster> SystemMaster { get; set; }
         public TableDefinition<DevLogixChart> DevLogixCharts { get; set; }
         public TableDefinition<DevLogixChartBar> DevLogixChartBars { get; set; }
+        public TableDefinition<SystemPreferences> SystemPreferences { get; set; }
+        public TableDefinition<SystemPreferencesHolidays> SystemPreferencesHolidays { get; set; }
+
         public TableDefinition<User> Users { get; set; }
         public TableDefinition<Group> Groups { get; set; }
         public TableDefinition<UsersGroup> UsersGroups { get; set; }
@@ -68,6 +71,7 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<AdvancedFindFilter> AdvancedFindFilters { get; set; }
 
         public LookupDefinition<DevLogixChartLookup, DevLogixChart> DevLogixChartLookup { get; set; }
+        public LookupDefinition<SystemPreferencesLookup, SystemPreferences> SystemPreferencesLookup { get; set; }
         public LookupDefinition<UserLookup, User> UserLookup { get; set; }
         public LookupDefinition<GroupLookup, Group> GroupLookup { get; set; }
         public LookupDefinition<UsersGroupsLookup, UsersGroup> UsersGroupsLookup { get; set; }
@@ -148,6 +152,11 @@ namespace RingSoft.DevLogix.DataAccess
         }
         protected override void InitializeLookupDefinitions()
         {
+            SystemPreferencesLookup =
+                new LookupDefinition<SystemPreferencesLookup, SystemPreferences>(SystemPreferences);
+            SystemPreferencesLookup.AddVisibleColumnDefinition(p => p.Id,  "Id", p => p.Id, 100);
+            SystemPreferences.HasLookupDefinition(SystemPreferencesLookup);
+
             DevLogixChartLookup = new LookupDefinition<DevLogixChartLookup, DevLogixChart>(DevLogixCharts);
             DevLogixChartLookup.AddVisibleColumnDefinition(p => p.Name, "Name", p => p.Name, 50);
             DevLogixCharts.HasLookupDefinition(DevLogixChartLookup);

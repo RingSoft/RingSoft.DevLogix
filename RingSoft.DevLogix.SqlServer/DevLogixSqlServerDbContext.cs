@@ -23,6 +23,8 @@ namespace RingSoft.DevLogix.SqlServer
         public DbSet<SystemMaster> SystemMaster { get; set; }
         public DbSet<DevLogixChart> DevLogixCharts { get; set; }
         public DbSet<DevLogixChartBar> DevLogixChartsBars { get; set; }
+        public DbSet<SystemPreferences> SystemPreferences { get; set; }
+        public DbSet<SystemPreferencesHolidays> SystemPreferencesHolidays { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<UsersGroup> UsersGroups { get; set; }

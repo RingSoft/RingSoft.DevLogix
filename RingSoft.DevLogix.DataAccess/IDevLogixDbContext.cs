@@ -13,6 +13,8 @@ namespace RingSoft.DevLogix.DataAccess
         DbSet<SystemMaster> SystemMaster { get; set; }
         DbSet<DevLogixChart> DevLogixCharts { get; set; }
         DbSet<DevLogixChartBar> DevLogixChartsBars { get; set;}
+        DbSet<SystemPreferences> SystemPreferences { get; set; }
+        DbSet<SystemPreferencesHolidays> SystemPreferencesHolidays { get; set; }
 
         DbSet<User> Users { get; set; }
         DbSet<Group> Groups { get; set; }
