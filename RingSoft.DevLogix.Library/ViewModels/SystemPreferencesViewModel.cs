@@ -51,6 +51,8 @@ namespace RingSoft.DevLogix.Library.ViewModels
         {
             base.Initialize();
             OnGotoNextButton();
+            NextCommand.IsEnabled = false;
+            PreviousCommand.IsEnabled = false;
         }
 
         protected override SystemPreferences PopulatePrimaryKeyControls(SystemPreferences newEntity, PrimaryKeyValue primaryKeyValue)
@@ -84,6 +86,15 @@ namespace RingSoft.DevLogix.Library.ViewModels
         protected override void ClearData()
         {
             
+        }
+
+        protected override bool ValidateEntity(SystemPreferences entity)
+        {
+            if (!HolidaysManager.ValidateGrid())
+            {
+                return false;
+            }
+            return base.ValidateEntity(entity);
         }
 
         protected override bool SaveEntity(SystemPreferences entity)

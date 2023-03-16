@@ -68,7 +68,14 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         public override bool ValidateRow()
         {
-            throw new System.NotImplementedException();
+            if (Date == null)
+            {
+                var message = "Invalid Date";
+                ControlsGlobals.UserInterface.ShowMessageBox(message, message, RsMessageBoxIcons.Exclamation);
+                Manager.Grid?.GotoCell(this, SystemPreferencesHolidaysManager.DateColumnId);
+                return false;
+            }
+            return true;
         }
 
         public override void SaveToEntity(SystemPreferencesHolidays entity, int rowIndex)
