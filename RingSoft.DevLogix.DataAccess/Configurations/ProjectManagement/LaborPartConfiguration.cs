@@ -12,6 +12,7 @@ namespace RingSoft.DevLogix.DataAccess.Configurations.ProjectManagement
             builder.Property(p => p.Id).HasColumnType(DbConstants.IntegerColumnType);
             builder.Property(p => p.Name).HasColumnType(DbConstants.StringColumnType);
             builder.Property(p => p.MinutesCost).HasColumnType(DbConstants.DecimalColumnType);
+            builder.Property(p => p.Comment).HasColumnType(DbConstants.MemoColumnType);
         }
     }
 }

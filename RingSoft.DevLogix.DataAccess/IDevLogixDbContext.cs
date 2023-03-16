@@ -3,6 +3,7 @@ using RingSoft.DbLookup.EfCore;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
+using RingSoft.DevLogix.DataAccess.Model.UserManagement;
 
 namespace RingSoft.DevLogix.DataAccess
 {
@@ -17,6 +18,7 @@ namespace RingSoft.DevLogix.DataAccess
         DbSet<SystemPreferencesHolidays> SystemPreferencesHolidays { get; set; }
 
         DbSet<User> Users { get; set; }
+        DbSet<UserTimeOff> UsersTimeOff { get; set; }
         DbSet<Group> Groups { get; set; }
         DbSet<UsersGroup> UsersGroups { get; set; }
         DbSet<Department> Departments { get; set; }

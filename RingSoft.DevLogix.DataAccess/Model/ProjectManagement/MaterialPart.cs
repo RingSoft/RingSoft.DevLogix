@@ -16,6 +16,8 @@ namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
         [Required]
         public decimal Cost { get; set; }
 
+        public string? Comment { get; set; }
+
         public ICollection<ProjectMaterialPart> ProjectMaterialParts { get; set; }
 
         public MaterialPart()

@@ -41,6 +41,21 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
+        private string? _comment;
+
+        public string? Comment
+        {
+            get => _comment;
+            set
+            {
+                if (_comment == value)
+                    return;
+
+                _comment = value;
+                OnPropertyChanged();
+            }
+        }
+
         protected override LaborPart PopulatePrimaryKeyControls(LaborPart newEntity, PrimaryKeyValue primaryKeyValue)
         {
             var context = AppGlobals.DataRepository.GetDataContext();
@@ -58,6 +73,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         {
             KeyAutoFillValue = entity.GetAutoFillValue();
             MinutesCost = entity.MinutesCost;
+            Comment = entity.Comment;
         }
 
         protected override LaborPart GetEntityData()
@@ -66,7 +82,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             {
                 Id = Id,
                 Name = KeyAutoFillValue.Text,
-                MinutesCost = MinutesCost
+                MinutesCost = MinutesCost,
+                Comment = Comment,
             };
         }
 
@@ -74,6 +91,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         {
             Id = 0;
             MinutesCost = 0;
+            Comment = null;
         }
 
         protected override bool SaveEntity(LaborPart entity)

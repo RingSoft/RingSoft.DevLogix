@@ -5,6 +5,7 @@ using System.Linq;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
+using RingSoft.DevLogix.DataAccess.Model;
 
 namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 {
@@ -34,21 +35,28 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         public void SetAutoFillValue(AutoFillValue autoFillValue)
         {
             LaborPartAutoFillValue = autoFillValue;
-            SetMinutesCost();
+            var laborPart = LaborPartAutoFillValue.GetEntity<LaborPart>();
+            var context = AppGlobals.DataRepository.GetDataContext();
+            laborPart = context.GetTable<LaborPart>()
+                .FirstOrDefault(p => p.Id == laborPart.Id);
+            if (laborPart != null)
+            {
+                SetMinutesCost(laborPart);
+
+                if (!laborPart.Comment.IsNullOrEmpty())
+                {
+                    var commentRow = new ProjectTaskLaborPartCommentRow(Manager);
+                    AddChildRow(commentRow);
+                    commentRow.SetValue(laborPart.Comment);
+                }
+            }
         }
 
-        private void SetMinutesCost()
+
+        private void SetMinutesCost(LaborPart laborPart)
         {
             if (LaborPartAutoFillValue.IsValid())
             {
-                var laborPart = LaborPartAutoFillValue.GetEntity<LaborPart>();
-                if (laborPart != null)
-                {
-                    var context = AppGlobals.DataRepository.GetDataContext();
-                    laborPart = context.GetTable<LaborPart>()
-                        .FirstOrDefault(p => p.Id == laborPart.Id);
-                }
-
                 if (laborPart != null)
                 {
                     MinutesCost = laborPart.MinutesCost;
@@ -102,8 +110,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 case ProjectTaskLaborPartColumns.LaborPart:
                     if (value is DataEntryGridAutoFillCellProps autoFillCellProps)
                     {
-                        LaborPartAutoFillValue = autoFillCellProps.AutoFillValue;
-                        SetMinutesCost();
+                        SetAutoFillValue(autoFillCellProps.AutoFillValue);
                     }
                     break;
                 case ProjectTaskLaborPartColumns.Quantity:
@@ -140,6 +147,17 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             MinutesCost = entity.MinutesCost;
             Quantity = entity.Quantity.Value;
             ExtendedMinutesCost = GetExtendedMinutesCost();
+
+            var children = GetDetailChildren(entity);
+            foreach (var child in children)
+            {
+                var childRow =
+                    Manager.ConstructRowFromLineType((LaborPartLineTypes)child.LineType);
+                AddChildRow(childRow);
+                childRow.LoadChildren(child);
+                Manager.Grid?.UpdateRow(childRow);
+            }
+
         }
 
         public override bool ValidateRow()

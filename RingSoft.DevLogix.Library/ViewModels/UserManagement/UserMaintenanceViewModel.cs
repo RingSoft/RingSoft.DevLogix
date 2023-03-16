@@ -134,7 +134,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     return;
 
                 _clockDateTime = value;
-                OnPropertyChanged();
+                OnPropertyChanged(null, false);
             }
         }
 
@@ -260,7 +260,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     return;
 
                 _timeClockLookupCommand = value;
-                OnPropertyChanged();
+                OnPropertyChanged(null, false);
             }
         }
 
@@ -721,8 +721,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         public void RefreshBillability(User user)
         {
             SetBillability(user);
-            
-            RecordDirty = true;
         }
 
         public override void OnWindowClosing(CancelEventArgs e)

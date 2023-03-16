@@ -14,8 +14,10 @@ using System;
 using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using RingSoft.DevLogix.DataAccess.LookupModel.ProjectManagement;
 using RingSoft.DevLogix.DataAccess.LookupModel.QualityAssurance;
+using RingSoft.DevLogix.DataAccess.LookupModel.UserManagement;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
+using RingSoft.DevLogix.DataAccess.Model.UserManagement;
 
 namespace RingSoft.DevLogix.DataAccess
 {
@@ -41,6 +43,7 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<SystemPreferencesHolidays> SystemPreferencesHolidays { get; set; }
 
         public TableDefinition<User> Users { get; set; }
+        public TableDefinition<UserTimeOff> UsersTimeOff { get; set; }
         public TableDefinition<Group> Groups { get; set; }
         public TableDefinition<UsersGroup> UsersGroups { get; set; }
         public TableDefinition<Department> Departments { get; set; }
@@ -73,6 +76,7 @@ namespace RingSoft.DevLogix.DataAccess
         public LookupDefinition<DevLogixChartLookup, DevLogixChart> DevLogixChartLookup { get; set; }
         public LookupDefinition<SystemPreferencesLookup, SystemPreferences> SystemPreferencesLookup { get; set; }
         public LookupDefinition<UserLookup, User> UserLookup { get; set; }
+        public LookupDefinition<UserTimeOffLookup, UserTimeOff> UserTimeOffLookup { get; set; }
         public LookupDefinition<GroupLookup, Group> GroupLookup { get; set; }
         public LookupDefinition<UsersGroupsLookup, UsersGroup> UsersGroupsLookup { get; set; }
         public LookupDefinition<DepartmentLookup, Department> DepartmentLookup { get; set; }
@@ -167,6 +171,14 @@ namespace RingSoft.DevLogix.DataAccess
                 .AddVisibleColumnDefinition(p => p.Department, "Department", 
                     p => p.Description, 30);
             Users.HasLookupDefinition(UserLookup);
+
+            UserTimeOffLookup = new LookupDefinition<UserTimeOffLookup, UserTimeOff>(UsersTimeOff);
+            UserTimeOffLookup
+                .Include(p => p.User)
+                .AddVisibleColumnDefinition(p => p.UserName, "User", p => p.Name, 40);
+            UserTimeOffLookup.AddVisibleColumnDefinition(p => p.StartDate, "Start Date", p => p.StartDate, 30);
+            UserTimeOffLookup.AddVisibleColumnDefinition(p => p.EndDate, "End Date", p => p.EndDate, 30);
+            UsersTimeOff.HasLookupDefinition(UserTimeOffLookup);
 
             GroupLookup = new LookupDefinition<GroupLookup, Group>(Groups);
             GroupLookup.AddVisibleColumnDefinition(p => p.Group, "Name", p => p.Name, 100);
@@ -459,6 +471,15 @@ namespace RingSoft.DevLogix.DataAccess
             Users.GetFieldDefinition(p => p.SupervisorId).DoesAllowRecursion(false);
             Users.GetFieldDefinition(p => p.Rights).DoSkipPrint().IsMemo();
 
+            UsersTimeOff.PriorityLevel = 400;
+            UsersTimeOff.GetFieldDefinition(p => p.StartDate)
+                .HasDateType(DbDateTypes.DateTime)
+                .DoConvertToLocalTime();
+            UsersTimeOff.GetFieldDefinition(p => p.EndDate)
+                .HasDateType(DbDateTypes.DateTime)
+                .DoConvertToLocalTime();
+
+
             UsersGroups.PriorityLevel = 400;
 
             ProductVersions.PriorityLevel = 400;
@@ -503,9 +524,11 @@ namespace RingSoft.DevLogix.DataAccess
             Projects.GetFieldDefinition(p => p.OriginalDeadline).HasDateType(DbDateTypes.DateTime);
 
             LaborParts.PriorityLevel = 100;
+            LaborParts.GetFieldDefinition(p => p.Comment).IsMemo();
 
             MaterialParts.GetFieldDefinition(p => p.Cost).HasDecimalFieldType(DecimalFieldTypes.Currency);
             MaterialParts.PriorityLevel = 100;
+            MaterialParts.GetFieldDefinition(p => p.Comment).IsMemo();
 
             ProjectMaterials.GetFieldDefinition(p => p.Cost).HasDecimalFieldType(DecimalFieldTypes.Currency);
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using RingSoft.DataEntryControls.Engine;
@@ -97,6 +98,19 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             entity.DetailId = rowIndex;
             entity.RowId = RowId;
             entity.LineType = (byte)LaborPartLineType;
+            entity.ParentRowId = ParentRowId;
+        }
+
+        protected IEnumerable<ProjectTaskLaborPart> GetDetailChildren(ProjectTaskLaborPart entity)
+        {
+            var result = Manager.Details.Where(w =>
+                w.ParentRowId != null && w.ParentRowId == entity.RowId).OrderBy(p => p.DetailId);
+            return result;
+        }
+
+        public virtual void LoadChildren(ProjectTaskLaborPart entity)
+        {
+
         }
     }
 }

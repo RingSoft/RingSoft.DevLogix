@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using Org.BouncyCastle.Utilities.Collections;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
+using RingSoft.DevLogix.DataAccess.Model.UserManagement;
 
 namespace RingSoft.DevLogix.DataAccess.Model
 {
@@ -60,6 +61,7 @@ namespace RingSoft.DevLogix.DataAccess.Model
         public decimal ErrorsMinutesSpent { get; set; }
 
         public virtual ICollection<UsersGroup>  UserGroups { get; set; }
+        public virtual ICollection<UserTimeOff> UserTimeOff { get; set; }
         public virtual ICollection<Error> FoundByUserErrors { get; set; }
         public virtual ICollection<Error> AssignedDeveloperErrors { get; set; }
         public virtual  ICollection<Error> AssignedTesterErrors { get; set; }
@@ -76,6 +78,7 @@ namespace RingSoft.DevLogix.DataAccess.Model
         public User()
         {
             UserGroups = new HashSet<UsersGroup>();
+            UserTimeOff = new HashSet<UserTimeOff>();
             AssignedDeveloperErrors = new HashSet<Error>();
             AssignedTesterErrors = new HashSet<Error>();
             ErrorDevelopers = new HashSet<ErrorDeveloper>();

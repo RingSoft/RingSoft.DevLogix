@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Xml.Linq;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
@@ -40,6 +41,21 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
+        private string? _comment;
+
+        public string? Comment
+        {
+            get => _comment;
+            set
+            {
+                if (_comment == value)
+                    return;
+
+                _comment = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         protected override MaterialPart PopulatePrimaryKeyControls(MaterialPart newEntity, PrimaryKeyValue primaryKeyValue)
         {
@@ -57,6 +73,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         {
             KeyAutoFillValue = entity.GetAutoFillValue();
             Cost = entity.Cost;
+            Comment = entity.Comment;
         }
 
         protected override MaterialPart GetEntityData()
@@ -66,6 +83,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 Id = Id,
                 Name = KeyAutoFillValue.Text,
                 Cost = Cost,
+                Comment = Comment,
             };
         }
 
@@ -73,6 +91,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         {
             Id = 0;
             Cost = 0;
+            Comment = null;
         }
 
         protected override bool SaveEntity(MaterialPart entity)

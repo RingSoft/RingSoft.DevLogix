@@ -595,6 +595,9 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Comment")
+                        .HasColumnType("ntext");
+
                     b.Property<decimal>("MinutesCost")
                         .HasColumnType("numeric");
 
@@ -615,6 +618,9 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .HasColumnType("integer");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("ntext");
 
                     b.Property<decimal>("Cost")
                         .HasColumnType("numeric");
@@ -1127,6 +1133,25 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.UserManagement.UserTimeOff", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RowId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime");
+
+                    b.HasKey("UserId", "RowId");
+
+                    b.ToTable("UsersTimeOff");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.UsersGroup", b =>
                 {
                     b.Property<int>("UserId")
@@ -1565,6 +1590,17 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("Supervisor");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.UserManagement.UserTimeOff", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "User")
+                        .WithMany("UserTimeOff")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.UsersGroup", b =>
                 {
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.Group", "Group")
@@ -1728,6 +1764,8 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("Underlings");
 
                     b.Navigation("UserGroups");
+
+                    b.Navigation("UserTimeOff");
                 });
 #pragma warning restore 612, 618
         }

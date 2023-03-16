@@ -11,7 +11,7 @@
         xmlns:local="clr-namespace:RingSoft.DevLogix.ProjectManagement"
         mc:Ignorable="d"
         Style="{StaticResource BaseWindowStyle}"
-        Title="Labor Part Maintenance Window" SizeToContent="WidthAndHeight">
+        Title="Labor Part Maintenance Window" Height="300" Width="400">
 
     <Window.DataContext>
         <vm:LaborPartViewModel x:Name="LocalViewModel"/>
@@ -27,10 +27,13 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
             <Label Grid.Row="0" Grid.Column="0" Content="Labor Part ID"/>
@@ -44,6 +47,10 @@
             <Label Grid.Row="2" Grid.Column="0" Content="Time Cost"/>
 
             <dl:TimeControl Grid.Row="2" Grid.Column="1" Width="150" HorizontalAlignment="Left" Minutes="{Binding MinutesCost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <Label Grid.Row="3" Grid.Column="0" HorizontalAlignment="Left" Content="Comment"/>
+
+            <dec:DataEntryMemoEditor Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding Comment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
         </Grid>
 

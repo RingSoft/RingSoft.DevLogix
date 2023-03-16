@@ -202,26 +202,25 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         {
             if (entity.ParentRowId.IsNullOrEmpty())
             {
-                var gridMemoValue = new DataEntryGridMemoValue(MaxCharactersPerLine);
-                gridMemoValue.AddLine(entity.Description, entity.CommentCrLf.Value);
-
-                var children = GetDetailChildren(entity);
-                foreach (var child in children)
-                {
-                    gridMemoValue.AddLine(child.Description, child.CommentCrLf.Value);
-                }
-
-                SetValue(gridMemoValue);
+                LoadChildren(entity);
             }
         }
 
-        private IEnumerable<ProjectTaskLaborPart> GetDetailChildren(ProjectTaskLaborPart entity)
+        public override void LoadChildren(ProjectTaskLaborPart entity)
         {
-            var result = Manager.Details.Where(w =>
-                w.ParentRowId != null && w.ParentRowId == entity.RowId).OrderBy(p => p.DetailId);
-            return result;
-        }
+            var gridMemoValue = new DataEntryGridMemoValue(MaxCharactersPerLine);
+            gridMemoValue.AddLine(entity.Description, entity.CommentCrLf.Value);
 
+            var children = GetDetailChildren(entity);
+            foreach (var child in children)
+            {
+                gridMemoValue.AddLine(child.Description, child.CommentCrLf.Value);
+            }
+
+            SetValue(gridMemoValue);
+
+            base.LoadChildren(entity);
+        }
 
         public override bool ValidateRow()
         {
@@ -230,7 +229,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public override void SaveToEntity(ProjectTaskLaborPart entity, int rowIndex)
         {
-            entity.ParentRowId = ParentRowId;
             entity.Description = Comment;
             entity.CommentCrLf = CommentCrLf;
 

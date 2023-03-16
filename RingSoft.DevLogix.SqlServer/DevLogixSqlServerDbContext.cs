@@ -10,6 +10,7 @@ using RingSoft.DevLogix.DataAccess;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
+using RingSoft.DevLogix.DataAccess.Model.UserManagement;
 using IDbContext = RingSoft.DbLookup.IDbContext;
 
 namespace RingSoft.DevLogix.SqlServer
@@ -26,6 +27,7 @@ namespace RingSoft.DevLogix.SqlServer
         public DbSet<SystemPreferences> SystemPreferences { get; set; }
         public DbSet<SystemPreferencesHolidays> SystemPreferencesHolidays { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<UserTimeOff> UsersTimeOff { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<UsersGroup> UsersGroups { get; set; }
         public DbSet<TimeClock> TimeClocks { get; set; }

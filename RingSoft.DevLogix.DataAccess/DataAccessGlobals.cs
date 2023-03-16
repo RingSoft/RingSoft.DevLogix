@@ -6,6 +6,7 @@ using System.Linq;
 using RingSoft.DevLogix.DataAccess.Configurations.ProjectManagement;
 using RingSoft.DevLogix.DataAccess.Configurations.QualityAssurance;
 using Microsoft.EntityFrameworkCore.Migrations;
+using RingSoft.DevLogix.DataAccess.Configurations.UserManagement;
 using RingSoft.DevLogix.DataAccess.Model;
 
 namespace RingSoft.DevLogix.DataAccess
@@ -19,6 +20,7 @@ namespace RingSoft.DevLogix.DataAccess
             modelBuilder.ApplyConfiguration(new DevLogixChartConfiguration());
             modelBuilder.ApplyConfiguration(new DevLogixChartBarConfiguration());
             modelBuilder.ApplyConfiguration(new UserConfiguration());
+            modelBuilder.ApplyConfiguration(new UserTimeOffConfiguration());
             modelBuilder.ApplyConfiguration(new GroupConfiguration());
             modelBuilder.ApplyConfiguration(new UserGroupConfiguration());
             modelBuilder.ApplyConfiguration(new TimeClockConfiguration());
