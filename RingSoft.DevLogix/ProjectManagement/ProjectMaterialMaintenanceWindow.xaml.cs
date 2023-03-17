@@ -87,7 +87,7 @@ namespace RingSoft.DevLogix.ProjectManagement
 
         public override void ResetViewForNewRecord()
         {
-            TabControl.SelectedItem = DetailsTabItem;
+            //TabControl.SelectedItem = DetailsTabItem;
             KeyControl.Focus();
             base.ResetViewForNewRecord();
         }

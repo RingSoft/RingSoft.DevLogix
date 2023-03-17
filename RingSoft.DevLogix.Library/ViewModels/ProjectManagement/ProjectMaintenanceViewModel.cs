@@ -747,7 +747,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         {
             if (ExecuteAddModifyCommand() == DbMaintenanceResults.Success)
                 TaskLookupCommand = GetLookupCommand(LookupCommands.AddModify);
-
         }
 
         private void OnMaterialsAddModify()

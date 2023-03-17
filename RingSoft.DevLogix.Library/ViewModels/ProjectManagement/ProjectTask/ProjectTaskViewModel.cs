@@ -758,6 +758,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public override void OnWindowClosing(CancelEventArgs e)
         {
+            //DbDataProcessor.ShowSqlStatementWindow();
             AppGlobals.MainViewModel.ProjectTaskViewModels.Remove(this);
             base.OnWindowClosing(e);
         }
