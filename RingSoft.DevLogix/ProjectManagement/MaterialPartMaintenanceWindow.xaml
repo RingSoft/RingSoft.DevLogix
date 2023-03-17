@@ -10,7 +10,7 @@
         xmlns:local="clr-namespace:RingSoft.DevLogix.ProjectManagement"
         mc:Ignorable="d"
         Style="{StaticResource BaseWindowStyle}"
-        Title="Material Parts Maintenance Window" SizeToContent="WidthAndHeight">
+        Title="Material Parts Maintenance Window" Height="300" Width="400">
 
     <Window.DataContext>
         <vm:MaterialPartViewModel x:Name="LocalViewModel"/>
@@ -25,10 +25,13 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
             <Label Grid.Row="0" Grid.Column="0" Content="Material Part ID"/>
@@ -43,6 +46,9 @@
 
             <dec:DecimalEditControl Grid.Row="2" Grid.Column="1" FormatType="Currency" TextAlignment="Left" Width="100" HorizontalAlignment="Left" Value="{Binding Cost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
+            <Label Grid.Row="3" Grid.Column="0" HorizontalAlignment="Left" Content="Comment"/>
+
+            <dec:DataEntryMemoEditor Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding Comment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
         </Grid>
     </DockPanel>
 

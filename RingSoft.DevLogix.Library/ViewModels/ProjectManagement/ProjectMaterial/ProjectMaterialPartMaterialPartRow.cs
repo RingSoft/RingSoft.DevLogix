@@ -30,21 +30,30 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         public void SetAutoFillValue(AutoFillValue autoFillValue)
         {
             MaterialPartAutoFillValue = autoFillValue;
-            SetCost();
+            var materialPart = MaterialPartAutoFillValue.GetEntity<MaterialPart>();
+            if (materialPart != null)
+            {
+                var context = AppGlobals.DataRepository.GetDataContext();
+                materialPart = context.GetTable<MaterialPart>()
+                    .FirstOrDefault(p => p.Id == materialPart.Id);
+            }
+            if (materialPart != null)
+            {
+                if (!materialPart.Comment.IsNullOrEmpty())
+                {
+                    var commentRow = new ProjectMaterialPartCommentRow(Manager);
+                    AddChildRow(commentRow);
+                    commentRow.SetValue(materialPart.Comment);
+                }
+            }
+
+            SetCost(materialPart);
         }
 
-        private void SetCost()
+        private void SetCost(MaterialPart materialPart)
         {
             if (MaterialPartAutoFillValue.IsValid())
             {
-                var materialPart = MaterialPartAutoFillValue.GetEntity<MaterialPart>();
-                if (materialPart != null)
-                {
-                    var context = AppGlobals.DataRepository.GetDataContext();
-                    materialPart = context.GetTable<MaterialPart>()
-                        .FirstOrDefault(p => p.Id == materialPart.Id);
-                }
-
                 if (materialPart != null)
                 {
                     Cost = materialPart.Cost;
@@ -131,6 +140,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             Quantity = entity.Quantity.Value;
             Cost = entity.Cost.Value;
             ExtendedCost = GetExtendedCost();
+
+            var children = GetDetailChildren(entity);
+            foreach (var child in children)
+            {
+                var childRow =
+                    Manager.ConstructRowFromLineType((MaterialPartLineTypes)child.LineType);
+                AddChildRow(childRow);
+                childRow.LoadChildren(child);
+                Manager.Grid?.UpdateRow(childRow);
+            }
 
             base.LoadFromEntity(entity);
         }

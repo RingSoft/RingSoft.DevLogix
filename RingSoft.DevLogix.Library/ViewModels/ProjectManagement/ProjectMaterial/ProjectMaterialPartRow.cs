@@ -5,6 +5,7 @@ using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using System.ComponentModel;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 {
@@ -85,6 +86,18 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         public override void LoadFromEntity(ProjectMaterialPart entity)
         {
             
+        }
+
+        protected IEnumerable<ProjectMaterialPart> GetDetailChildren(ProjectMaterialPart entity)
+        {
+            var result = Manager.Details.Where(w =>
+                w.ParentRowId != null && w.ParentRowId == entity.RowId).OrderBy(p => p.DetailId);
+            return result;
+        }
+
+        public virtual void LoadChildren(ProjectMaterialPart entity)
+        {
+
         }
     }
 }

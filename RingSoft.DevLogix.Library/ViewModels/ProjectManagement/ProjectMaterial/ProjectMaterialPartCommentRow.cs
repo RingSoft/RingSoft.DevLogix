@@ -193,26 +193,23 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         {
             if (entity.ParentRowId.IsNullOrEmpty())
             {
-                var gridMemoValue = new DataEntryGridMemoValue(MaxCharactersPerLine);
-                gridMemoValue.AddLine(entity.Description, entity.CommentCrLf.Value);
-
-                var children = GetDetailChildren(entity);
-                foreach (var child in children)
-                {
-                    gridMemoValue.AddLine(child.Description, child.CommentCrLf.Value);
-                }
-
-                SetValue(gridMemoValue);
+                LoadChildren(entity);
             }
         }
 
-        private IEnumerable<ProjectMaterialPart> GetDetailChildren(ProjectMaterialPart entity)
+        public override void LoadChildren(ProjectMaterialPart entity)
         {
-            var result = Manager.Details.Where(w =>
-                w.ParentRowId != null && w.ParentRowId == entity.RowId).OrderBy(p => p.DetailId);
-            return result;
-        }
+            var gridMemoValue = new DataEntryGridMemoValue(MaxCharactersPerLine);
+            gridMemoValue.AddLine(entity.Description, entity.CommentCrLf.Value);
 
+            var children = GetDetailChildren(entity);
+            foreach (var child in children)
+            {
+                gridMemoValue.AddLine(child.Description, child.CommentCrLf.Value);
+            }
+
+            SetValue(gridMemoValue);
+        }
 
         public override bool ValidateRow()
         {
