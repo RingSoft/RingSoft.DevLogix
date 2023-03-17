@@ -210,6 +210,25 @@
 
                 </TabItem>
 
+                <TabItem Header="Time Off" x:Name="TimeOffTab" VerticalAlignment="Stretch">
+
+                    <DockPanel>
+
+                        <dataEntryGrid:DataEntryGrid x:Name="TimeOffGrid" Manager="{Binding TimeOffGridManager}">
+
+                            <dataEntryGrid:DataEntryGrid.Columns>
+
+                                <dataEntryGrid:DataEntryGridTextColumn ColumnId="{x:Static vm:UserTimeOffGridManager.StartDateColumnId}" Width="175" Header="Start Date"/>
+
+                                <dataEntryGrid:DataEntryGridTextColumn ColumnId="{x:Static vm:UserTimeOffGridManager.EndDateColumnId}" Width="175" Header="End Date"/>
+
+                                <dataEntryGrid:DataEntryGridTextColumn ColumnId="{x:Static vm:UserTimeOffGridManager.DescriptionColumnId}" Width="200" Header="Description"/>
+
+                            </dataEntryGrid:DataEntryGrid.Columns>
+                        </dataEntryGrid:DataEntryGrid>
+                    </DockPanel>
+                </TabItem>
+
                 <dec:DataEntryMemoTabItem Header="Notes" VerticalAlignment="Stretch">
                     <DockPanel>
 

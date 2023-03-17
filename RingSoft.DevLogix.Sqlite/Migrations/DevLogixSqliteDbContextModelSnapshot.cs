@@ -1096,6 +1096,11 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<int>("RowId")
                         .HasColumnType("integer");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime");
 

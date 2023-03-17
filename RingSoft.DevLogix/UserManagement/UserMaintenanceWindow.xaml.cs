@@ -70,11 +70,24 @@ namespace RingSoft.DevLogix.UserManagement
                     }
                 }
             };
+
+            TimeOffGrid.Loaded += (sender, args) =>
+            {
+                if (_timeOffRowFocus >= 0)
+                {
+                    TabControl.SelectedItem = TimeOffTab;
+                    var row = UserMaintenanceViewModel.TimeOffGridManager.Rows[_timeOffRowFocus];
+                    TimeOffGrid.GotoCell(row, UserTimeOffGridManager.StartDateColumnId);
+                    _timeOffRowFocus = -1;
+                }
+            };
         }
 
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "User";
         public override DbMaintenanceViewModelBase ViewModel => UserMaintenanceViewModel;
+
+        private int _timeOffRowFocus = -1;
 
         protected override void OnLoaded()
         {
@@ -149,9 +162,19 @@ namespace RingSoft.DevLogix.UserManagement
 
         }
 
-        public void OnValGridFail()
+        public void OnValGridFail(UserGrids userGrid)
         {
-            TabControl.SelectedItem = GroupsTab;
+            switch (userGrid)
+            {
+                case UserGrids.Groups:
+                    TabControl.SelectedItem = GroupsTab;
+                    break;
+                case UserGrids.TimeOff:
+                    TabControl.SelectedItem = TimeOffTab;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(userGrid), userGrid, null);
+            }
         }
 
         public bool SetupRecalcFilter(LookupDefinitionBase lookupDefinition)
@@ -197,6 +220,11 @@ namespace RingSoft.DevLogix.UserManagement
             PhoneControl.IsEnabled = !value;
             HourlyRateControl.IsEnabled = false;
             NotesControl.SetReadOnlyMode(value);
+        }
+
+        public void SetExistRecordFocus(UserGrids userGrid, int rowId)
+        {
+            _timeOffRowFocus = rowId;
         }
 
 

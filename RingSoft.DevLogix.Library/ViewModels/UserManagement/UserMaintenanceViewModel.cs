@@ -16,9 +16,15 @@ using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.LookupModel;
 using RingSoft.DevLogix.DataAccess.Model;
+using RingSoft.DevLogix.DataAccess.Model.UserManagement;
 
 namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 {
+    public enum UserGrids
+    {
+        Groups = 0,
+        TimeOff = 1,
+    }
     public interface IUserView : IDbMaintenanceView
     {
         public string GetRights();
@@ -29,7 +35,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         public void RefreshView();
 
-        public void OnValGridFail();
+        public void OnValGridFail(UserGrids userGrid);
 
         bool SetupRecalcFilter(LookupDefinitionBase lookupDefinition);
 
@@ -38,6 +44,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         void UpdateRecalcProcedure(int currentProject, int totalProjects, string currentProjectText);
 
         void SetUserReadOnlyMode(bool value);
+
+        void SetExistRecordFocus(UserGrids userGrid, int rowId);
     }
     public class UserMaintenanceViewModel : DevLogixDbMaintenanceViewModel<User>
     {
@@ -281,6 +289,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
         }
 
+        private UserTimeOffGridManager _timeOffGridManager;
+
+        public UserTimeOffGridManager TimeOffGridManager
+        {
+            get => _timeOffGridManager;
+            set
+            {
+                if (_timeOffGridManager == value)
+                    return;
+
+                _timeOffGridManager = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         private string? _notes;
 
         public string? Notes
@@ -304,6 +328,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         public RelayCommand ClockOutCommand { get; private set; }
 
         public RelayCommand RecalcCommand { get; private set; }
+
+        private int _rowFocusId = -1;
 
         public UserMaintenanceViewModel()
         {
@@ -367,6 +393,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
             BillabilityGridManager = new UserBillabilityGridManager(this);
 
+            TimeOffGridManager = new UserTimeOffGridManager(this);
+
             var timeClockLookup = new LookupDefinition<TimeClockLookup, TimeClock>(AppGlobals.LookupContext.TimeClocks);
             timeClockLookup.AddVisibleColumnDefinition(p => p.PunchInDate, p => p.PunchInDate);
             TimeClockLookup = timeClockLookup;
@@ -392,12 +420,29 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             base.Initialize();
         }
 
+        protected override PrimaryKeyValue GetAddViewPrimaryKeyValue(PrimaryKeyValue addViewPrimaryKeyValue)
+        {
+            if (addViewPrimaryKeyValue.TableDefinition == AppGlobals.LookupContext.UsersTimeOff)
+            {
+                var userTimeOffRow =
+                    AppGlobals.LookupContext.UsersTimeOff.GetEntityFromPrimaryKeyValue(addViewPrimaryKeyValue);
+                if (userTimeOffRow != null)
+                {
+                    _rowFocusId = userTimeOffRow.RowId;
+                }
+            }
+            var result = base.GetAddViewPrimaryKeyValue(addViewPrimaryKeyValue);
+            return result;
+        }
+
         protected override User PopulatePrimaryKeyControls(User newEntity, PrimaryKeyValue primaryKeyValue)
         {
             IQueryable<User> query = AppGlobals.DataRepository.GetDataContext().GetTable<User>();
-            query = query.Include(p => p.UserGroups);
 
-            var result = query.FirstOrDefault(p => p.Id == newEntity.Id);
+            var result = query
+                .Include(p => p.UserTimeOff)
+                .Include(p => p.UserGroups)
+                .FirstOrDefault(p => p.Id == newEntity.Id);
             Id = result.Id;
             KeyAutoFillValue = AppGlobals.LookupContext.OnAutoFillTextRequest(TableDefinition, Id.ToString());
             View.RefreshView();
@@ -453,7 +498,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             {
                 ClockDateTime = null;
             }
-
+            TimeOffGridManager.LoadGrid(entity.UserTimeOff);
+            if (_rowFocusId >= 0)
+            {
+                View.SetExistRecordFocus(UserGrids.TimeOff, _rowFocusId);
+                _rowFocusId = -1;
+            }
             SetBillability(entity);
 
 
@@ -555,6 +605,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             TimeClockLookupCommand = GetLookupCommand(LookupCommands.Clear);
             Notes = null;
             HourlyRate = 0;
+            TimeOffGridManager.SetupForNewRecord();
 
             SetBillability(new User());
         }
@@ -562,6 +613,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         protected override bool ValidateEntity(User entity)
         {
             if (!GroupsManager.ValidateGrid())
+            {
+                return false;
+            }
+
+            if (!TimeOffGridManager.ValidateGrid())
             {
                 return false;
             }
@@ -587,7 +643,20 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     context.AddRange(userGroups);
                 }
 
-                var result = context.Commit("Saving UsersGroups");
+                var timeOffQuery = context.GetTable<UserTimeOff>();
+                var userTimeOff = timeOffQuery.Where(p => p.UserId == Id).ToList();
+                context.RemoveRange(userTimeOff);
+                userTimeOff = TimeOffGridManager.GetEntityList();
+                if (userTimeOff != null)
+                {
+                    foreach (var timeOff in userTimeOff)
+                    {
+                        timeOff.UserId = entity.Id;
+                    }
+                    context.AddRange(userTimeOff);
+                }
+
+                var result = context.Commit("Saving User");
 
                 if (result)
                 {

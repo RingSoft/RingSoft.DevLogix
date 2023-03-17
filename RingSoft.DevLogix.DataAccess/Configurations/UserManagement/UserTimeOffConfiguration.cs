@@ -13,6 +13,7 @@ namespace RingSoft.DevLogix.DataAccess.Configurations.UserManagement
             builder.Property(p => p.RowId).HasColumnType(DbConstants.IntegerColumnType);
             builder.Property(p => p.StartDate).HasColumnType(DbConstants.DateColumnType);
             builder.Property(p => p.EndDate).HasColumnType(DbConstants.DateColumnType);
+            builder.Property(p => p.Description).HasColumnType(DbConstants.StringColumnType);
 
             builder.HasKey(p => new {p.UserId, p.RowId});
 

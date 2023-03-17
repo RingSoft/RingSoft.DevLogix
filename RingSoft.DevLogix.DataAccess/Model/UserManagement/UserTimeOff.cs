@@ -18,5 +18,9 @@ namespace RingSoft.DevLogix.DataAccess.Model.UserManagement
 
         [Required]
         public DateTime EndDate { get; set; }
+
+        [Required]
+        [MaxLength(50)]
+        public string Description { get; set; }
     }
 }

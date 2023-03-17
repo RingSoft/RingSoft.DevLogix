@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RingSoft.DevLogix.SqlServer;
 
@@ -11,9 +12,11 @@ using RingSoft.DevLogix.SqlServer;
 namespace RingSoft.DevLogix.SqlServer.Migrations
 {
     [DbContext(typeof(DevLogixSqlServerDbContext))]
-    partial class DevLogixSqlServerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230317041842_UserTimeOffDescription")]
+    partial class UserTimeOffDescription
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
