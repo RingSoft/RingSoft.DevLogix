@@ -413,7 +413,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
             ProjectTotalsManager = new ProjectTotalsManager();
 
-            ProjectDaysGridManager = new ProjectDaysGridManager();
+            ProjectDaysGridManager = new ProjectDaysGridManager(this);
 
             UsersGridManager = new ProjectUsersGridManager(this);
 
@@ -528,6 +528,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             MinutesSpent = entity.MinutesSpent;
             TotalCost = entity.Cost;
             TimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
+            ProjectDaysGridManager.LoadFromEntity(entity);
             CalcTotals();
         }
 
@@ -555,6 +556,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             {
                 result.ProductId = null;
             }
+            ProjectDaysGridManager.SaveToEntity(result);
             return result;
         }
 
@@ -578,6 +580,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             TaskLookupCommand = GetLookupCommand(LookupCommands.Clear);
             MaterialLookupCommand = GetLookupCommand(LookupCommands.Clear);
             ProjectTotalsManager.ClearTotals();
+            ProjectDaysGridManager.Clear();
         }
 
         protected override bool SaveEntity(Project entity)

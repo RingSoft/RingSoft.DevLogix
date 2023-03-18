@@ -31,19 +31,19 @@ namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
 
         public virtual Product Product { get; set; }
 
-        public decimal? SundayHours { get; set; }
+        public decimal? SundayMinutes { get; set; }
 
-        public decimal? MondayHours { get; set; }
+        public decimal? MondayMinutes { get; set; }
         
-        public decimal? TuesdayHours { get; set; }
+        public decimal? TuesdayMinutes { get; set; }
 
-        public decimal? WednesdayHours { get; set; }
+        public decimal? WednesdayMinutes { get; set; }
 
-        public decimal? ThursdayHours { get; set; }
+        public decimal? ThursdayMinutes { get; set; }
 
-        public decimal? FridayHours { get; set; }
+        public decimal? FridayMinutes { get; set; }
 
-        public decimal? SaturdayHours { get; set; }
+        public decimal? SaturdayMinutes { get; set; }
 
         public string? Notes { get; set; }
 

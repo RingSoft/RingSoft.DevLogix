@@ -14,13 +14,13 @@ namespace RingSoft.DevLogix.DataAccess.Configurations.ProjectManagement
             builder.Property(p => p.MinutesSpent).HasColumnType(DbConstants.DecimalColumnType);
             builder.Property(p => p.Cost).HasColumnType(DbConstants.DecimalColumnType);
             builder.Property(p => p.IsStandard).HasColumnType(DbConstants.BoolColumnType);
-            builder.Property(p => p.SundayHours).HasColumnType(DbConstants.DecimalColumnType);
-            builder.Property(p => p.MondayHours).HasColumnType(DbConstants.DecimalColumnType);
-            builder.Property(p => p.TuesdayHours).HasColumnType(DbConstants.DecimalColumnType);
-            builder.Property(p => p.WednesdayHours).HasColumnType(DbConstants.DecimalColumnType);
-            builder.Property(p => p.ThursdayHours).HasColumnType(DbConstants.DecimalColumnType);
-            builder.Property(p => p.FridayHours).HasColumnType(DbConstants.DecimalColumnType);
-            builder.Property(p => p.SaturdayHours).HasColumnType(DbConstants.DecimalColumnType);
+            builder.Property(p => p.SundayMinutes).HasColumnType(DbConstants.DecimalColumnType);
+            builder.Property(p => p.MondayMinutes).HasColumnType(DbConstants.DecimalColumnType);
+            builder.Property(p => p.TuesdayMinutes).HasColumnType(DbConstants.DecimalColumnType);
+            builder.Property(p => p.WednesdayMinutes).HasColumnType(DbConstants.DecimalColumnType);
+            builder.Property(p => p.ThursdayMinutes).HasColumnType(DbConstants.DecimalColumnType);
+            builder.Property(p => p.FridayMinutes).HasColumnType(DbConstants.DecimalColumnType);
+            builder.Property(p => p.SaturdayMinutes).HasColumnType(DbConstants.DecimalColumnType);
 
             builder.HasKey(p => new { p.ProjectId, p.UserId });
 
