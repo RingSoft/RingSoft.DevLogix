@@ -11,10 +11,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public decimal WorkMinutes { get; private set; }
 
-        public ProjectDaysRow(ProjectDaysGridManager manager, string day) : base(manager)
+        public DayType DayType { get; private set; }
+
+        public ProjectDaysRow(ProjectDaysGridManager manager, string day, DayType dayType) : base(manager)
         {
              Manager = manager;
              Day = day;
+             DayType = dayType;
         }
 
         public override DataEntryGridCellProps GetCellProps(int columnId)
@@ -43,6 +46,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             {
                 WorkMinutes = workMinutes.Value;
             }
+            Manager.SetStandardUserTime(this);
         }
 
         public override DataEntryGridCellStyle GetCellStyle(int columnId)

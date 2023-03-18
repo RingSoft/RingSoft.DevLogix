@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbMaintenance;
@@ -11,6 +13,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         User = 0,
         MinutesSpent = 1,
         Cost = 2,
+        IsStandard = 3,
+        Sunday = 4,
+        Monday = 5,
+        Tuesday = 6,
+        Wednesday = 7,
+        Thursday = 8,
+        Friday = 9,
+        Saturday = 10,
     }
 
     public class ProjectUsersGridManager : DbMaintenanceDataEntryGridManager<ProjectUser>
@@ -18,6 +28,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         public const int UserColumnId = (int)ProjectUserColumns.User;
         public const int MinutesSpentColumnId = (int)ProjectUserColumns.MinutesSpent;
         public const int CostColumnId = (int)ProjectUserColumns.Cost;
+        public const int IsStandardColumnId = (int)ProjectUserColumns.IsStandard;
+        public const int SundayColumnId = (int)ProjectUserColumns.Sunday;
+        public const int MondayColumnId = (int)ProjectUserColumns.Monday;
+        public const int TuesdayColumnId = (int)ProjectUserColumns.Tuesday;
+        public const int WednesdayColumnId = (int)ProjectUserColumns.Wednesday;
+        public const int ThursdayColumnId = (int)ProjectUserColumns.Thursday;
+        public const int FridayColumnId = (int)ProjectUserColumns.Friday;
+        public const int SaturdayColumnId = (int)ProjectUserColumns.Saturday;
 
         public new ProjectMaintenanceViewModel ViewModel { get; private set; }
 
@@ -28,7 +46,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         protected override DataEntryGridRow GetNewRow()
         {
-            return new ProjectUsersGridRow(this);
+            var result = new ProjectUsersGridRow(this);
+            return result;
         }
 
         protected override DbMaintenanceDataEntryGridRow<ProjectUser> ConstructNewRowFromEntity(ProjectUser entity)
@@ -36,30 +55,40 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             return new ProjectUsersGridRow(this);
         }
 
-        //public bool ProcessPunchIn()
-        //{
-        //    var result = true;
+        public void SetUserMinutes(decimal minutes, DayType dayType)
+        {
+            var users = GetStandardUsers();
+            foreach (var projectUsersGridRow in users)
+            {
+                switch (dayType)
+                {
+                    case DayType.Sunday:
+                        projectUsersGridRow.SundayMinutes = minutes;
+                        break;
+                    case DayType.Monday:
+                        break;
+                    case DayType.Tuesday:
+                        break;
+                    case DayType.Wednesday:
+                        break;
+                    case DayType.Thursday:
+                        break;
+                    case DayType.Friday:
+                        break;
+                    case DayType.Saturday:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(dayType), dayType, null);
+                }
+            }
+            Grid?.RefreshGridView();
+        }
 
-        //    var userRows = Rows.OfType<ProjectUsersGridRow>();
-        //    if (!userRows.Any(p => p.UserId == AppGlobals.LoggedInUser.Id))
-        //    {
-        //        if (!ViewModel.TableDefinition.HasRight(RightTypes.AllowEdit))
-        //        {
-        //            var message =
-        //                "You're not listed as a user to this project and you do not have the right to edit projects. Please contact someone who has the right to edit projects to add you as a user to this project in order to punch in.";
-        //            var caption = "Punch In Validation";
-        //            ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
-        //            return false;
-        //        }
-
-        //        var userRow = new ProjectUsersGridRow(this);
-        //        userRow.SetUser(AppGlobals.LoggedInUser.Id);
-        //        AddRow(userRow, Rows.Count - 1);
-        //        Grid?.RefreshGridView();
-        //        ViewModel.DoSave();
-        //    }
-
-        //    return result;
-        //}
+        public IEnumerable<ProjectUsersGridRow> GetStandardUsers()
+        {
+            return Rows.OfType<ProjectUsersGridRow>().Where(
+                p => !p.IsNew &&
+                p.IsStandard);
+        }
     }
 }

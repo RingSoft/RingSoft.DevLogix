@@ -510,6 +510,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 .Include(p => p.Manager)
                 .Include(p => p.Product)
                 .Include(p => p.ProjectUsers)
+                .ThenInclude(p => p.User)
                 .FirstOrDefault(p => p.Id == projectId);
             return result;
         }
@@ -523,12 +524,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             OriginalDeadline = entity.OriginalDeadline.ToLocalTime();
             ProductAutoFillValue = entity.Product.GetAutoFillValue();
             IsBillable = entity.IsBillable;
+            ProjectDaysGridManager.LoadFromEntity(entity);
             UsersGridManager.LoadGrid(entity.ProjectUsers);
             Notes = entity.Notes;
             MinutesSpent = entity.MinutesSpent;
             TotalCost = entity.Cost;
             TimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
-            ProjectDaysGridManager.LoadFromEntity(entity);
             CalcTotals();
         }
 

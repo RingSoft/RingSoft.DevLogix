@@ -9,6 +9,17 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         Day = 0,
         Time = 1,
     }
+
+    public enum DayType
+    {
+        Sunday = 1,
+        Monday = 2,
+        Tuesday = 3,
+        Wednesday = 4,
+        Thursday = 5,
+        Friday = 6,
+        Saturday = 7,
+    }
     public class ProjectDaysGridManager : DataEntryGridManager
     {
         public const int DayColumnId = (int)ProjectDaysColumns.Day;
@@ -27,13 +38,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         public ProjectDaysGridManager(ProjectMaintenanceViewModel viewModel)
         {
             ViewModel = viewModel;
-            Sunday = new ProjectDaysRow(this, "Sunday");
-            Monday = new ProjectDaysRow(this, "Monday");
-            Tuesday = new ProjectDaysRow(this, "Tuesday");
-            Wednesday = new ProjectDaysRow(this, "Wednesday");
-            Thursday = new ProjectDaysRow(this, "Thursday");
-            Friday = new ProjectDaysRow(this, "Friday");
-            Saturday = new ProjectDaysRow(this, "Saturday");
+            Sunday = new ProjectDaysRow(this, "Sunday", DayType.Sunday);
+            Monday = new ProjectDaysRow(this, "Monday", DayType.Monday);
+            Tuesday = new ProjectDaysRow(this, "Tuesday", DayType.Tuesday);
+            Wednesday = new ProjectDaysRow(this, "Wednesday", DayType.Wednesday);
+            Thursday = new ProjectDaysRow(this, "Thursday", DayType.Thursday);
+            Friday = new ProjectDaysRow(this, "Friday", DayType.Friday);
+            Saturday = new ProjectDaysRow(this, "Saturday", DayType.Saturday);
         }
 
         public void Initialize()
@@ -81,6 +92,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             Friday.SetWorkMinutes(project.FridayMinutes);
             Saturday.SetWorkMinutes(project.SaturdayMinutes);
             Grid?.RefreshGridView();
+        }
+
+        public void SetStandardUserTime(ProjectDaysRow row)
+        {
+            ViewModel.UsersGridManager.SetUserMinutes(row.WorkMinutes, row.DayType);
+        }
+
+        public decimal GetStandardMinutes(DayType dayType)
+        {
+            var rows = Rows.OfType<ProjectDaysRow>();
+            var rowFound = rows.FirstOrDefault(p => p.DayType == dayType);
+            if (rowFound != null)
+            {
+                return rowFound.WorkMinutes;
+            }
+            return 0;
         }
     }
 }

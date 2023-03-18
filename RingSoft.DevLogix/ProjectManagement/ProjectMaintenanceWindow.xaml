@@ -179,7 +179,7 @@
 
                     <DockPanel>
 
-                        <deg:DataEntryGrid Manager="{Binding UsersGridManager}">
+                        <deg:DataEntryGrid Manager="{Binding UsersGridManager}" FrozenColumnCount="4">
 
                             <deg:DataEntryGrid.Columns>
 
@@ -189,7 +189,14 @@
 
                                 <deg:DataEntryGridTextColumn Header="Cost" ColumnId="{x:Static vm:ProjectUsersGridManager.CostColumnId}" Width="100" Alignment="Right"/>
 
+                                <deg:DataEntryGridCheckBoxColumn Header="Is&#10;Standard" ColumnId="{x:Static vm:ProjectUsersGridManager.IsStandardColumnId}" Width="75"/>
+
+                                <deg:DataEntryGridTextColumn Header="Sunday&#10;Time" ColumnId="{x:Static vm:ProjectUsersGridManager.SundayColumnId}" Width="100"/>
+
+                                <deg:DataEntryGridTextColumn Header="Monday&#10;Time" ColumnId="{x:Static vm:ProjectUsersGridManager.MondayColumnId}" Width="100"/>
+
                             </deg:DataEntryGrid.Columns>
+                            
                         </deg:DataEntryGrid>
 
                     </DockPanel>
