@@ -179,7 +179,7 @@
 
                     <DockPanel>
 
-                        <deg:DataEntryGrid Manager="{Binding UsersGridManager}" FrozenColumnCount="4">
+                        <deg:DataEntryGrid Manager="{Binding UsersGridManager}" FrozenColumnCount="1">
 
                             <deg:DataEntryGrid.Columns>
 
@@ -194,6 +194,8 @@
                                 <deg:DataEntryGridTextColumn Header="Sunday&#10;Time" ColumnId="{x:Static vm:ProjectUsersGridManager.SundayColumnId}" Width="100"/>
 
                                 <deg:DataEntryGridTextColumn Header="Monday&#10;Time" ColumnId="{x:Static vm:ProjectUsersGridManager.MondayColumnId}" Width="100"/>
+
+                                <deg:DataEntryGridTextColumn Header="Tuesday&#10;Time" ColumnId="{x:Static vm:ProjectUsersGridManager.TuesdayColumnId}" Width="100"/>
 
                             </deg:DataEntryGrid.Columns>
                             

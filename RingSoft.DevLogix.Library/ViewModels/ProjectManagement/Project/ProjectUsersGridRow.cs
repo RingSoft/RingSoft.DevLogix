@@ -30,6 +30,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public decimal MondayMinutes { get; set; }
 
+        public decimal TuesdayMinutes { get; set; }
+
         public ProjectUsersGridRow(ProjectUsersGridManager manager) : base(manager)
         {
             Manager = manager;
@@ -60,7 +62,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 case ProjectUserColumns.Monday:
                     return new TimeCostCellProps(this, columnId, MondayMinutes);
                 case ProjectUserColumns.Tuesday:
-                    break;
+                    return new TimeCostCellProps(this, columnId, TuesdayMinutes);
                 case ProjectUserColumns.Wednesday:
                     break;
                 case ProjectUserColumns.Thursday:
@@ -120,6 +122,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public override void SetCellValue(DataEntryGridEditingCellProps value)
         {
+            var timeCellProps = value as TimeCostCellProps;
+
             var column = (ProjectUserColumns)value.ColumnId;
 
             switch (column)
@@ -145,18 +149,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     break;
 
                 case ProjectUserColumns.Sunday:
-                    if (value is TimeCostCellProps sunTimeCostCellProps)
+                    if (timeCellProps != null)
                     {
-                        SundayMinutes = sunTimeCostCellProps.Minutes;
+                        SundayMinutes = timeCellProps.Minutes;
                     }
                     break;
                 case ProjectUserColumns.Monday:
-                    if (value is TimeCostCellProps monTimeCostCellProps)
+                    if (timeCellProps != null)
                     {
-                        MondayMinutes = monTimeCostCellProps.Minutes;
+                        MondayMinutes = timeCellProps.Minutes;
                     }
                     break;
                 case ProjectUserColumns.Tuesday:
+                    if (timeCellProps != null)
+                    {
+                        TuesdayMinutes = timeCellProps.Minutes;
+                    }
                     break;
                 case ProjectUserColumns.Wednesday:
                     break;
@@ -195,6 +203,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                         MondayMinutes = standardMinutes;
                         break;
                     case DayType.Tuesday:
+                        TuesdayMinutes = standardMinutes;   
                         break;
                     case DayType.Wednesday:
                         break;
@@ -226,6 +235,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             {
                 SundayMinutes = entity.SundayMinutes.GetValueOrDefault();
                 MondayMinutes = entity.MondayMinutes.GetValueOrDefault();
+                TuesdayMinutes = entity.TuesdayMinutes.GetValueOrDefault();
             }
         }
 
@@ -244,6 +254,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             {
                 entity.SundayMinutes = SundayMinutes;
                 entity.MondayMinutes = MondayMinutes;
+                entity.TuesdayMinutes = TuesdayMinutes;
             }
         }
     }
