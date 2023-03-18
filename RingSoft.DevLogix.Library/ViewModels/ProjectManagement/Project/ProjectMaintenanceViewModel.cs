@@ -215,6 +215,20 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 OnPropertyChanged();
             }
         }
+        private ProjectDaysGridManager _projectDaysGridManager;
+
+        public ProjectDaysGridManager ProjectDaysGridManager
+        {
+            get => _projectDaysGridManager;
+            set
+            {
+                if (_projectDaysGridManager == value)
+                    return;
+
+                _projectDaysGridManager = value;
+                OnPropertyChanged();
+            }
+        }
 
 
         private ProjectUsersGridManager _usersGridManager;
@@ -399,6 +413,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
             ProjectTotalsManager = new ProjectTotalsManager();
 
+            ProjectDaysGridManager = new ProjectDaysGridManager();
+
             UsersGridManager = new ProjectUsersGridManager(this);
 
             var timeClockLookup = new LookupDefinition<TimeClockLookup, TimeClock>(AppGlobals.LookupContext.TimeClocks);
@@ -451,6 +467,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             StatusRow.NegativeDisplayStyleId = ProjectTotalsManager.NegativeDisplayStyleId;
             StatusRow.PositiveDisplayStyleId = ProjectTotalsManager.PositiveDisplayStyleId;
             ProjectTotalsManager.InsertRow(StatusRow);
+
+            ProjectDaysGridManager.Initialize();
 
             base.Initialize();
         }

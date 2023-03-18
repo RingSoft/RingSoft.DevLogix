@@ -118,7 +118,7 @@
 
                             <Label Grid.Row="0" Grid.Column="0" Content="Manager"/>
 
-                            <lc:AutoFillControl Grid.Row="0" Grid.Column="1" x:Name="ManagerControl" Setup="{Binding ManagerAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding ManagerAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <lc:AutoFillControl Grid.Row="0" Grid.Column="1" x:Name="ManagerControl" Setup="{Binding ManagerAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding ManagerAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left"/>
 
                             <Label Grid.Row="0" Grid.Column="2" Content="Contract Cost"/>
 
@@ -134,11 +134,11 @@
 
                             <Label Grid.Row="2" Grid.Column="0" Content="Product"/>
 
-                            <lc:AutoFillControl Grid.Row="2" Grid.Column="1" x:Name="ProductControl" Setup="{Binding ProductAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding ProductAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <lc:AutoFillControl Grid.Row="2" Grid.Column="1" x:Name="ProductControl" Setup="{Binding ProductAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding ProductAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left"/>
 
                             <CheckBox Grid.Row="2" Grid.Column="2" Content="Is Billable" IsChecked="{Binding IsBillable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-                            <deg:DataEntryGrid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" Manager="{Binding ProjectTotalsManager}" DataEntryCanUserAddRows="False" HorizontalAlignment="Left" Margin="5">
+                            <deg:DataEntryGrid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Manager="{Binding ProjectTotalsManager}" DataEntryCanUserAddRows="False" HorizontalAlignment="Left" Margin="5">
 
                                 <deg:DataEntryGrid.Columns>
 
@@ -157,6 +157,17 @@
                                     <deg:DataEntryGridDisplayStyle DisplayId="{x:Static vm:ProjectTotalsManager.PositiveDisplayStyleId}" ForegroundBrush="Green"/>
 
                                 </deg:DataEntryGrid.DisplayStyles>
+                            </deg:DataEntryGrid>
+
+                            <deg:DataEntryGrid Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" Manager="{Binding ProjectDaysGridManager}" DataEntryCanUserAddRows="False" HorizontalAlignment="Left" Margin="5">
+
+                                <deg:DataEntryGrid.Columns>
+
+                                    <deg:DataEntryGridTextColumn Header="Day" ColumnId="{x:Static vm:ProjectDaysGridManager.DayColumnId}" Width="100"/>
+
+                                    <deg:DataEntryGridTextColumn Header="Work Time" ColumnId="{x:Static vm:ProjectDaysGridManager.TimeColumnId}" Width="150"/>
+
+                                </deg:DataEntryGrid.Columns>
                             </deg:DataEntryGrid>
 
                         </Grid>
