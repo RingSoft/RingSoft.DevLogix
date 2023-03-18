@@ -1,9 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using RingSoft.App.Interop;
 using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
@@ -17,6 +12,12 @@ using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.LookupModel;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.UserManagement;
+using RingSoft.Printing.Interop;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Linq;
 
 namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 {
@@ -46,6 +47,41 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         void SetUserReadOnlyMode(bool value);
 
         void SetExistRecordFocus(UserGrids userGrid, int rowId);
+    }
+
+    public class BillabilityData
+    {
+        public User User { get; private set; }
+
+        public decimal BillableProjects { get; private set; }
+
+        public decimal NonBillableProjects { get; private set; }
+
+        public decimal Errors { get; private set; }
+        public BillabilityData(User user)
+        {
+            User = user;
+            Calculate();
+        }
+
+        public void Calculate()
+        {
+            var totalMinutes = User.BillableProjectsMinutesSpent
+                               + User.NonBillableProjectsMinutesSpent
+                               + User.ErrorsMinutesSpent;
+
+            var billableProjectsBillability = (decimal)0;
+            var nonBillableProjectsBillability = (decimal)0;
+            var errorsBillability = (decimal)0;
+
+            if (totalMinutes > 0)
+            {
+                BillableProjects = User.BillableProjectsMinutesSpent / totalMinutes;
+                NonBillableProjects = User.NonBillableProjectsMinutesSpent / totalMinutes;
+                Errors = User.ErrorsMinutesSpent / totalMinutes;
+            }
+
+        }
     }
     public class UserMaintenanceViewModel : DevLogixDbMaintenanceViewModel<User>
     {
@@ -399,6 +435,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             timeClockLookup.AddVisibleColumnDefinition(p => p.PunchInDate, p => p.PunchInDate);
             TimeClockLookup = timeClockLookup;
             TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
+
+            PrintProcessingHeader += UserMaintenanceViewModel_PrintProcessingHeader;
         }
 
         protected override void Initialize()
@@ -512,28 +550,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         private void SetBillability(User entity)
         {
-            var totalMinutes = entity.BillableProjectsMinutesSpent
-                               + entity.NonBillableProjectsMinutesSpent
-                               + entity.ErrorsMinutesSpent;
+            var billabilityData = new BillabilityData(entity);
 
-            var billableProjectsBillability = (decimal)0;
-            var nonBillableProjectsBillability = (decimal)0;
-            var errorsBillability = (decimal)0;
-
-            if (totalMinutes > 0)
-            {
-                billableProjectsBillability = entity.BillableProjectsMinutesSpent / totalMinutes;
-                nonBillableProjectsBillability = entity.NonBillableProjectsMinutesSpent / totalMinutes;
-                errorsBillability = entity.ErrorsMinutesSpent / totalMinutes;
-            }
             BillabilityGridManager.SetRowValues(UserBillabilityRows.BillableProjects,
-                entity.BillableProjectsMinutesSpent, billableProjectsBillability);
+                entity.BillableProjectsMinutesSpent, billabilityData.BillableProjects);
 
             BillabilityGridManager.SetRowValues(UserBillabilityRows.NonBillableProjects,
-                entity.NonBillableProjectsMinutesSpent, nonBillableProjectsBillability);
+                entity.NonBillableProjectsMinutesSpent, billabilityData.NonBillableProjects);
 
             BillabilityGridManager.SetRowValues(UserBillabilityRows.Errors,
-                entity.ErrorsMinutesSpent, errorsBillability);
+                entity.ErrorsMinutesSpent, billabilityData.Errors);
         }
 
         protected override User GetEntityData()
@@ -568,6 +594,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     user.BillableProjectsMinutesSpent = existUser.BillableProjectsMinutesSpent;
                     user.NonBillableProjectsMinutesSpent = existUser.NonBillableProjectsMinutesSpent;
                     user.ErrorsMinutesSpent = existUser.ErrorsMinutesSpent;
+                    user.ClockDate = existUser.ClockDate;
                 }
             }
             if (DepartmentAutoFillValue.IsValid())
@@ -605,6 +632,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             TimeClockLookupCommand = GetLookupCommand(LookupCommands.Clear);
             Notes = null;
             HourlyRate = 0;
+            ClockDateTime = null;
             TimeOffGridManager.SetupForNewRecord();
 
             SetBillability(new User());
@@ -797,5 +825,69 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             AppGlobals.MainViewModel.UserViewModels.Remove(this);
             base.OnWindowClosing(e);
         }
+
+        protected override void SetupPrinterArgs(PrinterSetupArgs printerSetupArgs, int stringFieldIndex = 1, int numericFieldIndex = 1,
+            int memoFieldIndex = 1)
+        {
+            printerSetupArgs.PrintingProperties.ReportType = ReportTypes.Custom;
+            printerSetupArgs.PrintingProperties.CustomReportPathFileName =
+                $"{RingSoftAppGlobals.AssemblyDirectory}\\UserManagement\\User.rpt";
+
+            base.SetupPrinterArgs(printerSetupArgs, stringFieldIndex, numericFieldIndex, memoFieldIndex);
+        }
+
+        private void UserMaintenanceViewModel_PrintProcessingHeader(object? sender, PrinterDataProcessedEventArgs e)
+        {
+            var primaryKey = new PrimaryKeyValue(TableDefinition);
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var table = context.GetTable<User>();
+            primaryKey.PopulateFromDataRow(e.OutputRow);
+            var percentSetup = new DecimalEditControlSetup
+            {
+                FormatType = DecimalEditFormatTypes.Percent,
+            };
+
+            var dateSetup = new DateEditControlSetup
+            {
+                DateFormatType = DateFormatTypes.DateTime,
+            };
+            if (primaryKey.IsValid)
+            {
+                var user = TableDefinition.GetEntityFromPrimaryKeyValue(primaryKey);
+                if (user != null)
+                {
+                    user = table
+                        .Include(p => p.UserTimeOff)
+                        .FirstOrDefault(p => p.Id == user.Id);
+                }
+
+                if (user != null)
+                {
+                    var detailsChunk = new List<PrintingInputDetailsRow>();
+                    var billabilityData = new BillabilityData(user);
+                    e.HeaderRow.StringField15 = AppGlobals.MakeTimeSpent(user.BillableProjectsMinutesSpent);
+                    e.HeaderRow.StringField16 = AppGlobals.MakeTimeSpent(user.NonBillableProjectsMinutesSpent);
+                    e.HeaderRow.StringField17 = AppGlobals.MakeTimeSpent(user.ErrorsMinutesSpent);
+                    e.HeaderRow.NumberField15 = percentSetup.FormatValue(billabilityData.BillableProjects);
+                    e.HeaderRow.NumberField16 = percentSetup.FormatValue(billabilityData.NonBillableProjects);
+                    e.HeaderRow.NumberField17 = percentSetup.FormatValue(billabilityData.Errors);
+
+                    foreach (var userTimeOff in user.UserTimeOff)
+                    {
+                        var detailRow = new PrintingInputDetailsRow();
+                        detailRow.HeaderRowKey = e.HeaderRow.RowKey;
+                        detailRow.TablelId = 1;
+                        detailRow.StringField01 = dateSetup.FormatValueForDisplay(userTimeOff.StartDate);
+                        detailRow.StringField02 = dateSetup.FormatValueForDisplay(userTimeOff.EndDate);
+                        detailRow.StringField03 = userTimeOff.Description;
+                        detailsChunk.Add(detailRow);
+                    }
+                    PrintingInteropGlobals.DetailsProcessor.AddChunk(detailsChunk, e.PrinterSetup.PrintingProperties);
+
+                    detailsChunk.Clear();
+                }
+            }
+        }
+
     }
 }

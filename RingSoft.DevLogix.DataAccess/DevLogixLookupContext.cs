@@ -470,6 +470,10 @@ namespace RingSoft.DevLogix.DataAccess
             Users.PriorityLevel = 300;
             Users.GetFieldDefinition(p => p.SupervisorId).DoesAllowRecursion(false);
             Users.GetFieldDefinition(p => p.Rights).DoSkipPrint().IsMemo();
+            Users.GetFieldDefinition(p => p.Notes).IsMemo();
+            Users.GetFieldDefinition(p => p.Password).DoSkipPrint();
+            Users.GetFieldDefinition(p => p.ClockDate).DoConvertToLocalTime().HasDateType(DbDateTypes.DateTime);
+            Users.GetFieldDefinition(p => p.HourlyRate).HasDecimalFieldType(DecimalFieldTypes.Currency);
 
             UsersTimeOff.PriorityLevel = 400;
             UsersTimeOff.GetFieldDefinition(p => p.StartDate)
