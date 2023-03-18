@@ -836,6 +836,19 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             base.SetupPrinterArgs(printerSetupArgs, stringFieldIndex, numericFieldIndex, memoFieldIndex);
         }
 
+        public override void ProcessPrintOutputData(PrinterSetupArgs printerSetupArgs)
+        {
+            base.ProcessPrintOutputData(printerSetupArgs);
+            var customProperties = new List<PrintingCustomProperty>();
+            customProperties.Add(new PrintingCustomProperty
+            {
+                Name = "intRecordCount",
+                Value = printerSetupArgs.TotalRecords.ToString(),
+            });
+            PrintingInteropGlobals.PropertiesProcessor.CustomProperties = customProperties;
+        }
+
+
         private void UserMaintenanceViewModel_PrintProcessingHeader(object? sender, PrinterDataProcessedEventArgs e)
         {
             var primaryKey = new PrimaryKeyValue(TableDefinition);
@@ -877,8 +890,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                         var detailRow = new PrintingInputDetailsRow();
                         detailRow.HeaderRowKey = e.HeaderRow.RowKey;
                         detailRow.TablelId = 1;
-                        detailRow.StringField01 = dateSetup.FormatValueForDisplay(userTimeOff.StartDate);
-                        detailRow.StringField02 = dateSetup.FormatValueForDisplay(userTimeOff.EndDate);
+                        detailRow.StringField01 = dateSetup.FormatValueForDisplay(userTimeOff.StartDate.ToLocalTime());
+                        detailRow.StringField02 = dateSetup.FormatValueForDisplay(userTimeOff.EndDate.ToLocalTime());
                         detailRow.StringField03 = userTimeOff.Description;
                         detailsChunk.Add(detailRow);
                     }
