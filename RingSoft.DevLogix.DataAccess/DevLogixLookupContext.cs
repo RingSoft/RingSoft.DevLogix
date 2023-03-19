@@ -68,6 +68,7 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<ProjectMaterial> ProjectMaterials { get; set; }
         public TableDefinition<ProjectMaterialPart> ProjectMaterialParts { get; set; }
         public TableDefinition<ProjectMaterialHistory> ProjectMaterialHistory { get; set; }
+        public TableDefinition<ProjectTaskDependency> ProjectTaskDependency { get; set; }
 
         public TableDefinition<AdvancedFind> AdvancedFinds { get; set; }
         public TableDefinition<AdvancedFindColumn> AdvancedFindColumns { get; set; }
@@ -101,6 +102,7 @@ namespace RingSoft.DevLogix.DataAccess
         public LookupDefinition<ProjectMaterialLookup, ProjectMaterial> ProjectMaterialLookup { get; set; }
         public LookupDefinition<ProjectMaterialPartLookup, ProjectMaterialPart> ProjectMaterialPartLookup { get; set; }
         public LookupDefinition<ProjectMaterialHistoryLookup, ProjectMaterialHistory> ProjectMaterialHistoryLookup { get; set; }
+        public LookupDefinition<ProjectTaskDependencyLookup, ProjectTaskDependency> ProjectTaskDependencyLookup { get; set; }
 
         public LookupDefinition<AdvancedFindLookup, AdvancedFind> AdvancedFindLookup { get; set; }
         public LookupDefinition<RecordLockingLookup, RecordLock> RecordLockingLookup { get; set; }
@@ -339,6 +341,14 @@ namespace RingSoft.DevLogix.DataAccess
 
             ProjectMaterialHistoryLookup.AddVisibleColumnDefinition(p => p.Cost, "Cost", p => p.Cost, 20);
             ProjectMaterialHistory.HasLookupDefinition(ProjectMaterialHistoryLookup);
+
+            ProjectTaskDependencyLookup =
+                new LookupDefinition<ProjectTaskDependencyLookup, ProjectTaskDependency>(ProjectTaskDependency);
+            ProjectTaskDependencyLookup.Include(p => p.ProjectTask)
+                .AddVisibleColumnDefinition(p => p.ProjectTask, "Project Task", p => p.Name, 50);
+            ProjectTaskDependencyLookup.Include(p => p.DependsOnProjectTask)
+                .AddVisibleColumnDefinition(p => p.DependsOn, "Depends On", p => p.Name, 50);
+            ProjectTaskDependency.HasLookupDefinition(ProjectTaskDependencyLookup);
         }
 
         public LookupDefinition<ProductVersionLookup, ProductVersion> MakeProductVersionLookupDefinition()
@@ -552,6 +562,10 @@ namespace RingSoft.DevLogix.DataAccess
             ProjectTasks.GetFieldDefinition(p => p.PercentComplete).HasDecimalFieldType(DecimalFieldTypes.Percent);
 
             ProjectTaskLaborParts.PriorityLevel = 600;
+
+            ProjectTaskDependency.PriorityLevel = 600;
+            //ProjectTaskDependency.GetFieldDefinition(p => p.ProjectTaskId).DoesAllowRecursion(false);
+            //ProjectTaskDependency.GetFieldDefinition(p => p.DependsOnProjectTaskId).DoesAllowRecursion(false);
 
             ProjectUsers.PriorityLevel = 500;
         }

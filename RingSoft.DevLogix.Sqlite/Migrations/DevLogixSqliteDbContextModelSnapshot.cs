@@ -834,6 +834,21 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.ToTable("ProjectTasks");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectTaskDependency", b =>
+                {
+                    b.Property<int>("ProjectTaskId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("DependsOnProjectTaskId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("ProjectTaskId", "DependsOnProjectTaskId");
+
+                    b.HasIndex("DependsOnProjectTaskId");
+
+                    b.ToTable("ProjectTaskDependency");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectTaskLaborPart", b =>
                 {
                     b.Property<int>("ProjectTaskId")
@@ -1433,6 +1448,25 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectTaskDependency", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectTask", "DependsOnProjectTask")
+                        .WithMany("Dependencies")
+                        .HasForeignKey("DependsOnProjectTaskId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectTask", "ProjectTask")
+                        .WithMany("SourceDependencies")
+                        .HasForeignKey("ProjectTaskId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("DependsOnProjectTask");
+
+                    b.Navigation("ProjectTask");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectTaskLaborPart", b =>
                 {
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.LaborPart", "LaborPart")
@@ -1687,7 +1721,11 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectTask", b =>
                 {
+                    b.Navigation("Dependencies");
+
                     b.Navigation("LaborParts");
+
+                    b.Navigation("SourceDependencies");
 
                     b.Navigation("TimeClocks");
                 });

@@ -51,11 +51,15 @@ namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
 
         public virtual ICollection<TimeClock> TimeClocks { get; set; }
         public virtual ICollection<ProjectTaskLaborPart> LaborParts { get; set; }
+        public virtual ICollection<ProjectTaskDependency> SourceDependencies { get; set; }
+        public virtual ICollection<ProjectTaskDependency> Dependencies { get; set; }
 
         public ProjectTask()
         {
             TimeClocks = new HashSet<TimeClock>();
             LaborParts = new HashSet<ProjectTaskLaborPart>();
+            SourceDependencies = new HashSet<ProjectTaskDependency>();
+            Dependencies = new HashSet<ProjectTaskDependency>();
         }
     }
 }

@@ -35,6 +35,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         string StartRecalcProcedure(LookupDefinitionBase lookupDefinition);
 
         void UpdateRecalcProcedure(int currentProjectTask, int totalProjectTasks, string currentProjectTaskText);
+
+        void GotoGrid();
     }
     public class ProjectTaskViewModel : DevLogixDbMaintenanceViewModel<ProjectTask>
     {
@@ -245,6 +247,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
+        private ProjectTaskDependencyManager _projectTaskDependencyManager;
+
+        public ProjectTaskDependencyManager ProjectTaskDependencyManager
+        {
+            get => _projectTaskDependencyManager;
+            set
+            {
+                if (_projectTaskDependencyManager == value)
+                    return;
+
+                _projectTaskDependencyManager = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         private LookupDefinition<TimeClockLookup, TimeClock> _timeClockLookup;
 
         public LookupDefinition<TimeClockLookup, TimeClock> TimeClockLookup
@@ -337,7 +355,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             ProjectTotalsManager = new ProjectTotalsManager();
 
             LaborPartsManager = new ProjectTaskLaborPartsManager(this);
+            ProjectTaskDependencyManager = new ProjectTaskDependencyManager(this);
+
             TablesToDelete.Add(AppGlobals.LookupContext.ProjectTaskLaborParts);
+            TablesToDelete.Add(AppGlobals.LookupContext.ProjectTaskDependency);
 
             var timeClockLookup = new LookupDefinition<TimeClockLookup, TimeClock>(AppGlobals.LookupContext.TimeClocks);
             timeClockLookup.AddVisibleColumnDefinition(p => p.PunchInDate, p => p.PunchInDate);
@@ -425,6 +446,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 .ThenInclude(p => p.ProjectUsers)
                 .Include(p => p.LaborParts)
                 .ThenInclude(p => p.LaborPart)
+                .Include(p => p.SourceDependencies)
+                .ThenInclude(p => p.DependsOnProjectTask)
                 .FirstOrDefault(p => p.Id == taskId);
             return result;
         }
@@ -463,6 +486,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             HourlyRate = entity.HourlyRate;
             LaborPartsManager.LoadGrid(entity.LaborParts);
             LaborPartsManager.CalculateTotalMinutesCost();
+            ProjectTaskDependencyManager.LoadGrid(entity.SourceDependencies);
             ActualRow.Minutes = entity.MinutesSpent;
             ActualRow.Cost = entity.Cost;
             RefreshTotals();
@@ -533,6 +557,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     return false;
                 }
             }
+
+            if (!ProjectTaskDependencyManager.ValidateCircular())
+            {
+                return false;
+            }
             return base.ValidateEntity(entity);
         }
 
@@ -552,11 +581,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             PunchInCommand.IsEnabled = false;
             LaborPartsManager.SetupForNewRecord();
             LaborPartsManager.CalculateTotalMinutesCost();
+            ProjectTaskDependencyManager.SetupForNewRecord();
         }
 
         protected override bool SaveEntity(ProjectTask entity)
         {
             var details = LaborPartsManager.GetEntityList();
+            var dependencies = ProjectTaskDependencyManager.GetEntityList();
+
             var context = AppGlobals.DataRepository.GetDataContext();
             var result = context.SaveEntity(entity, "Saving Project Task");
 
@@ -567,9 +599,19 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     projectTaskLaborPart.ProjectTaskId = entity.Id;
                 }
 
+                foreach (var projectTaskDependency in dependencies)
+                {
+                    projectTaskDependency.ProjectTaskId = entity.Id;
+                }
+
                 var table = context.GetTable<ProjectTaskLaborPart>();
                 context.RemoveRange(table.Where(p => p.ProjectTaskId == entity.Id));
                 context.AddRange(details);
+
+                var dependencyTable = context.GetTable<ProjectTaskDependency>();
+                context.RemoveRange(dependencyTable.Where(p => p.ProjectTaskId == entity.Id));
+                context.AddRange(dependencies);
+
                 result = context.Commit("Saving Project Task");
 
                 if (result)
@@ -595,6 +637,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
             var table = context.GetTable<ProjectTaskLaborPart>();
             context.RemoveRange(table.Where(p => p.ProjectTaskId == entity.Id));
+
+            var dependencyTable = context.GetTable<ProjectTaskDependency>();
+            context.RemoveRange(dependencyTable.Where(p => p.ProjectTaskId == entity.Id));
 
             return context.DeleteEntity(entity, "Deleting Project Task");
         }
