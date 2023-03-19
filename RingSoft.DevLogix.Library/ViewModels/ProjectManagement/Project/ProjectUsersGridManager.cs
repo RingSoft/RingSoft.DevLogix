@@ -66,12 +66,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                         projectUsersGridRow.SundayMinutes = minutes;
                         break;
                     case DayType.Monday:
+                        projectUsersGridRow.MondayMinutes = minutes;
                         break;
                     case DayType.Tuesday:
+                        projectUsersGridRow.TuesdayMinutes = minutes;
                         break;
                     case DayType.Wednesday:
+                        projectUsersGridRow.WednesdayMinutes = minutes;
                         break;
                     case DayType.Thursday:
+                        projectUsersGridRow.ThursdayMinutes = minutes;
                         break;
                     case DayType.Friday:
                         break;

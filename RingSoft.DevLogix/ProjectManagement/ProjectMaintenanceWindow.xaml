@@ -196,6 +196,11 @@
                                 <deg:DataEntryGridTextColumn Header="Monday&#10;Time" ColumnId="{x:Static vm:ProjectUsersGridManager.MondayColumnId}" Width="100"/>
 
                                 <deg:DataEntryGridTextColumn Header="Tuesday&#10;Time" ColumnId="{x:Static vm:ProjectUsersGridManager.TuesdayColumnId}" Width="100"/>
+                              
+                                <deg:DataEntryGridTextColumn Header="Wednesday&#10;Time" ColumnId="{x:Static vm:ProjectUsersGridManager.WednesdayColumnId}" Width="100"/>
+
+                                <deg:DataEntryGridTextColumn Header="Thursday&#10;Time" ColumnId="{x:Static vm:ProjectUsersGridManager.ThursdayColumnId}" Width="100"/>
+
 
                             </deg:DataEntryGrid.Columns>
                             

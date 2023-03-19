@@ -72,6 +72,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     if (value is TimeCostCellProps timeCostCellProps)
                     {
                         SetWorkMinutes(timeCostCellProps.Minutes);
+                        Manager.ViewModel.RecordDirty = true;
                     }
                     break;
             }

@@ -32,6 +32,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public decimal TuesdayMinutes { get; set; }
 
+        public decimal WednesdayMinutes { get; set; }
+
+        public decimal ThursdayMinutes { get; set; }
+
         public ProjectUsersGridRow(ProjectUsersGridManager manager) : base(manager)
         {
             Manager = manager;
@@ -64,9 +68,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 case ProjectUserColumns.Tuesday:
                     return new TimeCostCellProps(this, columnId, TuesdayMinutes);
                 case ProjectUserColumns.Wednesday:
-                    break;
+                    return new TimeCostCellProps(this, columnId, WednesdayMinutes);
                 case ProjectUserColumns.Thursday:
-                    break;
+                    return new TimeCostCellProps(this, columnId, ThursdayMinutes);
                 case ProjectUserColumns.Friday:
                     break;
                 case ProjectUserColumns.Saturday:
@@ -167,8 +171,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     }
                     break;
                 case ProjectUserColumns.Wednesday:
+                    if (timeCellProps != null)
+                    {
+                        WednesdayMinutes = timeCellProps.Minutes;
+                    }
                     break;
                 case ProjectUserColumns.Thursday:
+                    if (timeCellProps != null)
+                    {
+                        ThursdayMinutes = timeCellProps.Minutes;
+                    }
                     break;
                 case ProjectUserColumns.Friday:
                     break;
@@ -206,8 +218,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                         TuesdayMinutes = standardMinutes;   
                         break;
                     case DayType.Wednesday:
+                        WednesdayMinutes = standardMinutes;
                         break;
                     case DayType.Thursday:
+                        ThursdayMinutes = standardMinutes;
                         break;
                     case DayType.Friday:
                         break;
@@ -236,6 +250,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 SundayMinutes = entity.SundayMinutes.GetValueOrDefault();
                 MondayMinutes = entity.MondayMinutes.GetValueOrDefault();
                 TuesdayMinutes = entity.TuesdayMinutes.GetValueOrDefault();
+                WednesdayMinutes = entity.WednesdayMinutes.GetValueOrDefault();
+                ThursdayMinutes = entity.ThursdayMinutes.GetValueOrDefault();
             }
         }
 
@@ -255,6 +271,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 entity.SundayMinutes = SundayMinutes;
                 entity.MondayMinutes = MondayMinutes;
                 entity.TuesdayMinutes = TuesdayMinutes;
+                entity.WednesdayMinutes = WednesdayMinutes;
+                entity.ThursdayMinutes = ThursdayMinutes;
             }
         }
     }
