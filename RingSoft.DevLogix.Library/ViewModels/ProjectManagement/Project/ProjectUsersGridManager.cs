@@ -96,5 +96,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 p => !p.IsNew &&
                 p.IsStandard);
         }
+
+        public ProjectUsersGridRow GetProjectUsersGridRow(int userId)
+        {
+            var rows = Rows.OfType<ProjectUsersGridRow>();
+            return rows.FirstOrDefault(p => p.UserId == userId);
+        }
     }
 }

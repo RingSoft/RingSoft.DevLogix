@@ -179,7 +179,7 @@
 
                     <DockPanel>
 
-                        <deg:DataEntryGrid Manager="{Binding UsersGridManager}" FrozenColumnCount="1">
+                        <deg:DataEntryGrid x:Name="UsersGrid" Manager="{Binding UsersGridManager}" FrozenColumnCount="1">
 
                             <deg:DataEntryGrid.Columns>
 

@@ -17,6 +17,7 @@ using RingSoft.DevLogix.DataAccess.LookupModel.ProjectManagement;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using RingSoft.DevLogix.Library.ViewModels.QualityAssurance;
+using RingSoft.DevLogix.Library.ViewModels.UserManagement;
 
 namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 {
@@ -27,6 +28,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         string StartRecalcProcedure(LookupDefinitionBase lookupDefinition);
 
         void UpdateRecalcProcedure(int currentProject, int totalProjects, string currentProjectText);
+
+        void SetExistRecordFocus(int userId);
+
+        void GotoGrid();
     }
 
     public class ProjectMaintenanceViewModel : DevLogixDbMaintenanceViewModel<Project>
@@ -397,6 +402,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public ProjectTotalsRow StatusRow { get; private set; }
 
+        private int _userFocusId = -1;
+
         public ProjectMaintenanceViewModel()
         {
             ManagerAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ManagerId));
@@ -473,6 +480,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             base.Initialize();
         }
 
+        protected override PrimaryKeyValue GetAddViewPrimaryKeyValue(PrimaryKeyValue addViewPrimaryKeyValue)
+        {
+            if (addViewPrimaryKeyValue.TableDefinition == AppGlobals.LookupContext.ProjectUsers)
+            {
+                var userRow =
+                    AppGlobals.LookupContext.ProjectUsers.GetEntityFromPrimaryKeyValue(addViewPrimaryKeyValue);
+                if (userRow != null)
+                {
+                    _userFocusId = userRow.UserId;
+                }
+            }
+            var result = base.GetAddViewPrimaryKeyValue(addViewPrimaryKeyValue);
+            return result;
+        }
+
+
         protected override Project PopulatePrimaryKeyControls(Project newEntity, PrimaryKeyValue primaryKeyValue)
         {
             var project = GetProject(newEntity.Id);
@@ -531,6 +554,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             TotalCost = entity.Cost;
             TimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
             CalcTotals();
+
+            if (_userFocusId >= 0)
+            {
+                View.SetExistRecordFocus(_userFocusId);
+                _userFocusId = -1;
+            }
+
+        }
+
+        protected override bool ValidateEntity(Project entity)
+        {
+            if (!UsersGridManager.ValidateGrid())
+            {
+                return false;
+            }
+            return base.ValidateEntity(entity);
         }
 
         protected override Project GetEntityData()

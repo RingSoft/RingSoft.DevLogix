@@ -42,6 +42,8 @@ namespace RingSoft.DevLogix.ProjectManagement
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;
         public RecalcProcedure RecalcProcedure { get; set; }
 
+        private int _userFocus = -1;
+
         public ProjectMaintenanceWindow()
         {
             InitializeComponent();
@@ -54,6 +56,17 @@ namespace RingSoft.DevLogix.ProjectManagement
                         projectHeaderControl.RecalcButton.Visibility = Visibility.Collapsed;
                     }
                     projectHeaderControl.RecalcButton.Command = LocalViewModel.RecalcCommand;
+                }
+            };
+
+            UsersGrid.Loaded += (sender, args) =>
+            {
+                if (_userFocus >= 0)
+                {
+                    TabControl.SelectedItem = UsersTab;
+                    var row = LocalViewModel.UsersGridManager.GetProjectUsersGridRow(_userFocus);
+                    UsersGrid.GotoCell(row, ProjectUsersGridManager.UserColumnId);
+                    _userFocus = -1;
                 }
             };
 
@@ -104,6 +117,16 @@ namespace RingSoft.DevLogix.ProjectManagement
         {
             var progress = $"Recalculating Project {currentProjectText} {currentProject} / {totalProjects}";
             RecalcProcedure.SplashWindow.SetProgress(progress);
+        }
+
+        public void SetExistRecordFocus(int userId)
+        {
+            _userFocus = userId;
+        }
+
+        public void GotoGrid()
+        {
+            TabControl.SelectedItem = UsersTab;
         }
     }
 }

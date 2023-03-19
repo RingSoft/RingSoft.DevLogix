@@ -140,8 +140,36 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     if (value is DataEntryGridAutoFillCellProps autoFillCellProps)
                     {
                         UserAutoFillValue = autoFillCellProps.AutoFillValue;
-                        UserId = UserAutoFillValue.GetEntity(AppGlobals.LookupContext.Users).Id;
-                        SetStandardMinutes();
+                        var userId = UserAutoFillValue.GetEntity(AppGlobals.LookupContext.Users).Id;
+                        if (userId > 0 && userId != UserId)
+                        {
+                            var existUserRow = Manager.GetProjectUsersGridRow(userId);
+                            if (existUserRow != null)
+                            {
+                                var message =
+                                    "The user you have selected already exists in the grid. Do you wish to go to that row?";
+                                var caption = "Entry Validation";
+                                var result = ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, caption);
+                                if (result == MessageBoxButtonsResult.Yes)
+                                {
+                                    Manager.Grid?.GotoCell(existUserRow, ProjectUsersGridManager.UserColumnId);
+                                    Manager.RemoveRow(this);
+                                }
+
+                                UserAutoFillValue = null;
+                                value.OverrideCellMovement = true;
+                            }
+                            else
+                            {
+                                UserId = userId;
+                                SetStandardMinutes();
+                            }
+                        }
+                        else
+                        {
+                            UserId = userId;
+                            SetStandardMinutes();
+                        }
                     }
                     break;
                 case ProjectUserColumns.MinutesSpent:
@@ -273,7 +301,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public override bool ValidateRow()
         {
-            throw new System.NotImplementedException();
+            if (UserId <= 0)
+            {
+                Manager.ViewModel.View.GotoGrid();
+                var message = "Invalid User";
+                ControlsGlobals.UserInterface.ShowMessageBox(message, message, RsMessageBoxIcons.Exclamation);
+                Manager.Grid?.GotoCell(this, ProjectUsersGridManager.UserColumnId);
+                return false;
+            }
+
+            return true;
         }
 
         public override void SaveToEntity(ProjectUser entity, int rowIndex)
