@@ -36,6 +36,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public decimal ThursdayMinutes { get; set; }
 
+        public decimal FridayMinutes { get; set; }
+
+        public decimal SaturdayMinutes { get; set; }
+
         public ProjectUsersGridRow(ProjectUsersGridManager manager) : base(manager)
         {
             Manager = manager;
@@ -72,9 +76,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 case ProjectUserColumns.Thursday:
                     return new TimeCostCellProps(this, columnId, ThursdayMinutes);
                 case ProjectUserColumns.Friday:
-                    break;
+                    return new TimeCostCellProps(this, columnId, FridayMinutes);
                 case ProjectUserColumns.Saturday:
-                    break;
+                    return new TimeCostCellProps(this, columnId, SaturdayMinutes);
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -183,8 +187,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     }
                     break;
                 case ProjectUserColumns.Friday:
+                    if (timeCellProps != null)
+                    {
+                        FridayMinutes = timeCellProps.Minutes;
+                    }
                     break;
                 case ProjectUserColumns.Saturday:
+                    if (timeCellProps != null)
+                    {
+                        SaturdayMinutes = timeCellProps.Minutes;
+                    }
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -224,8 +236,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                         ThursdayMinutes = standardMinutes;
                         break;
                     case DayType.Friday:
+                        FridayMinutes = standardMinutes;
                         break;
                     case DayType.Saturday:
+                        SaturdayMinutes = standardMinutes;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -252,6 +266,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 TuesdayMinutes = entity.TuesdayMinutes.GetValueOrDefault();
                 WednesdayMinutes = entity.WednesdayMinutes.GetValueOrDefault();
                 ThursdayMinutes = entity.ThursdayMinutes.GetValueOrDefault();
+                FridayMinutes = entity.FridayMinutes.GetValueOrDefault();
+                SaturdayMinutes = entity.SaturdayMinutes.GetValueOrDefault();
             }
         }
 
@@ -273,6 +289,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 entity.TuesdayMinutes = TuesdayMinutes;
                 entity.WednesdayMinutes = WednesdayMinutes;
                 entity.ThursdayMinutes = ThursdayMinutes;
+                entity.FridayMinutes = FridayMinutes;
+                entity.SaturdayMinutes = SaturdayMinutes;
             }
         }
     }

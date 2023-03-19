@@ -165,7 +165,7 @@
 
                                     <deg:DataEntryGridTextColumn Header="Day" ColumnId="{x:Static vm:ProjectDaysGridManager.DayColumnId}" Width="100"/>
 
-                                    <deg:DataEntryGridTextColumn Header="Work Time" ColumnId="{x:Static vm:ProjectDaysGridManager.TimeColumnId}" Width="150"/>
+                                    <deg:DataEntryGridTextColumn Header="Standard Work&#10;Time" ColumnId="{x:Static vm:ProjectDaysGridManager.TimeColumnId}" Width="150"/>
 
                                 </deg:DataEntryGrid.Columns>
                             </deg:DataEntryGrid>
@@ -201,7 +201,9 @@
 
                                 <deg:DataEntryGridTextColumn Header="Thursday&#10;Time" ColumnId="{x:Static vm:ProjectUsersGridManager.ThursdayColumnId}" Width="100"/>
 
+                                <deg:DataEntryGridTextColumn Header="Friday&#10;Time" ColumnId="{x:Static vm:ProjectUsersGridManager.FridayColumnId}" Width="100"/>
 
+                                <deg:DataEntryGridTextColumn Header="Saturday&#10;Time" ColumnId="{x:Static vm:ProjectUsersGridManager.SaturdayColumnId}" Width="100"/>
                             </deg:DataEntryGrid.Columns>
                             
                         </deg:DataEntryGrid>

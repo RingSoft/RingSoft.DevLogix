@@ -78,8 +78,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                         projectUsersGridRow.ThursdayMinutes = minutes;
                         break;
                     case DayType.Friday:
+                        projectUsersGridRow.FridayMinutes = minutes;
                         break;
                     case DayType.Saturday:
+                        projectUsersGridRow.SaturdayMinutes = minutes;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(dayType), dayType, null);
