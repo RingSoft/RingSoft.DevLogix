@@ -114,7 +114,6 @@ namespace RingSoft.DevLogix.ProjectManagement
                 if (!DependenciesGrid.IsKeyboardFocusWithin && !LocalViewModel.ValidateDependencyGridFocus())
                 {
                     SetFocusToTab(DetailsTabItem);
-                    TabControl.UpdateLayout();
                     ProjectControl.TextBox.Focus();
                     args.Handled = true;
                 }
