@@ -16,6 +16,7 @@ using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DataEntryControls.WPF.DataEntryGrid;
 using RingSoft.DbLookup;
+using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
@@ -88,6 +89,34 @@ namespace RingSoft.DevLogix.ProjectManagement
                     ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
                     _settingUserFocus = false;
                     ProjectControl.Focus();
+                }
+            };
+
+            var showingLookup = false;
+            ProjectControl.LookupShown += (sender, args) =>
+            {
+                showingLookup = true;
+                args.LookupWindow.Closed += (o, eventArgs) =>
+                {
+                    showingLookup = false;
+                };
+            };
+
+            ProjectControl.PreviewLostKeyboardFocus += (sender, args) =>
+            {
+                if (!showingLookup && !LocalViewModel.ValidateProjectChange())
+                {
+                    args.Handled = true;
+                }
+            };
+            DependenciesGrid.PreviewGotKeyboardFocus += (sender, args) =>
+            {
+                if (!DependenciesGrid.IsKeyboardFocusWithin && !LocalViewModel.ValidateDependencyGridFocus())
+                {
+                    SetFocusToTab(DetailsTabItem);
+                    TabControl.UpdateLayout();
+                    ProjectControl.TextBox.Focus();
+                    args.Handled = true;
                 }
             };
         }
@@ -202,9 +231,17 @@ namespace RingSoft.DevLogix.ProjectManagement
             RecalcProcedure.SplashWindow.SetProgress(progress);
         }
 
-        public void GotoGrid()
+        public void SetupView()
         {
-            TabControl.SelectedItem = DependenciesTab;
+            if (LocalViewModel.ProjectAutoFillValue.IsValid())
+            {
+                DependenciesGrid.IsEnabled = true;
+            }
+            else
+            {
+                //DependenciesGrid.IsEnabled = false;
+                ResetViewForNewRecord();
+            }
         }
     }
 }

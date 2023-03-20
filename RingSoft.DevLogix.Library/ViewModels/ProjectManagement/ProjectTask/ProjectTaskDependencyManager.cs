@@ -13,6 +13,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
     {
         public new ProjectTaskViewModel ViewModel { get; private set; }
 
+        public int ProjectFilter { get; set; }
+
         public ProjectTaskDependencyManager(ProjectTaskViewModel viewModel) : base(viewModel)
         {
             ViewModel = viewModel;
@@ -38,6 +40,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 foreach (var projectTaskDependencyRow in rows)
                 {
                     var dependencies = new List<int>();
+                    dependencies.Add(ViewModel.Id);
                     var dependencyId = projectTaskDependencyRow.DependencyTaskId;
                     if (!ValidateCircular(dependencies, dependencyId, table))
                         return false;
@@ -56,22 +59,47 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 .Include(p => p.SourceDependencies)
                 .FirstOrDefault(p => p.Id == dependencyId);
 
-            foreach (var dependencyTask in dependency.Dependencies)
+            foreach (var dependencyTask in dependency.SourceDependencies)
             {
-                if (de.IndexOf(advancedFindFilter.SearchForAdvancedFindId.Value) != -1)
+                if (circularList.IndexOf(dependencyTask.DependsOnProjectTaskId) != -1)
                 {
-                    var message = "Advanced find circular reference found. Aborting query.";
+                    var message = "Task Dependency circular reference found.";
                     var caption = "Circular Reference Found";
                     ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
                     return false;
                 }
 
-                if (!ValidateAdvancedFind(advancedFindList, advancedFindFilter.SearchForAdvancedFindId.Value))
+                if (!ValidateCircular(circularList, dependencyTask.DependsOnProjectTaskId, table))
                     return false;
             }
 
             return true;
         }
 
+        public bool ValidateProjectChange()
+        {
+            var rowsExist = Rows.Any(p => !p.IsNew);
+            if (rowsExist)
+            {
+                var message =
+                    "Changing the project will cause the dependencies grid to be cleared. Are you sure this is what you want to do?";
+                var caption = "Change Validation";
+                var msgResult = ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, caption);
+                if (msgResult == MessageBoxButtonsResult.Yes)
+                {
+                    ClearRows();
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                ClearRows();
+            }
+            return true;
+        }
     }
 }

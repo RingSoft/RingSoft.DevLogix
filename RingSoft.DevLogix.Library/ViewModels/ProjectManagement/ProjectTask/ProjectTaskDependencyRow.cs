@@ -5,7 +5,10 @@ using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
+using RingSoft.DbLookup.Lookup;
+using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbMaintenance;
+using RingSoft.DevLogix.DataAccess.LookupModel.ProjectManagement;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 
 namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
@@ -19,10 +22,27 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         public AutoFillSetup DependencyAutoFillSetup { get; private set; }
         public AutoFillValue DependencyAutoFillValue { get; private set; }
 
+        public LookupDefinition<ProjectTaskLookup, ProjectTask> ProjectTaskLookup { get; private set; }
+
         public ProjectTaskDependencyRow(ProjectTaskDependencyManager manager) : base(manager)
         {
             Manager = manager;
-            DependencyAutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.ProjectTaskLookup);
+
+            ProjectTaskLookup = AppGlobals.LookupContext.ProjectTaskLookup.Clone();
+            DependencyAutoFillSetup = new AutoFillSetup(ProjectTaskLookup);
+
+            MakeProjectFilters();
+        }
+
+        public void MakeProjectFilters()
+        {
+            ProjectTaskLookup.FilterDefinition.ClearFixedFilters();
+
+            ProjectTaskLookup.FilterDefinition.AddFixedFilter(p => p.Id, Conditions.NotEquals, Manager.ViewModel.Id);
+
+            Manager.ProjectFilter = Manager.ViewModel.ProjectAutoFillValue.GetEntity<Project>().Id;
+
+            ProjectTaskLookup.FilterDefinition.AddFixedFilter(p => p.ProjectId, Conditions.Equals, Manager.ProjectFilter);
         }
 
         public override DataEntryGridCellProps GetCellProps(int columnId)

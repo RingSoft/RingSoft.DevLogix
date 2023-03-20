@@ -36,7 +36,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         void UpdateRecalcProcedure(int currentProjectTask, int totalProjectTasks, string currentProjectTaskText);
 
-        void GotoGrid();
+        void SetupView();
     }
     public class ProjectTaskViewModel : DevLogixDbMaintenanceViewModel<ProjectTask>
     {
@@ -83,8 +83,19 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             get => _projectAutoFillValue;
             set
             {
+                var oldValue = _projectAutoFillValue;
+
                 if (_projectAutoFillValue == value)
                     return;
+
+                if (_projectAutoFillValue == null)
+                {
+                    _originalProjectId = 0;
+                }
+                else 
+                {
+                    _originalProjectId = _projectAutoFillValue.GetEntity<Project>().Id;
+                }
 
                 _projectAutoFillValue = value;
                 SetUserFilter();
@@ -339,6 +350,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         private bool _calculating;
         private bool _loading;
+        private int _originalProjectId;
 
         public ProjectTaskViewModel()
         {
@@ -567,6 +579,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         protected override void ClearData()
         {
+            _loading = true;
             Id = 0;
             ProjectAutoFillValue = DefaultProjectAutoFillValue;
             UserAutoFillValue = null;
@@ -582,6 +595,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             LaborPartsManager.SetupForNewRecord();
             LaborPartsManager.CalculateTotalMinutesCost();
             ProjectTaskDependencyManager.SetupForNewRecord();
+            View.SetupView();
+            _loading = false;
         }
 
         protected override bool SaveEntity(ProjectTask entity)
@@ -806,6 +821,30 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             //DbDataProcessor.ShowSqlStatementWindow();
             AppGlobals.MainViewModel.ProjectTaskViewModels.Remove(this);
             base.OnWindowClosing(e);
+        }
+
+        public bool ValidateProjectChange()
+        {
+            var projectId = ProjectAutoFillValue.GetEntity<Project>().Id;
+            if (!_loading && projectId != ProjectTaskDependencyManager.ProjectFilter)
+            {
+                var result = ProjectTaskDependencyManager.ValidateProjectChange();
+                return result;
+            }
+            return true;
+        }
+
+        public bool ValidateDependencyGridFocus()
+        {
+            if (!ProjectAutoFillValue.IsValid())
+            {
+                var message = "You must first select a valid project before adding dependencies.";
+                var caption = "Grid Focus Validation Fail";
+                ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
+                return false;
+            }
+
+            return true;
         }
     }
 }
