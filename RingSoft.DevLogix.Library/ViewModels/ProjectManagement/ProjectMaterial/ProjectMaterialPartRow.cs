@@ -99,5 +99,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         {
 
         }
+
+        public override bool ValidateRow()
+        {
+            return true;
+        }
+
     }
 }

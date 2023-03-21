@@ -109,11 +109,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             Manager.CalculateTotalCost();
         }
 
-        public override bool ValidateRow()
-        {
-            throw new System.NotImplementedException();
-        }
-
         public override decimal GetExtendedCost()
         {
             return Quantity * Cost;

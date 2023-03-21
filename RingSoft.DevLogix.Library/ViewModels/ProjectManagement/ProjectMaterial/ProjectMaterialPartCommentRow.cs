@@ -211,11 +211,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             SetValue(gridMemoValue);
         }
 
-        public override bool ValidateRow()
-        {
-            throw new System.NotImplementedException();
-        }
-
         public override void SaveToEntity(ProjectMaterialPart entity, int rowIndex)
         {
             entity.ParentRowId = ParentRowId;

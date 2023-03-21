@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.DataEntryControls.Engine;
@@ -95,7 +96,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public override bool ValidateRow()
         {
-            throw new System.NotImplementedException();
+            if (!DependencyAutoFillValue.IsValid())
+            {
+                Manager.ViewModel.View.SetFocusToGrid(ProjectTaskGrids.Dependencies);
+                var message = "Invalid Task Dependency";
+                ControlsGlobals.UserInterface.ShowMessageBox(message, message, RsMessageBoxIcons.Exclamation);
+                Manager.Grid?.GotoCell(this, 1);
+                return false;
+            }
+            return true;
         }
 
         public override void SaveToEntity(ProjectTaskDependency entity, int rowIndex)

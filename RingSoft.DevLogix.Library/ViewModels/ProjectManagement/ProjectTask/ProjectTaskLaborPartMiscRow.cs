@@ -132,7 +132,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public override bool ValidateRow()
         {
-            throw new System.NotImplementedException();
+            return true;
         }
 
         public override void SaveToEntity(ProjectTaskLaborPart entity, int rowIndex)

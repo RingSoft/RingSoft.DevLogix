@@ -17,9 +17,15 @@ using RingSoft.DbLookup.DataProcessor;
 using System.Data;
 using RingSoft.DevLogix.DataAccess.LookupModel;
 using RingSoft.DevLogix.DataAccess;
+using RingSoft.DevLogix.Library.ViewModels.UserManagement;
 
 namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 {
+    public enum ProjectTaskGrids
+    {
+        LaborPart = 1,
+        Dependencies = 2,
+    }
     public interface IProjectTaskView : IDbMaintenanceView
     {
         void GetNewLineType(string text, out PrimaryKeyValue laborPartPkValue, out LaborPartLineTypes lineType);
@@ -37,6 +43,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         void UpdateRecalcProcedure(int currentProjectTask, int totalProjectTasks, string currentProjectTaskText);
 
         void SetupView();
+
+        void SetDependencyRowFocus(int dependencyRowFocus);
+
+        void SetLaborPartRowFocus(int rowId);
+
+        void SetFocusToGrid(ProjectTaskGrids grid);
     }
     public class ProjectTaskViewModel : DevLogixDbMaintenanceViewModel<ProjectTask>
     {
@@ -351,6 +363,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         private bool _calculating;
         private bool _loading;
         private int _originalProjectId;
+        private int _dependencyRowFocusId = -1;
+        private int _laborPartRowFocus = -1;
 
         public ProjectTaskViewModel()
         {
@@ -416,6 +430,32 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             ProjectTotalsManager.InsertRow(StatusRow);
 
             base.Initialize();
+        }
+
+        protected override PrimaryKeyValue GetAddViewPrimaryKeyValue(PrimaryKeyValue addViewPrimaryKeyValue)
+        {
+            if (addViewPrimaryKeyValue.TableDefinition == AppGlobals.LookupContext.ProjectTaskDependency)
+            {
+                var dependencyRow =
+                    AppGlobals.LookupContext.ProjectTaskDependency.GetEntityFromPrimaryKeyValue(addViewPrimaryKeyValue);
+                if (dependencyRow != null)
+                {
+                    _dependencyRowFocusId = dependencyRow.DependsOnProjectTaskId;
+                }
+            }
+
+            if (addViewPrimaryKeyValue.TableDefinition == AppGlobals.LookupContext.ProjectTaskLaborParts)
+            {
+                var laborPartRow =
+                    AppGlobals.LookupContext.ProjectTaskLaborParts.GetEntityFromPrimaryKeyValue(addViewPrimaryKeyValue);
+                if (laborPartRow != null)
+                {
+                    _laborPartRowFocus = laborPartRow.DetailId;
+                }
+            }
+
+            var result = base.GetAddViewPrimaryKeyValue(addViewPrimaryKeyValue);
+            return result;
         }
 
         protected override ProjectTask PopulatePrimaryKeyControls(ProjectTask newEntity, PrimaryKeyValue primaryKeyValue)
@@ -502,6 +542,18 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             ActualRow.Minutes = entity.MinutesSpent;
             ActualRow.Cost = entity.Cost;
             RefreshTotals();
+            if (_dependencyRowFocusId >= 0)
+            {
+                View.SetDependencyRowFocus(_dependencyRowFocusId);
+                _dependencyRowFocusId = -1;
+            }
+
+            if (_laborPartRowFocus >= 0)
+            {
+                View.SetLaborPartRowFocus(_laborPartRowFocus);
+                _laborPartRowFocus = -1;
+            }
+
             _loading = false;
         }
 
@@ -570,7 +622,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 }
             }
 
+            if (!ProjectTaskDependencyManager.ValidateGrid())
+            {
+                return false;
+            }
             if (!ProjectTaskDependencyManager.ValidateCircular())
+            {
+                return false;
+            }
+
+            if (!LaborPartsManager.ValidateGrid())
             {
                 return false;
             }

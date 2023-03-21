@@ -30,6 +30,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         string StartRecalcProcedure(LookupDefinitionBase lookupDefinition);
 
         void UpdateRecalcProcedure(int currentProjectTask, int totalProjectTasks, string currentProjectTaskText);
+
+        void GotoGrid();
     }
     public enum ProjectMaterialSpecialRights
     {
@@ -339,6 +341,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             ProjectMaterialPartManager.SetupForNewRecord();
             PostCommand.IsEnabled = ProjectAutoFillValue.IsValid();
             HistoryLookupCommand = GetLookupCommand(LookupCommands.Clear);
+        }
+
+        protected override bool ValidateEntity(ProjectMaterial entity)
+        {
+            if (!ProjectMaterialPartManager.ValidateGrid())
+            {
+                return false;
+            }
+            return base.ValidateEntity(entity);
         }
 
         public void SetTotalCost(decimal total)

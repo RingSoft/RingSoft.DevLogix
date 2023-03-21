@@ -83,11 +83,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             base.SetCellValue(value);
         }
 
-        public override bool ValidateRow()
-        {
-            throw new System.NotImplementedException();
-        }
-
         public override decimal GetExtendedCost()
         {
             return Cost;

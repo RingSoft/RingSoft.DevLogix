@@ -162,9 +162,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public override bool ValidateRow()
         {
-            throw new System.NotImplementedException();
+            if (!LaborPartAutoFillValue.IsValid())
+            {
+                Manager.ViewModel.View.SetFocusToGrid(ProjectTaskGrids.LaborPart);
+                var message = "Invalid Labor Part";
+                ControlsGlobals.UserInterface.ShowMessageBox(message, message, RsMessageBoxIcons.Exclamation);
+                Manager.Grid?.GotoCell(this, ProjectTaskLaborPartsManager.LaborPartColumnId);
+                return false;
+            }
+            return true;
         }
-
         public override void SaveToEntity(ProjectTaskLaborPart entity, int rowIndex)
         {
             entity.LaborPartId = LaborPartAutoFillValue.GetEntity<LaborPart>().Id;

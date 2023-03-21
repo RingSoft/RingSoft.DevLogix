@@ -1,22 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using RingSoft.App.Controls;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DataEntryControls.WPF.DataEntryGrid;
 using RingSoft.DbLookup;
-using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
@@ -24,6 +12,9 @@ using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels.ProjectManagement;
+using System.Windows;
+using System.Windows.Controls;
+using RingSoft.DevLogix.Library.ViewModels.UserManagement;
 
 namespace RingSoft.DevLogix.ProjectManagement
 {
@@ -58,6 +49,8 @@ namespace RingSoft.DevLogix.ProjectManagement
         public RecalcProcedure RecalcProcedure { get; set; }
 
         private bool _settingUserFocus;
+        private int _dependencyRowFocus = -1;
+        private int _laborPartRowFocus = -1;
 
         public ProjectTaskMaintenanceWindow()
         {
@@ -118,8 +111,32 @@ namespace RingSoft.DevLogix.ProjectManagement
                     args.Handled = true;
                 }
             };
+
+            DependenciesGrid.Loaded += (sender, args) =>
+            {
+                if (_dependencyRowFocus >= 0)
+                {
+                    TabControl.SelectedItem = DependenciesTab;
+                    var rows = LocalViewModel.ProjectTaskDependencyManager.Rows.OfType<ProjectTaskDependencyRow>();
+                    var row = rows.FirstOrDefault(p => p.DependencyTaskId == _dependencyRowFocus);
+                    DependenciesGrid.GotoCell(row, 1);
+                    _dependencyRowFocus = -1;
+                }
+            };
+
+            LaborPartsGrid.Loaded += (sender, args) =>
+            {
+                if (_laborPartRowFocus >= 0)
+                {
+                    TabControl.SelectedItem = LaborPartsTabItem;
+                    var row = LocalViewModel.LaborPartsManager.Rows[_laborPartRowFocus];
+                    LaborPartsGrid.GotoCell(row, ProjectTaskLaborPartsManager.LaborPartColumnId);
+                    _laborPartRowFocus = -1;
+                }
+            };
         }
 
+        
         protected override void OnLoaded()
         {
             RegisterFormKeyControl(KeyControl);
@@ -240,6 +257,33 @@ namespace RingSoft.DevLogix.ProjectManagement
             {
                 //DependenciesGrid.IsEnabled = false;
                 ResetViewForNewRecord();
+            }
+        }
+
+        public void SetDependencyRowFocus(int dependencyRowFocus)
+        {
+            _dependencyRowFocus = dependencyRowFocus;
+        }
+
+        public void SetLaborPartRowFocus(int rowId)
+        {
+            _laborPartRowFocus = rowId;
+        }
+
+        public void SetFocusToGrid(ProjectTaskGrids grid)
+        {
+            switch (grid)
+            {
+                case ProjectTaskGrids.LaborPart:
+                    SetFocusToTab(LaborPartsTabItem);
+                    LaborPartsGrid.Focus();
+                    break;
+                case ProjectTaskGrids.Dependencies:
+                    SetFocusToTab(DependenciesTab);
+                    DependenciesGrid.Focus();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(grid), grid, null);
             }
         }
     }

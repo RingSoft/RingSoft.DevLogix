@@ -154,5 +154,11 @@ namespace RingSoft.DevLogix.ProjectManagement
             var progress = $"Recalculating Project {currentProjectTaskText} {currentProjectTask} / {totalProjectTasks}";
             RecalcProcedure.SplashWindow.SetProgress(progress);
         }
+
+        public void GotoGrid()
+        {
+            TabControl.SelectedItem = MaterialPartsTabItem;
+            MaterialPartsGrid.Focus();
+        }
     }
 }
