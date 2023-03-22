@@ -62,6 +62,8 @@ namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
         [DefaultValue(0)]
         public decimal Cost { get; set; }
 
+        public DateTime? StartDateTime { get; set; }
+
         public virtual ICollection<ProjectUser> ProjectUsers { get; set; }
 
         public virtual ICollection<ProjectTask> ProjectTasks { get; set; }

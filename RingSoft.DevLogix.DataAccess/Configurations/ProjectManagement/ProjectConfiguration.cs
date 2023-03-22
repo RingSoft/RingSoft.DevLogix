@@ -29,6 +29,7 @@ namespace RingSoft.DevLogix.DataAccess.Configurations.ProjectManagement
             builder.Property(p => p.EstimatedCost).HasColumnType(DbConstants.DecimalColumnType);
             builder.Property(p => p.MinutesSpent).HasColumnType(DbConstants.DecimalColumnType);
             builder.Property(p => p.Cost).HasColumnType(DbConstants.DecimalColumnType);
+            builder.Property(p => p.StartDateTime).HasColumnType(DbConstants.DateColumnType);
 
             builder.HasOne(p => p.Product)
                 .WithMany(p => p.Projects)

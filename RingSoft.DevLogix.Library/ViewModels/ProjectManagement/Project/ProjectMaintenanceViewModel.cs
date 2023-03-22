@@ -32,6 +32,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         void SetExistRecordFocus(int userId);
 
         void GotoGrid();
+
+        DateTime? GetDeadline();
     }
 
     public class ProjectMaintenanceViewModel : DevLogixDbMaintenanceViewModel<Project>
@@ -129,6 +131,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 OnPropertyChanged(null, false);
             }
         }
+
+        private DateTime? _startDate;
+
+        public DateTime? StartDate
+        {
+            get => _startDate;
+            set
+            {
+                if (_startDate == value)
+                    return;
+                
+                _startDate = value;
+                OnPropertyChanged();
+            }
+        }
+
 
 
         private DateTime _deadline;
@@ -394,6 +412,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public RelayCommand TasksAddModifyCommand { get; set; }
 
+        public RelayCommand CalculateDeadlineCommand { get; set; }
+
         public RelayCommand MaterialsAddModifyCommand { get; set; }
 
         public decimal MinutesSpent { get; set; }
@@ -417,6 +437,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             TasksAddModifyCommand = new RelayCommand(OnTasksAddModify);
 
             MaterialsAddModifyCommand = new RelayCommand(OnMaterialsAddModify);
+
+            CalculateDeadlineCommand = new RelayCommand((() =>
+            {
+                var deadline = View.GetDeadline();
+                if (deadline.HasValue)
+                {
+                    Deadline = deadline.Value;
+                }
+            }));
 
             ProjectTotalsManager = new ProjectTotalsManager();
 
@@ -522,6 +551,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 .AddFixedFilter(p => p.ProjectId, Conditions.Equals, Id);
             HistoryLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
 
+            CalculateDeadlineCommand.IsEnabled = true;
+
             return project;
         }
 
@@ -542,6 +573,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         protected override void LoadFromEntity(Project entity)
         {
             ManagerAutoFillValue = entity.Manager.GetAutoFillValue();
+            StartDate = entity.StartDateTime;
             if (entity.ContractCost != null) ContractCost = entity.ContractCost.Value;
             Deadline = entity.Deadline.ToLocalTime();
             OriginalDeadline = entity.OriginalDeadline.ToLocalTime();
@@ -584,6 +616,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
             result.Id = Id;
             result.Name = KeyAutoFillValue.Text;
+            result.StartDateTime = StartDate;
             result.ManagerId = ManagerAutoFillValue.GetEntity<User>().Id;
             result.ContractCost = ContractCost;
             result.Deadline = Deadline.ToUniversalTime();
@@ -606,6 +639,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             ManagerAutoFillValue = null;
             ContractCost = 0;
             KeyAutoFillValue = null;
+            StartDate = null;
             ManagerAutoFillValue = null;
             OriginalDeadline = Deadline = DateTime.Now;
             ProductAutoFillValue = null;
@@ -621,6 +655,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             MaterialLookupCommand = GetLookupCommand(LookupCommands.Clear);
             ProjectTotalsManager.ClearTotals();
             ProjectDaysGridManager.Clear();
+            CalculateDeadlineCommand.IsEnabled = false;
         }
 
         protected override bool SaveEntity(Project entity)

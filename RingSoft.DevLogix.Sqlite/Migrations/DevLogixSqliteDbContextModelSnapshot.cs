@@ -657,6 +657,9 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<decimal?>("SaturdayMinutes")
                         .HasColumnType("numeric");
 
+                    b.Property<DateTime?>("StartDateTime")
+                        .HasColumnType("datetime");
+
                     b.Property<decimal?>("SundayMinutes")
                         .HasColumnType("numeric");
 

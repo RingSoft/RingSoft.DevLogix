@@ -1,4 +1,5 @@
-﻿using RingSoft.App.Controls;
+﻿using System;
+using RingSoft.App.Controls;
 using RingSoft.DbMaintenance;
 using System.Windows;
 using System.Windows.Controls;
@@ -19,6 +20,8 @@ namespace RingSoft.DevLogix.ProjectManagement
     {
         public Button RecalcButton { get; set; }
 
+        public Button CalcDeadlineButton { get; set; }
+
         static ProjectHeaderControl()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ProjectHeaderControl), new FrameworkPropertyMetadata(typeof(ProjectHeaderControl)));
@@ -27,6 +30,7 @@ namespace RingSoft.DevLogix.ProjectManagement
         public override void OnApplyTemplate()
         {
             RecalcButton = GetTemplateChild(nameof(RecalcButton)) as Button;
+            CalcDeadlineButton = GetTemplateChild(nameof(CalcDeadlineButton)) as Button;
 
             base.OnApplyTemplate();
         }
@@ -54,8 +58,10 @@ namespace RingSoft.DevLogix.ProjectManagement
                     if (!LocalViewModel.TableDefinition.HasRight(RightTypes.AllowEdit))
                     {
                         projectHeaderControl.RecalcButton.Visibility = Visibility.Collapsed;
+                        projectHeaderControl.CalcDeadlineButton.Visibility = Visibility.Collapsed;
                     }
                     projectHeaderControl.RecalcButton.Command = LocalViewModel.RecalcCommand;
+                    projectHeaderControl.CalcDeadlineButton.Command = LocalViewModel.CalculateDeadlineCommand;
                 }
             };
 
@@ -127,6 +133,11 @@ namespace RingSoft.DevLogix.ProjectManagement
         public void GotoGrid()
         {
             TabControl.SelectedItem = UsersTab;
+        }
+
+        public DateTime? GetDeadline()
+        {
+            return null;
         }
     }
 }

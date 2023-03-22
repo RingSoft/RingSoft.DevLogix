@@ -14,7 +14,7 @@
                             xmlns:projectManagement="clr-namespace:RingSoft.DevLogix.DataAccess.LookupModel.ProjectManagement;assembly=RingSoft.DevLogix.DataAccess"
                             mc:Ignorable="d"
                             Style="{StaticResource BaseWindowStyle}"
-                            Title="Project Maintenance Window" Height="450" Width="800">
+                            Title="Project Maintenance Window" Height="550" Width="800">
 
     <Window.Resources>
 
@@ -38,7 +38,9 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
 
-                                <ac:DbMaintenanceButton Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" x:Name="RecalcButton" Content="_Recalculate" ImageSource="{StaticResource AfUpImage}" Style="{StaticResource SubButton}" HorizontalContentAlignment="Left"/>
+                                <ac:DbMaintenanceButton Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" x:Name="RecalcButton" Content="_Recalculate" ImageSource="{StaticResource AfUpImage}" Style="{StaticResource SubButton}" HorizontalContentAlignment="Left"/>
+
+                                <ac:DbMaintenanceButton Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" x:Name="CalcDeadlineButton" Content="Calculate Deadline" ImageSource="{StaticResource AfUpImage}" Style="{StaticResource SubButton}" HorizontalContentAlignment="Left"/>
 
                             </Grid>
 
@@ -106,6 +108,7 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
 
                             <Grid.ColumnDefinitions>
@@ -124,21 +127,25 @@
 
                             <dec:DecimalEditControl Grid.Row="0" Grid.Column="3" FormatType="Currency" Value="{Binding ContractCost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150" HorizontalAlignment="Left" TextAlignment="Left"/>
 
-                            <Label Grid.Row="1" Grid.Column="0" Content="Deadline"/>
+                            <Label Grid.Row="1" Grid.Column="0" Content="Start Date/Time"/>
 
-                            <dec:DateEditControl Grid.Row="1" Grid.Column="1" x:Name="DeadlineControl" DateFormatType="DateTime" HorizontalAlignment="Left" Width="200" Value="{Binding Deadline, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <dec:DateEditControl Grid.Row="1" Grid.Column="1" x:Name="StartDateControl" Value="{Binding StartDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left" DateFormatType="DateTime"/>
 
-                            <Label Grid.Row="1" Grid.Column="2" Content="Original Deadline"/>
+                            <Label Grid.Row="2" Grid.Column="0" Content="Deadline"/>
 
-                            <dec:DateEditControl Grid.Row="1" Grid.Column="3" x:Name="OriginalDeadlineControl" DateFormatType="DateTime" HorizontalAlignment="Left" Width="200" Value="{Binding OriginalDeadline, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <dec:DateEditControl Grid.Row="2" Grid.Column="1" x:Name="DeadlineControl" DateFormatType="DateTime" HorizontalAlignment="Left" Width="200" Value="{Binding Deadline, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-                            <Label Grid.Row="2" Grid.Column="0" Content="Product"/>
+                            <Label Grid.Row="2" Grid.Column="2" Content="Original Deadline"/>
 
-                            <lc:AutoFillControl Grid.Row="2" Grid.Column="1" x:Name="ProductControl" Setup="{Binding ProductAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding ProductAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left"/>
+                            <dec:DateEditControl Grid.Row="2" Grid.Column="3" x:Name="OriginalDeadlineControl" DateFormatType="DateTime" HorizontalAlignment="Left" Width="200" Value="{Binding OriginalDeadline, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-                            <CheckBox Grid.Row="2" Grid.Column="2" Content="Is Billable" IsChecked="{Binding IsBillable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <Label Grid.Row="3" Grid.Column="0" Content="Product"/>
 
-                            <deg:DataEntryGrid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Manager="{Binding ProjectTotalsManager}" DataEntryCanUserAddRows="False" HorizontalAlignment="Left" Margin="5">
+                            <lc:AutoFillControl Grid.Row="3" Grid.Column="1" x:Name="ProductControl" Setup="{Binding ProductAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding ProductAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left"/>
+
+                            <CheckBox Grid.Row="3" Grid.Column="2" Content="Is Billable" IsChecked="{Binding IsBillable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                            <deg:DataEntryGrid Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Manager="{Binding ProjectTotalsManager}" DataEntryCanUserAddRows="False" HorizontalAlignment="Left" Margin="5">
 
                                 <deg:DataEntryGrid.Columns>
 
@@ -159,7 +166,7 @@
                                 </deg:DataEntryGrid.DisplayStyles>
                             </deg:DataEntryGrid>
 
-                            <deg:DataEntryGrid Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" Manager="{Binding ProjectDaysGridManager}" DataEntryCanUserAddRows="False" HorizontalAlignment="Left" Margin="5">
+                            <deg:DataEntryGrid Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Manager="{Binding ProjectDaysGridManager}" DataEntryCanUserAddRows="False" HorizontalAlignment="Left" Margin="5">
 
                                 <deg:DataEntryGrid.Columns>
 
