@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using RingSoft.App.Controls;
 using RingSoft.DbMaintenance;
 using System.Windows;
@@ -137,6 +138,10 @@ namespace RingSoft.DevLogix.ProjectManagement
 
         public DateTime? GetDeadline()
         {
+            var window = new ProjectScheduleWindow(LocalViewModel.Entity, LocalViewModel.StartDate);
+            window.Owner = this;
+            window.ShowInTaskbar = false;
+            window.ShowDialog();
             return null;
         }
     }

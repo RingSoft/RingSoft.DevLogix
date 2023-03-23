@@ -1,16 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 
 namespace RingSoft.DevLogix.ProjectManagement
 {
@@ -19,9 +8,14 @@ namespace RingSoft.DevLogix.ProjectManagement
     /// </summary>
     public partial class ProjectScheduleWindow
     {
-        public ProjectScheduleWindow()
+        public ProjectScheduleWindow(Project project, DateTime? startDate)
         {
             InitializeComponent();
+            Loaded += (sender, args) =>
+            {
+                LocalViewModel.Initialize(project, startDate);
+                StartDateControl.TextBox.SelectAll();
+            };
         }
     }
 }
