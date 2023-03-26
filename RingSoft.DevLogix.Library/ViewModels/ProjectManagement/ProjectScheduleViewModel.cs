@@ -104,6 +104,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             project = table
                 .Include(p => p.ProjectTasks)
                 .Include(p => p.ProjectUsers)
+                .ThenInclude(p => p.User)
+                .ThenInclude(p => p.UserTimeOff)
                 .FirstOrDefault(p => p.Id == project.Id);
 
             Project = project;
@@ -120,35 +122,35 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             RemainingMinutes = ScheduleManager.ScheduleData.Sum(p => p.RemainingMinutes);
         }
 
-        public decimal GetMinutesForDay(DayOfWeek dayOfWeek)
+        public decimal GetMinutesForDay(DateTime date, ProjectUser projectUser)
         {
             var result = (decimal)0;
 
-            switch (dayOfWeek)
+            switch (date.DayOfWeek)
             {
                 case DayOfWeek.Sunday:
-                    result = Users.Sum(p => p.SundayMinutes).GetValueOrDefault();
+                    result = projectUser.SundayMinutes.GetValueOrDefault();
                     break;
                 case DayOfWeek.Monday:
-                    result = Users.Sum(p => p.MondayMinutes).GetValueOrDefault();
+                    result = projectUser.MondayMinutes.GetValueOrDefault();
                     break;
                 case DayOfWeek.Tuesday:
-                    result = Users.Sum(p => p.TuesdayMinutes).GetValueOrDefault();
+                    result = projectUser.TuesdayMinutes.GetValueOrDefault();
                     break;
                 case DayOfWeek.Wednesday:
-                    result = Users.Sum(p => p.WednesdayMinutes).GetValueOrDefault();
+                    result = projectUser.WednesdayMinutes.GetValueOrDefault();
                     break;
                 case DayOfWeek.Thursday:
-                    result = Users.Sum(p => p.ThursdayMinutes).GetValueOrDefault();
+                    result = projectUser.ThursdayMinutes.GetValueOrDefault();
                     break;
                 case DayOfWeek.Friday:
-                    result = Users.Sum(p => p.FridayMinutes).GetValueOrDefault();
+                    result = projectUser.FridayMinutes.GetValueOrDefault();
                     break;
                 case DayOfWeek.Saturday:
-                    result = Users.Sum(p => p.SaturdayMinutes).GetValueOrDefault();
+                    result = projectUser.SaturdayMinutes.GetValueOrDefault();
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(dayOfWeek), dayOfWeek, null);
+                    throw new ArgumentOutOfRangeException(nameof(date.DayOfWeek), date.DayOfWeek, null);
             }
 
             return result;

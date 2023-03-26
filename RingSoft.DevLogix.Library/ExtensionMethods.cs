@@ -48,5 +48,21 @@ namespace RingSoft.DevLogix.Library
             }
             return false;
         }
+
+        public static string GetHolidayText(this DateTime date)
+        {
+            var result = string.Empty;
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var table = context.GetTable<SystemPreferencesHolidays>();
+            if (table != null)
+            {
+                var holiday = table.FirstOrDefault(p => p.Date == date);
+                if (holiday != null)
+                {
+                    result = holiday.Name;
+                }
+            }
+            return result;
+        }
     }
 }

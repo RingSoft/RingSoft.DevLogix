@@ -8,13 +8,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
     {
         public new ProjectScheduleGridManager Manager { get; private set; }
 
-        public DateTime Date { get; private set; }
+        public DateTime Date { get; set; }
 
-        public string Description { get; private set; }
+        public string Description { get; set; }
 
-        public decimal HoursWorked { get; private set; }
+        public decimal HoursWorked { get; set; }
 
-        public decimal HoursRemaining { get; private set; }
+        public decimal HoursRemaining { get; set; }
 
         public ProjectScheduleGridRow(ProjectScheduleGridManager manager) : base(manager)
         {
@@ -35,7 +35,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 case ProjectScheduleColumns.Description:
                     return new DataEntryGridTextCellProps(this, columnId, Description);
                 case ProjectScheduleColumns.HoursWorked:
-                    break;
+                    return new DataEntryGridDecimalCellProps(this, columnId, new DecimalEditControlSetup
+                    {
+                        FormatType = DecimalEditFormatTypes.Number,
+                    }, HoursWorked);
                 case ProjectScheduleColumns.HoursRemaining:
                     break;
                 default:
