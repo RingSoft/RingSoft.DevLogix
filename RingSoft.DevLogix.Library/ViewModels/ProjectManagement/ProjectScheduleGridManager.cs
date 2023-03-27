@@ -73,7 +73,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 {
                     foreach (var projectUser in ViewModel.Project.ProjectUsers)
                     {
-                        remainingMinutes = ProcessProjectUser(date, projectUser, remainingMinutes);
+                        remainingMinutes = ProcessProjectUser(date, projectUser, remainingMinutes, out var skipDays);
                     }
                 }
                 else
@@ -88,26 +88,38 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
-        private decimal ProcessProjectUser(DateTime date, ProjectUser projectUser, decimal remainingMinutes)
+        private decimal ProcessProjectUser(DateTime date, ProjectUser projectUser, decimal remainingMinutes
+        , out int skipDays)
         {
+            skipDays = 0;
             var dailyRemainingMinutes = ViewModel.GetMinutesForDay(date, projectUser);
             if (dailyRemainingMinutes > 0)
             {
                 var endDate = date.AddDays(1).AddSeconds(-1);
-                var timeOff = projectUser.User.UserTimeOff.FirstOrDefault(p => p.StartDate.ToLocalTime() >= date);
+                var timeOff = projectUser.User.UserTimeOff
+                    .FirstOrDefault(p => p.StartDate.ToLocalTime().Ticks >= date.Ticks
+                    && p.StartDate.ToLocalTime().Ticks <= endDate.Ticks);
+
+                var minutesOff = (decimal)0;
                 if (timeOff != null)
                 {
                     var timeOffSpan = timeOff.EndDate - timeOff.StartDate;
-                    var minutesOff = (decimal)timeOffSpan.TotalMinutes;
-                    if (minutesOff > dailyRemainingMinutes)
-                    {
-                        
-                    }
+                    
+                    minutesOff = (decimal)timeOffSpan.TotalMinutes;
+
                     dailyRemainingMinutes -= minutesOff;
-                    var row = new ProjectScheduleGridRow(this);
-                    row.Date = date;
-                    row.Description = $"{projectUser.User.Name} {timeOff.Description} Time Off";
-                    AddRow(row);
+
+                    var rowsToAdd = (int)Math.Ceiling(timeOffSpan.TotalDays);
+                    skipDays = rowsToAdd;
+
+                    while (rowsToAdd > 0)
+                    {
+                        var row = new ProjectScheduleGridRow(this);
+                        row.Date = date;
+                        row.Description = $"{projectUser.User.Name} {timeOff.Description} Time Off";
+                        AddRow(row);
+                        rowsToAdd--;
+                    }
                 }
 
                 if (dailyRemainingMinutes > 0)
