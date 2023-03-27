@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.WebSockets;
 using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
@@ -69,11 +70,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             while (remainingMinutes > 0)
             {
                 var holidayText = date.GetHolidayText();
+                var skipDays = 1;
                 if (holidayText.IsNullOrEmpty())
                 {
                     foreach (var projectUser in ViewModel.Project.ProjectUsers)
                     {
-                        remainingMinutes = ProcessProjectUser(date, projectUser, remainingMinutes, out var skipDays);
+                        remainingMinutes = ProcessProjectUser(date, projectUser, remainingMinutes);
                     }
                 }
                 else
@@ -84,14 +86,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     AddRow(row);
                 }
 
-                date = date.AddDays(1);
+                date = date.AddDays(skipDays);
+                skipDays = 1;
             }
         }
 
-        private decimal ProcessProjectUser(DateTime date, ProjectUser projectUser, decimal remainingMinutes
-        , out int skipDays)
+        private decimal ProcessProjectUser(DateTime date, ProjectUser projectUser, decimal remainingMinutes)
         {
-            skipDays = 0;
             var dailyRemainingMinutes = ViewModel.GetMinutesForDay(date, projectUser);
             if (dailyRemainingMinutes > 0)
             {
@@ -110,15 +111,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     dailyRemainingMinutes -= minutesOff;
 
                     var rowsToAdd = (int)Math.Ceiling(timeOffSpan.TotalDays);
-                    skipDays = rowsToAdd;
-
+                    var newDate = date;
                     while (rowsToAdd > 0)
                     {
                         var row = new ProjectScheduleGridRow(this);
-                        row.Date = date;
+                        row.Date = newDate;
                         row.Description = $"{projectUser.User.Name} {timeOff.Description} Time Off";
                         AddRow(row);
                         rowsToAdd--;
+                        newDate = newDate.AddDays(1);
                     }
                 }
 
