@@ -24,6 +24,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         public decimal RemainingMinutes { get; set; }
     }
 
+    public class UserScheduleData
+    {
+        public ProjectUser ProjectUser { get; set; }
+
+        public DateTime? NextScheduleDate { get; set; }
+    }
+
     public class ProjectScheduleGridManager : DataEntryGridManager
     {
         public const int DateColumnId = (int)ProjectScheduleColumns.Date;
@@ -34,6 +41,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         public ProjectScheduleViewModel ViewModel { get; private set; }
 
         public List<ProjectScheduleData> ScheduleData { get; private set; } = new List<ProjectScheduleData>();
+
+        public List<UserScheduleData> UserScheduleData { get; private set; } = new List<UserScheduleData>();
 
         public ProjectScheduleGridManager(ProjectScheduleViewModel viewModel)
         {
@@ -58,6 +67,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 };
                 ScheduleData.Add(projectData);
             }
+
+            UserScheduleData.Clear();
+            foreach (var projectUser in project.ProjectUsers)
+            {
+                var userData = new UserScheduleData
+                {
+                    ProjectUser = projectUser,
+                };
+                UserScheduleData.Add(userData);
+            }
         }
 
         public void CalcSchedule()
@@ -70,7 +89,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             while (remainingMinutes > 0)
             {
                 var holidayText = date.GetHolidayText();
-                var skipDays = 1;
                 if (holidayText.IsNullOrEmpty())
                 {
                     foreach (var projectUser in ViewModel.Project.ProjectUsers)
@@ -86,8 +104,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     AddRow(row);
                 }
 
-                date = date.AddDays(skipDays);
-                skipDays = 1;
+                date = date.AddDays(1);
             }
         }
 
@@ -96,6 +113,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             var dailyRemainingMinutes = ViewModel.GetMinutesForDay(date, projectUser);
             if (dailyRemainingMinutes > 0)
             {
+                var userData = UserScheduleData.FirstOrDefault(p => p.ProjectUser.UserId == projectUser.UserId);
+                if (userData.NextScheduleDate != null && userData.NextScheduleDate > date)
+                {
+                    return remainingMinutes;
+                }
+
+                userData.NextScheduleDate = null;
                 var endDate = date.AddDays(1).AddSeconds(-1);
                 var timeOff = projectUser.User.UserTimeOff
                     .FirstOrDefault(p => p.StartDate.ToLocalTime().Ticks >= date.Ticks
@@ -117,9 +141,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                         var row = new ProjectScheduleGridRow(this);
                         row.Date = newDate;
                         row.Description = $"{projectUser.User.Name} {timeOff.Description} Time Off";
+                        if (dailyRemainingMinutes > 0)
+                        {
+                            row.Description += $" - {AppGlobals.MakeTimeSpent(minutesOff)}";
+                        }
                         AddRow(row);
                         rowsToAdd--;
                         newDate = newDate.AddDays(1);
+                        userData.NextScheduleDate = newDate;
                     }
                 }
 
@@ -134,6 +163,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     {
                         foreach (var scheduleData in userScheduleData)
                         {
+                            var minutesWorked = scheduleData.RemainingMinutes;
                             if (scheduleData.RemainingMinutes - dailyRemainingMinutes < 0)
                             {
                                 dailyRemainingMinutes -= scheduleData.RemainingMinutes;
@@ -144,12 +174,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                             {
                                 scheduleData.RemainingMinutes -= dailyRemainingMinutes;
                                 remainingMinutes -= dailyRemainingMinutes;
+                                minutesWorked = dailyRemainingMinutes;
                             }
 
                             var row = new ProjectScheduleGridRow(this);
                             row.Date = date;
                             row.Description = $"{projectUser.User.Name} / {$"{scheduleData.ProjectTask.Name}"}";
-                            row.HoursWorked = originalDailyMinutesOff / 60;
+                            row.HoursWorked = minutesWorked / 60;
                             AddRow(row);
                         }
                     }

@@ -50,11 +50,11 @@
 
                 <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ProjectScheduleGridManager.DateColumnId}" Header="Date" Width="100"/>
 
-                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ProjectScheduleGridManager.DescriptionColumnId}" Header="Description" Width="300"/>
+                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ProjectScheduleGridManager.DescriptionColumnId}" Header="Description" Width="400"/>
 
-                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ProjectScheduleGridManager.HoursWorkedColumnId}" Header="Hours Worked" Width="150"/>
+                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ProjectScheduleGridManager.HoursWorkedColumnId}" Header="Hours Worked" Width="100"/>
 
-                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ProjectScheduleGridManager.HoursRemainingColumnId}" Header="Hours Remaining" Width="150"/>
+                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ProjectScheduleGridManager.HoursRemainingColumnId}" Header="Hours Remaining" Width="100"/>
 
             </deg:DataEntryGrid.Columns>
         </deg:DataEntryGrid>
