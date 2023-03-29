@@ -106,6 +106,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 .Include(p => p.ProjectUsers)
                 .ThenInclude(p => p.User)
                 .ThenInclude(p => p.UserTimeOff)
+                .Include(p => p.ProjectTasks)
+                .ThenInclude(p => p.SourceDependencies)
                 .FirstOrDefault(p => p.Id == project.Id);
 
             Project = project;
