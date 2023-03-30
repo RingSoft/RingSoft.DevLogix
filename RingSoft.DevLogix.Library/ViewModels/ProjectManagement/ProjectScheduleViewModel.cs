@@ -81,6 +81,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             private set => RemainingHours = value / 60;
         }
 
+        private DateTime? _calculatedDeadline;
+
+        public DateTime? CalculatedDeadline
+        {
+            get => _calculatedDeadline;
+            set
+            {
+                if (_calculatedDeadline == value)
+                    return;
+
+                _calculatedDeadline = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         public Project Project { get; private set; }
 
         public List<ProjectUser> Users { get; private set; }

@@ -24,6 +24,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         public decimal RemainingMinutes { get; set; }
 
         public int Priority { get; set; }
+
+        public override string ToString()
+        {
+            if (ProjectTask != null)
+            {
+                return ProjectTask.Name;
+            }
+            return base.ToString();
+        }
     }
 
     public class UserScheduleData
@@ -72,6 +81,20 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 ScheduleData.Add(projectData);
             }
 
+            foreach (var projectScheduleData in ScheduleData)
+            {
+                if (projectScheduleData.ProjectTask.SourceDependencies.Any())
+                {
+                    foreach (var projectTaskDependency in projectScheduleData.ProjectTask.SourceDependencies)
+                    {
+                        var scheduleDependency = ScheduleData.FirstOrDefault(p =>
+                            p.ProjectTask == projectTaskDependency.DependsOnProjectTask);
+                        scheduleDependency.Priority++;
+                        projectScheduleData.Priority = scheduleDependency.Priority + 1;
+                    }
+                }
+            }
+
             UserScheduleData.Clear();
             foreach (var projectUser in project.ProjectUsers)
             {
@@ -112,9 +135,20 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
 
             ClearRows();
+            
+            remainingMinutes = ViewModel.RemainingMinutes;
             foreach (var newRow in _newRows.OrderBy(p => p.Date))
             {
+                var rowMinsRemaining = remainingMinutes - (newRow.HoursWorked * 60);
+                newRow.HoursRemaining = (rowMinsRemaining / 60);
+                remainingMinutes = rowMinsRemaining;
                 AddRow(newRow);
+            }
+
+            if (Rows.Any())
+            {
+                var lastRow = Rows.OfType<ProjectScheduleGridRow>().Last();
+                ViewModel.CalculatedDeadline = lastRow.Date;
             }
         }
 
@@ -122,35 +156,111 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         {
             _newRows.Add(row);
         }
+        
         private decimal ProcessProjectUser(DateTime date, ProjectUser projectUser, decimal remainingMinutes)
         {
             var dailyRemainingMinutes = ViewModel.GetMinutesForDay(date, projectUser);
+
+            var userData = UserScheduleData.FirstOrDefault(p => p.ProjectUser.UserId == projectUser.UserId);
+            if (userData.NextScheduleDate != null && userData.NextScheduleDate > date)
+            {
+                return remainingMinutes;
+            }
+
+            userData.NextScheduleDate = null;
+
+            dailyRemainingMinutes = ProcessTimeOff(date, projectUser, dailyRemainingMinutes, userData);
+
             if (dailyRemainingMinutes > 0)
             {
-                var userData = UserScheduleData.FirstOrDefault(p => p.ProjectUser.UserId == projectUser.UserId);
-                if (userData.NextScheduleDate != null && userData.NextScheduleDate > date)
+                var originalDailyMinutesOff = dailyRemainingMinutes;
+                var userScheduleData = ScheduleData
+                    .Where(p => p.ProjectTask.UserId == projectUser.UserId
+                                && p.RemainingMinutes > 0).OrderBy(p => p.Priority)
+                    .ToList();
+                if (userScheduleData != null)
                 {
-                    return remainingMinutes;
+                    foreach (var scheduleData in userScheduleData)
+                    {
+                        if (!ValDependencies(scheduleData.ProjectTask))
+                        {
+                            return remainingMinutes;
+                        }
+
+                        var minutesWorked = scheduleData.RemainingMinutes;
+                        if (scheduleData.RemainingMinutes - dailyRemainingMinutes < 0)
+                        {
+                            dailyRemainingMinutes -= scheduleData.RemainingMinutes;
+                            remainingMinutes -= scheduleData.RemainingMinutes;
+                            scheduleData.RemainingMinutes = 0;
+                        }
+                        else
+                        {
+                            scheduleData.RemainingMinutes -= dailyRemainingMinutes;
+                            remainingMinutes -= dailyRemainingMinutes;
+                            minutesWorked = dailyRemainingMinutes;
+                        }
+
+                        var row = new ProjectScheduleGridRow(this);
+                        row.Date = date;
+                        row.Description = $"{projectUser.User.Name} / {$"{scheduleData.ProjectTask.Name}"}";
+                        row.HoursWorked = minutesWorked / 60;
+                        AddNewRow(row);
+                    }
                 }
+            }
 
-                userData.NextScheduleDate = null;
-                var endDate = date.AddDays(1).AddSeconds(-1);
-                var timeOff = projectUser.User.UserTimeOff
-                    .FirstOrDefault(p => p.StartDate.ToLocalTime().Ticks >= date.Ticks
-                    && p.StartDate.ToLocalTime().Ticks <= endDate.Ticks);
+            return remainingMinutes;
+        }
 
-                var minutesOff = (decimal)0;
-                if (timeOff != null)
+        private bool ValDependencies(ProjectTask projectTask)
+        {
+            if (projectTask.SourceDependencies.Any())
+            {
+                var dependsProject = projectTask.SourceDependencies.FirstOrDefault(p =>
+                    p.DependsOnProjectTask != projectTask);
+
+                if (dependsProject != null)
                 {
-                    var timeOffSpan = timeOff.EndDate - timeOff.StartDate;
-                    
-                    minutesOff = (decimal)timeOffSpan.TotalMinutes;
+                    var userProjectData = ScheduleData.FirstOrDefault(p =>
+                        p.ProjectTask == dependsProject.DependsOnProjectTask && p.RemainingMinutes > 0);
+                    if (userProjectData != null)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        return ValDependencies(dependsProject.DependsOnProjectTask);
+                    }
+                }
+            }
 
-                    dailyRemainingMinutes -= minutesOff;
+            return true;
+        }
 
-                    var rowsToAdd = (int)Math.Ceiling(timeOffSpan.TotalDays);
-                    var newDate = date;
-                    while (rowsToAdd > 0)
+        private decimal ProcessTimeOff(DateTime date, ProjectUser projectUser, decimal dailyRemainingMinutes,
+            UserScheduleData userData)
+        {
+            var endDate = date.AddDays(1).AddSeconds(-1);
+            var timeOff = projectUser.User.UserTimeOff
+                .FirstOrDefault(p => p.StartDate.ToLocalTime().Ticks >= date.Ticks
+                                     && p.StartDate.ToLocalTime().Ticks <= endDate.Ticks);
+
+            var minutesOff = (decimal)0;
+            if (timeOff != null)
+            {
+                var timeOffSpan = timeOff.EndDate - timeOff.StartDate;
+
+                minutesOff = (decimal)timeOffSpan.TotalMinutes;
+
+                dailyRemainingMinutes -= minutesOff;
+
+                var rowsToAdd = (int)Math.Ceiling(timeOffSpan.TotalDays);
+                var newDate = date;
+                while (rowsToAdd > 0)
+                {
+                    var todaysWorkingMinutes = ViewModel.GetMinutesForDay(newDate, projectUser);
+                    if (todaysWorkingMinutes > 0)
                     {
                         var row = new ProjectScheduleGridRow(this);
                         row.Date = newDate;
@@ -159,49 +269,17 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                         {
                             row.Description += $" - {AppGlobals.MakeTimeSpent(minutesOff)}";
                         }
+
                         AddNewRow(row);
-                        rowsToAdd--;
-                        newDate = newDate.AddDays(1);
-                        userData.NextScheduleDate = newDate;
                     }
-                }
 
-                if (dailyRemainingMinutes > 0)
-                {
-                    var originalDailyMinutesOff = dailyRemainingMinutes;
-                    var userScheduleData = ScheduleData
-                        .Where(p => p.ProjectTask.UserId == projectUser.UserId
-                                    && p.RemainingMinutes > 0).OrderBy(p => p.Priority)
-                        .ToList();
-                    if (userScheduleData != null)
-                    {
-                        foreach (var scheduleData in userScheduleData)
-                        {
-                            var minutesWorked = scheduleData.RemainingMinutes;
-                            if (scheduleData.RemainingMinutes - dailyRemainingMinutes < 0)
-                            {
-                                dailyRemainingMinutes -= scheduleData.RemainingMinutes;
-                                remainingMinutes -= scheduleData.RemainingMinutes;
-                                scheduleData.RemainingMinutes = 0;
-                            }
-                            else
-                            {
-                                scheduleData.RemainingMinutes -= dailyRemainingMinutes;
-                                remainingMinutes -= dailyRemainingMinutes;
-                                minutesWorked = dailyRemainingMinutes;
-                            }
-
-                            var row = new ProjectScheduleGridRow(this);
-                            row.Date = date;
-                            row.Description = $"{projectUser.User.Name} / {$"{scheduleData.ProjectTask.Name}"}";
-                            row.HoursWorked = minutesWorked / 60;
-                            AddNewRow(row);
-                        }
-                    }
+                    rowsToAdd--;
+                    newDate = newDate.AddDays(1);
+                    userData.NextScheduleDate = newDate;
                 }
             }
 
-            return remainingMinutes;
+            return dailyRemainingMinutes;
         }
     }
 }

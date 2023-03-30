@@ -42,7 +42,15 @@
 
         <dec:DateEditControl Grid.Row="1" Grid.Column="1" x:Name="StartDateControl" Width="100" HorizontalAlignment="Left" DateFormatType="DateOnly" Value="{Binding StartDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-        <Button Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" Content="Ca_lculate" Command="{Binding CalculateCommand}" HorizontalAlignment="Left"/>
+        <StackPanel  Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="3" Orientation="Horizontal">
+
+            <Button Content="Ca_lculate" Command="{Binding CalculateCommand}" HorizontalAlignment="Left"/>
+
+            <Label Content="Calculated Deadline"/>
+
+            <dec:DateReadOnlyBox Value="{Binding CalculatedDeadline}" Width="100" HorizontalAlignment="Left" DateFormatType="DateOnly"/>
+
+        </StackPanel>
 
         <deg:DataEntryGrid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="5" Manager="{Binding ScheduleManager}" DataEntryCanUserAddRows="False">
 
