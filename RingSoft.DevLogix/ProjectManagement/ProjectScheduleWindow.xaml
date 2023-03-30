@@ -9,7 +9,7 @@
         xmlns:local="clr-namespace:RingSoft.DevLogix.ProjectManagement"
         mc:Ignorable="d"
         Style="{StaticResource BaseWindowStyle}"
-        Title="ProjectScheduleWindow" Height="450" Width="800">
+        Title="Project Schedule Window" Height="450" Width="800">
 
     <Window.DataContext>
         <vm:ProjectScheduleViewModel x:Name="LocalViewModel"/>
@@ -67,5 +67,8 @@
             </deg:DataEntryGrid.Columns>
         </deg:DataEntryGrid>
 
+        <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="5" Orientation="Horizontal" HorizontalAlignment="Right">
+
+        </StackPanel>
     </Grid>
 </dec:BaseWindow>

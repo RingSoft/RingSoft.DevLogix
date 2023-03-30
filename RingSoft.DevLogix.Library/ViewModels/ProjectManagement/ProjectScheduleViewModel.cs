@@ -5,11 +5,12 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.DataEntryControls.Engine;
+using RingSoft.DbLookup;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 
 namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 {
-    public class ProjectScheduleViewModel : INotifyPropertyChanged
+    public class ProjectScheduleViewModel : INotifyPropertyChanged, IPrintProcessor
     {
         private DateTime _startDate;
 
@@ -188,6 +189,17 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             field = value;
             OnPropertyChanged(propertyName);
             return true;
+        }
+
+        public void ProcessPrintOutputData(PrinterSetupArgs setupArgs)
+        {
+            
+        }
+
+        public event EventHandler<PrinterDataProcessedEventArgs>? PrintProcessingHeader;
+        public void NotifyProcessingHeader(PrinterDataProcessedEventArgs args)
+        {
+            throw new NotImplementedException();
         }
     }
 }
