@@ -50,5 +50,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
             return new DataEntryGridTextCellProps(this, columnId);
         }
+
+        public override DataEntryGridCellStyle GetCellStyle(int columnId)
+        {
+            return new DataEntryGridCellStyle
+            {
+                State = DataEntryGridCellStates.ReadOnly
+            };
+            //return base.GetCellStyle(columnId);
+        }
     }
 }

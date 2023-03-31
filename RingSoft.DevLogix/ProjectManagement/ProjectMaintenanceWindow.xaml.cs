@@ -142,7 +142,18 @@ namespace RingSoft.DevLogix.ProjectManagement
             window.Owner = this;
             window.ShowInTaskbar = false;
             window.ShowDialog();
+            if (window.LocalViewModel.DialogResult)
+            {
+                return window.LocalViewModel.CalculatedDeadline;
+            }
             return null;
+        }
+
+        public void GotoTasksTab()
+        {
+            TabControl.SelectedItem = TasksTab;
+            TabControl.UpdateLayout();
+            TasksTab.UpdateLayout();
         }
     }
 }

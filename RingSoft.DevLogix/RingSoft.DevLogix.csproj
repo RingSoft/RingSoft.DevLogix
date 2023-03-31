@@ -42,6 +42,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="ProjectManagement\ProjectSchedule.rpt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="QualityAssurance\Error.rpt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

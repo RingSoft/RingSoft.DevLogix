@@ -67,7 +67,13 @@
             </deg:DataEntryGrid.Columns>
         </deg:DataEntryGrid>
 
-        <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="5" Orientation="Horizontal" HorizontalAlignment="Right">
+        <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="5" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0, 5">
+
+            <Button Content="_Print" Command="{Binding PrintCommand}" Width="50" Margin="2.5, 0"/>
+
+            <Button Content="_Apply" Command="{Binding ApplyCommand}" Width="50" Margin="2.5, 0"/>
+
+            <Button Content="_Cancel" Command="{Binding CancelCommand}" Width="50" Margin="2.5, 0"/>
 
         </StackPanel>
     </Grid>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
+using RingSoft.DbLookup;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 
@@ -101,6 +102,43 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         {
             var rows = Rows.OfType<ProjectUsersGridRow>();
             return rows.FirstOrDefault(p => p.UserId == userId);
+        }
+
+        public bool ValidateCalc()
+        {
+            var rows = Rows.OfType<ProjectUsersGridRow>()
+                .Where(p => p.IsNew == false);
+
+            var caption = "Calculation Validation";
+            if (!rows.Any())
+            {
+                ViewModel.View.GotoGrid();
+                var message = "No users defined for this project.";
+                ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
+                Grid?.GotoCell(Rows[0], UserColumnId);
+                return false;
+            }
+            foreach (var projectUsersGridRow in rows)
+            {
+                if (!projectUsersGridRow.UserAutoFillValue.IsValid())
+                {
+                    ViewModel.View.GotoGrid();
+                    var message = "Invalid User";
+                    ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
+                    Grid?.GotoCell(projectUsersGridRow, UserColumnId);
+                    return false;
+                }
+                var totalMinutes = projectUsersGridRow.GetTotalMinutes();
+                if (totalMinutes <= 0)
+                {
+                    ViewModel.View.GotoGrid();
+                    var message = $"The User '{projectUsersGridRow.UserAutoFillValue.Text}' does not have any working time set up in the users grid.";
+                    ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
+                    Grid?.GotoCell(projectUsersGridRow, UserColumnId);
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

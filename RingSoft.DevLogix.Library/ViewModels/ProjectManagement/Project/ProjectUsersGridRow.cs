@@ -330,5 +330,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 entity.SaturdayMinutes = SaturdayMinutes;
             }
         }
+
+        public decimal GetTotalMinutes()
+        {
+            return SundayMinutes + MondayMinutes + TuesdayMinutes + WednesdayMinutes + ThursdayMinutes + FridayMinutes +
+                   SaturdayMinutes;
+        }
     }
 }

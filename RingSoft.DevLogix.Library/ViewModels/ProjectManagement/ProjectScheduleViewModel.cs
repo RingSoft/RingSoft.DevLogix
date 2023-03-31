@@ -4,12 +4,21 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Microsoft.EntityFrameworkCore;
+using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
+using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
+using RingSoft.Printing.Interop;
 
 namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 {
+    public interface IProjectScheduleView
+    {
+        void PrintOutput(PrinterSetupArgs printerSetup);
+
+        void CloseWindow();
+    }
     public class ProjectScheduleViewModel : INotifyPropertyChanged, IPrintProcessor
     {
         private DateTime _startDate;
@@ -102,7 +111,19 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public List<ProjectUser> Users { get; private set; }
 
+        public PrinterSetupArgs PrinterSetup { get; private set; } = new PrinterSetupArgs();
+
+        public IProjectScheduleView View { get; private set; }
+
         public RelayCommand CalculateCommand { get; private set; }
+
+        public RelayCommand PrintCommand { get; private set; }
+
+        public RelayCommand ApplyCommand { get; private set; }
+
+        public RelayCommand CancelCommand { get; private set; }
+
+        public bool DialogResult { get; private set; }
 
         public ProjectScheduleViewModel()
         {
@@ -111,20 +132,50 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             CalculateCommand = new RelayCommand((() =>
             {
                 ScheduleManager.CalcSchedule();
+                if (ScheduleManager.Rows.Any())
+                {
+                    PrintCommand.IsEnabled = true;
+                    ApplyCommand.IsEnabled = true;
+                }
             }));
+
+            PrintCommand = new RelayCommand((() =>
+            {
+                View.PrintOutput(PrinterSetup);
+            }));
+
+            ApplyCommand = new RelayCommand((() =>
+            {
+                DialogResult = true;
+                View.CloseWindow();
+            }));
+
+            CancelCommand = new RelayCommand((() =>
+            {
+                View.CloseWindow();
+            }));
+
+            PrinterSetup.DataProcessor = this;
+            PrinterSetup.PrintingProperties.ReportType = ReportTypes.Custom;
+            PrinterSetup.PrintingProperties.CustomReportPathFileName =
+                $"{RingSoftAppGlobals.AssemblyDirectory}\\ProjectManagement\\ProjectSchedule.rpt";
+            PrinterSetup.PrintingProperties.ReportTitle = "Project Schedule Report";
+
+            PrintCommand.IsEnabled = false;
+            ApplyCommand.IsEnabled = false;
         }
 
-        public void Initialize(Project project, DateTime? startDate)
+        public void Initialize(IProjectScheduleView view, Project project, DateTime? startDate)
         {
+            View = view;
             var context = AppGlobals.DataRepository.GetDataContext();
             var table = context.GetTable<Project>();
             project = table
                 .Include(p => p.ProjectTasks)
+                .ThenInclude(p => p.SourceDependencies)
                 .Include(p => p.ProjectUsers)
                 .ThenInclude(p => p.User)
                 .ThenInclude(p => p.UserTimeOff)
-                .Include(p => p.ProjectTasks)
-                .ThenInclude(p => p.SourceDependencies)
                 .FirstOrDefault(p => p.Id == project.Id);
 
             Project = project;
@@ -193,7 +244,24 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public void ProcessPrintOutputData(PrinterSetupArgs setupArgs)
         {
+            var numberSetup = new DecimalEditControlSetup
+            {
+                FormatType = DecimalEditFormatTypes.Number,
+            };
+
+            var headerChunk = new List<PrintingInputHeaderRow>();
+            var headerRow = new PrintingInputHeaderRow()
+            {
+                RowKey = "Header1",
+                StringField01 = ProjectName,
+                StringField02 = StartDate.FormatDateValue(DbDateTypes.DateOnly),
+                StringField03 = CalculatedDeadline.GetValueOrDefault().FormatDateValue(DbDateTypes.DateOnly),
+                NumberField01 = numberSetup.FormatValue(RemainingHours),
+            };
+            headerChunk.Add(headerRow);
+            PrintingInteropGlobals.HeaderProcessor.AddChunk(headerChunk, PrinterSetup.PrintingProperties);
             
+            ScheduleManager.PrintDetails(setupArgs, headerRow);
         }
 
         public event EventHandler<PrinterDataProcessedEventArgs>? PrintProcessingHeader;

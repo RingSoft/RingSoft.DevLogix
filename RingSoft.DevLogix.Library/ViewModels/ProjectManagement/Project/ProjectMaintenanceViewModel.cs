@@ -34,6 +34,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         void GotoGrid();
 
         DateTime? GetDeadline();
+
+        void GotoTasksTab();
     }
 
     public class ProjectMaintenanceViewModel : DevLogixDbMaintenanceViewModel<Project>
@@ -440,6 +442,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
             CalculateDeadlineCommand = new RelayCommand((() =>
             {
+                if (!UsersGridManager.ValidateCalc())
+                {
+                    return;
+                }
+
+                var context = AppGlobals.DataRepository.GetDataContext();
+                var table = context.GetTable<ProjectTask>();
+                if (!table.Any(p => p.ProjectId == Id))
+                {
+                    var message = "No tasks have been defined for this project";
+                    var caption = "Calculation Validation";
+                    ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
+                    View.GotoTasksTab();
+                    TasksAddModifyCommand.Execute(null);
+                    return;
+                }
                 var deadline = View.GetDeadline();
                 if (deadline.HasValue)
                 {
@@ -841,6 +859,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         private void OnTasksAddModify()
         {
+            if (!UsersGridManager.ValidateCalc())
+            {
+                return;
+            }
+
             if (ExecuteAddModifyCommand() == DbMaintenanceResults.Success)
                 TaskLookupCommand = GetLookupCommand(LookupCommands.AddModify);
         }

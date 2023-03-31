@@ -4,8 +4,12 @@ using System.Linq;
 using System.Net.WebSockets;
 using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
+using RingSoft.DbLookup;
+using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
+using RingSoft.Printing.Interop;
 
 namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 {
@@ -112,6 +116,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             _newRows.Clear();
             var date = ViewModel.StartDate;
             var remainingMinutes = ViewModel.RemainingMinutes;
+
+            if (!ViewModel.Project.ProjectTasks.Any())
+            {
+                return;
+            }
 
             while (remainingMinutes > 0)
             {
@@ -280,6 +289,43 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
 
             return dailyRemainingMinutes;
+        }
+
+        public void PrintDetails(PrinterSetupArgs setupArgs, PrintingInputHeaderRow headerRow)
+        {
+            var detailsChunk = new List<PrintingInputDetailsRow>();
+            var rows = Rows.OfType<ProjectScheduleGridRow>();
+            var counter = 0;
+            var numberSetup = new DecimalEditControlSetup
+            {
+                FormatType = DecimalEditFormatTypes.Number,
+            };
+
+            foreach (var projectScheduleGridRow in rows)
+            {
+                var detail = new PrintingInputDetailsRow();
+                detail.HeaderRowKey = headerRow.RowKey;
+                detail.TablelId = 1;
+
+                detail.StringField01 = projectScheduleGridRow.Date.FormatDateValue(DbDateTypes.DateOnly);
+                detail.StringField02 = projectScheduleGridRow.Description;
+                detail.NumberField01 = numberSetup.FormatValue(projectScheduleGridRow.HoursWorked);
+                detail.NumberField02 = numberSetup.FormatValue(projectScheduleGridRow.HoursRemaining);
+
+                detailsChunk.Add(detail);
+                counter++;
+                if (counter % 10 == 0)
+                {
+                    PrintingInteropGlobals.DetailsProcessor.AddChunk(detailsChunk, setupArgs.PrintingProperties);
+                    detailsChunk.Clear();
+                }
+            }
+
+            if (detailsChunk.Any())
+            {
+                PrintingInteropGlobals.DetailsProcessor.AddChunk(detailsChunk, setupArgs.PrintingProperties);
+                detailsChunk.Clear();
+            }
         }
     }
 }
