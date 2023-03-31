@@ -593,8 +593,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             ManagerAutoFillValue = entity.Manager.GetAutoFillValue();
             StartDate = entity.StartDateTime;
             if (entity.ContractCost != null) ContractCost = entity.ContractCost.Value;
-            Deadline = entity.Deadline.ToLocalTime();
-            OriginalDeadline = entity.OriginalDeadline.ToLocalTime();
+            Deadline = entity.Deadline;
+            OriginalDeadline = entity.OriginalDeadline;
             ProductAutoFillValue = entity.Product.GetAutoFillValue();
             IsBillable = entity.IsBillable;
             ProjectDaysGridManager.LoadFromEntity(entity);
@@ -637,8 +637,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             result.StartDateTime = StartDate;
             result.ManagerId = ManagerAutoFillValue.GetEntity<User>().Id;
             result.ContractCost = ContractCost;
-            result.Deadline = Deadline.ToUniversalTime();
-            result.OriginalDeadline = OriginalDeadline.ToUniversalTime();
+            result.Deadline = Deadline;
+            result.OriginalDeadline = OriginalDeadline;
             result.ProductId = ProductAutoFillValue.GetEntity<Product>().Id;
             result.IsBillable = IsBillable;
             result.Notes = Notes;

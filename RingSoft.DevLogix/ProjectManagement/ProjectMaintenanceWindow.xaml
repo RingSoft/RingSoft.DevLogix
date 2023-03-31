@@ -127,23 +127,28 @@
 
                             <dec:DecimalEditControl Grid.Row="0" Grid.Column="3" FormatType="Currency" Value="{Binding ContractCost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150" HorizontalAlignment="Left" TextAlignment="Left"/>
 
-                            <Label Grid.Row="1" Grid.Column="0" Content="Start Date/Time"/>
+                            <Label Grid.Row="1" Grid.Column="0" Content="Start Date"/>
 
-                            <dec:DateEditControl Grid.Row="1" Grid.Column="1" x:Name="StartDateControl" Value="{Binding StartDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left" DateFormatType="DateTime"/>
+                            <StackPanel Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Horizontal">
 
-                            <Label Grid.Row="2" Grid.Column="0" Content="Deadline"/>
+                                <dec:DateEditControl x:Name="StartDateControl" Value="{Binding StartDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" HorizontalAlignment="Left" DateFormatType="DateOnly" AllowNullValue="True"/>
 
-                            <dec:DateEditControl Grid.Row="2" Grid.Column="1" x:Name="DeadlineControl" DateFormatType="DateTime" HorizontalAlignment="Left" Width="200" Value="{Binding Deadline, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <Label Content="Deadline"/>
 
-                            <Label Grid.Row="2" Grid.Column="2" Content="Original Deadline"/>
+                                <dec:DateEditControl x:Name="DeadlineControl" DateFormatType="DateOnly" HorizontalAlignment="Left" Width="100" Value="{Binding Deadline, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-                            <dec:DateEditControl Grid.Row="2" Grid.Column="3" x:Name="OriginalDeadlineControl" DateFormatType="DateTime" HorizontalAlignment="Left" Width="200" Value="{Binding OriginalDeadline, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
 
-                            <Label Grid.Row="3" Grid.Column="0" Content="Product"/>
+                            <Label Grid.Row="1" Grid.Column="2" Content="Original Deadline"/>
 
-                            <lc:AutoFillControl Grid.Row="3" Grid.Column="1" x:Name="ProductControl" Setup="{Binding ProductAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding ProductAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left"/>
+                            <dec:DateEditControl Grid.Row="1" Grid.Column="3" x:Name="OriginalDeadlineControl" DateFormatType="DateOnly" HorizontalAlignment="Left" Width="100" Value="{Binding OriginalDeadline, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-                            <CheckBox Grid.Row="3" Grid.Column="2" Content="Is Billable" IsChecked="{Binding IsBillable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                            <Label Grid.Row="2" Grid.Column="0" Content="Product"/>
+
+                            <lc:AutoFillControl Grid.Row="2" Grid.Column="1" x:Name="ProductControl" Setup="{Binding ProductAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding ProductAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left"/>
+
+                            <CheckBox Grid.Row="2" Grid.Column="2" Content="Is Billable" IsChecked="{Binding IsBillable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                             <deg:DataEntryGrid Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Manager="{Binding ProjectTotalsManager}" DataEntryCanUserAddRows="False" HorizontalAlignment="Left" Margin="5">
 
