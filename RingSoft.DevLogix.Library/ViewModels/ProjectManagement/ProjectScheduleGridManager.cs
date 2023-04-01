@@ -193,7 +193,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     {
                         if (!ValDependencies(scheduleData.ProjectTask))
                         {
-                            return remainingMinutes;
+                            continue;
                         }
 
                         var minutesWorked = scheduleData.RemainingMinutes;
@@ -208,6 +208,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                             scheduleData.RemainingMinutes -= dailyRemainingMinutes;
                             remainingMinutes -= dailyRemainingMinutes;
                             minutesWorked = dailyRemainingMinutes;
+                            dailyRemainingMinutes = 0;
                         }
 
                         var row = new ProjectScheduleGridRow(this);
@@ -215,6 +216,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                         row.Description = $"{projectUser.User.Name} / {$"{scheduleData.ProjectTask.Name}"}";
                         row.HoursWorked = minutesWorked / 60;
                         AddNewRow(row);
+
+                        if (dailyRemainingMinutes <= 0)
+                        {
+                            return remainingMinutes;
+                        }
                     }
                 }
             }
