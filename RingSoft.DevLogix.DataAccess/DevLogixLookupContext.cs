@@ -74,6 +74,8 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<AdvancedFindColumn> AdvancedFindColumns { get; set; }
         public TableDefinition<AdvancedFindFilter> AdvancedFindFilters { get; set; }
 
+        public TableDefinition<TestingTemplate> TestingTemplates { get; set; }
+
         public LookupDefinition<DevLogixChartLookup, DevLogixChart> DevLogixChartLookup { get; set; }
         public LookupDefinition<SystemPreferencesLookup, SystemPreferences> SystemPreferencesLookup { get; set; }
         public LookupDefinition<UserLookup, User> UserLookup { get; set; }
@@ -106,6 +108,8 @@ namespace RingSoft.DevLogix.DataAccess
 
         public LookupDefinition<AdvancedFindLookup, AdvancedFind> AdvancedFindLookup { get; set; }
         public LookupDefinition<RecordLockingLookup, RecordLock> RecordLockingLookup { get; set; }
+
+        public LookupDefinition<TestingTemplateLookup, TestingTemplate> TestingTemplateLookup { get; set; }
 
         public SqliteDataProcessor SqliteDataProcessor { get; }
         public SqlServerDataProcessor SqlServerDataProcessor { get; }
@@ -349,6 +353,10 @@ namespace RingSoft.DevLogix.DataAccess
             ProjectTaskDependencyLookup.Include(p => p.DependsOnProjectTask)
                 .AddVisibleColumnDefinition(p => p.DependsOn, "Depends On", p => p.Name, 50);
             ProjectTaskDependency.HasLookupDefinition(ProjectTaskDependencyLookup);
+
+            TestingTemplateLookup = new LookupDefinition<TestingTemplateLookup, TestingTemplate>(TestingTemplates);
+            TestingTemplateLookup.AddVisibleColumnDefinition(p => p.Name, "Name", p => p.Name, 95);
+            TestingTemplates.HasLookupDefinition(TestingTemplateLookup);
         }
 
         public LookupDefinition<ProductVersionLookup, ProductVersion> MakeProductVersionLookupDefinition()
@@ -568,6 +576,9 @@ namespace RingSoft.DevLogix.DataAccess
             //ProjectTaskDependency.GetFieldDefinition(p => p.DependsOnProjectTaskId).DoesAllowRecursion(false);
 
             ProjectUsers.PriorityLevel = 500;
+
+            TestingTemplates.PriorityLevel = 100;
+            TestingTemplates.GetFieldDefinition(p => p.BaseTemplateId).DoesAllowRecursion(false);
         }
 
         public override UserAutoFill GetUserAutoFill(string userName)

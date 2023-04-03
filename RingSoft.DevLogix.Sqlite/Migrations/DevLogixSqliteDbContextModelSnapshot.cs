@@ -964,6 +964,30 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.ToTable("ErrorUsers");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingTemplate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("BaseTemplateId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("ntext");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BaseTemplateId");
+
+                    b.ToTable("TestingTemplates");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.SystemMaster", b =>
                 {
                     b.Property<string>("OrganizationName")
@@ -1529,6 +1553,16 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingTemplate", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingTemplate", "BaseTemplate")
+                        .WithMany("ChildTemplates")
+                        .HasForeignKey("BaseTemplateId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("BaseTemplate");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.SystemPreferencesHolidays", b =>
                 {
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.SystemPreferences", "SystemPreferences")
@@ -1734,6 +1768,11 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("SourceDependencies");
 
                     b.Navigation("TimeClocks");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingTemplate", b =>
+                {
+                    b.Navigation("ChildTemplates");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.SystemPreferences", b =>
