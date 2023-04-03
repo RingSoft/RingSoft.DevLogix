@@ -15,6 +15,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         Quantity = 3,
         MinutesCost = 4,
         ExtendedMinutes = 5,
+        Complete = 6,
+    }
+
+    public enum DisplayModes
+    {
+        All = 0,
+        User = 1,
+        Disabled = 2,
     }
     public class ProjectTaskLaborPartsManager : DbMaintenanceDataEntryGridManager<ProjectTaskLaborPart>
     {
@@ -23,6 +31,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         public const int QuantityColumnId = (int)ProjectTaskLaborPartColumns.Quantity;
         public const int MinutesCostColumnId = (int)ProjectTaskLaborPartColumns.MinutesCost;
         public const int ExtendedMinutesColumnId = (int)ProjectTaskLaborPartColumns.ExtendedMinutes;
+        public const int CompleteColumnId = (int)ProjectTaskLaborPartColumns.Complete;
 
         public const int MiscRowDisplayStyleId = 100;
         public const int CommentRowDisplayStyleId = 101;
@@ -32,6 +41,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         public IEnumerable<ProjectTaskLaborPart> Details { get; private set; }
 
         public new ProjectTaskViewModel ViewModel { get; private set; }
+
+        public DisplayModes DisplayMode { get; private set; }
 
         public ProjectTaskLaborPartsManager(ProjectTaskViewModel viewModel) : base(viewModel)
         {
@@ -93,6 +104,59 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         protected override string GetParentRowIdFromEntity(ProjectTaskLaborPart entity)
         {
             return entity.ParentRowId;
+        }
+
+        public void CalcPercentComplete()
+        {
+            var rows = Rows.OfType<ProjectTaskLaborPartRow>()
+                .Where(p => p.IsNew == false
+                && p.IsComplete)
+                .ToList();
+
+            var minutesComplete = rows.Sum(p => p.GetExtendedMinutesCost());
+            if (ViewModel.MinutesCost > 0 && minutesComplete > 0)
+            {
+                var percentComplete = minutesComplete / ViewModel.MinutesCost;
+                if (ViewModel.PercentComplete < percentComplete)
+                {
+                    ViewModel.PercentComplete = percentComplete;
+                }
+            }
+        }
+
+        public void SetDisplayMode(DisplayModes value)
+        {
+            DisplayMode = value;
+        }
+
+        protected override bool CanInsertRow(int startIndex)
+        {
+            switch (DisplayMode)
+            {
+                case DisplayModes.All:
+                    break;
+                case DisplayModes.User:
+                case DisplayModes.Disabled:
+                    return false;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            return base.CanInsertRow(startIndex);
+        }
+
+        public override bool IsDeleteOk(int rowIndex)
+        {
+            switch (DisplayMode)
+            {
+                case DisplayModes.All:
+                    break;
+                case DisplayModes.User:
+                case DisplayModes.Disabled:
+                    return false;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            return base.IsDeleteOk(rowIndex);
         }
     }
 }

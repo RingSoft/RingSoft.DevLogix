@@ -206,13 +206,15 @@
 
                                 <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ProjectTaskLaborPartsManager.LineTypeColumnId}" Width="100" Header="Line Type"/>
 
-                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ProjectTaskLaborPartsManager.LaborPartColumnId}" Width="300" Header="Labor Part"/>
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ProjectTaskLaborPartsManager.LaborPartColumnId}" Width="225" Header="Labor Part"/>
 
                                 <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ProjectTaskLaborPartsManager.MinutesCostColumnId}" Width="100" Header="Time Cost"/>
 
                                 <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ProjectTaskLaborPartsManager.QuantityColumnId}" Width="100" Header="Quantity"/>
 
                                 <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ProjectTaskLaborPartsManager.ExtendedMinutesColumnId}" Width="100" Header="Extended&#10;Time Cost"/>
+
+                                <deg:DataEntryGridCheckBoxColumn ColumnId="{x:Static vm:ProjectTaskLaborPartsManager.CompleteColumnId}" Width="75" Header="Complete"/>
 
                             </deg:DataEntryGrid.Columns>
 

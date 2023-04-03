@@ -24,7 +24,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public DataEntryGridMemoValue Value { get; private set; }
 
-        public const int MaxCharactersPerLine = 50;
+        public const int MaxCharactersPerLine = 40;
 
         public ProjectTaskLaborPartCommentRow(ProjectTaskLaborPartsManager manager) : base(manager)
         {
@@ -97,6 +97,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                         };
                     }
                     break;
+                case ProjectTaskLaborPartColumns.Complete:
+                    return new DataEntryGridControlCellStyle
+                    {
+                        State = DataEntryGridCellStates.ReadOnly,
+                        IsVisible = false,
+                    };
                 default:
                     return new DataEntryGridCellStyle() { State = DataEntryGridCellStates.ReadOnly };
             }
@@ -204,6 +210,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             {
                 LoadChildren(entity);
             }
+            base.LoadFromEntity(entity);
         }
 
         public override void LoadChildren(ProjectTaskLaborPart entity)

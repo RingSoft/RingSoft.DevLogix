@@ -45,6 +45,8 @@ namespace RingSoft.DevLogix.DataAccess
         DbSet<ProjectMaterialHistory> ProjectMaterialHistory { get; set; }
         DbSet<ProjectTaskDependency> ProjectTaskDependency { get; set; }
 
+        //DbSet<TestingTemplate> TestingTemplates { get; set; }
+
         void SetLookupContext(DevLogixLookupContext lookupContext);
     }
 }

@@ -203,7 +203,7 @@ namespace RingSoft.DevLogix.ProjectManagement
             ProjectControl.SetReadOnlyMode(true);
             HourlyRateControl.IsEnabled = false;
             TimeControl.IsEnabled = false;
-            LaborPartsGrid.SetReadOnlyMode(true);
+            LaborPartsGrid.SetReadOnlyMode(value);
             PercentCompleteControl.IsEnabled = !value;
             NotesControl.SetReadOnlyMode(value);
         }

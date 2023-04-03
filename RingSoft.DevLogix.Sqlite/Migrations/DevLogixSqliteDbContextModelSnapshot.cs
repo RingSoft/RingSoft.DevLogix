@@ -863,6 +863,9 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<bool?>("CommentCrLf")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("Complete")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Description")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");

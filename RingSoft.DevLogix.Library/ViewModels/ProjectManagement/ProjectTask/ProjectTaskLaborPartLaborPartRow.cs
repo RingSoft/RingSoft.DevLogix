@@ -90,13 +90,24 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         public override DataEntryGridCellStyle GetCellStyle(int columnId)
         {
             var column = (ProjectTaskLaborPartColumns)columnId;
+            var cellStyle = new DataEntryGridCellStyle();
             switch (column)
             {
                 case ProjectTaskLaborPartColumns.LaborPart:
-                    return new DataEntryGridCellStyle
+                    cellStyle.ColumnHeader = "Labor Part";
+                    switch (Manager.DisplayMode)
                     {
-                        ColumnHeader = "Labor Part",
-                    };
+                        case DisplayModes.All:
+                            cellStyle.State = DataEntryGridCellStates.Enabled;
+                            break;
+                        case DisplayModes.User:
+                        case DisplayModes.Disabled:
+                            cellStyle.State = DataEntryGridCellStates.Disabled;
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                    return cellStyle;
 
             }
             return base.GetCellStyle(columnId);
@@ -128,6 +139,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     }
                     break;
                 case ProjectTaskLaborPartColumns.ExtendedMinutes:
+                case ProjectTaskLaborPartColumns.Complete:
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -139,6 +151,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         {
             ExtendedMinutesCost = Quantity * MinutesCost;
             Manager.CalculateTotalMinutesCost();
+            Manager.CalcPercentComplete();
         }
 
         public override void LoadFromEntity(ProjectTaskLaborPart entity)
@@ -157,7 +170,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 childRow.LoadChildren(child);
                 Manager.Grid?.UpdateRow(childRow);
             }
-
+            base.LoadFromEntity(entity);
         }
 
         public override bool ValidateRow()

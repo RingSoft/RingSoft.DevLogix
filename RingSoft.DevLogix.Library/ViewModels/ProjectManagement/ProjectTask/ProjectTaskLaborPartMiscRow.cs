@@ -50,8 +50,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     return new TimeCostCellProps(this, columnId, Minutes);
                 case ProjectTaskLaborPartColumns.ExtendedMinutes:
                     return new TimeCostCellProps(this, columnId, ExtendedMinutes);
-                default:
-                    throw new ArgumentOutOfRangeException();
             }
             return base.GetCellProps(columnId);
         }
@@ -59,6 +57,18 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         public override DataEntryGridCellStyle GetCellStyle(int columnId)
         {
             var displayStyle = new DataEntryGridCellStyle();
+            switch (Manager.DisplayMode)
+            {
+                case DisplayModes.All:
+                    displayStyle.State = DataEntryGridCellStates.Enabled;
+                    break;
+                case DisplayModes.User:
+                case DisplayModes.Disabled:
+                    displayStyle.State = DataEntryGridCellStates.Disabled;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
 
             var column = (ProjectTaskLaborPartColumns)columnId;
             switch (column)
@@ -72,6 +82,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 case ProjectTaskLaborPartColumns.Quantity:
                     break;
                 case ProjectTaskLaborPartColumns.MinutesCost:
+                    break;
+                case ProjectTaskLaborPartColumns.Complete:
+                    displayStyle = base.GetCellStyle(columnId);
                     break;
                 case ProjectTaskLaborPartColumns.ExtendedMinutes:
                     displayStyle.State = DataEntryGridCellStates.Disabled;
@@ -120,6 +133,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         {
             ExtendedMinutes = Quantity * Minutes;
             Manager.CalculateTotalMinutesCost();
+            Manager.CalcPercentComplete();
         }
 
         public override void LoadFromEntity(ProjectTaskLaborPart entity)
@@ -128,6 +142,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             Minutes = entity.MinutesCost;
             Quantity = entity.Quantity.Value;
             ExtendedMinutes = GetExtendedMinutesCost();
+
+            base.LoadFromEntity(entity);
         }
 
         public override bool ValidateRow()

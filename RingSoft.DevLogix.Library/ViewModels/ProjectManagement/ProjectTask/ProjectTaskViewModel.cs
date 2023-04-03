@@ -471,12 +471,18 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 {
                     SaveButtonEnabled = true;
                     View.SetTaskReadOnlyMode(false);
+                    LaborPartsManager.SetDisplayMode(DisplayModes.User);
                 }
                 else
                 {
                     SaveButtonEnabled = false;
                     View.SetTaskReadOnlyMode(true);
+                    LaborPartsManager.SetDisplayMode(DisplayModes.Disabled);
                 }
+            }
+            else
+            {
+                LaborPartsManager.SetDisplayMode(DisplayModes.All);
             }
 
             TimeClockLookup.FilterDefinition.ClearFixedFilters();

@@ -36,5 +36,9 @@ namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
 
         [Required]
         public decimal MinutesCost { get; set; }
+
+        [Required]
+        [DefaultValue(false)]
+        public bool Complete { get; set; }
     }
 }

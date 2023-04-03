@@ -50,6 +50,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     {
                         ColumnHeader = "Labor Part",
                     };
+                case ProjectTaskLaborPartColumns.Complete:
+                    return new DataEntryGridControlCellStyle
+                    {
+                        State = DataEntryGridCellStates.Disabled,
+                        IsVisible = false,
+                    };
                 default:
                     return new DataEntryGridCellStyle
                     {

@@ -30,7 +30,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public EnumFieldTranslation EnumTranslation { get; private set; } = new EnumFieldTranslation();
 
-        public decimal MinutesCost { get; private set; }
+        //public decimal MinutesCost { get; private set; }
+
+        public bool IsComplete { get; private set; }
 
         protected ProjectTaskLaborPartRow(ProjectTaskLaborPartsManager manager) : base(manager)
         {
@@ -46,26 +48,68 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 case ProjectTaskLaborPartColumns.LineType:
                     return new DataEntryGridTextCellProps(this, columnId, EnumTranslation.TypeTranslations
                         .FirstOrDefault(p => p.NumericValue == (int)LaborPartLineType).TextValue);
+                case ProjectTaskLaborPartColumns.Complete:
+                    return new DataEntryGridCheckBoxCellProps(this, columnId, IsComplete);
             }
             return new DataEntryGridTextCellProps(this, columnId);
         }
 
         public override DataEntryGridCellStyle GetCellStyle(int columnId)
         {
+            var cellStyle = new DataEntryGridCellStyle();
             var column = (ProjectTaskLaborPartColumns)columnId;
             switch (column)
             {
                 case ProjectTaskLaborPartColumns.LaborPart:
-                    return new DataEntryGridCellStyle
+                    cellStyle.ColumnHeader = "Labor Part";
+                    switch (Manager.DisplayMode)
                     {
-                        ColumnHeader = "Labor Part",
-                    };
+                        case DisplayModes.All:
+                            cellStyle.State = DataEntryGridCellStates.Enabled;
+                            break;
+                        case DisplayModes.User:
+                        case DisplayModes.Disabled:
+                            cellStyle.State = DataEntryGridCellStates.Disabled;
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                    return cellStyle;
                 case ProjectTaskLaborPartColumns.ExtendedMinutes:
                 case ProjectTaskLaborPartColumns.LineType:
                     return new DataEntryGridCellStyle
                     {
-                        State = DataEntryGridCellStates.Disabled
+                        State = DataEntryGridCellStates.Disabled,
                     };
+                case ProjectTaskLaborPartColumns.Complete:
+                    cellStyle = new DataEntryGridControlCellStyle();
+                    switch (Manager.DisplayMode)
+                    {
+                        case DisplayModes.User:
+                        case DisplayModes.All:
+                            cellStyle.State = DataEntryGridCellStates.Enabled;
+                            break;
+                        case DisplayModes.Disabled:
+                            cellStyle.State = DataEntryGridCellStates.Disabled;
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                    return cellStyle;
+                default:
+                    switch (Manager.DisplayMode)
+                    {
+                        case DisplayModes.All:
+                            cellStyle.State = DataEntryGridCellStates.Enabled;
+                            break;
+                        case DisplayModes.User:
+                        case DisplayModes.Disabled:
+                            cellStyle.State = DataEntryGridCellStates.Disabled;
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                    return cellStyle;
             }
             return base.GetCellStyle(columnId);
         }
@@ -82,15 +126,27 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 case ProjectTaskLaborPartColumns.Quantity:
                     break;
                 case ProjectTaskLaborPartColumns.MinutesCost:
-                    if (value is TimeCostCellProps timeCostCellProps)
+                //    if (value is TimeCostCellProps timeCostCellProps)
+                //    {
+                //        MinutesCost = timeCostCellProps.Minutes;
+                //    }
+                    break;
+                case ProjectTaskLaborPartColumns.Complete:
+                    if (value is DataEntryGridCheckBoxCellProps checkBoxCellProps)
                     {
-                        MinutesCost = timeCostCellProps.Minutes;
+                        IsComplete = checkBoxCellProps.Value;
                     }
+                    Manager.CalcPercentComplete();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
             base.SetCellValue(value);
+        }
+
+        public override void LoadFromEntity(ProjectTaskLaborPart entity)
+        {
+            IsComplete = entity.Complete;
         }
 
         public override void SaveToEntity(ProjectTaskLaborPart entity, int rowIndex)
@@ -99,6 +155,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             entity.RowId = RowId;
             entity.LineType = (byte)LaborPartLineType;
             entity.ParentRowId = ParentRowId;
+            entity.Complete = IsComplete;
         }
 
         protected IEnumerable<ProjectTaskLaborPart> GetDetailChildren(ProjectTaskLaborPart entity)
