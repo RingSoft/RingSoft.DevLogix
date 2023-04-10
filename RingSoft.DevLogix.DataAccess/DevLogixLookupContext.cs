@@ -486,7 +486,7 @@ namespace RingSoft.DevLogix.DataAccess
             Products.GetFieldDefinition(p => p.Notes).IsMemo();
 
             Users.PriorityLevel = 300;
-            Users.GetFieldDefinition(p => p.SupervisorId).DoesAllowRecursion(false);
+            //Users.GetFieldDefinition(p => p.SupervisorId).DoesAllowRecursion(false);
             Users.GetFieldDefinition(p => p.Rights).DoSkipPrint().IsMemo();
             Users.GetFieldDefinition(p => p.Notes).IsMemo();
             Users.GetFieldDefinition(p => p.Password).DoSkipPrint();
@@ -544,6 +544,7 @@ namespace RingSoft.DevLogix.DataAccess
             Projects.GetFieldDefinition(p => p.Notes).IsMemo();
             Projects.GetFieldDefinition(p => p.Deadline).HasDateType(DbDateTypes.DateTime);
             Projects.GetFieldDefinition(p => p.OriginalDeadline).HasDateType(DbDateTypes.DateTime);
+            Projects.GetFieldDefinition(p => p.StartDateTime).HasDescription("Start Date");
 
             LaborParts.PriorityLevel = 100;
             LaborParts.GetFieldDefinition(p => p.Comment).IsMemo();
@@ -578,7 +579,7 @@ namespace RingSoft.DevLogix.DataAccess
             ProjectUsers.PriorityLevel = 500;
 
             TestingTemplates.PriorityLevel = 100;
-            TestingTemplates.GetFieldDefinition(p => p.BaseTemplateId).DoesAllowRecursion(false);
+            //TestingTemplates.GetFieldDefinition(p => p.BaseTemplateId).DoesAllowRecursion(false);
         }
 
         public override UserAutoFill GetUserAutoFill(string userName)

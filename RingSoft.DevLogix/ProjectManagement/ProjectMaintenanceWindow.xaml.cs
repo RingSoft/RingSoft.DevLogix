@@ -138,7 +138,7 @@ namespace RingSoft.DevLogix.ProjectManagement
 
         public DateTime? GetDeadline()
         {
-            var window = new ProjectScheduleWindow(LocalViewModel.Entity, LocalViewModel.StartDate);
+            var window = new ProjectScheduleWindow(LocalViewModel.Entity, DateTime.Today);
             window.Owner = this;
             window.ShowInTaskbar = false;
             window.ShowDialog();
