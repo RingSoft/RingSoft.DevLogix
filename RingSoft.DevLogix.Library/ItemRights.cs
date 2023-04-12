@@ -368,6 +368,8 @@ namespace RingSoft.DevLogix.Library
 
             foreach (var right in Rights)
             {
+                result += $"@{right.TableDefinition.TableName}";
+
                 var rightBit = "0";
                 if (right.AllowDelete)
                 {
@@ -396,21 +398,14 @@ namespace RingSoft.DevLogix.Library
                 }
                 result += rightBit;
 
-                var first = true;
                 foreach (var specialRight in right.SpecialRights)
                 {
-                    if (first)
-                    {
-                        specialRightsBits += $"@{right.TableDefinition.TableName}";
-                    }
-
                     rightBit = specialRight.HasRight ? "1" : "0";
                     specialRightsBits += rightBit;
-                    first = false;
                 }
+                result += specialRightsBits;
+                specialRightsBits = string.Empty;
             }
-
-            result += specialRightsBits;
             return result;
         }
 
@@ -422,29 +417,50 @@ namespace RingSoft.DevLogix.Library
                 return;
             }
 
-            var tableRights = rightsString;
-            var tableRightsPos = rightsString.IndexOf("@");
-            if (tableRightsPos >= 0)
-            {
-                tableRights = rightsString.LeftStr(tableRightsPos);
-            }
             foreach (var right in Rights)
             {
-                var rightIndex = Rights.IndexOf(right);
-                var rightStringIndex = 0;
-                if (rightIndex > 0)
+                var tableRights = rightsString;
+                var tableRightsPrefix = $"@{right.TableDefinition.TableName}";
+                var tableRightsPos = rightsString.IndexOf(tableRightsPrefix);
+
+                if (tableRightsPos >= 0)
                 {
-                    rightStringIndex = rightIndex * 4;
+                    var endRight = rightsString.IndexOf("@", tableRightsPos + 1);
+                    if (endRight >= 0)
+                    {
+                        tableRights = rightsString.Substring(tableRightsPos + tableRightsPrefix.Length
+                            , endRight - (tableRightsPos + tableRightsPrefix.Length));
+                    }
+                    else
+                    {
+                        tableRights = rightsString.Substring(tableRightsPos + tableRightsPrefix.Length);
+                    }
+                }
+                else
+                {
+                    continue;
                 }
 
-                if (rightStringIndex > tableRights.Length - 1)
+                if (tableRights.Length < 4)
                 {
-                    return;
+                    continue;
                 }
+
+                //var rightIndex = Rights.IndexOf(right);
+                //var rightStringIndex = 0;
+                //if (rightIndex > 0)
+                //{
+                //    rightStringIndex = rightIndex * 4;
+                //}
+
+                //if (rightStringIndex > tableRights.Length - 1)
+                //{
+                //    return;
+                //}
                 var counter = 0;
                 while (counter < 4)
                 {
-                    var rightBit = tableRights[rightStringIndex].ToString();
+                    var rightBit = tableRights[counter].ToString();
                     if (counter == 0)
                     {
                         right.AllowDelete = rightBit.ToBool();
@@ -463,28 +479,31 @@ namespace RingSoft.DevLogix.Library
                     }
 
                     counter++;
-                    rightStringIndex++;
                 }
 
-                var specialBitIndex = 0;
+                var specialBitIndex = counter;
+                if (tableRights.Length < right.SpecialRights.Count + counter)
+                {
+                    continue;
+                }
                 foreach (var specialRight in right.SpecialRights)
                 {
-                    var search = $"@{right.TableDefinition.TableName}";
-                    var beginningPos = rightsString.IndexOf(search);
-                    if (beginningPos != -1)
+                    //var search = $"@{right.TableDefinition.TableName}";
+                    //var beginningPos = rightsString.IndexOf(search);
+                    //if (beginningPos != -1)
                     {
-                        var beginningRight = rightsString.GetRightText(beginningPos + 1, 0);
-                        var endingPos = beginningRight.IndexOf("@");
-                        if (endingPos != -1)
+                        //var beginningRight = rightsString.GetRightText(beginningPos + 1, 0);
+                        //var endingPos = beginningRight.IndexOf("@");
+                        //if (endingPos != -1)
+                        //{
+                        //    beginningRight = beginningRight.LeftStr(endingPos);
+                        //}
+                        //var tablePos = beginningRight.IndexOf(right.TableDefinition.TableName);
+                        //beginningRight = beginningRight.GetRightText(tablePos
+                        //    , right.TableDefinition.TableName.Length);
+                        //if (specialBitIndex < beginningRight.Length)
                         {
-                            beginningRight = beginningRight.LeftStr(endingPos);
-                        }
-                        var tablePos = beginningRight.IndexOf(right.TableDefinition.TableName);
-                        beginningRight = beginningRight.GetRightText(tablePos
-                            , right.TableDefinition.TableName.Length);
-                        if (specialBitIndex < beginningRight.Length)
-                        {
-                            var specialRightChar = beginningRight[specialBitIndex];
+                            var specialRightChar = tableRights[specialBitIndex];
                             specialRight.HasRight = specialRightChar.ToString().ToBool();
                         }
 
