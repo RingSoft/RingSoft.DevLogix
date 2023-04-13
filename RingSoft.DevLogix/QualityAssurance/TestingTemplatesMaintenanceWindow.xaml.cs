@@ -28,6 +28,7 @@ namespace RingSoft.DevLogix.QualityAssurance
         public TestingTemplatesMaintenanceWindow()
         {
             InitializeComponent();
+            RegisterFormKeyControl(NameControl);
         }
     }
 }

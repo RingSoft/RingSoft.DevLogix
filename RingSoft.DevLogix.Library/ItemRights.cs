@@ -240,6 +240,7 @@ namespace RingSoft.DevLogix.Library
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Error Products", AppGlobals.LookupContext.Products));
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Error Product Versions", AppGlobals.LookupContext.ProductVersions));
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Errors", AppGlobals.LookupContext.Errors));
+            category.Items.Add(new RightCategoryItem(item: "Add/Edit Testing Templates", AppGlobals.LookupContext.TestingTemplates));
             Categories.Add(category);
 
             category = new RightCategory("Project Management", MenuCategories.Projects);

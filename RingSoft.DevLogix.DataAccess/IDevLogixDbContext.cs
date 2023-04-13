@@ -33,6 +33,7 @@ namespace RingSoft.DevLogix.DataAccess
         DbSet<ErrorDeveloper> ErrorDevelopers { get; set; }
         DbSet<ErrorQa> ErrorTesters { get; set; }
         DbSet<ErrorUser> ErrorUsers { get; set; }
+        DbSet<TestingTemplate> TestingTemplates { get; set; }
 
         DbSet<Project> Projects { get; set; }
         DbSet<ProjectUser> ProjectUsers { get; set; }
@@ -44,8 +45,6 @@ namespace RingSoft.DevLogix.DataAccess
         DbSet<ProjectMaterialPart> ProjectMaterialParts { get; set; }
         DbSet<ProjectMaterialHistory> ProjectMaterialHistory { get; set; }
         DbSet<ProjectTaskDependency> ProjectTaskDependency { get; set; }
-
-        DbSet<TestingTemplate> TestingTemplates { get; set; }
 
         void SetLookupContext(DevLogixLookupContext lookupContext);
     }

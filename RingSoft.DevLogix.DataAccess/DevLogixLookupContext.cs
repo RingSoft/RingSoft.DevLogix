@@ -58,7 +58,8 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<ErrorDeveloper> ErrorDevelopers { get; set; }
         public TableDefinition<ErrorQa> ErrorTesters { get; set; }
         public TableDefinition<ErrorUser> ErrorUsers { get; set; }
-        
+        public TableDefinition<TestingTemplate> TestingTemplates { get; set; }
+
         public TableDefinition<Project> Projects { get; set; }
         public TableDefinition<ProjectUser> ProjectUsers { get; set; }
         public TableDefinition<LaborPart> LaborParts { get; set; }
@@ -73,8 +74,6 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<AdvancedFind> AdvancedFinds { get; set; }
         public TableDefinition<AdvancedFindColumn> AdvancedFindColumns { get; set; }
         public TableDefinition<AdvancedFindFilter> AdvancedFindFilters { get; set; }
-
-        public TableDefinition<TestingTemplate> TestingTemplates { get; set; }
 
         public LookupDefinition<DevLogixChartLookup, DevLogixChart> DevLogixChartLookup { get; set; }
         public LookupDefinition<SystemPreferencesLookup, SystemPreferences> SystemPreferencesLookup { get; set; }
@@ -94,6 +93,7 @@ namespace RingSoft.DevLogix.DataAccess
         public LookupDefinition<ErrorDeveloperLookup, ErrorDeveloper> ErrorDeveloperLookup { get; set; }
         public LookupDefinition<ErrorTesterLookup, ErrorQa> ErrorTesterLookup { get; set; }
         public LookupDefinition<ErrorUserLookup, ErrorUser> ErrorUsersLookup { get; set; }
+        public LookupDefinition<TestingTemplateLookup, TestingTemplate> TestingTemplateLookup { get; set; }
 
         public LookupDefinition<ProjectLookup, Project> ProjectLookup { get; set; }
         public LookupDefinition<ProjectUserLookup, ProjectUser> ProjectUserLookup { get; set; }
@@ -108,8 +108,6 @@ namespace RingSoft.DevLogix.DataAccess
 
         public LookupDefinition<AdvancedFindLookup, AdvancedFind> AdvancedFindLookup { get; set; }
         public LookupDefinition<RecordLockingLookup, RecordLock> RecordLockingLookup { get; set; }
-
-        public LookupDefinition<TestingTemplateLookup, TestingTemplate> TestingTemplateLookup { get; set; }
 
         public SqliteDataProcessor SqliteDataProcessor { get; }
         public SqlServerDataProcessor SqlServerDataProcessor { get; }
@@ -270,6 +268,10 @@ namespace RingSoft.DevLogix.DataAccess
                 .AddVisibleColumnDefinition(p => p.UserName, "User", p => p.Name, 70);
             ErrorUsers.HasLookupDefinition(ErrorUsersLookup);
 
+            TestingTemplateLookup = new LookupDefinition<TestingTemplateLookup, TestingTemplate>(TestingTemplates);
+            TestingTemplateLookup.AddVisibleColumnDefinition(p => p.Name, "Name", p => p.Name, 95);
+            TestingTemplates.HasLookupDefinition(TestingTemplateLookup);
+
             ProjectLookup = new LookupDefinition<ProjectLookup, Project>(Projects);
             ProjectLookup.AddVisibleColumnDefinition(p => p.Name, "Project Name", p => p.Name, 70);
             ProjectLookup.AddVisibleColumnDefinition(p => p.Deadline, "Deadline", p => p.Deadline, 30);
@@ -353,10 +355,6 @@ namespace RingSoft.DevLogix.DataAccess
             ProjectTaskDependencyLookup.Include(p => p.DependsOnProjectTask)
                 .AddVisibleColumnDefinition(p => p.DependsOn, "Depends On", p => p.Name, 50);
             ProjectTaskDependency.HasLookupDefinition(ProjectTaskDependencyLookup);
-
-            TestingTemplateLookup = new LookupDefinition<TestingTemplateLookup, TestingTemplate>(TestingTemplates);
-            TestingTemplateLookup.AddVisibleColumnDefinition(p => p.Name, "Name", p => p.Name, 95);
-            TestingTemplates.HasLookupDefinition(TestingTemplateLookup);
         }
 
         public LookupDefinition<ProductVersionLookup, ProductVersion> MakeProductVersionLookupDefinition()

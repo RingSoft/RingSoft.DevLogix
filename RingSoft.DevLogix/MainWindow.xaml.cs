@@ -239,6 +239,18 @@ namespace RingSoft.DevLogix
                     });
                 }
 
+                if (AppGlobals.LookupContext.TestingTemplates.HasRight(RightTypes.AllowView))
+                {
+                    var categoryItem =
+                        qaCategory.Items.FirstOrDefault(
+                            p => p.TableDefinition == AppGlobals.LookupContext.TestingTemplates);
+                    menuItem.Items.Add(new MenuItem()
+                    {
+                        Header = "Add/Edit _Testing Templates...",
+                        Command = ViewModel.ShowMaintenanceWindowCommand,
+                        CommandParameter = AppGlobals.LookupContext.TestingTemplates,
+                    });
+                }
             }
         }
 
