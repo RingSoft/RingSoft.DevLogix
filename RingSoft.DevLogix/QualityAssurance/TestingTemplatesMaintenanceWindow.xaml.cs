@@ -30,5 +30,11 @@ namespace RingSoft.DevLogix.QualityAssurance
             InitializeComponent();
             RegisterFormKeyControl(NameControl);
         }
+
+        public override void ResetViewForNewRecord()
+        {
+            NameControl.Focus();
+            base.ResetViewForNewRecord();
+        }
     }
 }

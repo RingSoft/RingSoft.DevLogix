@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.ModelDefinition;
+using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
@@ -73,6 +74,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
             Id = result.Id;
 
+            BaseAutoFillSetup.LookupDefinition.FilterDefinition.ClearFixedFilters();
+            var idField = TableDefinition.GetFieldDefinition(p => p.Id);
+            BaseAutoFillSetup.LookupDefinition.FilterDefinition.AddFixedFilter(idField, Conditions.NotEquals, Id);
+
             return result;
         }
 
@@ -101,6 +106,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
         {
             Id = 0;
             BaseAutoFillValue = null;
+            BaseAutoFillSetup.LookupDefinition.FilterDefinition.ClearFixedFilters();
         }
 
         protected override bool SaveEntity(TestingTemplate entity)
