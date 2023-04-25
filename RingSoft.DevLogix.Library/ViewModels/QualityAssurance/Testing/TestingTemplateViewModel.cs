@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.ModelDefinition;
@@ -58,10 +59,30 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             }
         }
 
+        private string _notes;
+
+        public string Notes
+        {
+            get => _notes;
+            set
+            {
+                if (_notes == value)
+                    return;
+
+                _notes = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public RelayCommand UpdateOutlinesCommand { get; set; }
+
+
         public TestingTemplateViewModel()
         {
             BaseAutoFillSetup =
                 new AutoFillSetup(AppGlobals.LookupContext.TestingTemplates.GetFieldDefinition(p => p.BaseTemplateId));
+
+            UpdateOutlinesCommand = new RelayCommand(UpdateTestingOutlines);
         }
 
         protected override TestingTemplate PopulatePrimaryKeyControls(TestingTemplate newEntity, PrimaryKeyValue primaryKeyValue)
@@ -121,6 +142,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             var table = context.GetTable<TestingTemplate>();
             var entity = table.FirstOrDefault(p => p.Id == Id);
             return context.DeleteEntity(entity, "Deleting Testing Template");
+        }
+
+        private void UpdateTestingOutlines()
+        {
+
         }
     }
 }
