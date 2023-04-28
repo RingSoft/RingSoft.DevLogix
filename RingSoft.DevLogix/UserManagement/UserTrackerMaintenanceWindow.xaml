@@ -14,7 +14,7 @@
 
         mc:Ignorable="d"
         Style="{StaticResource BaseWindowStyle}"
-        Title="UserTrackerMaintenanceWindow" Height="450" Width="800">
+        Title="User Tracker Maintenance Window" Height="450" Width="800">
 
     <Window.DataContext>
         <vm:UserTrackerViewModel x:Name="LocalViewModel"/>
@@ -23,6 +23,22 @@
     <DockPanel>
         <ac:DbMaintenanceTopHeaderControl x:Name="TopHeaderControl" DockPanel.Dock="Top"/>
         <Grid Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Row="0" Grid.Column="0" Content="User Tracker ID"/>
+
+            <dec:StringReadOnlyBox Grid.Row="0" Grid.Column="1" />
+
         </Grid>
     </DockPanel>
 
