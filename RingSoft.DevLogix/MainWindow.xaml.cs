@@ -171,6 +171,17 @@ namespace RingSoft.DevLogix
                         CommandParameter = AppGlobals.LookupContext.Departments,
                     });
                 }
+                if (AppGlobals.LookupContext.UserTracker.HasRight(RightTypes.AllowView))
+                {
+                    var categoryItem =
+                        userCategory.Items.FirstOrDefault(p => p.TableDefinition == AppGlobals.LookupContext.UserTracker);
+                    menuItem.Items.Add(new MenuItem()
+                    {
+                        Header = "Add/Edit U_ser Tracker...",
+                        Command = ViewModel.ShowMaintenanceWindowCommand,
+                        CommandParameter = AppGlobals.LookupContext.UserTracker,
+                    });
+                }
 
             }
         }

@@ -25,6 +25,7 @@ namespace RingSoft.DevLogix.DataAccess
             modelBuilder.ApplyConfiguration(new GroupConfiguration());
             modelBuilder.ApplyConfiguration(new UserGroupConfiguration());
             modelBuilder.ApplyConfiguration(new TimeClockConfiguration());
+            modelBuilder.ApplyConfiguration(new UserTrackerConfiguration());
             modelBuilder.ApplyConfiguration(new ErrorStatusConfiguration());
             modelBuilder.ApplyConfiguration(new ErrorPriorityConfiguration());
             modelBuilder.ApplyConfiguration(new DepartmentConfiguration());

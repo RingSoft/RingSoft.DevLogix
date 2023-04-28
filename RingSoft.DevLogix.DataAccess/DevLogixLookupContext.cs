@@ -48,6 +48,7 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<UsersGroup> UsersGroups { get; set; }
         public TableDefinition<Department> Departments { get; set; }
         public TableDefinition<TimeClock> TimeClocks { get; set; }
+        public TableDefinition<UserTracker> UserTracker { get; set; }
 
         public TableDefinition<ErrorStatus> ErrorStatuses { get; set; }
         public TableDefinition<ErrorPriority> ErrorPriorities { get; set; }
@@ -83,6 +84,7 @@ namespace RingSoft.DevLogix.DataAccess
         public LookupDefinition<UsersGroupsLookup, UsersGroup> UsersGroupsLookup { get; set; }
         public LookupDefinition<DepartmentLookup, Department> DepartmentLookup { get; set; }
         public LookupDefinition<TimeClockLookup, TimeClock> TimeClockLookup { get; set; }
+        public LookupDefinition<UserTrackerLookup, UserTracker> UserTrackerLookup { get; set; }
 
         public LookupDefinition<ErrorStatusLookup, ErrorStatus> ErrorStatusLookup { get; set; }
         public LookupDefinition<ErrorPriorityLookup, ErrorPriority> ErrorPriorityLookup { get; set; }
@@ -204,6 +206,10 @@ namespace RingSoft.DevLogix.DataAccess
                     25);
             column.HasSearchForHostId(TimeSpentHostId);
             TimeClocks.HasLookupDefinition(TimeClockLookup);
+
+            UserTrackerLookup = new LookupDefinition<UserTrackerLookup, UserTracker>(UserTracker);
+            UserTrackerLookup.AddVisibleColumnDefinition(p => p.Name, "Name", p => p.Name, 95);
+            UserTracker.HasLookupDefinition(UserTrackerLookup);
 
             ErrorStatusLookup = new LookupDefinition<ErrorStatusLookup, ErrorStatus>(ErrorStatuses);
             ErrorStatusLookup.AddVisibleColumnDefinition(p => p.Description, "Description", p => p.Description, 100);

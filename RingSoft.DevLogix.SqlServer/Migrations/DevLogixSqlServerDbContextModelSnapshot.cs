@@ -1204,6 +1204,36 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.ToTable("UsersTimeOff");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.UserManagement.UserTracker", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<decimal?>("RedMinutes")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("RefreshInterval")
+                        .HasColumnType("integer");
+
+                    b.Property<byte>("RefreshType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<decimal?>("YellowMinutes")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserTracker");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.UsersGroup", b =>
                 {
                     b.Property<int>("UserId")

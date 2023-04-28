@@ -23,6 +23,7 @@ namespace RingSoft.DevLogix.DataAccess
         DbSet<UsersGroup> UsersGroups { get; set; }
         DbSet<Department> Departments { get; set; }
         DbSet<TimeClock> TimeClocks { get; set; }
+        DbSet<UserTracker>  UserTracker { get; set; }
 
         DbSet<ErrorStatus> ErrorStatuses { get; set; }
         DbSet<ErrorPriority> ErrorPriorities { get; set; }

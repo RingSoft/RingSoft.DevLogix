@@ -21,12 +21,12 @@ namespace RingSoft.DevLogix.DataAccess.Model.QualityAssurance
 
         public virtual ICollection<TestingTemplate> ChildTemplates { get; set; }
 
-        public virtual ICollection<TestingTemplateItem> Items { get; set; }
+        //public virtual ICollection<TestingTemplateItem> Items { get; set; }
 
         public TestingTemplate()
         {
             ChildTemplates = new HashSet<TestingTemplate>();
-            Items = new HashSet<TestingTemplateItem>();
+            //Items = new HashSet<TestingTemplateItem>();
         }
     }
 }
