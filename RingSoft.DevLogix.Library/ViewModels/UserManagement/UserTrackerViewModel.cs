@@ -122,11 +122,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
         }
 
+        public RelayCommand RefreshNowCommand { get; set; }
 
         public UserTrackerViewModel()
         {
             RefreshRateSetup = new TextComboBoxControlSetup();
             RefreshRateSetup.LoadFromEnum<RefreshRate>();
+            RefreshNowCommand = new RelayCommand(Refresh);
         }
 
         protected override UserTracker PopulatePrimaryKeyControls(UserTracker newEntity, PrimaryKeyValue primaryKeyValue)
@@ -136,6 +138,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 .FirstOrDefault(p => p.Id == newEntity.Id);
 
             Id = result.Id;
+            RefreshNowCommand.IsEnabled = true;
             return result;
         }
 
@@ -168,6 +171,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             RefreshValue = 0;
             RedAlertMinutes = null;
             YellowAlertMinutes = null;
+            RefreshNowCommand.IsEnabled = false;
         }
 
         protected override bool SaveEntity(UserTracker entity)
@@ -192,6 +196,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 result = context.DeleteEntity(entity, "Deleting User Tracker");
             }
             return result;
+        }
+
+        private void Refresh()
+        {
+
         }
     }
 }
