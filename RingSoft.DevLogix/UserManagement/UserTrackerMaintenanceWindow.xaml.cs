@@ -28,6 +28,13 @@ namespace RingSoft.DevLogix.UserManagement
         public UserTrackerMaintenanceWindow()
         {
             InitializeComponent();
+            RegisterFormKeyControl(NameControl);
+        }
+
+        public override void ResetViewForNewRecord()
+        {
+            NameControl.Focus();
+            base.ResetViewForNewRecord();
         }
     }
 }
