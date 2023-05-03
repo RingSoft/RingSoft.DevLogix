@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AdvancedFind;
@@ -122,6 +123,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
         }
 
+        private UserTrackerUserManager _userManager;
+
+        public UserTrackerUserManager UserManager
+        {
+            get => _userManager;
+            set
+            {
+                if (_userManager == value)
+                    return;
+
+                _userManager = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         public RelayCommand RefreshNowCommand { get; set; }
 
         public UserTrackerViewModel()
@@ -129,12 +146,17 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             RefreshRateSetup = new TextComboBoxControlSetup();
             RefreshRateSetup.LoadFromEnum<RefreshRate>();
             RefreshNowCommand = new RelayCommand(Refresh);
+            UserManager = new UserTrackerUserManager(this);
+
+            TablesToDelete.Add(AppGlobals.LookupContext.UserTrackerUsers);
         }
 
         protected override UserTracker PopulatePrimaryKeyControls(UserTracker newEntity, PrimaryKeyValue primaryKeyValue)
         {
             var context = AppGlobals.DataRepository.GetDataContext();
             var result = context.GetTable<UserTracker>()
+                .Include(p => p.Users)
+                .ThenInclude(p => p.User)
                 .FirstOrDefault(p => p.Id == newEntity.Id);
 
             Id = result.Id;
@@ -149,6 +171,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             RefreshValue = entity.RefreshInterval;
             RedAlertMinutes = entity.RedMinutes;
             YellowAlertMinutes = entity.YellowMinutes;
+            UserManager.LoadGrid(entity.Users.OrderBy(p => p.User.Name));
         }
 
         protected override UserTracker GetEntityData()
@@ -172,6 +195,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             RedAlertMinutes = null;
             YellowAlertMinutes = null;
             RefreshNowCommand.IsEnabled = false;
+            UserManager.SetupForNewRecord();
         }
 
         protected override bool SaveEntity(UserTracker entity)
@@ -179,6 +203,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             var context = AppGlobals.DataRepository.GetDataContext();
             if (context.SaveEntity(entity, "Saving User Tracker"))
             {
+                var users = UserManager.GetEntityList();
+                if (users != null)
+                {
+                    foreach (var userTrackerUser in users)
+                    {
+                        userTrackerUser.UserTrackerId = entity.Id;
+                    }
+                }
                 return true;
             }
 

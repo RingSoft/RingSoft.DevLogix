@@ -49,6 +49,7 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<Department> Departments { get; set; }
         public TableDefinition<TimeClock> TimeClocks { get; set; }
         public TableDefinition<UserTracker> UserTracker { get; set; }
+        public TableDefinition<UserTrackerUser> UserTrackerUsers { get; set; }
 
         public TableDefinition<ErrorStatus> ErrorStatuses { get; set; }
         public TableDefinition<ErrorPriority> ErrorPriorities { get; set; }
@@ -85,6 +86,7 @@ namespace RingSoft.DevLogix.DataAccess
         public LookupDefinition<DepartmentLookup, Department> DepartmentLookup { get; set; }
         public LookupDefinition<TimeClockLookup, TimeClock> TimeClockLookup { get; set; }
         public LookupDefinition<UserTrackerLookup, UserTracker> UserTrackerLookup { get; set; }
+        public LookupDefinition<UserTrackerUserLookup, UserTrackerUser> UserTrackerUserLookup { get; set; }
 
         public LookupDefinition<ErrorStatusLookup, ErrorStatus> ErrorStatusLookup { get; set; }
         public LookupDefinition<ErrorPriorityLookup, ErrorPriority> ErrorPriorityLookup { get; set; }
@@ -210,6 +212,15 @@ namespace RingSoft.DevLogix.DataAccess
             UserTrackerLookup = new LookupDefinition<UserTrackerLookup, UserTracker>(UserTracker);
             UserTrackerLookup.AddVisibleColumnDefinition(p => p.Name, "Name", p => p.Name, 95);
             UserTracker.HasLookupDefinition(UserTrackerLookup);
+
+            UserTrackerUserLookup = new LookupDefinition<UserTrackerUserLookup, UserTrackerUser>(UserTrackerUsers);
+            UserTrackerUserLookup.Include(p => p.UserTracker)
+                .AddVisibleColumnDefinition(p => p.UserTracker, "User Tracker"
+                    , p => p.Name, 50);
+            UserTrackerUserLookup.Include(p => p.User)
+                .AddVisibleColumnDefinition(p => p.User, "User"
+                , p => p.Name, 50);
+            UserTrackerUsers.HasLookupDefinition(UserTrackerUserLookup);
 
             ErrorStatusLookup = new LookupDefinition<ErrorStatusLookup, ErrorStatus>(ErrorStatuses);
             ErrorStatusLookup.AddVisibleColumnDefinition(p => p.Description, "Description", p => p.Description, 100);

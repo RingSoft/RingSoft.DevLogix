@@ -1185,6 +1185,21 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.ToTable("UserTracker");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.UserManagement.UserTrackerUser", b =>
+                {
+                    b.Property<int>("UserTrackerId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("UserTrackerId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserTrackerUsers");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.UsersGroup", b =>
                 {
                     b.Property<int>("UserId")
@@ -1663,6 +1678,25 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.UserManagement.UserTrackerUser", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "User")
+                        .WithMany("UserTrackerUsers")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.UserManagement.UserTracker", "UserTracker")
+                        .WithMany("Users")
+                        .HasForeignKey("UserTrackerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
+
+                    b.Navigation("UserTracker");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.UsersGroup", b =>
                 {
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.Group", "Group")
@@ -1837,6 +1871,13 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("UserGroups");
 
                     b.Navigation("UserTimeOff");
+
+                    b.Navigation("UserTrackerUsers");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.UserManagement.UserTracker", b =>
+                {
+                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }
