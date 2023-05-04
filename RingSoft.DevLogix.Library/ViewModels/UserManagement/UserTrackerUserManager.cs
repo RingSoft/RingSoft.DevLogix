@@ -1,4 +1,5 @@
-﻿using RingSoft.DataEntryControls.Engine.DataEntryGrid;
+﻿using System.Linq;
+using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model.UserManagement;
 
@@ -33,6 +34,17 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         protected override DbMaintenanceDataEntryGridRow<UserTrackerUser> ConstructNewRowFromEntity(UserTrackerUser entity)
         {
             return new UserTrackerUserRow(this);
+        }
+
+        public void RefreshGrid()
+        {
+            var rows = Rows.OfType<UserTrackerUserRow>()
+                .Where(p => p.IsNew == false);
+            foreach (var row in rows)
+            {
+                row.RefreshRow();
+            }
+            Grid?.RefreshGridView();
         }
     }
 }

@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using RingSoft.App.Controls;
+using RingSoft.DataEntryControls.WPF;
+using RingSoft.DbLookup;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.Library.ViewModels.UserManagement;
 using RingSoft.DevLogix.Library;
@@ -38,7 +40,7 @@ namespace RingSoft.DevLogix.UserManagement
     /// <summary>
     /// Interaction logic for UserTrackerMaintenanceWindow.xaml
     /// </summary>
-    public partial class UserTrackerMaintenanceWindow
+    public partial class UserTrackerMaintenanceWindow : IUserTrackerView
     {
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "User Tracker";
@@ -55,7 +57,6 @@ namespace RingSoft.DevLogix.UserManagement
                     userHeaderControl.RefreshNowButton.Command = LocalViewModel.RefreshNowCommand;
                 }
             };
-
         }
 
         public override void ResetViewForNewRecord()

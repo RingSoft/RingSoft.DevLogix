@@ -87,6 +87,11 @@ namespace RingSoft.DevLogix.UserManagement
                 NotesControl.MaxWidth = NotesControl.ActualWidth;
                 NotesControl.MaxHeight = NotesControl.ActualHeight;
             };
+
+            Deactivated += (sender, args) =>
+            {
+
+            };
         }
 
         public override void ResetViewForNewRecord()

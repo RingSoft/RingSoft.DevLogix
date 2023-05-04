@@ -120,6 +120,27 @@
 
                     </Grid>
                 </TabItem>
+
+                <TabItem x:Name="UsersTab" Header="Users">
+
+                    <DockPanel>
+                        <deg:DataEntryGrid x:Name="UsersGrid" Manager="{Binding UserManager}">
+
+                            <deg:DataEntryGrid.Columns>
+
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:UserTrackerUserManager.UserColumnId}" Header="User" Width="200"/>
+
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:UserTrackerUserManager.PunchedOutColumnId}" Header="Punched Out Time" Width="150"/>
+
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:UserTrackerUserManager.PunchedInColumnId}" Header="Punched In Time" Width="150"/>
+
+                                <deg:DataEntryGridButtonColumn ColumnId="{x:Static vm:UserTrackerUserManager.TimeClockColumnId}" Header="Punched In Time Clock" Width="150"/>
+
+                            </deg:DataEntryGrid.Columns>
+
+                        </deg:DataEntryGrid>
+                    </DockPanel>
+                </TabItem>
             </TabControl>
 
         </Grid>

@@ -4,10 +4,15 @@ using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AdvancedFind;
 using RingSoft.DbLookup.ModelDefinition;
+using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model.UserManagement;
 
 namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 {
+    public interface IUserTrackerView : IDbMaintenanceView
+    {
+        
+    }
     public class UserTrackerViewModel  : DevLogixDbMaintenanceViewModel<UserTracker>
     {
         public override TableDefinition<UserTracker> TableDefinition => AppGlobals.LookupContext.UserTracker;
@@ -138,6 +143,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
         }
 
+        public new IUserTrackerView View { get; private set; }
 
         public RelayCommand RefreshNowCommand { get; set; }
 
@@ -149,6 +155,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             UserManager = new UserTrackerUserManager(this);
 
             TablesToDelete.Add(AppGlobals.LookupContext.UserTrackerUsers);
+        }
+
+        protected override void Initialize()
+        {
+            if (base.View is IUserTrackerView view)
+            {
+                View = view;
+            }
+            base.Initialize();
         }
 
         protected override UserTracker PopulatePrimaryKeyControls(UserTracker newEntity, PrimaryKeyValue primaryKeyValue)
@@ -172,6 +187,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             RedAlertMinutes = entity.RedMinutes;
             YellowAlertMinutes = entity.YellowMinutes;
             UserManager.LoadGrid(entity.Users.OrderBy(p => p.User.Name));
+            Refresh();
         }
 
         protected override UserTracker GetEntityData()
@@ -203,6 +219,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             var context = AppGlobals.DataRepository.GetDataContext();
             if (context.SaveEntity(entity, "Saving User Tracker"))
             {
+                var existUsers = context.GetTable<UserTrackerUser>()
+                    .Where(p => p.UserTrackerId == Id).ToList();
+                if (existUsers.Any())
+                {
+                    context.RemoveRange(existUsers);
+                }
                 var users = UserManager.GetEntityList();
                 if (users != null)
                 {
@@ -210,8 +232,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     {
                         userTrackerUser.UserTrackerId = entity.Id;
                     }
+                    context.AddRange(users);
                 }
-                return true;
+                return context.Commit("Saving User Tracker Users");
             }
 
             return false;
@@ -221,6 +244,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         {
             var result = false;
             var context = AppGlobals.DataRepository.GetDataContext();
+
+            var existUsers = context.GetTable<UserTrackerUser>()
+                .Where(p => p.UserTrackerId == Id).ToList();
+            if (existUsers.Any())
+            {
+                context.RemoveRange(existUsers);
+            }
+
             var table = context.GetTable<UserTracker>();
             var entity = table.FirstOrDefault(p => p.Id == Id);
             if (entity != null)
@@ -232,7 +263,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         private void Refresh()
         {
-
+            UserManager.RefreshGrid();
         }
     }
 }
