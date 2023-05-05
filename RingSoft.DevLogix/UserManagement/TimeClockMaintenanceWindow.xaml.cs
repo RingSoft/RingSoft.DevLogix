@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using RingSoft.App.Controls;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
@@ -60,6 +62,8 @@ namespace RingSoft.DevLogix.UserManagement
         public event EventHandler<GetErrorEventArgs> GetTimeClockError;
         public event EventHandler<GetProjectTaskEventArgs> GetTimeClockProjectTask;
 
+        private bool _isActive = true;
+
         public TimeClockMaintenanceWindow()
         {
             InitializeComponent();
@@ -88,9 +92,9 @@ namespace RingSoft.DevLogix.UserManagement
                 NotesControl.MaxHeight = NotesControl.ActualHeight;
             };
 
-            Deactivated += (sender, args) =>
+            Closed += (sender, args) =>
             {
-
+                _isActive = false;
             };
         }
 
@@ -136,10 +140,10 @@ namespace RingSoft.DevLogix.UserManagement
 
         public void SetElapsedTime()
         {
-            Dispatcher?.Invoke(() =>
+            if (_isActive)
             {
-                ElapsedTimeBox.Text = LocalViewModel.ElapsedTime;
-            });
+                Dispatcher?.Invoke(() => { ElapsedTimeBox.Text = LocalViewModel.ElapsedTime; });
+            }
         }
 
         public void FocusNotes()
@@ -158,5 +162,6 @@ namespace RingSoft.DevLogix.UserManagement
             TopHeaderControl.DeleteButton.Visibility = Visibility.Collapsed;
             TopHeaderControl.NewButton.Visibility = Visibility.Collapsed;
         }
+
     }
 }

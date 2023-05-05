@@ -56,16 +56,32 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 case UserTrackerColumns.User:
                     break;
                 case UserTrackerColumns.PunchedOut:
-                    break;
                 case UserTrackerColumns.PunchedIn:
+                    return new DataEntryGridCellStyle()
+                    {
+                        State = DataEntryGridCellStates.ReadOnly,
+                    };
                     break;
                 case UserTrackerColumns.TimeClock:
-                    return new DataEntryGridButtonCellStyle()
+                    if (TimeClock == null)
                     {
-                        Content = "Time Clock",
-                        State = DataEntryGridCellStates.Enabled,
-                        IsVisible = TimeClock != null,
-                    };
+                        return new DataEntryGridButtonCellStyle()
+                        {
+                            State = DataEntryGridCellStates.ReadOnly,
+                            IsVisible = false,
+                        };
+
+                    }
+                    else
+                    {
+                        return new DataEntryGridButtonCellStyle()
+                        {
+                            Content = "Time Clock",
+                            State = DataEntryGridCellStates.Enabled,
+                            IsVisible = true,
+                        };
+                    }
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }

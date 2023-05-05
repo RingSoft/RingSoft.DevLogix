@@ -26,7 +26,8 @@ namespace RingSoft.DevLogix.UserManagement
 
         static UserTrackerHeaderControl()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(UserHeaderControl), new FrameworkPropertyMetadata(typeof(UserHeaderControl)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(UserTrackerHeaderControl)
+                , new FrameworkPropertyMetadata(typeof(UserTrackerHeaderControl)));
         }
 
         public override void OnApplyTemplate()

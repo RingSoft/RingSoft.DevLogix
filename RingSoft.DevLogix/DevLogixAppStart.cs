@@ -187,12 +187,6 @@ namespace RingSoft.DevLogix
             }
             else
             {
-                if (maintenanceWindow is TimeClockMaintenanceWindow)
-                {
-                    maintenanceWindow.Deactivated += (sender, args) =>
-                    {
-                    };
-                }
                 maintenanceWindow.Show();
                 maintenanceWindow.Activate();
                 maintenanceWindow.Closed += (sender, args) => ownWindow?.Activate();

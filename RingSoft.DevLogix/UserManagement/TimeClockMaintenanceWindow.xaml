@@ -10,7 +10,8 @@
                         xmlns:vm="clr-namespace:RingSoft.DevLogix.Library.ViewModels.UserManagement;assembly=RingSoft.DevLogix.Library"
                         mc:Ignorable="d"
                         Style="{StaticResource BaseWindowStyle}"
-                        Title="Time Clock" SizeToContent="WidthAndHeight" MinHeight="500" ResizeMode="NoResize">
+                        Title="Time Clock" SizeToContent="WidthAndHeight" MinHeight="500" ResizeMode="NoResize"
+                        SetFocusToFirstControl="False">
 
     <Window.Resources>
 
