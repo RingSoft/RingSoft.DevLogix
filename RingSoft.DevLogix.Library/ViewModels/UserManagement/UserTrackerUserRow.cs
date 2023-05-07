@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using MySqlX.XDevAPI.Relational;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbLookup;
@@ -22,6 +23,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         public TimeClock TimeClock { get; private set; }
 
+        public string Status { get; private set; }
+
+        public decimal PunchedOutMinutes { get; private set; }
+
+        public decimal PunchedInMinutes { get; private set; }
+
         public UserTrackerUserRow(UserTrackerUserManager manager) : base(manager)
         {
             Manager = manager;
@@ -36,8 +43,31 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 case UserTrackerColumns.User:
                     return new DataEntryGridAutoFillCellProps(this, columnId, UserAutoFillSetup, UserAutoFillValue);
                 case UserTrackerColumns.PunchedOut:
+                    if (Status.IsNullOrEmpty())
+                    {
+                        if (PunchedOutMinutes > 0)
+                        {
+                            return new TimeCostCellProps(this, columnId, PunchedOutMinutes);
+                        }
+                        else
+                        {
+                            return new DataEntryGridTextCellProps(this, columnId);
+                        }
+                    }
+                    else
+                    {
+                        return new DataEntryGridTextCellProps(this, columnId, Status);
+                    }
                     break;
                 case UserTrackerColumns.PunchedIn:
+                    if (PunchedInMinutes > 0)
+                    {
+                        return new TimeCostCellProps(this, columnId, PunchedInMinutes);
+                    }
+                    else
+                    {
+                        return new DataEntryGridTextCellProps(this, columnId);
+                    }
                     break;
                 case UserTrackerColumns.TimeClock:
                     return new DataEntryGridButtonCellProps(this, columnId);
@@ -63,25 +93,21 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     };
                     break;
                 case UserTrackerColumns.TimeClock:
-                    if (TimeClock == null)
+                    if (UserId == 0 || TimeClock == null)
                     {
                         return new DataEntryGridButtonCellStyle()
                         {
-                            State = DataEntryGridCellStates.ReadOnly,
+                            Content = "Last Time Clock",
+                            State = DataEntryGridCellStates.Disabled,
                             IsVisible = false,
                         };
-
                     }
-                    else
+                    return new DataEntryGridButtonCellStyle()
                     {
-                        return new DataEntryGridButtonCellStyle()
-                        {
-                            Content = "Time Clock",
-                            State = DataEntryGridCellStates.Enabled,
-                            IsVisible = true,
-                        };
-                    }
-                    break;
+                        Content = "Last Time Clock",
+                        State = DataEntryGridCellStates.Enabled,
+                        IsVisible = true,
+                    };
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -97,10 +123,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     if (value is DataEntryGridAutoFillCellProps autoFillCellProps)
                     {
                         UserAutoFillValue = autoFillCellProps.AutoFillValue;
-                        if (UserAutoFillValue.IsValid())
-                        {
-                            UserId = UserAutoFillValue.GetEntity<User>().Id;
-                        }
+                        UserId = UserAutoFillValue.GetEntity<User>().Id;
                         RefreshRow();
                         Manager.Grid?.RefreshGridView();
                     }
@@ -141,9 +164,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         public void RefreshRow()
         {
-            if (!UserAutoFillValue.IsValid())
-                return;
-
             var userId = UserAutoFillValue.GetEntity<User>();
             var context = AppGlobals.DataRepository.GetDataContext();
             if (context != null)
@@ -154,6 +174,64 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     TimeClock = table
                         .FirstOrDefault(p => p.UserId == UserId
                                              && p.PunchOutDate == null);
+                    var now = DateTime.Now.ToUniversalTime();
+                    var userTable = context.GetTable<User>();
+                    if (userTable != null)
+                    {
+                        var user = userTable.FirstOrDefault(p => p.Id == UserId);
+                        if (user == null)
+                        {
+                            Status = string.Empty;
+                            PunchedInMinutes = 0;
+                            PunchedOutMinutes = 0;
+                        }
+                        else
+                        {
+                            if (user.ClockDate == null)
+                            {
+                                Status = "Clocked Out";
+                                TimeClock = table.Where(p => p.UserId == UserId)
+                                    .OrderBy(p => p.PunchOutDate)
+                                    .LastOrDefault();
+                                PunchedInMinutes = 0;
+                                PunchedOutMinutes = 0;
+                            }
+                            else if (TimeClock == null)
+                            {
+                                TimeClock = table.Where(p => p.UserId == UserId)
+                                    .OrderBy(p => p.PunchOutDate)
+                                    .LastOrDefault();
+
+                                var timeClock = table
+                                    .Where(p => p.UserId == UserId
+                                                && p.PunchOutDate != null
+                                                && p.PunchOutDate.Value.Year == now.Year
+                                                && p.PunchOutDate.Value.Month == now.Month
+                                                && p.PunchOutDate.Value.Day == now.Day)
+                                    .OrderBy(p => p.PunchOutDate)
+                                    .LastOrDefault();
+                                if (timeClock != null)
+                                {
+                                    if (timeClock.PunchOutDate != null)
+                                    {
+                                        var timeSpan = now - timeClock.PunchOutDate.Value;
+                                        PunchedOutMinutes = (decimal)timeSpan.TotalMinutes;
+                                    }
+                                }
+
+                                PunchedInMinutes = 0;
+                            }
+                            else
+                            {
+                                Status = string.Empty;
+                                var timeSpan = now - TimeClock.PunchInDate;
+                                PunchedInMinutes = (decimal)timeSpan.TotalMinutes;
+                                PunchedOutMinutes = 0;
+
+                            }
+
+                        }
+                    }
                 }
             }
         }

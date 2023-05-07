@@ -30,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\RingSoft.DataEntryControls\RingSoft.DataEntryControls.WPF\RingSoft.DataEntryControls.WPF.csproj" />
     <ProjectReference Include="..\RingSoft.DevLogix.Library\RingSoft.DevLogix.Library.csproj" />
   </ItemGroup>
 

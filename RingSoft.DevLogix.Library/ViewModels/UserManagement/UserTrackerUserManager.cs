@@ -19,6 +19,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         public const int PunchedInColumnId = (int)UserTrackerColumns.PunchedIn;
         public const int TimeClockColumnId = (int)UserTrackerColumns.TimeClock;
 
+        public const int YellowDisplayStyleId = 500;
+        public const int RedDisplayStyleId = 501;
+
         public new UserTrackerViewModel ViewModel { get; }
 
         public UserTrackerUserManager(UserTrackerViewModel viewModel) : base(viewModel)
