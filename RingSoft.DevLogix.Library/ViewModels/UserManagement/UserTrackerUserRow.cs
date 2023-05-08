@@ -29,6 +29,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         public decimal PunchedInMinutes { get; private set; }
 
+        public override int DisplayStyleId
+        {
+            get => _displayStyle;
+            set => _displayStyle = value;
+        }
+
+        private int _displayStyle;
+
         public UserTrackerUserRow(UserTrackerUserManager manager) : base(manager)
         {
             Manager = manager;
@@ -195,6 +203,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                                     .LastOrDefault();
                                 PunchedInMinutes = 0;
                                 PunchedOutMinutes = 0;
+                                DisplayStyleId = 0;
                             }
                             else if (TimeClock == null)
                             {
@@ -216,6 +225,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                                     {
                                         var timeSpan = now - timeClock.PunchOutDate.Value;
                                         PunchedOutMinutes = (decimal)timeSpan.TotalMinutes;
+                                        if (PunchedOutMinutes > Manager.ViewModel.RedAlertMinutes)
+                                        {
+                                            DisplayStyleId = UserTrackerUserManager.RedDisplayStyleId;
+                                        }
+                                        else
+                                        {
+                                            DisplayStyleId = 0;
+                                        }
                                     }
                                 }
 
@@ -226,6 +243,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                                 Status = string.Empty;
                                 var timeSpan = now - TimeClock.PunchInDate;
                                 PunchedInMinutes = (decimal)timeSpan.TotalMinutes;
+                                if (PunchedInMinutes > Manager.ViewModel.YellowAlertMinutes)
+                                {
+                                    DisplayStyleId = UserTrackerUserManager.YellowDisplayStyleId;
+                                }
+                                else
+                                {
+                                    DisplayStyleId = 0;
+                                }
                                 PunchedOutMinutes = 0;
 
                             }

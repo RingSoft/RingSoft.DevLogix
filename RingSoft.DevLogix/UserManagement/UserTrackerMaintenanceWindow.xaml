@@ -17,6 +17,26 @@
 
     <Window.Resources>
 
+        <deg:DataEntryGridDisplayStyle x:Key="RedCellStyle" DisplayId="{x:Static vm:UserTrackerUserManager.RedDisplayStyleId}" 
+                                       ForegroundBrush="White"
+                                       SelectionBrush="White">
+            <deg:DataEntryGridDisplayStyle.BackgroundBrush>
+                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                    <GradientStop Color="LightSalmon" Offset="0"/>
+                    <GradientStop Color="Red" Offset="1"/>
+                </LinearGradientBrush>
+            </deg:DataEntryGridDisplayStyle.BackgroundBrush>
+        </deg:DataEntryGridDisplayStyle>
+
+        <deg:DataEntryGridDisplayStyle x:Key="YellowCellStyle" DisplayId="{x:Static vm:UserTrackerUserManager.YellowDisplayStyleId}" ForegroundBrush="Black" SelectionBrush="Black">
+            <deg:DataEntryGridDisplayStyle.BackgroundBrush>
+                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                    <GradientStop Color="LightYellow" Offset="0"/>
+                    <GradientStop Color="Yellow" Offset="1"/>
+                </LinearGradientBrush>
+            </deg:DataEntryGridDisplayStyle.BackgroundBrush>
+        </deg:DataEntryGridDisplayStyle>
+
         <Style TargetType="{x:Type userl:UserTrackerHeaderControl}">
             <Setter Property="Template">
                 <Setter.Value>
@@ -137,6 +157,11 @@
                                 <deg:DataEntryGridButtonColumn ColumnId="{x:Static vm:UserTrackerUserManager.TimeClockColumnId}" Header="Punched In Time Clock" Width="150"/>
 
                             </deg:DataEntryGrid.Columns>
+
+                            <deg:DataEntryGrid.DisplayStyles>
+                                <StaticResource ResourceKey="RedCellStyle"/>
+                                <StaticResource ResourceKey="YellowCellStyle"/>
+                            </deg:DataEntryGrid.DisplayStyles>
 
                         </deg:DataEntryGrid>
                     </DockPanel>

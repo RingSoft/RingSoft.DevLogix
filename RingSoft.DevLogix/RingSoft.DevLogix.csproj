@@ -26,11 +26,10 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="RingSoft.App.Controls" Version="7.5.0" />
+    <PackageReference Include="RingSoft.App.Controls" Version="7.6.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\RingSoft.DataEntryControls\RingSoft.DataEntryControls.WPF\RingSoft.DataEntryControls.WPF.csproj" />
     <ProjectReference Include="..\RingSoft.DevLogix.Library\RingSoft.DevLogix.Library.csproj" />
   </ItemGroup>
 
