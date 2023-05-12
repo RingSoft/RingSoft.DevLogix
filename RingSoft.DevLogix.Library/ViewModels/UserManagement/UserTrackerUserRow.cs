@@ -29,6 +29,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         public decimal PunchedInMinutes { get; private set; }
 
+        public bool DisableBalloon { get; private set; }
+
         public override int DisplayStyleId
         {
             get => _displayStyle;
@@ -79,6 +81,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     break;
                 case UserTrackerColumns.TimeClock:
                     return new DataEntryGridButtonCellProps(this, columnId);
+                case UserTrackerColumns.DisableBalloon:
+                    return new DataEntryGridCheckBoxCellProps(this, columnId, DisableBalloon);
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -116,6 +120,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                         State = DataEntryGridCellStates.Enabled,
                         IsVisible = true,
                     };
+                case UserTrackerColumns.DisableBalloon:
+                    return new DataEntryGridControlCellStyle()
+                    {
+                        State = DataEntryGridCellStates.Enabled,
+                        IsVisible = true,
+                    };
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -148,6 +158,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                         AppGlobals.LookupContext.TimeClockLookup.ShowAddOnTheFlyWindow(timeClockPrimaryKey);
                     }
                     break;
+                case UserTrackerColumns.DisableBalloon:
+                    if (value is DataEntryGridCheckBoxCellProps checkBoxCellProps)
+                    {
+                        DisableBalloon = checkBoxCellProps.Value;
+                        return;
+                    }
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -172,6 +189,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         public void RefreshRow()
         {
+            var origDisplayId = DisplayStyleId;
+            var origTimeClockId = 0;
+            if (TimeClock != null)
+            {
+                origTimeClockId = TimeClock.Id;
+            }
+            var balloonMessage = string.Empty;
+            var alertLevel = AlertLevels.Green;
             var userId = UserAutoFillValue.GetEntity<User>();
             var context = AppGlobals.DataRepository.GetDataContext();
             if (context != null)
@@ -195,6 +220,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                         }
                         else
                         {
+                            balloonMessage = $"{UserAutoFillValue.Text} has been ";
                             if (user.ClockDate == null)
                             {
                                 Status = "Clocked Out";
@@ -211,12 +237,19 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                                     .OrderBy(p => p.PunchOutDate)
                                     .LastOrDefault();
 
+                                var punchDate = now.ToUniversalTime();
+                                if (user.ClockDate != null)
+                                {
+                                    punchDate = user.ClockDate.Value;
+                                    if (punchDate.ToLocalTime() > now)
+                                    {
+                                        punchDate = now.ToUniversalTime();
+                                    }
+                                }
                                 var timeClock = table
                                     .Where(p => p.UserId == UserId
                                                 && p.PunchOutDate != null
-                                                && p.PunchOutDate.Value.Year == now.Year
-                                                && p.PunchOutDate.Value.Month == now.Month
-                                                && p.PunchOutDate.Value.Day == now.Day)
+                                                && p.PunchOutDate > punchDate)
                                     .OrderBy(p => p.PunchOutDate)
                                     .LastOrDefault();
                                 if (timeClock != null)
@@ -228,6 +261,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                                         if (PunchedOutMinutes > Manager.ViewModel.RedAlertMinutes)
                                         {
                                             DisplayStyleId = UserTrackerUserManager.RedDisplayStyleId;
+                                            balloonMessage +=
+                                                $"punched out for {AppGlobals.MakeTimeSpent(PunchedOutMinutes)}";
+                                            alertLevel = AlertLevels.Red;
                                         }
                                         else
                                         {
@@ -246,11 +282,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                                 if (PunchedInMinutes > Manager.ViewModel.YellowAlertMinutes)
                                 {
                                     DisplayStyleId = UserTrackerUserManager.YellowDisplayStyleId;
+                                    balloonMessage +=
+                                        $"punched in for {AppGlobals.MakeTimeSpent(PunchedInMinutes)}";
+                                    alertLevel = AlertLevels.Yellow;
                                 }
                                 else
                                 {
                                     DisplayStyleId = 0;
-                                }
+                                }   
                                 PunchedOutMinutes = 0;
 
                             }
@@ -258,7 +297,26 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                         }
                     }
                 }
+
+                var noDisableBalloon = origDisplayId != DisplayStyleId;
+                if (TimeClock != null)
+                {
+                    if (TimeClock.Id != origTimeClockId)
+                    {
+                        noDisableBalloon = true;
+                    }
+                }
+                if (noDisableBalloon)
+                {
+                    DisableBalloon = false;
+                }
+                ShowBalloon(balloonMessage, alertLevel);
             }
+        }
+
+        private void ShowBalloon(string message, AlertLevels level)
+        {
+
         }
     }
 }

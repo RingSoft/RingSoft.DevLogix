@@ -11,6 +11,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         PunchedOut = 1,
         PunchedIn = 2,
         TimeClock = 3,
+        DisableBalloon = 4,
     }
     public class UserTrackerUserManager : DbMaintenanceDataEntryGridManager<UserTrackerUser>
     {
@@ -18,6 +19,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         public const int PunchedOutColumnId = (int)UserTrackerColumns.PunchedOut;
         public const int PunchedInColumnId = (int)UserTrackerColumns.PunchedIn;
         public const int TimeClockColumnId = (int)UserTrackerColumns.TimeClock;
+        public const int DisableBalloonColumnId = (int)UserTrackerColumns.DisableBalloon;
 
         public const int YellowDisplayStyleId = 500;
         public const int RedDisplayStyleId = 501;

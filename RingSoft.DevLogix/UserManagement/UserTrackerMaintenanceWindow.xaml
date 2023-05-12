@@ -13,7 +13,7 @@
         xmlns:lm="clr-namespace:RingSoft.DevLogix.DataAccess.LookupModel;assembly=RingSoft.DevLogix.DataAccess"
         mc:Ignorable="d"
         Style="{StaticResource BaseWindowStyle}"
-        Title="User Tracker Maintenance Window" Height="450" Width="800">
+        Title="User Tracker Maintenance Window" Height="450" Width="850">
 
     <Window.Resources>
 
@@ -155,6 +155,8 @@
                                 <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:UserTrackerUserManager.PunchedInColumnId}" Header="Punched In Time" Width="150"/>
 
                                 <deg:DataEntryGridButtonColumn ColumnId="{x:Static vm:UserTrackerUserManager.TimeClockColumnId}" Header="Punched In Time Clock" Width="150"/>
+
+                                <deg:DataEntryGridCheckBoxColumn Header="Disable&#10;Balloon" ColumnId="{x:Static vm:UserTrackerUserManager.DisableBalloonColumnId}" Width="100"/>
 
                             </deg:DataEntryGrid.Columns>
 
