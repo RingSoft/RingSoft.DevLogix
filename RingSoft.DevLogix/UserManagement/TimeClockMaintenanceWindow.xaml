@@ -99,7 +99,7 @@
 
             <Label Grid.Row="2" Grid.Column="2" Content="Punch Out Date"/>
 
-            <dec:DateEditControl Grid.Row="2" Grid.Column="3" Value="{Binding PunchOutDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DateFormatType="DateTime" HorizontalAlignment="Left" Width="200"/>
+            <dec:DateEditControl Grid.Row="2" Grid.Column="3" x:Name="PunchOutControl" Value="{Binding PunchOutDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DateFormatType="DateTime" HorizontalAlignment="Left" Width="200"/>
 
             <Label Grid.Row="3" Grid.Column="0" Content="Elapsed Time"/>
 

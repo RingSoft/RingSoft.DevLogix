@@ -162,7 +162,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     if (value is DataEntryGridCheckBoxCellProps checkBoxCellProps)
                     {
                         DisableBalloon = checkBoxCellProps.Value;
-                        return;
+                        //return;
                     }
                     break;
                 default:
@@ -238,38 +238,41 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                                     .LastOrDefault();
 
                                 var punchDate = now.ToUniversalTime();
-                                if (user.ClockDate != null)
-                                {
-                                    punchDate = user.ClockDate.Value;
-                                    if (punchDate.ToLocalTime() > now)
-                                    {
-                                        punchDate = now.ToUniversalTime();
-                                    }
-                                }
                                 var timeClock = table
                                     .Where(p => p.UserId == UserId
-                                                && p.PunchOutDate != null
-                                                && p.PunchOutDate > punchDate)
+                                                && p.PunchOutDate != null)
                                     .OrderBy(p => p.PunchOutDate)
                                     .LastOrDefault();
-                                if (timeClock != null)
+                                if (timeClock == null)
+                                {
+                                    punchDate = user.ClockDate.GetValueOrDefault();
+                                }
+                                else
                                 {
                                     if (timeClock.PunchOutDate != null)
                                     {
-                                        var timeSpan = now - timeClock.PunchOutDate.Value;
-                                        PunchedOutMinutes = (decimal)timeSpan.TotalMinutes;
-                                        if (PunchedOutMinutes > Manager.ViewModel.RedAlertMinutes)
+                                        if (timeClock.PunchOutDate.Value < user.ClockDate.Value)
                                         {
-                                            DisplayStyleId = UserTrackerUserManager.RedDisplayStyleId;
-                                            balloonMessage +=
-                                                $"punched out for {AppGlobals.MakeTimeSpent(PunchedOutMinutes)}";
-                                            alertLevel = AlertLevels.Red;
+                                            punchDate = user.ClockDate.Value;
                                         }
                                         else
                                         {
-                                            DisplayStyleId = 0;
+                                            punchDate = timeClock.PunchOutDate.GetValueOrDefault();
                                         }
                                     }
+                                }
+                                var timeSpan = now - punchDate;
+                                PunchedOutMinutes = (decimal)timeSpan.TotalMinutes;
+                                if (PunchedOutMinutes > Manager.ViewModel.RedAlertMinutes)
+                                {
+                                    DisplayStyleId = UserTrackerUserManager.RedDisplayStyleId;
+                                    balloonMessage +=
+                                        $"punched out for {AppGlobals.MakeTimeSpent(PunchedOutMinutes)}";
+                                    alertLevel = AlertLevels.Red;
+                                }
+                                else
+                                {
+                                    DisplayStyleId = 0;
                                 }
 
                                 PunchedInMinutes = 0;

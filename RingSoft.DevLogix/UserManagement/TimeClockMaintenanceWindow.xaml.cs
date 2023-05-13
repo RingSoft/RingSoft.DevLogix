@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using RingSoft.App.Controls;
 using RingSoft.DataEntryControls.Engine;
+using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
@@ -102,6 +103,15 @@ namespace RingSoft.DevLogix.UserManagement
         {
             NotesControl.Focus();
             base.ResetViewForNewRecord();
+        }
+
+        public override void OnValidationFail(FieldDefinition fieldDefinition, string text, string caption)
+        {
+            if (fieldDefinition == AppGlobals.LookupContext.TimeClocks.GetFieldDefinition(p => p.PunchOutDate))
+            {
+                PunchOutControl.Focus();
+            }
+            base.OnValidationFail(fieldDefinition, text, caption);
         }
 
         public Error GetError()

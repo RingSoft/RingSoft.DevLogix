@@ -51,5 +51,17 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
             Grid?.RefreshGridView();
         }
+
+        public override void RaiseDirtyFlag()
+        {
+            if (Grid != null)
+            {
+                if (Grid.CurrentColumnId == UserTrackerUserManager.DisableBalloonColumnId)
+                {
+                    return;
+                }
+            }
+            base.RaiseDirtyFlag();
+        }
     }
 }

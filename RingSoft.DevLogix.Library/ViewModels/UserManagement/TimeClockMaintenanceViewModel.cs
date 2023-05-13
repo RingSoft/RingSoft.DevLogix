@@ -441,6 +441,18 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             View.FocusNotes();
         }
 
+        protected override bool ValidateEntity(TimeClock entity)
+        {
+            if (entity.PunchInDate > entity.PunchOutDate)
+            {
+                var message = "The Punch In Date cannot be greater than the Punch Out Date";
+                View.OnValidationFail(TableDefinition.GetFieldDefinition(p => p.PunchOutDate)
+                    , message, "Validation Fail");
+                return false;
+            }
+            return base.ValidateEntity(entity);
+        }
+
         protected override TimeClock GetEntityData()
         {
             if (PunchOutDate != null)
