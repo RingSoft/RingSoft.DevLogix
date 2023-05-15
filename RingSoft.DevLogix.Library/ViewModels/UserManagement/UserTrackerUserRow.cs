@@ -319,7 +319,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         private void ShowBalloon(string message, AlertLevels level)
         {
-
+            if (!DisableBalloon)
+            {
+                Manager.ViewModel.View.SetAlertLevel(level, message);
+            }
         }
     }
 }

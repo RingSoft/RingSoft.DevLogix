@@ -78,11 +78,13 @@ namespace RingSoft.DevLogix.Library.ViewModels
             }
 
             var user = AppGlobals.LookupContext.Users.GetEntityFromPrimaryKeyValue(UserAutoFillValue.PrimaryKeyValue);
-            IQueryable<User> userTable = AppGlobals.DataRepository.GetDataContext().GetTable<User>();
+            var context = AppGlobals.DataRepository.GetDataContext();
+            IQueryable<User> userTable = context.GetTable<User>();
             userTable = userTable.Include(p => p.UserGroups).ThenInclude(p => p.Group)
                 .Include(p => p.Department);
             
             user = userTable.FirstOrDefault(p => p.Id == user.Id);
+            AppGlobals.ClockInUser(context, user);
 
             AppGlobals.LoggedInUser = user;
             SystemGlobals.UserName = user.Name;

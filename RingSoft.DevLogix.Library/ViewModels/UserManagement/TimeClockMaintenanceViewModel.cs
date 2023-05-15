@@ -680,12 +680,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 if (usersQuery != null)
                 {
                     var user = usersQuery.FirstOrDefault(p => p.Id == timeClock.UserId);
-                    if (user != null && user.ClockDate == null)
-                    {
-                        user.ClockDate = timeClock.PunchInDate;
-                    }
-
-                    context.SaveEntity(user, "Updating Clock Date");
+                    //if (user != null && user.ClockDate == null)
+                    //{
+                    //    user.ClockDate = timeClock.PunchInDate;
+                    //}
+                    //context.SaveEntity(user, "Updating Clock Date");
+                    AppGlobals.ClockInUser(context, user);
                 }
 
                 MaintenanceMode = DbMaintenanceModes.EditMode;

@@ -138,9 +138,12 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         private void Logout()
         {
-            if (MainView.LoginUser())
+            if (MainView.PunchOut(true, AppGlobals.LoggedInUser.Id))
             {
-                MainView.MakeMenu();
+                if (MainView.LoginUser())
+                {
+                    MainView.MakeMenu();
+                }
             }
         }
 

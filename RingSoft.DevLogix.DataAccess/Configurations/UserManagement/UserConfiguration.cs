@@ -24,6 +24,8 @@ namespace RingSoft.DevLogix.DataAccess.Configurations
             builder.Property(p => p.BillableProjectsMinutesSpent).HasColumnType(DbConstants.DecimalColumnType);
             builder.Property(p => p.NonBillableProjectsMinutesSpent).HasColumnType(DbConstants.DecimalColumnType);
             builder.Property(p => p.ErrorsMinutesSpent).HasColumnType(DbConstants.DecimalColumnType);
+            builder.Property(p => p.ClockOutReason).HasColumnType(DbConstants.ByteColumnType);
+            builder.Property(p => p.OtherClockOutReason).HasColumnType(DbConstants.StringColumnType);
 
             builder.HasKey(p => p.Id);
 

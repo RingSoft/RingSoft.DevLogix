@@ -1081,6 +1081,9 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<DateTime?>("ClockDate")
                         .HasColumnType("datetime");
 
+                    b.Property<int>("ClockOutReason")
+                        .HasColumnType("smallint");
+
                     b.Property<int?>("DefaultChartId")
                         .HasColumnType("integer");
 
@@ -1107,6 +1110,10 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.Property<string>("Notes")
                         .HasColumnType("ntext");
+
+                    b.Property<string>("OtherClockOutReason")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
 
                     b.Property<string>("Password")
                         .HasMaxLength(255)

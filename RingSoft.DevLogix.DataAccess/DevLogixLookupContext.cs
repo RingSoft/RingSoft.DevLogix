@@ -507,6 +507,10 @@ namespace RingSoft.DevLogix.DataAccess
             Users.GetFieldDefinition(p => p.Password).DoSkipPrint();
             Users.GetFieldDefinition(p => p.ClockDate).DoConvertToLocalTime().HasDateType(DbDateTypes.DateTime);
             Users.GetFieldDefinition(p => p.HourlyRate).HasDecimalFieldType(DecimalFieldTypes.Currency);
+            Users.GetFieldDefinition(p => p.ClockOutReason).IsEnum<ClockOutReasons>();
+
+            UserTracker.PriorityLevel = 300;
+            UserTrackerUsers.PriorityLevel = 400;
 
             UsersTimeOff.PriorityLevel = 400;
             UsersTimeOff.GetFieldDefinition(p => p.StartDate)

@@ -17,6 +17,7 @@ using RingSoft.DbLookup;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.Library.ViewModels.UserManagement;
 using RingSoft.DevLogix.Library;
+using RingSoft.DbLookup.Controls.WPF;
 
 namespace RingSoft.DevLogix.UserManagement
 {
@@ -47,6 +48,8 @@ namespace RingSoft.DevLogix.UserManagement
         public override string ItemText => "User Tracker";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;
 
+        private bool _closed;
+
         public UserTrackerMaintenanceWindow()
         {
             InitializeComponent();
@@ -58,12 +61,31 @@ namespace RingSoft.DevLogix.UserManagement
                     userHeaderControl.RefreshNowButton.Command = LocalViewModel.RefreshNowCommand;
                 }
             };
+
+            Closed += (sender, args) =>
+            {
+                _closed = true;
+            };
         }
 
         public override void ResetViewForNewRecord()
         {
             NameControl.Focus();
             base.ResetViewForNewRecord();
+        }
+
+        public void SetAlertLevel(AlertLevels level, string message)
+        {
+            if (_closed)
+            {
+                return;
+            }
+
+            Dispatcher.Invoke(() =>
+            {
+                LookupControlsGlobals.LookupWindowFactory.SetAlertLevel(level, false
+                    , this, message);
+            });
         }
     }
 }

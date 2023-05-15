@@ -364,5 +364,15 @@ namespace RingSoft.DevLogix.Library
             error.Cost = users.Sum(p => p.Cost);
 
         }
+
+        public static void ClockInUser(RingSoft.DevLogix.DataAccess.IDbContext context, User user)
+        {
+            if (user != null && user.ClockOutReason != (byte)ClockOutReasons.ClockedIn)
+            {
+                user.ClockOutReason = (byte)ClockOutReasons.ClockedIn;
+                user.ClockDate = DateTime.Now.ToUniversalTime();
+                context.SaveEntity(user, "Clocking In");
+            }
+        }
     }
 }

@@ -1,0 +1,59 @@
+﻿<dec:BaseWindow x:Class="RingSoft.DevLogix.UserManagement.UserClockReasonWindow"
+                        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                        xmlns:local="clr-namespace:RingSoft.DevLogix.UserManagement"
+                        xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
+                        xmlns:vm="clr-namespace:RingSoft.DevLogix.Library.ViewModels.UserManagement;assembly=RingSoft.DevLogix.Library"
+                        xmlns:lib ="clr-namespace:RingSoft.DevLogix.DataAccess.Model;assembly=RingSoft.DevLogix.DataAccess"
+                        mc:Ignorable="d"
+                        Style="{StaticResource BaseWindowStyle}"
+                        Title="Clock Out Reason" SizeToContent="WidthAndHeight" ResizeMode="NoResize">
+
+    <Window.DataContext>
+        <vm:UserClockReasonViewModel x:Name="LocalViewModel"/>
+    </Window.DataContext>
+
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Content="Please specify why you are clocking out." HorizontalAlignment="Left"/>
+
+        <RadioButton Grid.Row="1" Grid.Column="0" Content="Going Home" Margin="0,5,0,0" IsChecked="{Binding Path=ClockOutReason, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static lib:ClockOutReasons.GoneHome}, Mode=TwoWay}"/>
+
+        <RadioButton Grid.Row="2" Grid.Column="0" Content="Going To Lunch" Margin="0,5,0,0" IsChecked="{Binding Path=ClockOutReason, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static lib:ClockOutReasons.Lunch}, Mode=TwoWay}"/>
+
+        <RadioButton Grid.Row="3" Grid.Column="0" Content="Going On Break" Margin="0,5,0,0" IsChecked="{Binding Path=ClockOutReason, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static lib:ClockOutReasons.Break}, Mode=TwoWay}"/>
+
+        <RadioButton Grid.Row="4" Grid.Column="0" Content="Going To The Bathroom" Margin="0,5,0,0" IsChecked="{Binding Path=ClockOutReason, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static lib:ClockOutReasons.Bathroom}, Mode=TwoWay}"/>
+
+        <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,5,0,0">
+
+            <RadioButton Content="Other" IsChecked="{Binding Path=ClockOutReason, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static lib:ClockOutReasons.Other}, Mode=TwoWay}"/>
+
+            <dec:StringEditControl x:Name="OtherStringControl" Margin="5,0,0,0" Text="{Binding OtherReason, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
+
+        </StackPanel>
+
+        <StackPanel Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,5,0,0">
+
+            <Button Content="_OK" Width="75" Margin="0,0,5,0" IsDefault="True" Command="{Binding OnOkCommand}"/>
+
+            <Button Content="_Cancel" Width="75" Command="{Binding OnCancelCommand}"/>
+        </StackPanel>
+
+    </Grid>
+</dec:BaseWindow>

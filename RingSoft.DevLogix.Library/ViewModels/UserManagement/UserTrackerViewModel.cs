@@ -11,7 +11,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 {
     public interface IUserTrackerView : IDbMaintenanceView
     {
-        
+        void SetAlertLevel(AlertLevels level, string message);
     }
     public class UserTrackerViewModel  : DevLogixDbMaintenanceViewModel<UserTracker>
     {

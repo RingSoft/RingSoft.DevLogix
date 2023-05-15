@@ -125,10 +125,13 @@
                             <lc:AutoFillControl Grid.Row="1" Grid.Column="1" x:Name="SupervisorControl" Width="200" Setup="{Binding SupervisorAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding SupervisorAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
 
-                            <Label Grid.Row="1" Grid.Column="2" Content="Clock In Date/Time"/>
+                            <Label Grid.Row="1" Grid.Column="2" Content="Clock Date/Time"/>
 
                             <dec:DateReadOnlyBox Grid.Row="1" Grid.Column="3" HorizontalAlignment="Left" Width="200" DateFormatType="DateTime" Value="{Binding ClockDateTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
+                            <Label Grid.Row="2" Grid.Column="2" Content="Clock Reason"/>
+
+                            <dec:StringReadOnlyBox Grid.Row="2" Grid.Column="3" Width="200" Text="{Binding ClockReason, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left"/>
 
                             <Label Grid.Row="3" Grid.Column="0" Content="Email Address"/>
 

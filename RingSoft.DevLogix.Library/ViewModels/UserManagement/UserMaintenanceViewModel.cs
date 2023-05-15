@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MySqlX.XDevAPI.Common;
 using RingSoft.App.Interop;
 using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
@@ -178,6 +179,21 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     return;
 
                 _clockDateTime = value;
+                OnPropertyChanged(null, false);
+            }
+        }
+
+        private string _clockReason;
+
+        public string ClockReason
+        {
+            get => _clockReason;
+            set
+            {
+                if (_clockReason == value)
+                    return;
+
+                _clockReason = value;
                 OnPropertyChanged(null, false);
             }
         }
@@ -365,10 +381,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         public RelayCommand RecalcCommand { get; private set; }
 
+        public EnumFieldTranslation ClockReasonFieldTranslation;
+
         private int _rowFocusId = -1;
 
         public UserMaintenanceViewModel()
         {
+            ClockReasonFieldTranslation = new EnumFieldTranslation();
+            ClockReasonFieldTranslation.LoadFromEnum<ClockOutReasons>();
+
             ChangeChartCommand = new RelayCommand(() =>
             {
                 PrimaryKeyValue primaryKey = null;
@@ -416,8 +437,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 var recordDirty = RecordDirty;
                 if (AppGlobals.MainViewModel.MainView.PunchOut(true, Id))
                 {
-                    ClockDateTime = null;
+                    var context = AppGlobals.DataRepository.GetDataContext();
+                    var user = context.GetTable<User>().FirstOrDefault(p => p.Id == Id);
+                    ClockDateTime = user.ClockDate.Value.ToLocalTime();
                     ClockOutCommand.IsEnabled = false;
+                    PopulateClockReason(user);
                     RecordDirty = recordDirty;
                 }
             });
@@ -487,19 +511,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
             if (result.Id == AppGlobals.LoggedInUser.Id || result.IsSupervisor())
             {
-                if (result.ClockDate == null)
-                {
-                    ClockOutCommand.IsEnabled = false;
-                }
-                else
-                {
-                    ClockOutCommand.IsEnabled = true;
-                }
+                ClockOutCommand.IsEnabled = true;
             }
             else
             {
                 ClockOutCommand.IsEnabled = false;
             }
+
+            PopulateClockReason(result);
 
             ChangeChartCommand.IsEnabled = true;
 
@@ -515,6 +534,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
 
             return result;
+        }
+
+        private void PopulateClockReason(User user)
+        {
+            var clockReason =
+                ClockReasonFieldTranslation.TypeTranslations.FirstOrDefault(p => p.NumericValue == user.ClockOutReason);
+            if (clockReason != null)
+            {
+                ClockReason = clockReason.TextValue;
+            }
         }
 
         protected override void LoadFromEntity(User entity)
@@ -633,6 +662,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             Notes = null;
             HourlyRate = 0;
             ClockDateTime = null;
+            ClockReason = string.Empty;
             TimeOffGridManager.SetupForNewRecord();
 
             SetBillability(new User());

@@ -545,18 +545,30 @@ namespace RingSoft.DevLogix
 
             if (dialogInput.DialogResult)
             {
-                var newUser = new User();
-                newUser.Id = userId;
-                var primaryKey = AppGlobals.LookupContext.Users.GetPrimaryKeyValueFromEntity(newUser);
-                var updateStatement = new UpdateDataStatement(primaryKey);
-                var sqlData = new SqlData(AppGlobals.LookupContext.Users.GetFieldDefinition(p => p.ClockDate).FieldName
-                    , "", ValueTypes.String);
-                updateStatement.AddSqlData(sqlData);
-                var sql = AppGlobals.LookupContext.DataProcessor.SqlGenerator.GenerateUpdateSql(updateStatement);
-                if (AppGlobals.LookupContext.DataProcessor.ExecuteSql(sql).ResultCode == GetDataResultCodes.Success)
+                var user = context.GetTable<User>().FirstOrDefault(p => p.Id == userId);
+                var clockReasonDialog = new UserClockReasonWindow(user);
+                clockReasonDialog.ShowDialog();
+                if (!clockReasonDialog.LocalViewModel.DialogResult)
                 {
-                    return true;
+                    return false;
                 }
+
+                if (user != null)
+                {
+                    user.ClockDate = DateTime.Now.ToUniversalTime();
+                    user.ClockOutReason = (byte)clockReasonDialog.LocalViewModel.ClockOutReason;
+                    if (clockReasonDialog.LocalViewModel.ClockOutReason == ClockOutReasons.Other)
+                    {
+                        user.OtherClockOutReason = clockReasonDialog.LocalViewModel.OtherReason;
+                    }
+                    else
+                    {
+                        user.OtherClockOutReason = null;
+                    }
+
+                    return context.SaveEntity(user, "Clocking Out");
+                }
+
             }
             return false;
         }
@@ -647,7 +659,7 @@ namespace RingSoft.DevLogix
                 if (userQuery != null)
                 {
                     var user = userQuery.FirstOrDefault(p => p.Id == AppGlobals.LoggedInUser.Id);
-                    if (user != null && user.ClockDate != null)
+                    if (user != null)
                     {
                         var message = "Do you want to clock out before you exit the application?";
                         var caption = "Clock Out?";

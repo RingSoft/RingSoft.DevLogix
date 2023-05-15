@@ -10,6 +10,21 @@ using RingSoft.DevLogix.DataAccess.Model.UserManagement;
 
 namespace RingSoft.DevLogix.DataAccess.Model
 {
+    public enum ClockOutReasons
+    {
+        [Description("Gone Home")]
+        GoneHome = 0,
+        [Description("Lunch")]
+        Lunch = 1,
+        [Description("Break")]
+        Break = 2,
+        [Description("Bathroom")]
+        Bathroom = 3,
+        [Description("Other")]
+        Other = 4,
+        [Description("Clocked In")]
+        ClockedIn = 5,
+    }
     public class User
     {
         [Required]
@@ -59,6 +74,12 @@ namespace RingSoft.DevLogix.DataAccess.Model
 
         [DefaultValue(0)]
         public decimal ErrorsMinutesSpent { get; set; }
+
+        [DefaultValue(0)]
+        public byte ClockOutReason { get; set; }
+
+        [MaxLength(50)]
+        public string? OtherClockOutReason { get; set; }
 
         public virtual ICollection<UsersGroup>  UserGroups { get; set; }
         public virtual ICollection<UserTimeOff> UserTimeOff { get; set; }
