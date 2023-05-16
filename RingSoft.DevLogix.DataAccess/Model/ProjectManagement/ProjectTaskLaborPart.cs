@@ -40,5 +40,9 @@ namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
         [Required]
         [DefaultValue(false)]
         public bool Complete { get; set; }
+
+        [Required]
+        [DefaultValue(0)]
+        public decimal PercentComplete { get; set; }
     }
 }

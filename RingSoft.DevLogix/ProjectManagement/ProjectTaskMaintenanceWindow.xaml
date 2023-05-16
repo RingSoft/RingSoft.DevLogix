@@ -14,7 +14,7 @@
                             xmlns:lm="clr-namespace:RingSoft.DevLogix.DataAccess.LookupModel;assembly=RingSoft.DevLogix.DataAccess"
                             mc:Ignorable="d"
                             Style="{StaticResource BaseWindowStyle}"
-                            Title="Project Task Maintenance Window" Height="550" Width="800">
+                            Title="Project Task Maintenance Window" Height="550" Width="850">
 
     <Window.Resources>
 
@@ -214,6 +214,8 @@
                                 <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ProjectTaskLaborPartsManager.ExtendedMinutesColumnId}" Width="100" Header="Extended&#10;Time Cost"/>
 
                                 <deg:DataEntryGridCheckBoxColumn ColumnId="{x:Static vm:ProjectTaskLaborPartsManager.CompleteColumnId}" Width="75" Header="Complete"/>
+
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ProjectTaskLaborPartsManager.PercentCompleteColumnId}" Width="75" Header="Percent&#10;Complete"/>
 
                             </deg:DataEntryGrid.Columns>
 

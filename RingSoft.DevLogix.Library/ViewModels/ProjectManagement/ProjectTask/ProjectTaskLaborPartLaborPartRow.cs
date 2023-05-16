@@ -140,6 +140,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     break;
                 case ProjectTaskLaborPartColumns.ExtendedMinutes:
                 case ProjectTaskLaborPartColumns.Complete:
+                case ProjectTaskLaborPartColumns.PercentComplete:
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

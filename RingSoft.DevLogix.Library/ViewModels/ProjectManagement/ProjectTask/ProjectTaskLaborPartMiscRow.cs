@@ -84,6 +84,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 case ProjectTaskLaborPartColumns.MinutesCost:
                     break;
                 case ProjectTaskLaborPartColumns.Complete:
+                case ProjectTaskLaborPartColumns.PercentComplete:
                     displayStyle = base.GetCellStyle(columnId);
                     break;
                 case ProjectTaskLaborPartColumns.ExtendedMinutes:

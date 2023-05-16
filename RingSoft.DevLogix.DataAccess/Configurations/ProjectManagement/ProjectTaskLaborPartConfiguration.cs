@@ -20,6 +20,7 @@ namespace RingSoft.DevLogix.DataAccess.Configurations.ProjectManagement
             builder.Property(p => p.Quantity).HasColumnType(DbConstants.DecimalColumnType);
             builder.Property(p => p.MinutesCost).HasColumnType(DbConstants.DecimalColumnType);
             builder.Property(p => p.Complete).HasColumnType(DbConstants.BoolColumnType);
+            builder.Property(p => p.PercentComplete).HasColumnType(DbConstants.DecimalColumnType);
 
             builder.HasKey(p => new { p.ProjectTaskId, p.DetailId });
 

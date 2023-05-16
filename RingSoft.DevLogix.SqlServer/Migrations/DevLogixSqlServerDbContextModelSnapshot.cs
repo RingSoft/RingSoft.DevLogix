@@ -922,6 +922,9 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
+                    b.Property<decimal>("PercentComplete")
+                        .HasColumnType("numeric");
+
                     b.Property<decimal?>("Quantity")
                         .HasColumnType("numeric");
 

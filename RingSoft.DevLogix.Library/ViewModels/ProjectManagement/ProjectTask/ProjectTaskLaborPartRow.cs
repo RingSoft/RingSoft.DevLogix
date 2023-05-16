@@ -34,6 +34,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public bool IsComplete { get; private set; }
 
+        public decimal PercentComplete { get; set; }
+
         protected ProjectTaskLaborPartRow(ProjectTaskLaborPartsManager manager) : base(manager)
         {
             Manager = manager;
@@ -50,6 +52,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                         .FirstOrDefault(p => p.NumericValue == (int)LaborPartLineType).TextValue);
                 case ProjectTaskLaborPartColumns.Complete:
                     return new DataEntryGridCheckBoxCellProps(this, columnId, IsComplete);
+                case ProjectTaskLaborPartColumns.PercentComplete:
+                    return new DataEntryGridDecimalCellProps(this, columnId, new DecimalEditControlSetup()
+                    {
+                        FormatType = DecimalEditFormatTypes.Percent,
+                    }, PercentComplete);
             }
             return new DataEntryGridTextCellProps(this, columnId);
         }
@@ -83,6 +90,21 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     };
                 case ProjectTaskLaborPartColumns.Complete:
                     cellStyle = new DataEntryGridControlCellStyle();
+                    switch (Manager.DisplayMode)
+                    {
+                        case DisplayModes.User:
+                        case DisplayModes.All:
+                            cellStyle.State = DataEntryGridCellStates.Enabled;
+                            break;
+                        case DisplayModes.Disabled:
+                            cellStyle.State = DataEntryGridCellStates.Disabled;
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                    return cellStyle;
+                case ProjectTaskLaborPartColumns.PercentComplete:
+                    cellStyle = new DataEntryGridCellStyle();
                     switch (Manager.DisplayMode)
                     {
                         case DisplayModes.User:
@@ -135,8 +157,20 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     if (value is DataEntryGridCheckBoxCellProps checkBoxCellProps)
                     {
                         IsComplete = checkBoxCellProps.Value;
+                        if (IsComplete)
+                        {
+                            PercentComplete = 1;
+                        }
                     }
                     Manager.CalcPercentComplete();
+                    break;
+                case ProjectTaskLaborPartColumns.PercentComplete:
+                    if (value is DataEntryGridDecimalCellProps decimalCellProps)
+                    {
+                        PercentComplete = decimalCellProps.Value.GetValueOrDefault();
+                        IsComplete = PercentComplete == 1;
+                        Manager.CalcPercentComplete();
+                    }
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -147,6 +181,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         public override void LoadFromEntity(ProjectTaskLaborPart entity)
         {
             IsComplete = entity.Complete;
+            PercentComplete = entity.PercentComplete;
         }
 
         public override void SaveToEntity(ProjectTaskLaborPart entity, int rowIndex)
@@ -156,6 +191,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             entity.LineType = (byte)LaborPartLineType;
             entity.ParentRowId = ParentRowId;
             entity.Complete = IsComplete;
+            entity.PercentComplete = PercentComplete;
         }
 
         protected IEnumerable<ProjectTaskLaborPart> GetDetailChildren(ProjectTaskLaborPart entity)

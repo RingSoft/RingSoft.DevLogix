@@ -547,6 +547,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             ProjectTaskDependencyManager.LoadGrid(entity.SourceDependencies);
             ActualRow.Minutes = entity.MinutesSpent;
             ActualRow.Cost = entity.Cost;
+            LaborPartsManager.CalcPercentComplete();
             RefreshTotals();
             if (_dependencyRowFocusId >= 0)
             {
