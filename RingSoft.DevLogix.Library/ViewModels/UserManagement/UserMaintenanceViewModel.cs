@@ -440,7 +440,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     var context = AppGlobals.DataRepository.GetDataContext();
                     var user = context.GetTable<User>().FirstOrDefault(p => p.Id == Id);
                     ClockDateTime = user.ClockDate.Value.ToLocalTime();
-                    ClockOutCommand.IsEnabled = false;
                     PopulateClockReason(user);
                     RecordDirty = recordDirty;
                 }
@@ -542,7 +541,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 ClockReasonFieldTranslation.TypeTranslations.FirstOrDefault(p => p.NumericValue == user.ClockOutReason);
             if (clockReason != null)
             {
-                ClockReason = clockReason.TextValue;
+                var userClockReason = (ClockOutReasons)user.ClockOutReason;
+                switch (userClockReason)
+                {
+                    case ClockOutReasons.Other:
+                        ClockReason = user.OtherClockOutReason;
+                        break;
+                    default:
+                        ClockReason = clockReason.TextValue;
+                        break;
+                }
             }
         }
 
@@ -624,6 +632,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     user.NonBillableProjectsMinutesSpent = existUser.NonBillableProjectsMinutesSpent;
                     user.ErrorsMinutesSpent = existUser.ErrorsMinutesSpent;
                     user.ClockDate = existUser.ClockDate;
+                    user.ClockOutReason = existUser.ClockOutReason;
+                    user.OtherClockOutReason = existUser.OtherClockOutReason;
                 }
             }
             if (DepartmentAutoFillValue.IsValid())

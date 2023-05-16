@@ -51,7 +51,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             switch (column)
             {
                 case UserTrackerColumns.User:
-                    return new DataEntryGridAutoFillCellProps(this, columnId, UserAutoFillSetup, UserAutoFillValue);
+                    return new DataEntryGridAutoFillCellProps(this, columnId, UserAutoFillSetup, UserAutoFillValue)
+                    {
+                        AlwaysUpdateOnSelect = true,
+                    };
                 case UserTrackerColumns.PunchedOut:
                     if (Status.IsNullOrEmpty())
                     {
@@ -142,6 +145,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     {
                         UserAutoFillValue = autoFillCellProps.AutoFillValue;
                         UserId = UserAutoFillValue.GetEntity<User>().Id;
+                        if (UserAutoFillValue.IsValid())
+                        {
+                            Manager.ViewModel.RefreshNowCommand.IsEnabled = true;
+                        }
                         RefreshRow();
                         Manager.Grid?.RefreshGridView();
                     }
@@ -221,9 +228,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                         else
                         {
                             balloonMessage = $"{UserAutoFillValue.Text} has been ";
-                            if (user.ClockDate == null)
+                            var clockReason = (ClockOutReasons)user.ClockOutReason;
+                            if (clockReason != ClockOutReasons.ClockedIn)
                             {
-                                Status = "Clocked Out";
+                                Status = Manager.MakeClockOutText(user);
                                 TimeClock = table.Where(p => p.UserId == UserId)
                                     .OrderBy(p => p.PunchOutDate)
                                     .LastOrDefault();

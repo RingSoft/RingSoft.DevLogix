@@ -1,6 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbMaintenance;
+using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.UserManagement;
 
 namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
@@ -26,9 +29,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         public new UserTrackerViewModel ViewModel { get; }
 
+        public EnumFieldTranslation ClockOutReasons { get; }
+
         public UserTrackerUserManager(UserTrackerViewModel viewModel) : base(viewModel)
         {
             ViewModel = viewModel;
+            ClockOutReasons = new EnumFieldTranslation();
+            ClockOutReasons.LoadFromEnum<ClockOutReasons>();
         }
 
         protected override DataEntryGridRow GetNewRow()
@@ -49,7 +56,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             {
                 row.RefreshRow();
             }
-            Grid?.RefreshGridView();
+
+            if (rows.Count() > 0 && Grid != null)
+            {
+                ViewModel.View.RefreshGrid();
+            }
         }
 
         public override void RaiseDirtyFlag()
@@ -62,6 +73,36 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 }
             }
             base.RaiseDirtyFlag();
+        }
+
+        public string MakeClockOutText(User user)
+        {
+            var result = string.Empty;
+            if (user != null)
+            {
+                var typeTran =
+                    ClockOutReasons.TypeTranslations.FirstOrDefault(p => p.NumericValue == user.ClockOutReason);
+                var nowDate = DateTime.Now.ToUniversalTime();
+                if (typeTran != null)
+                {
+                    var clockText = typeTran.TextValue;
+                    var clockReason = (ClockOutReasons)user.ClockOutReason;
+                    if (clockReason == DataAccess.Model.ClockOutReasons.Other)
+                    {
+                        clockText = user.OtherClockOutReason;
+                    }
+                    var timeSpan = nowDate - user.ClockDate;
+                    if (timeSpan == null)
+                    {
+                        result = clockText;
+                    }
+                    else
+                    {
+                        result = $"{clockText} - {AppGlobals.MakeTimeSpent((decimal)timeSpan.Value.TotalMinutes)}";
+                    }
+                }
+            }
+            return result;
         }
     }
 }

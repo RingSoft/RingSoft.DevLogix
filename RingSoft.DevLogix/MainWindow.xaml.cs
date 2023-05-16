@@ -19,6 +19,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
+using RingSoft.DevLogix.DataAccess;
 using Error = RingSoft.DevLogix.DataAccess.Model.Error;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MessageBox = System.Windows.Forms.MessageBox;
@@ -512,15 +513,29 @@ namespace RingSoft.DevLogix
 
         public bool PunchOut(bool clockOut, int userId)
         {
-            var context = AppGlobals.DataRepository.GetDataContext();
-            var tableQuery = context.GetTable<TimeClock>();
-
             if (userId == 0)
             {
                 userId = AppGlobals.LoggedInUser.Id;
             }
+
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var table = context.GetTable<User>();
+            var user = table.FirstOrDefault(p => p.Id == userId);
+
+            return PunchOut(clockOut, user, context);
+        }
+
+        public bool PunchOut(bool clockOut, User user, IDbContext context = null)
+        {
+            if (context == null)
+            {
+                context = AppGlobals.DataRepository.GetDataContext();
+            }
+
+            var tableQuery = context.GetTable<TimeClock>();
+
             var activeTimeCard =
-                tableQuery.FirstOrDefault(p => p.PunchOutDate == null && p.UserId == userId && p.PunchOutDate == null);
+                tableQuery.FirstOrDefault(p => p.PunchOutDate == null && p.UserId == user.Id && p.PunchOutDate == null);
 
             var result = true;
 
@@ -545,7 +560,6 @@ namespace RingSoft.DevLogix
 
             if (dialogInput.DialogResult)
             {
-                var user = context.GetTable<User>().FirstOrDefault(p => p.Id == userId);
                 var clockReasonDialog = new UserClockReasonWindow(user);
                 clockReasonDialog.ShowDialog();
                 if (!clockReasonDialog.LocalViewModel.DialogResult)
@@ -566,7 +580,42 @@ namespace RingSoft.DevLogix
                         user.OtherClockOutReason = null;
                     }
 
-                    return context.SaveEntity(user, "Clocking Out");
+                    var table = AppGlobals.LookupContext.Users;
+                    var clockDateField = table.GetFieldDefinition(p => p.ClockDate);
+                    var clockReasonField = table.GetFieldDefinition(p => p.ClockOutReason);
+                    var otherReasonField = table.GetFieldDefinition(p => p.OtherClockOutReason);
+
+                    var sqlData = new SqlData(clockDateField.FieldName
+                        , clockReasonField.FormatValue(user.ClockDate.ToString())
+                        , ValueTypes.DateTime
+                        , DbDateTypes.DateTime);
+                    var updateStatement = new UpdateDataStatement(table.GetPrimaryKeyValueFromEntity(user));
+                    updateStatement.AddSqlData(sqlData);
+
+                    sqlData = new SqlData(clockReasonField.FieldName
+                        , user.ClockOutReason.ToString()
+                        , ValueTypes.Numeric);
+                    updateStatement.AddSqlData(sqlData);
+
+                    if (user.OtherClockOutReason.IsNullOrEmpty())
+                    {
+                        sqlData = new SqlData(otherReasonField.FieldName
+                            , ""
+                            , ValueTypes.String);
+                    }
+                    else
+                    {
+                        sqlData = new SqlData(clockReasonField.FieldName
+                            , user.OtherClockOutReason
+                            , ValueTypes.String);
+                    }
+                    updateStatement.AddSqlData(sqlData);
+
+                    var sql = AppGlobals.LookupContext.DataProcessor.SqlGenerator.GenerateUpdateSql(updateStatement);
+                    var dataResult = AppGlobals.LookupContext.DataProcessor.ExecuteSql(sql);
+                    return dataResult.ResultCode == GetDataResultCodes.Success;
+
+                    //return context.SaveEntity(user, "Clocking Out");
                 }
 
             }
@@ -659,7 +708,7 @@ namespace RingSoft.DevLogix
                 if (userQuery != null)
                 {
                     var user = userQuery.FirstOrDefault(p => p.Id == AppGlobals.LoggedInUser.Id);
-                    if (user != null)
+                    if (user != null && (ClockOutReasons)user.ClockOutReason == ClockOutReasons.ClockedIn)
                     {
                         var message = "Do you want to clock out before you exit the application?";
                         var caption = "Clock Out?";

@@ -10,6 +10,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
     {
         void CloseWindow();
         void EnableOther(bool enable);
+        void SetFocusToOther();
     }
     public class UserClockReasonViewModel : INotifyPropertyChanged
     {
@@ -59,6 +60,17 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             ClockOutReason = ClockOutReasons.GoneHome;
             OnOkCommand = new RelayCommand(() =>
             {
+                if (ClockOutReason == ClockOutReasons.Other)
+                {
+                    if (OtherReason.IsNullOrEmpty())
+                    {
+                        var message = "You must specify a reason for Other";
+                        var caption = "Validation Error";
+                        View.SetFocusToOther();
+                        ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
+                        return;
+                    }
+                }
                 DialogResult = true;
                 View.CloseWindow();
             });
@@ -76,6 +88,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             {
                 case ClockOutReasons.ClockedIn:
                     ClockOutReason = ClockOutReasons.GoneHome;
+                    View.EnableOther(false);
                     break;
                 case ClockOutReasons.Other:
                     ClockOutReason = ClockOutReasons.Other;
@@ -86,6 +99,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     break;
                 default:
                     ClockOutReason = (ClockOutReasons)user.ClockOutReason;
+                    View.EnableOther(false);
                     break;
             }
         }

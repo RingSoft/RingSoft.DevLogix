@@ -39,5 +39,10 @@ namespace RingSoft.DevLogix.UserManagement
         {   
             OtherStringControl.IsEnabled = enable;
         }
+
+        public void SetFocusToOther()
+        {
+            OtherStringControl.Focus();
+        }
     }
 }

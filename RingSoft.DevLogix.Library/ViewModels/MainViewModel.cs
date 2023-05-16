@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup.ModelDefinition;
+using RingSoft.DevLogix.DataAccess;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using RingSoft.DevLogix.Library.ViewModels.ProjectManagement;
@@ -30,6 +31,8 @@ namespace RingSoft.DevLogix.Library.ViewModels
         void PunchIn(ProjectTask projectTask);
 
         bool PunchOut(bool clockOut, int userId = 0);
+
+        bool PunchOut(bool clockOut, User user, IDbContext context = null);
 
         void ShowMainChart(bool show = true);
 
@@ -138,7 +141,29 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         private void Logout()
         {
-            if (MainView.PunchOut(true, AppGlobals.LoggedInUser.Id))
+            var cont = true;
+            var context = AppGlobals.DataRepository.GetDataContext();
+            if (context != null)
+            {
+                var user = context.GetTable<User>().FirstOrDefault(p => p.Id == AppGlobals.LoggedInUser.Id);
+                if (user != null)
+                {
+                    var clockReason = (ClockOutReasons)user.ClockOutReason;
+                    switch (clockReason)
+                    {
+                        case ClockOutReasons.ClockedIn:
+                            var message = "Do you want to clock out before you log off?";
+                            var caption = "Clock Out?";
+                            var clockOut = ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, caption);
+                            if (clockOut == MessageBoxButtonsResult.Yes)
+                            {
+                                cont = MainView.PunchOut(true, user);
+                            }
+                            break;
+                    }
+                }
+            }
+            if (cont)
             {
                 if (MainView.LoginUser())
                 {

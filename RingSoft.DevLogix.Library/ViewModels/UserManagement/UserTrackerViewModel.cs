@@ -1,17 +1,25 @@
-﻿using System.Linq;
+﻿using System;
+using System.ComponentModel;
+using System.Linq;
+using System.Threading;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AdvancedFind;
 using RingSoft.DbLookup.ModelDefinition;
+using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
+using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model.UserManagement;
+using Timer = System.Timers.Timer;
 
 namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 {
     public interface IUserTrackerView : IDbMaintenanceView
     {
         void SetAlertLevel(AlertLevels level, string message);
+
+        void RefreshGrid();
     }
     public class UserTrackerViewModel  : DevLogixDbMaintenanceViewModel<UserTracker>
     {
@@ -143,18 +151,61 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
         }
 
+        private DateTime? _lastRefresh;
+
+        public DateTime? LastRefresh
+        {
+            get => _lastRefresh;
+            set
+            {
+                if (_lastRefresh == value)
+                {
+                    return;
+                }
+                _lastRefresh = value;
+                OnPropertyChanged(null, false);
+            }
+        }
+
+        private string _lastRefreshText;
+
+        public string LastRefreshText
+        {
+            get => _lastRefreshText;
+            set
+            {
+                if (_lastRefreshText == value)
+                    return;
+
+                _lastRefreshText = value;
+                OnPropertyChanged(null, false);
+            }
+        }
+
+
+
         public new IUserTrackerView View { get; private set; }
 
         public RelayCommand RefreshNowCommand { get; set; }
+
+        private System.Timers.Timer _timer = new Timer();
 
         public UserTrackerViewModel()
         {
             RefreshRateSetup = new TextComboBoxControlSetup();
             RefreshRateSetup.LoadFromEnum<RefreshRate>();
-            RefreshNowCommand = new RelayCommand(Refresh);
+            RefreshNowCommand = new RelayCommand(() =>
+            {
+                LastRefresh = DateTime.Now;
+                Refresh();
+            });
             UserManager = new UserTrackerUserManager(this);
 
             TablesToDelete.Add(AppGlobals.LookupContext.UserTrackerUsers);
+            _timer.Interval = 1000;
+            _timer.Elapsed += _timer_Elapsed;
+            _timer.Enabled = true;
+            _timer.Start();
         }
 
         protected override void Initialize()
@@ -210,8 +261,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             RefreshValue = 0;
             RedAlertMinutes = null;
             YellowAlertMinutes = null;
-            RefreshNowCommand.IsEnabled = false;
             UserManager.SetupForNewRecord();
+            LastRefresh = null;
+            UpdateRefreshText();
         }
 
         protected override bool SaveEntity(UserTracker entity)
@@ -263,7 +315,69 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         private void Refresh()
         {
+            if (LastRefresh == null)
+            {
+                LastRefresh = DateTime.Now;
+            }
+            UpdateRefreshText();
             UserManager.RefreshGrid();
         }
+        private void _timer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
+        {
+            if (LastRefresh == null)
+            {
+                LastRefresh = DateTime.Now;
+                return;
+            }
+
+            if (RefreshValue == 0)
+            {
+                LastRefresh = DateTime.Now;
+                return;
+            }
+            var nextRefresh = DateTime.Now;
+            switch (RefreshRate)
+            {
+                case RefreshRate.None:
+                    nextRefresh = DateTime.Now;
+                    return;
+                case RefreshRate.Hours:
+                    nextRefresh = LastRefresh.Value.AddHours(RefreshValue);
+                    break;
+                case RefreshRate.Minutes:
+                    nextRefresh = LastRefresh.Value.AddMinutes(RefreshValue);
+                    break;
+                case RefreshRate.Seconds:
+                    nextRefresh = LastRefresh.Value.AddSeconds(RefreshValue);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            
+            if (DateTime.Now > nextRefresh)
+            {
+                LastRefresh = DateTime.Now;
+                Refresh();
+            }
+        }
+
+        public override void OnWindowClosing(CancelEventArgs e)
+        {
+            _timer.Stop();
+            _timer.Enabled = false;
+            _timer.Dispose();
+            base.OnWindowClosing(e);
+        }
+
+        private void UpdateRefreshText()
+        {
+            if (_lastRefresh != null)
+                LastRefreshText = GblMethods.FormatDateValue(_lastRefresh.Value, DbDateTypes.DateTime);
+            else
+            {
+                LastRefreshText = string.Empty;
+            }
+        }
+
     }
 }

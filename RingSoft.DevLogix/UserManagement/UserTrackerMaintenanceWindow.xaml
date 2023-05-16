@@ -92,6 +92,8 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
@@ -103,7 +105,11 @@
 
             <lc:AutoFillControl Grid.Row="0" Grid.Column="3" x:Name="NameControl" Width="200" HorizontalAlignment="Left"/>
 
-            <TabControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" x:Name="TabControl">
+            <Label Grid.Row="0" Grid.Column="4" Content="Last Refresh"/>
+
+            <dec:StringReadOnlyBox Grid.Row="0" Grid.Column="5" Width="200" HorizontalAlignment="Left" Text="{Binding LastRefreshText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <TabControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="7" x:Name="TabControl">
 
                 <TabItem x:Name="SettingsTab" Header="Settings">
 
