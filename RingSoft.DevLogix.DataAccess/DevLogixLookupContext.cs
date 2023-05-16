@@ -62,6 +62,7 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<ErrorUser> ErrorUsers { get; set; }
         public TableDefinition<TestingTemplate> TestingTemplates { get; set; }
         public TableDefinition<TestingTemplateItem> TestingTemplatesItems { get; set; }
+        public TableDefinition<TestingOutline> TestingOutlines { get; set; }
 
         public TableDefinition<Project> Projects { get; set; }
         public TableDefinition<ProjectUser> ProjectUsers { get; set; }
@@ -100,6 +101,7 @@ namespace RingSoft.DevLogix.DataAccess
         public LookupDefinition<ErrorUserLookup, ErrorUser> ErrorUsersLookup { get; set; }
         public LookupDefinition<TestingTemplateLookup, TestingTemplate> TestingTemplateLookup { get; set; }
         public LookupDefinition<TestingTemplateItemLookup, TestingTemplateItem> TestingTemplateItemLookup { get; set; }
+        public LookupDefinition<TestingOutlineLookup, TestingOutline> TestingOutlineLookup { get; set; }
 
         public LookupDefinition<ProjectLookup, Project> ProjectLookup { get; set; }
         public LookupDefinition<ProjectUserLookup, ProjectUser> ProjectUserLookup { get; set; }
@@ -301,6 +303,20 @@ namespace RingSoft.DevLogix.DataAccess
                 , "Item"
                 , p => p.Description, 50);
             TestingTemplatesItems.HasLookupDefinition(TestingTemplateItemLookup);
+
+            TestingOutlineLookup = new LookupDefinition<TestingOutlineLookup, TestingOutline>(TestingOutlines);
+            TestingOutlineLookup.AddVisibleColumnDefinition(p => p.Name
+                , "Name"
+                , p => p.Name, 34);
+            TestingOutlineLookup.Include(p => p.Product)
+                .AddVisibleColumnDefinition(p => p.Name
+                    , "Product"
+                    , p => p.Description, 33);
+            TestingOutlineLookup.Include(p => p.AssignedToUser)
+                .AddVisibleColumnDefinition(p => p.AssignedTo
+                    , "Assigned To"
+                    , p => p.Name, 33);
+            TestingOutlines.HasLookupDefinition(TestingOutlineLookup);
 
                 ProjectLookup = new LookupDefinition<ProjectLookup, Project>(Projects);
             ProjectLookup.AddVisibleColumnDefinition(p => p.Name, "Project Name", p => p.Name, 70);
@@ -564,6 +580,10 @@ namespace RingSoft.DevLogix.DataAccess
             ErrorTesters.GetFieldDefinition(p => p.DateChanged)
                 .HasDateType(DbDateTypes.DateTime)
                 .DoConvertToLocalTime();
+
+            TestingOutlines.PriorityLevel = 550;
+            TestingOutlines.GetFieldDefinition(p => p.DueDate).HasDateType(DbDateTypes.DateTime).DoConvertToLocalTime(true);
+            TestingOutlines.GetFieldDefinition(p => p.Notes).IsMemo();
 
             TimeClocks.PriorityLevel = 600;
             TimeClocks.GetFieldDefinition(p => p.Notes).IsMemo();

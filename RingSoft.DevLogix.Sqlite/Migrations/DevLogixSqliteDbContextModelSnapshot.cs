@@ -967,6 +967,46 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.ToTable("ErrorUsers");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingOutline", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("AssignedToUserId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("CreatedByUserId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("DueDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("ntext");
+
+                    b.Property<decimal>("PercentComplete")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AssignedToUserId");
+
+                    b.HasIndex("CreatedByUserId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("TestingOutlines");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingTemplate", b =>
                 {
                     b.Property<int>("Id")
@@ -1620,6 +1660,32 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingOutline", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "AssignedToUser")
+                        .WithMany("AssignedTestingOutlines")
+                        .HasForeignKey("AssignedToUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "CreatedByUser")
+                        .WithMany("CreatedTestingOutlines")
+                        .HasForeignKey("CreatedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.Product", "Product")
+                        .WithMany("TestingOutlines")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("AssignedToUser");
+
+                    b.Navigation("CreatedByUser");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingTemplate", b =>
                 {
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingTemplate", "BaseTemplate")
@@ -1818,6 +1884,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.Navigation("Projects");
 
+                    b.Navigation("TestingOutlines");
+
                     b.Navigation("Versions");
                 });
 
@@ -1884,6 +1952,10 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("AssignedDeveloperErrors");
 
                     b.Navigation("AssignedTesterErrors");
+
+                    b.Navigation("AssignedTestingOutlines");
+
+                    b.Navigation("CreatedTestingOutlines");
 
                     b.Navigation("ErrorDevelopers");
 

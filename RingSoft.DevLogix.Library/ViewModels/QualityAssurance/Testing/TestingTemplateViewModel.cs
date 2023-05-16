@@ -75,9 +75,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
         }
 
 
-        private string _notes;
+        private string? _notes;
 
-        public string Notes
+        public string? Notes
         {
             get => _notes;
             set
@@ -125,6 +125,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             KeyAutoFillValue = entity.GetAutoFillValue();
             BaseAutoFillValue = entity.BaseTemplate.GetAutoFillValue();
             TestingTemplateItemManager.LoadGrid(entity.Items);
+            Notes = entity.Notes;
         }
 
         protected override TestingTemplate GetEntityData()
@@ -134,6 +135,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
                 Id = Id,
                 Name = KeyAutoFillValue.Text,
                 BaseTemplateId = BaseAutoFillValue.GetEntity<TestingTemplate>().Id,
+                Notes = Notes,
             };
             if (result.BaseTemplateId == 0)
             {
