@@ -21,4 +21,20 @@ namespace RingSoft.DevLogix.DataAccess.Configurations.QualityAssurance
                 .IsRequired(false);
         }
     }
+
+    public class TestingTemplateItemConfiguration : IEntityTypeConfiguration<TestingTemplateItem>
+    {
+        public void Configure(EntityTypeBuilder<TestingTemplateItem> builder)
+        {
+            builder.Property(p => p.TestingTemplateId).HasColumnType(DbConstants.IntegerColumnType);
+            builder.Property(p => p.Description).HasColumnType(DbConstants.StringColumnType);
+
+            builder.HasKey(p => new { p.TestingTemplateId, p.Description });
+
+            builder.HasOne(p => p.TestingTemplate)
+                .WithMany(p => p.Items)
+                .HasForeignKey(p => p.TestingTemplateId)
+                .OnDelete(DeleteBehavior.Restrict);
+        }
+    }
 }

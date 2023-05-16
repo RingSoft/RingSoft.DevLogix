@@ -92,6 +92,20 @@
 
             <TabControl Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3">
 
+                <TabItem Header="Items">
+
+                    <deg:DataEntryGrid Manager="{Binding TestingTemplateItemManager}">
+
+                        <deg:DataEntryGrid.Columns>
+
+                            <deg:DataEntryGridTextColumn Header="Item" ColumnId="0" Width="200"/>
+
+                        </deg:DataEntryGrid.Columns>
+
+                    </deg:DataEntryGrid>
+
+                </TabItem>
+
                 <dec:DataEntryMemoTabItem Header="Notes" VerticalAlignment="Stretch">
                     <DockPanel>
 

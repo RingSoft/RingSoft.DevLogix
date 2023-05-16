@@ -991,6 +991,20 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.ToTable("TestingTemplates");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingTemplateItem", b =>
+                {
+                    b.Property<int>("TestingTemplateId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.HasKey("TestingTemplateId", "Description");
+
+                    b.ToTable("TestingTemplateItems");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.SystemMaster", b =>
                 {
                     b.Property<string>("OrganizationName")
@@ -1616,6 +1630,17 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("BaseTemplate");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingTemplateItem", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingTemplate", "TestingTemplate")
+                        .WithMany("Items")
+                        .HasForeignKey("TestingTemplateId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("TestingTemplate");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.SystemPreferencesHolidays", b =>
                 {
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.SystemPreferences", "SystemPreferences")
@@ -1845,6 +1870,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingTemplate", b =>
                 {
                     b.Navigation("ChildTemplates");
+
+                    b.Navigation("Items");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.SystemPreferences", b =>

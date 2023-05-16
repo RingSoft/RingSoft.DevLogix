@@ -59,6 +59,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             }
         }
 
+        private TestingTemplateItemManager _testingTemplateItemManager;
+
+        public TestingTemplateItemManager TestingTemplateItemManager
+        {
+            get => _testingTemplateItemManager;
+            set
+            {
+                if (_testingTemplateItemManager == value)
+                    return;
+
+                _testingTemplateItemManager = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         private string _notes;
 
         public string Notes
@@ -83,6 +99,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
                 new AutoFillSetup(AppGlobals.LookupContext.TestingTemplates.GetFieldDefinition(p => p.BaseTemplateId));
 
             UpdateOutlinesCommand = new RelayCommand(UpdateTestingOutlines);
+            TestingTemplateItemManager = new TestingTemplateItemManager(this);
         }
 
         protected override TestingTemplate PopulatePrimaryKeyControls(TestingTemplate newEntity, PrimaryKeyValue primaryKeyValue)
@@ -91,6 +108,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             var table = context.GetTable<TestingTemplate>();
             var result = table
                 .Include(p => p.BaseTemplate)
+                .Include(p => p.Items)
                 .FirstOrDefault(p => p.Id == newEntity.Id);
 
             Id = result.Id;
@@ -106,6 +124,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
         {
             KeyAutoFillValue = entity.GetAutoFillValue();
             BaseAutoFillValue = entity.BaseTemplate.GetAutoFillValue();
+            TestingTemplateItemManager.LoadGrid(entity.Items);
         }
 
         protected override TestingTemplate GetEntityData()
@@ -128,12 +147,28 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             Id = 0;
             BaseAutoFillValue = null;
             BaseAutoFillSetup.LookupDefinition.FilterDefinition.ClearFixedFilters();
+            TestingTemplateItemManager.SetupForNewRecord();
         }
 
         protected override bool SaveEntity(TestingTemplate entity)
         {
             var context = AppGlobals.DataRepository.GetDataContext();
-            return context.SaveEntity(entity, "Saving Testing Template");
+            var result = context.SaveEntity(entity, "Saving Testing Template");
+            if (result)
+            {
+                var items = TestingTemplateItemManager.GetEntityList();
+                foreach (var item in items)
+                {
+                    item.TestingTemplateId = entity.Id;
+                }
+
+                var existingItems = context.GetTable<TestingTemplateItem>()
+                    .Where(p => p.TestingTemplateId == Id);
+                context.RemoveRange(existingItems);
+                context.AddRange(items);
+                result = context.Commit("Saving Items");
+            }
+            return result;
         }
 
         protected override bool DeleteEntity()
@@ -141,6 +176,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             var context = AppGlobals.DataRepository.GetDataContext();
             var table = context.GetTable<TestingTemplate>();
             var entity = table.FirstOrDefault(p => p.Id == Id);
+
+            var existingItems = context.GetTable<TestingTemplateItem>()
+                .Where(p => p.TestingTemplateId == Id);
+            context.RemoveRange(existingItems);
+
             return context.DeleteEntity(entity, "Deleting Testing Template");
         }
 

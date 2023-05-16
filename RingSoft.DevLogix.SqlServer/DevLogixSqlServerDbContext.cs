@@ -43,6 +43,7 @@ namespace RingSoft.DevLogix.SqlServer
         public DbSet<ErrorDeveloper> ErrorDevelopers { get; set; }
         public DbSet<ErrorQa> ErrorTesters { get; set; }
         public DbSet<ErrorUser> ErrorUsers { get; set; }
+        public DbSet<TestingTemplateItem> TestingTemplateItems { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<ProjectUser> ProjectUsers { get; set; }
         public DbSet<LaborPart> LaborParts { get; set; }
