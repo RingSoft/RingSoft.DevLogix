@@ -605,7 +605,7 @@ namespace RingSoft.DevLogix
                     }
                     else
                     {
-                        sqlData = new SqlData(clockReasonField.FieldName
+                        sqlData = new SqlData(otherReasonField.FieldName
                             , user.OtherClockOutReason
                             , ValueTypes.String);
                     }
