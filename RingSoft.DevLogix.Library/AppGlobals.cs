@@ -68,7 +68,7 @@ namespace RingSoft.DevLogix.Library
             RingSoftAppGlobals.AppCopyright = "©2023 by Peter Ringering";
             RingSoftAppGlobals.PathToDownloadUpgrade = MasterDbContext.ProgramDataFolder;
             RingSoftAppGlobals.AppGuid = "96ac9aa5-65af-43ca-8cb8-6e35a2f12570";
-            RingSoftAppGlobals.AppVersion = 98;
+            RingSoftAppGlobals.AppVersion = 106;
             SystemGlobals.ProgramDataFolder = MasterDbContext.ProgramDataFolder;
         }
 
