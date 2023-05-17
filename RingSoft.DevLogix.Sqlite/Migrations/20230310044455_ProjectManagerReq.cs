@@ -11,7 +11,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            DataAccessGlobals.UpgradeProjects(migrationBuilder);
+            //DataAccessGlobals.UpgradeProjects(migrationBuilder);
 
             migrationBuilder.AlterColumn<int>(
                 name: "ManagerId",

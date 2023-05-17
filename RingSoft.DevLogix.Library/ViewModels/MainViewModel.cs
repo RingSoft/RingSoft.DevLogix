@@ -22,6 +22,8 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         void ShowDbMaintenanceWindow(TableDefinitionBase tableDefinition);
 
+        void ShowDbMaintenanceDialog(TableDefinitionBase tableDefinition);
+
         void ShowAdvancedFindWindow();
 
         void MakeMenu();
@@ -40,6 +42,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         void ShowHistoryPrintFilterWindow(HistoryPrintFilterCallBack callBack);
     }
+
     public class MainViewModel
     {
         public IMainView MainView { get; set; }
@@ -87,6 +90,19 @@ namespace RingSoft.DevLogix.Library.ViewModels
             if (loadVm)
             {
                 var query = AppGlobals.DataRepository.GetDataContext().GetTable<User>();
+                if (!query.Any())
+                {
+                    var message =
+                        "You must first create a master user.  Make sure this user has full User table maintenance rights and don't forget the password.";
+                    var caption = "Create User";
+                    ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Information);
+                    MainView.ShowDbMaintenanceDialog(AppGlobals.LookupContext.Users);
+                    if (!query.Any())
+                    {
+                        AppGlobals.LoggedInOrganization = null;
+                        Initialize(view);
+                    }
+                }
                 if (query.Any())
                 {
                     loadVm = view.LoginUser();
@@ -94,33 +110,12 @@ namespace RingSoft.DevLogix.Library.ViewModels
                     {
                         AppGlobals.LoggedInOrganization = null;
                         Initialize(view);
-                        //var message =
-                        //    "If you don't login a user, the application will shut down. Are you sure this is what you want to do?";
-                        //var caption = "User Login Failed";
-                        //if (ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, caption) ==
-                        //    MessageBoxButtonsResult.Yes)
-                        //{
-                        //    AppGlobals.LoggedInOrganization = null;
-                        //    Initialize(view);
-                        //    //loadVm = view.ChangeOrganization();
-                        //    //if (loadVm)
-                        //    //{
-
-                        //    //}
-                        //}
-                        //else
-                        //{
-                        //    while (!loadVm)
-                        //    {
-                        //        loadVm = view.LoginUser();
-                        //    }
-                        //}
                     }
                 }
-                else
-                {
-                    MainView.MakeMenu();
-                }
+                //else
+                //{
+                //    MainView.MakeMenu();
+                //}
             }
         }
 

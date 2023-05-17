@@ -24,6 +24,7 @@ using Error = RingSoft.DevLogix.DataAccess.Model.Error;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MessageBox = System.Windows.Forms.MessageBox;
 using Window = System.Windows.Window;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace RingSoft.DevLogix
 {
@@ -377,6 +378,20 @@ namespace RingSoft.DevLogix
                 }
             }
             return userLoginWindow.ViewModel.DialogResult;
+        }
+
+        public void ShowDbMaintenanceDialog(TableDefinitionBase tableDefinition)
+        {
+            var dbMaintenanceWindow = WindowRegistry.GetMaintenanceWindow(tableDefinition);
+            if (dbMaintenanceWindow == null)
+            {
+                return;
+            }
+
+            dbMaintenanceWindow.Owner = this;
+            dbMaintenanceWindow.ShowInTaskbar = false;
+            dbMaintenanceWindow.ShowDialog();
+
         }
 
         public void ShowAdvancedFindWindow()

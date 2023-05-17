@@ -56,20 +56,20 @@ namespace RingSoft.DevLogix.DataAccess
             AdvancedFindDataProcessorEfCore.ConfigureAdvancedFind(modelBuilder);
         }
 
-        public static void UpgradeProjects(MigrationBuilder migrationBuilder)
-        {
-            var userSet = DbContext.Set<User>();
-            var firstUser = userSet.FirstOrDefault();
-            if (firstUser != null)
-            {
-                migrationBuilder.UpdateData(
-                    table: "Projects",
-                    keyColumn: "ManagerId",
-                    keyValue: null,
-                    column: "ManagerId",
-                    value: firstUser.Id);
-            }
-        }
+        //public static void UpgradeProjects(MigrationBuilder migrationBuilder)
+        //{
+        //    var userSet = DbContext.Set<User>();
+        //    var firstUser = userSet.FirstOrDefault();
+        //    if (firstUser != null)
+        //    {
+        //        migrationBuilder.UpdateData(
+        //            table: "Projects",
+        //            keyColumn: "ManagerId",
+        //            keyValue: null,
+        //            column: "ManagerId",
+        //            value: firstUser.Id);
+        //    }
+        //}
 
         public static void SetupSysPrefs()
         {

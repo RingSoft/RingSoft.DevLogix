@@ -508,13 +508,20 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             KeyAutoFillValue = AppGlobals.LookupContext.OnAutoFillTextRequest(TableDefinition, Id.ToString());
             View.RefreshView();
 
-            if (result.Id == AppGlobals.LoggedInUser.Id || result.IsSupervisor())
+            if (AppGlobals.LoggedInUser == null)
             {
-                ClockOutCommand.IsEnabled = true;
+                ClockOutCommand.IsEnabled = false;
             }
             else
             {
-                ClockOutCommand.IsEnabled = false;
+                if (result.Id == AppGlobals.LoggedInUser.Id || result.IsSupervisor())
+                {
+                    ClockOutCommand.IsEnabled = true;
+                }
+                else
+                {
+                    ClockOutCommand.IsEnabled = false;
+                }
             }
 
             PopulateClockReason(result);
@@ -728,7 +735,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
                 if (result)
                 {
-                    if (AppGlobals.LoggedInUser.Id == Id)
+                    if (AppGlobals.LoggedInUser != null && AppGlobals.LoggedInUser.Id == Id)
                     {
                         if (entity.DefaultChartId.HasValue)
                         {
@@ -746,6 +753,19 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             return false;
 
 
+        }
+
+        public override DbMaintenanceResults DoDelete()
+        {
+            if (AppGlobals.LoggedInUser != null && AppGlobals.LoggedInUser.Id == Id)
+            {
+                var message = "You cannot delete the logged in user.";
+                var caption = "Delete Not Allowed";
+                ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
+                return DbMaintenanceResults.ValidationError;
+            }
+
+            return base.DoDelete();
         }
 
         protected override bool DeleteEntity()
