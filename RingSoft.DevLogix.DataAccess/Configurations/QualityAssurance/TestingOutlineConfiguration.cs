@@ -35,4 +35,36 @@ namespace RingSoft.DevLogix.DataAccess.Configurations.QualityAssurance
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }
+
+    public class TestingOutlineDetailsConfiguration : IEntityTypeConfiguration<TestingOutlineDetails>
+    {
+        public void Configure(EntityTypeBuilder<TestingOutlineDetails> builder)
+        {
+            builder.Property(p => p.TestingOutlineId).HasColumnType(DbConstants.IntegerColumnType);
+            builder.Property(p => p.DetailId).HasColumnType(DbConstants.IntegerColumnType);
+            builder.Property(p => p.Step).HasColumnType(DbConstants.StringColumnType);
+            builder.Property(p => p.IsComplete).HasColumnType(DbConstants.BoolColumnType);
+            builder.Property(p => p.CompletedVersionId).HasColumnType(DbConstants.IntegerColumnType);
+            builder.Property(p => p.TestingTemplateId).HasColumnType(DbConstants.IntegerColumnType);
+
+            builder.HasKey(p => new { p.TestingOutlineId, p.DetailId });
+
+            builder.HasOne(p => p.TestingOutline)
+                .WithMany(p => p.Details)
+                .HasForeignKey(p => p.TestingOutlineId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(p => p.CompletedVersion)
+                .WithMany(p => p.TestingOutlineDetails)
+                .HasForeignKey(p => p.CompletedVersionId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(p => p.TestingTemplate)
+                .WithMany(p => p.TestingOutlineDetails)
+                .HasForeignKey(p => p.TestingTemplateId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Restrict);
+        }
+    }
 }

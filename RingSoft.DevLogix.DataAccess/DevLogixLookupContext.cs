@@ -63,6 +63,7 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<TestingTemplate> TestingTemplates { get; set; }
         public TableDefinition<TestingTemplateItem> TestingTemplatesItems { get; set; }
         public TableDefinition<TestingOutline> TestingOutlines { get; set; }
+        public TableDefinition<TestingOutlineDetails> TestingOutlineDetails { get; set; }
 
         public TableDefinition<Project> Projects { get; set; }
         public TableDefinition<ProjectUser> ProjectUsers { get; set; }
@@ -102,6 +103,7 @@ namespace RingSoft.DevLogix.DataAccess
         public LookupDefinition<TestingTemplateLookup, TestingTemplate> TestingTemplateLookup { get; set; }
         public LookupDefinition<TestingTemplateItemLookup, TestingTemplateItem> TestingTemplateItemLookup { get; set; }
         public LookupDefinition<TestingOutlineLookup, TestingOutline> TestingOutlineLookup { get; set; }
+        public LookupDefinition<TestingOutlineDetailsLookup, TestingOutlineDetails> TestingOutlineDetailsLookup { get; set; }
 
         public LookupDefinition<ProjectLookup, Project> ProjectLookup { get; set; }
         public LookupDefinition<ProjectUserLookup, ProjectUser> ProjectUserLookup { get; set; }
@@ -317,6 +319,17 @@ namespace RingSoft.DevLogix.DataAccess
                     , "Assigned To"
                     , p => p.Name, 33);
             TestingOutlines.HasLookupDefinition(TestingOutlineLookup);
+
+            TestingOutlineDetailsLookup =
+                new LookupDefinition<TestingOutlineDetailsLookup, TestingOutlineDetails>(TestingOutlineDetails);
+            TestingOutlineDetailsLookup.Include(p => p.TestingOutline)
+                .AddVisibleColumnDefinition(p => p.TestingOutline
+                    , "Testing Outline"
+                    , p => p.Name, 50);
+            TestingOutlineDetailsLookup.AddVisibleColumnDefinition(p => p.Step
+                , "Step"
+                , p => p.Step, 50);
+            TestingOutlineDetails.HasLookupDefinition(TestingOutlineDetailsLookup);
 
                 ProjectLookup = new LookupDefinition<ProjectLookup, Project>(Projects);
             ProjectLookup.AddVisibleColumnDefinition(p => p.Name, "Project Name", p => p.Name, 70);

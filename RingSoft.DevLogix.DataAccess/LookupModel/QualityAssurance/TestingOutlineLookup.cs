@@ -8,4 +8,11 @@
 
         public string AssignedTo { get; set; }
     }
+
+    public class TestingOutlineDetailsLookup
+    {
+        public string TestingOutline { get; set; }
+
+        public string Step { get; set; }
+    }
 }

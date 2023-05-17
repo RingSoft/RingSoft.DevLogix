@@ -69,7 +69,7 @@ namespace RingSoft.DevLogix.MasterData.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Organizations");
+                    b.ToTable("Organizations", (string)null);
                 });
 #pragma warning restore 612, 618
         }

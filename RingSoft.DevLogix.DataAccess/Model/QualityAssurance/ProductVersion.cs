@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 
 namespace RingSoft.DevLogix.DataAccess.Model
 {
@@ -29,11 +30,14 @@ namespace RingSoft.DevLogix.DataAccess.Model
 
         public virtual ICollection<Error> FixedErrors { get; set; }
 
+        public virtual ICollection<TestingOutlineDetails> TestingOutlineDetails { get; set; }
+
         public ProductVersion()
         {
             ProductVersionDepartments = new HashSet<ProductVersionDepartment>();
             FoundErrors = new HashSet<Error>();
             FixedErrors = new HashSet<Error>();
+            TestingOutlineDetails = new HashSet<TestingOutlineDetails>();
         }
     }
 }

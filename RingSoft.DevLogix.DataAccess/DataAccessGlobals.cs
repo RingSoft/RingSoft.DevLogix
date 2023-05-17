@@ -52,6 +52,7 @@ namespace RingSoft.DevLogix.DataAccess
             modelBuilder.ApplyConfiguration(new TestingTemplateConfiguration());
             modelBuilder.ApplyConfiguration(new TestingTemplateItemConfiguration());
             modelBuilder.ApplyConfiguration(new TestingOutlineConfiguration());
+            modelBuilder.ApplyConfiguration(new TestingOutlineDetailsConfiguration());
 
             AdvancedFindDataProcessorEfCore.ConfigureAdvancedFind(modelBuilder);
         }

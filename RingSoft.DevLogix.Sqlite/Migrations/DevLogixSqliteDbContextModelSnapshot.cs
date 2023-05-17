@@ -1007,6 +1007,37 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.ToTable("TestingOutlines");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingOutlineDetails", b =>
+                {
+                    b.Property<int>("TestingOutlineId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("DetailId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("CompletedVersionId")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsComplete")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Step")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<int?>("TestingTemplateId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("TestingOutlineId", "DetailId");
+
+                    b.HasIndex("CompletedVersionId");
+
+                    b.HasIndex("TestingTemplateId");
+
+                    b.ToTable("TestingOutlineDetails");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingTemplate", b =>
                 {
                     b.Property<int>("Id")
@@ -1686,6 +1717,31 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingOutlineDetails", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.ProductVersion", "CompletedVersion")
+                        .WithMany("TestingOutlineDetails")
+                        .HasForeignKey("CompletedVersionId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingOutline", "TestingOutline")
+                        .WithMany("Details")
+                        .HasForeignKey("TestingOutlineId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingTemplate", "TestingTemplate")
+                        .WithMany("TestingOutlineDetails")
+                        .HasForeignKey("TestingTemplateId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("CompletedVersion");
+
+                    b.Navigation("TestingOutline");
+
+                    b.Navigation("TestingTemplate");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingTemplate", b =>
                 {
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingTemplate", "BaseTemplate")
@@ -1896,6 +1952,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("FoundErrors");
 
                     b.Navigation("ProductVersionDepartments");
+
+                    b.Navigation("TestingOutlineDetails");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.LaborPart", b =>
@@ -1935,11 +1993,18 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("TimeClocks");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingOutline", b =>
+                {
+                    b.Navigation("Details");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingTemplate", b =>
                 {
                     b.Navigation("ChildTemplates");
 
                     b.Navigation("Items");
+
+                    b.Navigation("TestingOutlineDetails");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.SystemPreferences", b =>
