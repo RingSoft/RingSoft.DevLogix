@@ -51,6 +51,7 @@ namespace RingSoft.DevLogix.QualityAssurance
         public TestingOutlineMaintenanceWindow()
         {
             InitializeComponent();
+            RegisterFormKeyControl(NameControl);
             TopHeaderControl.Loaded += (sender, args) =>
             {
                 if (TopHeaderControl.CustomPanel is TestingOutlineHeaderControl templateHeaderControl)
@@ -66,6 +67,12 @@ namespace RingSoft.DevLogix.QualityAssurance
                 }
             };
 
+        }
+
+        public override void ResetViewForNewRecord()
+        {
+            NameControl.Focus();
+            base.ResetViewForNewRecord();
         }
     }
 }

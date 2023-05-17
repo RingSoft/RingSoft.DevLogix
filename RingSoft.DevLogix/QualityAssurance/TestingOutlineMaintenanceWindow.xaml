@@ -69,6 +69,77 @@
 
         <Grid Margin="5">
 
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Row="0" Grid.Column="0" Content="Testing Outline ID"/>
+
+            <dec:StringReadOnlyBox Grid.Row="0" Grid.Column="1" Width="75" Text="{Binding Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <Label Grid.Row="0" Grid.Column="2" Content="Name"/>
+
+            <lc:AutoFillControl Grid.Row="0" Grid.Column="3" x:Name="NameControl" Width="200"/>
+
+            <TabControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5">
+
+                <TabItem Header="Details">
+
+                    <Grid>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Grid.Row="0" Grid.Column="0" Content="Product"/>
+
+                        <lc:AutoFillControl Grid.Row="0" Grid.Column="1" x:Name="ProductControl" Width="200" HorizontalAlignment="Left" Setup="{Binding ProductSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding ProductValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        <Label Grid.Row="0" Grid.Column="2" Content="Created By"/>
+
+                        <lc:AutoFillControl Grid.Row="0" Grid.Column="3" x:Name="CreatedByControl" Width="200" HorizontalAlignment="Left" Setup="{Binding CreatedByAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding CreatedByAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        <Label Grid.Row="1" Grid.Column="0" Content="Assigned To"/>
+
+                        <lc:AutoFillControl Grid.Row="1" Grid.Column="1" x:Name="AssignedToControl" Width="200" HorizontalAlignment="Left" Setup="{Binding AssignedToAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding AssignedToAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        <Label Grid.Row="1" Grid.Column="2" Content="Due Date"/>
+
+                        <dec:DateEditControl Grid.Row="1" Grid.Column="3" Width="200" HorizontalAlignment="Left" DateFormatType="DateTime" AllowNullValue="True" Value="{Binding DueDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        <Label Grid.Row="2" Grid.Column="0" Content="% Complete"/>
+
+                        <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="1" FormatType="Percent" HorizontalAlignment="Left" Value="{Binding PercentComplete, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    </Grid>
+                </TabItem>
+                <dec:DataEntryMemoTabItem Header="Notes" VerticalAlignment="Stretch">
+                    <DockPanel>
+
+                        <dec:DataEntryMemoEditor Text="{Binding Path=Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    </DockPanel>
+                </dec:DataEntryMemoTabItem>
+
+            </TabControl>
         </Grid>
     </DockPanel>
 </ac:DbMaintenanceWindow>
