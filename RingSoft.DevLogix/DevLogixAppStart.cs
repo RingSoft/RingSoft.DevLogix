@@ -100,6 +100,7 @@ namespace RingSoft.DevLogix
             WindowRegistry.RegisterWindow<ErrorMaintenanceWindow>(AppGlobals.LookupContext.Errors);
             WindowRegistry.RegisterWindow<ErrorMaintenanceWindow>(AppGlobals.LookupContext.ErrorTesters);
             WindowRegistry.RegisterWindow<TestingTemplatesMaintenanceWindow>(AppGlobals.LookupContext.TestingTemplates);
+            WindowRegistry.RegisterWindow<TestingOutlineMaintenanceWindow>(AppGlobals.LookupContext.TestingOutlines);
 
             WindowRegistry.RegisterWindow<ProjectMaintenanceWindow>(AppGlobals.LookupContext.Projects);
             WindowRegistry.RegisterWindow<ProjectMaintenanceWindow>(AppGlobals.LookupContext.ProjectUsers);

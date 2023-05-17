@@ -264,6 +264,20 @@ namespace RingSoft.DevLogix
                         CommandParameter = AppGlobals.LookupContext.TestingTemplates,
                     });
                 }
+
+                if (AppGlobals.LookupContext.TestingOutlines.HasRight(RightTypes.AllowView))
+                {
+                    var categoryItem =
+                        qaCategory.Items.FirstOrDefault(
+                            p => p.TableDefinition == AppGlobals.LookupContext.TestingOutlines);
+                    menuItem.Items.Add(new MenuItem()
+                    {
+                        Header = "Add/Edit Testing _Outlines...",
+                        Command = ViewModel.ShowMaintenanceWindowCommand,
+                        CommandParameter = AppGlobals.LookupContext.TestingOutlines,
+                    });
+                }
+
             }
         }
 

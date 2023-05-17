@@ -25,7 +25,7 @@ namespace RingSoft.DevLogix.DataAccess.Model.QualityAssurance
 
         public int? AssignedToUserId { get; set; }
 
-        public virtual User AssignedToUser { get;}
+        public virtual User AssignedToUser { get; set; }
 
         public DateTime? DueDate { get; set; }
 
