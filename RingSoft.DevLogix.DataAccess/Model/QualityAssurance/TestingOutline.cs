@@ -38,12 +38,14 @@ namespace RingSoft.DevLogix.DataAccess.Model.QualityAssurance
         public virtual ICollection<TestingOutlineDetails> Details { get; set; }
         public virtual ICollection<TestingOutlineTemplate> Templates { get; set; }
         public virtual ICollection<Error> Errors { get; set; }
+        public virtual ICollection<TimeClock> TimeClocks { get; set; }
 
         public TestingOutline()
         {
             Details = new HashSet<TestingOutlineDetails>();
             Templates = new HashSet<TestingOutlineTemplate>();
             Errors = new HashSet<Error>();
+            TimeClocks = new HashSet<TimeClock>();
         }
     }
 

@@ -1210,6 +1210,9 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<DateTime?>("PunchOutDate")
                         .HasColumnType("datetime");
 
+                    b.Property<int?>("TestingOutlineId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
@@ -1218,6 +1221,8 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.HasIndex("ErrorId");
 
                     b.HasIndex("ProjectTaskId");
+
+                    b.HasIndex("TestingOutlineId");
 
                     b.HasIndex("UserId");
 
@@ -1883,6 +1888,11 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .HasForeignKey("ProjectTaskId")
                         .OnDelete(DeleteBehavior.NoAction);
 
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingOutline", "TestingOutline")
+                        .WithMany("TimeClocks")
+                        .HasForeignKey("TestingOutlineId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "User")
                         .WithMany("TimeClocks")
                         .HasForeignKey("UserId")
@@ -1892,6 +1902,8 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("Error");
 
                     b.Navigation("ProjectTask");
+
+                    b.Navigation("TestingOutline");
 
                     b.Navigation("User");
                 });
@@ -2097,6 +2109,8 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("Errors");
 
                     b.Navigation("Templates");
+
+                    b.Navigation("TimeClocks");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingTemplate", b =>

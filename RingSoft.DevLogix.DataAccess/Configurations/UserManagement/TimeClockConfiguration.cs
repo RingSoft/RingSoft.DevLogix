@@ -35,6 +35,12 @@ namespace RingSoft.DevLogix.DataAccess.Configurations
                 .HasForeignKey(p => p.ProjectTaskId)
                 .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired(false);
+
+            builder.HasOne(p => p.TestingOutline)
+                .WithMany(p => p.TimeClocks)
+                .HasForeignKey(p => p.TestingOutlineId)
+                .OnDelete(DeleteBehavior.NoAction)
+                .IsRequired(false);
         }
     }
 }

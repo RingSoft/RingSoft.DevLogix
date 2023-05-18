@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
+using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 
 namespace RingSoft.DevLogix.DataAccess.Model
 {
@@ -29,6 +30,10 @@ namespace RingSoft.DevLogix.DataAccess.Model
         public int? ProjectTaskId { get; set; }
 
         public virtual ProjectTask ProjectTask { get; set; }
+
+        public int? TestingOutlineId { get; set; }
+
+        public virtual TestingOutline TestingOutline { get; set; }
 
         public string? Notes { get; set; }
 
