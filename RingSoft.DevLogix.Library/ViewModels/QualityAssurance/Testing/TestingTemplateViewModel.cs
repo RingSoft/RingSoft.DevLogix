@@ -100,6 +100,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
             UpdateOutlinesCommand = new RelayCommand(UpdateTestingOutlines);
             TestingTemplateItemManager = new TestingTemplateItemManager(this);
+
+            TablesToDelete.Add(AppGlobals.LookupContext.TestingTemplatesItems);
         }
 
         protected override TestingTemplate PopulatePrimaryKeyControls(TestingTemplate newEntity, PrimaryKeyValue primaryKeyValue)

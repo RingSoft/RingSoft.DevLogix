@@ -57,6 +57,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
                 _productValue = value;
                 OnPropertyChanged();
+                DetailsGridManager.UpdateProductVersion(value.GetEntity<Product>().Id);
             }
         }
 
@@ -150,6 +151,21 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             }
         }
 
+        private TestingOutlineDetailsGridManager _detailsGridManager;
+
+        public TestingOutlineDetailsGridManager DetailsGridManager
+        {
+            get => _detailsGridManager;
+            set
+            {
+                if (_detailsGridManager == value)
+                    return;
+
+                _detailsGridManager = value;
+                OnPropertyChanged();
+            }
+        }
+
         private string? _notes;
 
         public string? Notes
@@ -182,6 +198,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             ProductSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ProductId));
             CreatedByAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.CreatedByUserId));
             AssignedToAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.AssignedToUserId));
+
+            DetailsGridManager = new TestingOutlineDetailsGridManager(this);
+
+            TablesToDelete.Add(AppGlobals.LookupContext.TestingOutlineDetails);
         }
 
         protected override TestingOutline PopulatePrimaryKeyControls(TestingOutline newEntity, PrimaryKeyValue primaryKeyValue)
@@ -192,6 +212,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
                 .Include(p => p.Product)
                 .Include(p => p.CreatedByUser)
                 .Include(p => p.AssignedToUser)
+                .Include(p => p.Details)
+                .ThenInclude(p => p.CompletedVersion)
+                .Include(p => p.Details)
+                .ThenInclude(p => p.TestingTemplate)
                 .FirstOrDefault(p => p.Id == newEntity.Id);
 
             Id = result.Id;
@@ -210,6 +234,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
                 DueDate = DueDate.Value.ToLocalTime();
             }
             PercentComplete = entity.PercentComplete;
+            DetailsGridManager.LoadGrid(entity.Details);
             Notes = entity.Notes;
         }
 
@@ -248,12 +273,30 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             DueDate = null;
             PercentComplete = 0;
             Notes = null;
+            DetailsGridManager.SetupForNewRecord();
         }
 
         protected override bool SaveEntity(TestingOutline entity)
         {
             var context = AppGlobals.DataRepository.GetDataContext();
             var result = context.SaveEntity(entity, "Saving Testing Outline");
+            if (result)
+            {
+                var details = DetailsGridManager.GetEntityList();
+                if (details != null)
+                {
+                    foreach (var detail in details)
+                    {
+                        detail.TestingOutlineId = entity.Id;
+                    }
+                }
+
+                var existingDetails = context.GetTable<TestingOutlineDetails>()
+                    .Where(p => p.TestingOutlineId == entity.Id);
+                context.RemoveRange(existingDetails);
+                context.AddRange(details);
+                result = context.Commit("Saving Grids");
+            }
             return result;
         }
 
@@ -265,6 +308,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             var existOutline = table.FirstOrDefault(p => p.Id == Id);
             if (existOutline != null)
             {
+                var existingDetails = context.GetTable<TestingOutlineDetails>()
+                    .Where(p => p.TestingOutlineId == existOutline.Id);
+                context.RemoveRange(existingDetails);
+
                 result = context.DeleteEntity(existOutline, "Deleting Testing Outline");
             }
             return result;

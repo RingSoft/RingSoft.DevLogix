@@ -131,6 +131,24 @@
 
                     </Grid>
                 </TabItem>
+                <TabItem Header="Steps">
+
+                    <DockPanel>
+                        <deg:DataEntryGrid x:Name="DetailsGrid" Manager="{Binding DetailsGridManager}">
+                            <deg:DataEntryGrid.Columns>
+
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:TestingOutlineDetailsGridManager.StepColumnId}" Header="Step" Width="200"/>
+
+                                <deg:DataEntryGridCheckBoxColumn ColumnId="{x:Static vm:TestingOutlineDetailsGridManager.CompleteColumnId}" Header="Complete?" Width="100"/>
+
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:TestingOutlineDetailsGridManager.CompleteVersionColumnId}" Header="Completed Version" Width="200"/>
+
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:TestingOutlineDetailsGridManager.TemplateColumnId}" Header="Template" Width="200"/>
+
+                            </deg:DataEntryGrid.Columns>
+                        </deg:DataEntryGrid>
+                    </DockPanel>
+                </TabItem>
                 <dec:DataEntryMemoTabItem Header="Notes" VerticalAlignment="Stretch">
                     <DockPanel>
 
