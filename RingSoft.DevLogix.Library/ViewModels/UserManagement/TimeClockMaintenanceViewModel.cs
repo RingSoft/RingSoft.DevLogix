@@ -10,6 +10,7 @@ using System.Timers;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
+using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 using IDbContext = RingSoft.DevLogix.DataAccess.IDbContext;
 
 namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
@@ -18,12 +19,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
     {
         Error = 1,
         ProjectTask = 2,
+        TestingOutline = 3,
     }
     public interface ITimeClockView : IDbMaintenanceView
     {
         Error GetError();
 
         ProjectTask GetProjectTask();
+
+        TestingOutline GetTestingOutline();
 
         void SetTimeClockMode(TimeClockModes timeClockMode);
 
@@ -174,6 +178,40 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
         }
 
+        private AutoFillSetup _testingOutlineAutoFillSetup;
+
+        public AutoFillSetup TestingOutlineAutoFillSetup
+        {
+            get => _testingOutlineAutoFillSetup;
+            set
+            {
+                if (_testingOutlineAutoFillSetup == value)
+                {
+                    return;
+                }
+
+                _testingOutlineAutoFillSetup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private AutoFillValue _testingOutlineAutoFillValue;
+
+        public AutoFillValue TestingOutlineAutoFillValue
+        {
+            get => _testingOutlineAutoFillValue;
+            set
+            {
+                if (_testingOutlineAutoFillValue == value)
+                {
+                    return;
+                }
+
+                _testingOutlineAutoFillValue = value;
+                OnPropertyChanged(null, false);
+            }
+        }
+
         private DateTime _punchInDate;
 
         public DateTime PunchInDate
@@ -293,6 +331,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             ProjectTaskAutoFillValue = projectTask.GetAutoFillValue();
         }
 
+        private void SetTestingOutline(TestingOutline testingOutline)
+        {
+            TestingOutlineAutoFillValue = testingOutline.GetAutoFillValue();
+        }
+
         protected override void Initialize()
         {
             _loading = true;
@@ -310,6 +353,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
             ErrorAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ErrorId));
             ProjectTaskAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ProjectTaskId));
+            TestingOutlineAutoFillSetup =
+                new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.TestingOutlineId));
 
             if (base.View is ITimeClockView timeClockView)
             {
@@ -328,6 +373,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     SetProjectTask(projectTask);
                     punchIn = true;
                     timeClockMode = TimeClockModes.ProjectTask;
+                }
+
+                var testingOutline = View.GetTestingOutline();
+                if (testingOutline != null)
+                {
+                    SetTestingOutline(testingOutline);
+                    punchIn = true;
+                    timeClockMode = TimeClockModes.TestingOutline;
                 }
 
                 View.SetTimeClockMode(timeClockMode);
@@ -369,6 +422,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 .Include(p => p.User)
                 .Include(p => p.ProjectTask)
                 .Include(p => p.Error)
+                .Include(p => p.TestingOutline)
                 .FirstOrDefault(p => p.Id == newEntity.Id);
             Id = newEntity.Id;
             if (timeClock.MinutesSpent != null) 
@@ -402,6 +456,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             UserAutoFillValue = entity.User.GetAutoFillValue();
             ErrorAutoFillValue = entity.Error.GetAutoFillValue();
             ProjectTaskAutoFillValue = entity.ProjectTask.GetAutoFillValue();
+            TestingOutlineAutoFillValue = entity.TestingOutline.GetAutoFillValue();
 
             var timeClockMode = TimeClockModes.Error;
 
@@ -412,6 +467,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             else if (ProjectTaskAutoFillValue.IsValid())
             {
                 timeClockMode = TimeClockModes.ProjectTask;
+            }
+            else if (TestingOutlineAutoFillValue.IsValid())
+            {
+                timeClockMode = TimeClockModes.TestingOutline;
             }
             View.SetTimeClockMode(timeClockMode);
             
@@ -467,6 +526,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 UserId = UserAutoFillValue.GetEntity(AppGlobals.LookupContext.Users).Id,
                 ErrorId = ErrorAutoFillValue.GetEntity(AppGlobals.LookupContext.Errors).Id,
                 ProjectTaskId = ProjectTaskAutoFillValue.GetEntity(AppGlobals.LookupContext.ProjectTasks).Id,
+                TestingOutlineId = TestingOutlineAutoFillValue.GetEntity<TestingOutline>().Id,
                 PunchInDate = PunchInDate.ToUniversalTime(),
                 PunchOutDate = PunchOutDate,
                 MinutesSpent = MinutesSpent,
@@ -486,6 +546,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             if (timeClock.ProjectTaskId == 0)
             {
                 timeClock.ProjectTaskId = null;
+            }
+
+            if (timeClock.TestingOutlineId == 0)
+            {
+                timeClock.TestingOutlineId = null;
             }
 
             return timeClock;

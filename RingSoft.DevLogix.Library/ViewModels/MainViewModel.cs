@@ -6,6 +6,7 @@ using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DevLogix.DataAccess;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
+using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 using RingSoft.DevLogix.Library.ViewModels.ProjectManagement;
 using RingSoft.DevLogix.Library.ViewModels.QualityAssurance;
 using RingSoft.DevLogix.Library.ViewModels.UserManagement;
@@ -31,6 +32,8 @@ namespace RingSoft.DevLogix.Library.ViewModels
         void PunchIn(Error error);
 
         void PunchIn(ProjectTask projectTask);
+
+        void PunchIn(TestingOutline testingOutline);
 
         bool PunchOut(bool clockOut, int userId = 0);
 

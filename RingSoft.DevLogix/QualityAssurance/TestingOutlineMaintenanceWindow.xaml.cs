@@ -13,7 +13,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using RingSoft.DbMaintenance;
+using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 using RingSoft.DevLogix.Library;
+using RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing;
+using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 
 namespace RingSoft.DevLogix.QualityAssurance
 {
@@ -42,7 +45,7 @@ namespace RingSoft.DevLogix.QualityAssurance
     /// <summary>
     /// Interaction logic for TestingOutlineMaintenanceWindow.xaml
     /// </summary>
-    public partial class TestingOutlineMaintenanceWindow
+    public partial class TestingOutlineMaintenanceWindow : ITestingOutlineView
     {
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Testing Outline";
@@ -73,6 +76,11 @@ namespace RingSoft.DevLogix.QualityAssurance
         {
             NameControl.Focus();
             base.ResetViewForNewRecord();
+        }
+
+        public void PunchIn(TestingOutline testingOutline)
+        {
+            AppGlobals.MainViewModel.MainView.PunchIn(testingOutline);
         }
     }
 }

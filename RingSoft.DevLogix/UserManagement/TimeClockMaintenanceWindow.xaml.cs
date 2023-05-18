@@ -18,6 +18,7 @@ using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
+using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels.UserManagement;
 using RingSoft.DevLogix.QualityAssurance;
@@ -32,6 +33,11 @@ namespace RingSoft.DevLogix.UserManagement
     public class GetProjectTaskEventArgs
     {
         public ProjectTask ProjectTask { get; set; }
+    }
+
+    public class GetTestingOutlineEventArgs
+    {
+        public TestingOutline TestingOutline { get; set; }
     }
 
     public class TimeClockHeaderControl : DbMaintenanceCustomPanel
@@ -62,6 +68,7 @@ namespace RingSoft.DevLogix.UserManagement
 
         public event EventHandler<GetErrorEventArgs> GetTimeClockError;
         public event EventHandler<GetProjectTaskEventArgs> GetTimeClockProjectTask;
+        public event EventHandler<GetTestingOutlineEventArgs> GetTimeClockTestingOutline;
 
         private bool _isActive = true;
 
@@ -128,10 +135,18 @@ namespace RingSoft.DevLogix.UserManagement
             return args.ProjectTask;
         }
 
+        public TestingOutline GetTestingOutline()
+        {
+            var args = new GetTestingOutlineEventArgs();
+            GetTimeClockTestingOutline?.Invoke(this, args);
+            return args.TestingOutline;
+        }
+
         public void SetTimeClockMode(TimeClockModes timeClockMode)
         {
             ErrorControl.Visibility = Visibility.Collapsed;
             ProjectTaskControl.Visibility = Visibility.Collapsed;
+            TestingOutlineControl.Visibility = Visibility.Collapsed;
 
             switch (timeClockMode)
             {
@@ -142,6 +157,10 @@ namespace RingSoft.DevLogix.UserManagement
                 case TimeClockModes.ProjectTask:
                     KeyLabel.Content = "Project Task";
                     ProjectTaskControl.Visibility = Visibility.Visible;
+                    break;
+                case TimeClockModes.TestingOutline:
+                    KeyLabel.Content = "Testing Outline";
+                    TestingOutlineControl.Visibility = Visibility.Visible;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(timeClockMode), timeClockMode, null);

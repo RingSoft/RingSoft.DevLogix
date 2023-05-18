@@ -5,11 +5,16 @@ using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.ModelDefinition;
+using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 {
+    public interface ITestingOutlineView : IDbMaintenanceView
+    {
+        void PunchIn(TestingOutline testingOutline);
+    }
     public class TestingOutlineViewModel : DevLogixDbMaintenanceViewModel<TestingOutline>
     {
         public override TableDefinition<TestingOutline> TableDefinition => AppGlobals.LookupContext.TestingOutlines;
@@ -197,7 +202,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             }
         }
 
-
+        public new ITestingOutlineView  View { get; private set; }
 
         public RelayCommand GenerateDetailsCommand { get; private set; }
 
@@ -222,7 +227,25 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             TablesToDelete.Add(AppGlobals.LookupContext.TestingOutlineTemplates);
         }
 
+        protected override void Initialize()
+        {
+            if (base.View is ITestingOutlineView testingOutlineView)
+            {
+                View = testingOutlineView;
+            }
+            base.Initialize();
+        }
+
         protected override TestingOutline PopulatePrimaryKeyControls(TestingOutline newEntity, PrimaryKeyValue primaryKeyValue)
+        {
+            var result = GetTestingOutline(newEntity.Id);
+
+            Id = result.Id;
+            PunchInCommand.IsEnabled = true;
+            return result;
+        }
+
+        private static TestingOutline? GetTestingOutline(int id)
         {
             var context = AppGlobals.DataRepository.GetDataContext();
             var table = context.GetTable<TestingOutline>();
@@ -236,9 +259,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
                 .ThenInclude(p => p.TestingTemplate)
                 .Include(p => p.Templates)
                 .ThenInclude(p => p.TestingTemplate)
-                .FirstOrDefault(p => p.Id == newEntity.Id);
-
-            Id = result.Id;
+                .FirstOrDefault(p => p.Id == id);
             return result;
         }
 
@@ -296,6 +317,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             Notes = null;
             DetailsGridManager.SetupForNewRecord();
             TemplatesGridManager.SetupForNewRecord();
+            PunchInCommand.IsEnabled = false;
         }
 
         protected override bool SaveEntity(TestingOutline entity)
@@ -370,7 +392,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
         private void PunchIn()
         {
-
+            var testingOutline = GetTestingOutline(Id);
+            View.PunchIn(testingOutline);
         }
     }
 }

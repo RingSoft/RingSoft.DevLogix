@@ -1291,6 +1291,9 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<int?>("SupervisorId")
                         .HasColumnType("integer");
 
+                    b.Property<decimal>("TestingOutlinesMinutesSpent")
+                        .HasColumnType("numeric");
+
                     b.HasKey("Id");
 
                     b.HasIndex("DefaultChartId");

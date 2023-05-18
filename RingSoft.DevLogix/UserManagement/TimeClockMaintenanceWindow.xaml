@@ -93,6 +93,8 @@
 
             <lc:AutoFillReadOnlyControl Grid.Row="1" Grid.Column="3" x:Name="ProjectTaskControl" Setup="{Binding ProjectTaskAutoFillSetup}" Value="{Binding ProjectTaskAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
 
+            <lc:AutoFillReadOnlyControl Grid.Row="1" Grid.Column="3" x:Name="TestingOutlineControl" Setup="{Binding TestingOutlineAutoFillSetup}" Value="{Binding TestingOutlineAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
+
             <Label Grid.Row="2" Grid.Column="0" Content="Punch In Date"/>
 
             <dec:DateEditControl Grid.Row="2" Grid.Column="1" x:Name="PunchInBox" Value="{Binding PunchInDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DateFormatType="DateTime" HorizontalAlignment="Left" Width="200"/>

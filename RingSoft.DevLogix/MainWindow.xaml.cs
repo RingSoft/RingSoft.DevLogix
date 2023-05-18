@@ -20,6 +20,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using RingSoft.DevLogix.DataAccess;
+using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 using Error = RingSoft.DevLogix.DataAccess.Model.Error;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MessageBox = System.Windows.Forms.MessageBox;
@@ -538,6 +539,19 @@ namespace RingSoft.DevLogix
                 ShowTimeClockWindow(timeClockWindow);
             }
 
+        }
+
+        public void PunchIn(TestingOutline testingOutline)
+        {
+            var timeClockWindow = GetTimeClockWindow();
+            if (timeClockWindow != null)
+            {
+                timeClockWindow.GetTimeClockTestingOutline += (sender, args) =>
+                {
+                    args.TestingOutline = testingOutline;
+                };
+                ShowTimeClockWindow(timeClockWindow);
+            }
         }
 
         public bool PunchOut(bool clockOut, int userId)
