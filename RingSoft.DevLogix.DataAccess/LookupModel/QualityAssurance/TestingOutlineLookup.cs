@@ -15,4 +15,11 @@
 
         public string Step { get; set; }
     }
+
+    public class TestingOutlineTemplateLookup
+    {
+        public string TestingOutline { get; set; }
+
+        public string TestingTemplate { get; set; }
+    }
 }

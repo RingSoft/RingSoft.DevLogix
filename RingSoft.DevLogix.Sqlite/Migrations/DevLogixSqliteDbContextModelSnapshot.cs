@@ -1038,6 +1038,21 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.ToTable("TestingOutlineDetails");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingOutlineTemplate", b =>
+                {
+                    b.Property<int>("TestingOutlineId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TestingTemplateId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("TestingOutlineId", "TestingTemplateId");
+
+                    b.HasIndex("TestingTemplateId");
+
+                    b.ToTable("TestingOutlineTemplates");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingTemplate", b =>
                 {
                     b.Property<int>("Id")
@@ -1742,6 +1757,25 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("TestingTemplate");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingOutlineTemplate", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingOutline", "TestingOutline")
+                        .WithMany("Templates")
+                        .HasForeignKey("TestingOutlineId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingTemplate", "TestingTemplate")
+                        .WithMany("TestingOutlineTemplates")
+                        .HasForeignKey("TestingTemplateId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("TestingOutline");
+
+                    b.Navigation("TestingTemplate");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingTemplate", b =>
                 {
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingTemplate", "BaseTemplate")
@@ -1996,6 +2030,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingOutline", b =>
                 {
                     b.Navigation("Details");
+
+                    b.Navigation("Templates");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingTemplate", b =>
@@ -2005,6 +2041,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("Items");
 
                     b.Navigation("TestingOutlineDetails");
+
+                    b.Navigation("TestingOutlineTemplates");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.SystemPreferences", b =>

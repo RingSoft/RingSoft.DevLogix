@@ -46,6 +46,7 @@ namespace RingSoft.DevLogix.SqlServer
         public DbSet<TestingTemplateItem> TestingTemplateItems { get; set; }
         public DbSet<TestingOutline> TestingOutlines { get; set; }
         public DbSet<TestingOutlineDetails> TestingOutlineDetails { get; set; }
+        public DbSet<TestingOutlineTemplate> TestingOutlineTemplates { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<ProjectUser> ProjectUsers { get; set; }
         public DbSet<LaborPart> LaborParts { get; set; }

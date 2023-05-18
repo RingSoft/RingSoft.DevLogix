@@ -36,10 +36,12 @@ namespace RingSoft.DevLogix.DataAccess.Model.QualityAssurance
         public string? Notes { get; set; }
 
         public virtual ICollection<TestingOutlineDetails> Details { get; set; }
+        public virtual ICollection<TestingOutlineTemplate> Templates { get; set; }
 
         public TestingOutline()
         {
             Details = new HashSet<TestingOutlineDetails>();
+            Templates = new HashSet<TestingOutlineTemplate>();
         }
     }
 
@@ -64,6 +66,19 @@ namespace RingSoft.DevLogix.DataAccess.Model.QualityAssurance
         public virtual ProductVersion CompletedVersion { get; set; }
 
         public int? TestingTemplateId { get; set; }
+
+        public virtual TestingTemplate TestingTemplate { get; set; }
+    }
+
+    public class TestingOutlineTemplate
+    {
+        [Required]
+        public int TestingOutlineId { get; set; }
+
+        public virtual TestingOutline TestingOutline { get; set; }
+
+        [Required]
+        public int TestingTemplateId { get; set; }
 
         public virtual TestingTemplate TestingTemplate { get; set; }
     }

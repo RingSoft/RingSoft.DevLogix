@@ -67,4 +67,25 @@ namespace RingSoft.DevLogix.DataAccess.Configurations.QualityAssurance
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }
+
+    public class TestingOutlineTemplateConfiguration : IEntityTypeConfiguration<TestingOutlineTemplate>
+    {
+        public void Configure(EntityTypeBuilder<TestingOutlineTemplate> builder)
+        {
+            builder.Property(p => p.TestingOutlineId).HasColumnType(DbConstants.IntegerColumnType);
+            builder.Property(p => p.TestingTemplateId).HasColumnType(DbConstants.IntegerColumnType);
+
+            builder.HasKey(p => new { p.TestingOutlineId, p.TestingTemplateId });
+
+            builder.HasOne(p => p.TestingOutline)
+                .WithMany(p => p.Templates)
+                .HasForeignKey(p => p.TestingOutlineId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(p => p.TestingTemplate)
+                .WithMany(p => p.TestingOutlineTemplates)
+                .HasForeignKey(p => p.TestingTemplateId)
+                .OnDelete(DeleteBehavior.Restrict);
+        }
+    }
 }

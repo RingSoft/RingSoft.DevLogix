@@ -39,6 +39,7 @@ namespace RingSoft.DevLogix.DataAccess
         DbSet<TestingTemplateItem> TestingTemplateItems { get; set; }
         DbSet<TestingOutline> TestingOutlines { get; set; }
         DbSet<TestingOutlineDetails> TestingOutlineDetails { get; set; }
+        DbSet<TestingOutlineTemplate> TestingOutlineTemplates { get; set; }
 
         DbSet<Project> Projects { get; set; }
         DbSet<ProjectUser> ProjectUsers { get; set; }
