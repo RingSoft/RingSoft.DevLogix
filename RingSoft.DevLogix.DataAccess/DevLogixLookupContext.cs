@@ -588,6 +588,10 @@ namespace RingSoft.DevLogix.DataAccess
             ProductVersionDepartments.GetFieldDefinition(p => p.ReleaseDateTime)
                 .HasDateType(DbDateTypes.DateTime);
 
+            TestingOutlines.PriorityLevel = 300;
+            TestingOutlines.GetFieldDefinition(p => p.DueDate).HasDateType(DbDateTypes.DateTime).DoConvertToLocalTime(true);
+            TestingOutlines.GetFieldDefinition(p => p.Notes).IsMemo();
+
             Errors.PriorityLevel = 400;
             Errors.GetFieldDefinition(p => p.ErrorDate)
                 .HasDateType(DbDateTypes.DateTime)
@@ -607,10 +611,6 @@ namespace RingSoft.DevLogix.DataAccess
             ErrorTesters.GetFieldDefinition(p => p.DateChanged)
                 .HasDateType(DbDateTypes.DateTime)
                 .DoConvertToLocalTime();
-
-            TestingOutlines.PriorityLevel = 550;
-            TestingOutlines.GetFieldDefinition(p => p.DueDate).HasDateType(DbDateTypes.DateTime).DoConvertToLocalTime(true);
-            TestingOutlines.GetFieldDefinition(p => p.Notes).IsMemo();
 
             TestingOutlineTemplates.PriorityLevel = 600;
 

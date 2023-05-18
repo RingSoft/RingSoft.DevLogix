@@ -286,10 +286,22 @@
 
                 </TabItem>
                 <TabItem Header="Testers">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
-                    <DockPanel>
+                        <Label Grid.Row="0" Grid.Column="0" Content="Testing Outline"/>
 
-                        <deg:DataEntryGrid Manager="{Binding ErrorQaManager}" DataEntryCanUserAddRows="False" CanUserDeleteRows="False">
+                        <lc:AutoFillControl Grid.Row="0" Grid.Column="1" Width="200" HorizontalAlignment="Left" Setup="{Binding TestingOutlineAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding TestingOutlineAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        <deg:DataEntryGrid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Manager="{Binding ErrorQaManager}" DataEntryCanUserAddRows="False" CanUserDeleteRows="False">
 
                             <deg:DataEntryGrid.Columns>
 
@@ -301,7 +313,8 @@
 
                             </deg:DataEntryGrid.Columns>
                         </deg:DataEntryGrid>
-                    </DockPanel>
+
+                    </Grid>
                 </TabItem>
             </TabControl>
         </Grid>

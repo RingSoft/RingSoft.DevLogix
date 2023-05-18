@@ -473,6 +473,37 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             }
         }
 
+        private AutoFillSetup _testingOutlineAutoFillSetup;
+
+        public AutoFillSetup TestingOutlineAutoFillSetup
+        {
+            get => _testingOutlineAutoFillSetup;
+            set
+            {
+                if (_testingOutlineAutoFillSetup == value)
+                    return;
+
+                _testingOutlineAutoFillSetup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private AutoFillValue _testingOutlineAutoFillValue;
+
+        public AutoFillValue TestingOutlineAutoFillValue
+        {
+            get => _testingOutlineAutoFillValue;
+            set
+            {
+                if (_testingOutlineAutoFillValue == value)
+                    return;
+
+                _testingOutlineAutoFillValue = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         private ErrorQaManager _errorQaManager;
 
         public ErrorQaManager ErrorQaManager
@@ -553,6 +584,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             FoundVersionAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.FoundVersionId));
             FixedVersionAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.FixedVersionId));
             FoundUserAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.FoundByUserId));
+            TestingOutlineAutoFillSetup =
+                new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.TestingOutlineId));
 
             AssignedDeveloperAutoFillSetup =
                 new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.AssignedDeveloperId));
@@ -696,6 +729,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 .Include(p => p.AssignedTester)
                 .Include(p => p.Users)
                 .ThenInclude(p => p.User)
+                .Include(p => p.TestingOutline)
                 .FirstOrDefault(p => p.Id == errorId);
             return result;
         }
@@ -723,6 +757,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             Description = entity.Description;
             Resolution = entity.Resolution;
             DeveloperManager.LoadGrid(entity.Developers);
+            TestingOutlineAutoFillValue = entity.TestingOutline.GetAutoFillValue();
             ErrorQaManager.LoadGrid(entity.Testers);
             ErrorUserGridManager.LoadGrid(entity.Users);
             MinutesSpent = entity.MinutesSpent;
@@ -747,6 +782,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 AssignedTesterId = AssignedQualityAssuranceAutoFillValue.GetEntity<User>().Id,
                 Description = Description,
                 Resolution = Resolution,
+                TestingOutlineId = TestingOutlineAutoFillValue.GetEntity<TestingOutline>().Id,
             };
 
             if (Id > 0)
@@ -805,6 +841,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 result.AssignedTesterId = null;
             }
 
+            if (result.TestingOutlineId == 0)
+            {
+                result.TestingOutlineId = null;
+            }
+
             return result;
         }
 
@@ -830,6 +871,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             TotalCost = 0;
             MinutesSpent = 0;
             TotalTimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
+            TestingOutlineAutoFillValue = null;
         }
 
         protected override bool SaveEntity(Error entity)
