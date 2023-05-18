@@ -149,6 +149,17 @@
                         </deg:DataEntryGrid>
                     </DockPanel>
                 </TabItem>
+                <TabItem Header="Templates">
+                    <DockPanel>
+                        <deg:DataEntryGrid Manager="{Binding TemplatesGridManager}">
+                            <deg:DataEntryGrid.Columns>
+
+                                <deg:DataEntryGridTextColumn ColumnId="1" Header="Testing Template" Width="200"/>
+
+                            </deg:DataEntryGrid.Columns>
+                        </deg:DataEntryGrid>
+                    </DockPanel>
+                </TabItem>
                 <dec:DataEntryMemoTabItem Header="Notes" VerticalAlignment="Stretch">
                     <DockPanel>
 

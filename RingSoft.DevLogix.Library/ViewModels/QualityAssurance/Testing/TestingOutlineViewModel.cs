@@ -166,6 +166,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             }
         }
 
+        private TestingOutlineTemplatesGridManager _templatesGridManager;
+
+        public TestingOutlineTemplatesGridManager TemplatesGridManager
+        {
+            get => _templatesGridManager;
+            set
+            {
+                if (_templatesGridManager == value)
+                    return;
+
+                _templatesGridManager = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         private string? _notes;
 
         public string? Notes
@@ -200,8 +216,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             AssignedToAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.AssignedToUserId));
 
             DetailsGridManager = new TestingOutlineDetailsGridManager(this);
+            TemplatesGridManager = new TestingOutlineTemplatesGridManager(this);
 
             TablesToDelete.Add(AppGlobals.LookupContext.TestingOutlineDetails);
+            TablesToDelete.Add(AppGlobals.LookupContext.TestingOutlineTemplates);
         }
 
         protected override TestingOutline PopulatePrimaryKeyControls(TestingOutline newEntity, PrimaryKeyValue primaryKeyValue)
@@ -215,6 +233,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
                 .Include(p => p.Details)
                 .ThenInclude(p => p.CompletedVersion)
                 .Include(p => p.Details)
+                .ThenInclude(p => p.TestingTemplate)
+                .Include(p => p.Templates)
                 .ThenInclude(p => p.TestingTemplate)
                 .FirstOrDefault(p => p.Id == newEntity.Id);
 
@@ -235,6 +255,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             }
             PercentComplete = entity.PercentComplete;
             DetailsGridManager.LoadGrid(entity.Details);
+            TemplatesGridManager.LoadGrid(entity.Templates);
             Notes = entity.Notes;
         }
 
@@ -274,6 +295,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             PercentComplete = 0;
             Notes = null;
             DetailsGridManager.SetupForNewRecord();
+            TemplatesGridManager.SetupForNewRecord();
         }
 
         protected override bool SaveEntity(TestingOutline entity)
@@ -291,10 +313,25 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
                     }
                 }
 
+                var templates = TemplatesGridManager.GetEntityList();
+                if (templates != null)
+                {
+                    foreach (var template in templates)
+                    {
+                        template.TestingOutlineId = entity.Id;
+                    }
+                }
+
                 var existingDetails = context.GetTable<TestingOutlineDetails>()
                     .Where(p => p.TestingOutlineId == entity.Id);
                 context.RemoveRange(existingDetails);
                 context.AddRange(details);
+
+                var existingTemplates = context.GetTable<TestingOutlineTemplate>()
+                    .Where(p => p.TestingOutlineId == entity.Id);
+                context.RemoveRange(existingTemplates);
+                context.AddRange(templates);
+
                 result = context.Commit("Saving Grids");
             }
             return result;
@@ -311,6 +348,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
                 var existingDetails = context.GetTable<TestingOutlineDetails>()
                     .Where(p => p.TestingOutlineId == existOutline.Id);
                 context.RemoveRange(existingDetails);
+
+                var existingTemplates = context.GetTable<TestingOutlineTemplate>()
+                    .Where(p => p.TestingOutlineId == Id);
+                context.RemoveRange(existingTemplates);
 
                 result = context.DeleteEntity(existOutline, "Deleting Testing Outline");
             }

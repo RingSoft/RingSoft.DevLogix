@@ -65,6 +65,10 @@ namespace RingSoft.DevLogix.DataAccess.Model
         [DefaultValue(0)]
         public decimal Cost { get; set; }
 
+        public int? TestingOutlineId { get; set; }
+
+        public virtual TestingOutline TestingOutline { get; set; }
+
         public virtual ICollection<ErrorDeveloper> Developers { get; set; }
 
         public virtual ICollection<ErrorQa> Testers { get; set; }

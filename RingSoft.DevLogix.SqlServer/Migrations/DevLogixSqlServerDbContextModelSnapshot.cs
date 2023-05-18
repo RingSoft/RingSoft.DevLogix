@@ -359,6 +359,9 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<string>("Resolution")
                         .HasColumnType("ntext");
 
+                    b.Property<int?>("TestingOutlineId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AssignedDeveloperId");
@@ -376,6 +379,8 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.HasIndex("FoundVersionId");
 
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("TestingOutlineId");
 
                     b.ToTable("Errors");
                 });
@@ -1486,6 +1491,11 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingOutline", "TestingOutline")
+                        .WithMany("Errors")
+                        .HasForeignKey("TestingOutlineId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.Navigation("AssignedDeveloper");
 
                     b.Navigation("AssignedTester");
@@ -1501,6 +1511,8 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("FoundVersion");
 
                     b.Navigation("Product");
+
+                    b.Navigation("TestingOutline");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ErrorDeveloper", b =>
@@ -2081,6 +2093,8 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingOutline", b =>
                 {
                     b.Navigation("Details");
+
+                    b.Navigation("Errors");
 
                     b.Navigation("Templates");
                 });

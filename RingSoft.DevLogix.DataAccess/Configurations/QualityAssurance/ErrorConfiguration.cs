@@ -24,6 +24,7 @@ namespace RingSoft.DevLogix.DataAccess.Configurations
             builder.Property(p => p.FoundByUserId).HasColumnType(DbConstants.IntegerColumnType);
             builder.Property(p => p.MinutesSpent).HasColumnType(DbConstants.DecimalColumnType);
             builder.Property(p => p.Cost).HasColumnType(DbConstants.DecimalColumnType);
+            builder.Property(p => p.TestingOutlineId).HasColumnType(DbConstants.IntegerColumnType);
 
             builder.HasOne(p => p.ErrorStatus)
                 .WithMany(p => p.Errors)
@@ -68,6 +69,12 @@ namespace RingSoft.DevLogix.DataAccess.Configurations
                 .HasForeignKey(p => p.FoundByUserId)
                 .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired(false);
+
+            builder.HasOne(p => p.TestingOutline)
+                .WithMany(p => p.Errors)
+                .HasForeignKey(p => p.TestingOutlineId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
