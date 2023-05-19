@@ -599,6 +599,17 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                         result = UpdateError(entity, error, context, user);
                     }
                 }
+                else if (entity.TestingOutlineId.HasValue)
+                {
+                    var testingOutline = context.GetTable<TestingOutline>()
+                        .Include(p => p.Costs)
+                        .ThenInclude(p => p.User)
+                        .FirstOrDefault(p => p.Id == entity.TestingOutlineId.Value);
+                    if (testingOutline != null)
+                    {
+                        result = UpdateTestingOutline(entity, testingOutline, context, user);
+                    }
+                }
 
                 if (result)
                 {
@@ -674,6 +685,35 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             return result;
 
         }
+
+        private bool UpdateTestingOutline(TimeClock entity, TestingOutline testingOutline, IDbContext context, User user)
+        {
+            var result = true;
+            user.TestingOutlinesMinutesSpent += entity.MinutesSpent.Value;
+            testingOutline.MinutesSpent += entity.MinutesSpent.Value;
+            var testingUser = testingOutline.Costs.FirstOrDefault(p => p.UserId == user.Id);
+            if (testingUser != null)
+            {
+                testingUser.TimeSpent += GetNewMinutesSpent();
+                testingUser.Cost = Math.Round((testingUser.TimeSpent / 60) * user.HourlyRate, 2);
+                result = context.SaveNoCommitEntity(testingUser, "Saving Testing Outline User");
+            }
+
+            if (result)
+            {
+                AppGlobals.CalculateTestingOutline(testingOutline, testingOutline.Costs.ToList());
+                result = context.SaveNoCommitEntity(testingOutline, "Saving Testing Outline");
+            }
+
+            var testingOutlineViewModels = AppGlobals.MainViewModel.TestingOutlineViewModels.Where(p => p.Id == testingOutline.Id);
+            foreach (var testingOutlineViewModel in testingOutlineViewModels)
+            {
+                testingOutlineViewModel.RefreshCost(testingUser);
+            }
+            return result;
+
+        }
+
 
         private bool UpdateProjectTask(TimeClock entity, ProjectTask projectTask, IDbContext context, User user)
         {

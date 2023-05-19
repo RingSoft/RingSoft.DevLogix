@@ -65,6 +65,7 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<TestingOutline> TestingOutlines { get; set; }
         public TableDefinition<TestingOutlineDetails> TestingOutlineDetails { get; set; }
         public TableDefinition<TestingOutlineTemplate> TestingOutlineTemplates { get; set; }
+        public TableDefinition<TestingOutlineCost> TestingOutlineCosts { get; set; }
 
         public TableDefinition<Project> Projects { get; set; }
         public TableDefinition<ProjectUser> ProjectUsers { get; set; }
@@ -106,6 +107,7 @@ namespace RingSoft.DevLogix.DataAccess
         public LookupDefinition<TestingOutlineLookup, TestingOutline> TestingOutlineLookup { get; set; }
         public LookupDefinition<TestingOutlineDetailsLookup, TestingOutlineDetails> TestingOutlineDetailsLookup { get; set; }
         public LookupDefinition<TestingOutlineTemplateLookup, TestingOutlineTemplate> TestingOutlineTemplateLookup { get; set; }
+        public LookupDefinition<TestingOutlineCostLookup, TestingOutlineCost> TestingOutlineCostLookup { get; set; }
 
         public LookupDefinition<ProjectLookup, Project> ProjectLookup { get; set; }
         public LookupDefinition<ProjectUserLookup, ProjectUser> ProjectUserLookup { get; set; }
@@ -344,6 +346,23 @@ namespace RingSoft.DevLogix.DataAccess
                 , "Testing Template"
                 , p => p.Name, 50);
             TestingOutlineTemplates.HasLookupDefinition(TestingOutlineTemplateLookup);
+
+            TestingOutlineCostLookup =
+                new LookupDefinition<TestingOutlineCostLookup, TestingOutlineCost>(TestingOutlineCosts);
+            TestingOutlineCostLookup.Include(p => p.TestingOutline)
+                .AddVisibleColumnDefinition(p => p.TestingOutline
+                    , "Testing Outline"
+                    , p => p.Name, 40);
+            TestingOutlineCostLookup.Include(p => p.User)
+                .AddVisibleColumnDefinition(p => p.UserName
+                    , "User"
+                    , p => p.Name, 40);
+            column = TestingOutlineCostLookup.AddVisibleColumnDefinition(
+                p => p.MinutesSpent
+                , "Time Spent"
+                , p => p.TimeSpent, 20);
+            column.HasSearchForHostId(TimeSpentHostId);
+            TestingOutlineCosts.HasLookupDefinition(TestingOutlineCostLookup);
 
                 ProjectLookup = new LookupDefinition<ProjectLookup, Project>(Projects);
             ProjectLookup.AddVisibleColumnDefinition(p => p.Name, "Project Name", p => p.Name, 70);
@@ -591,6 +610,8 @@ namespace RingSoft.DevLogix.DataAccess
             TestingOutlines.PriorityLevel = 300;
             TestingOutlines.GetFieldDefinition(p => p.DueDate).HasDateType(DbDateTypes.DateTime).DoConvertToLocalTime(true);
             TestingOutlines.GetFieldDefinition(p => p.Notes).IsMemo();
+
+            TestingOutlineDetails.PriorityLevel = 500;
 
             Errors.PriorityLevel = 400;
             Errors.GetFieldDefinition(p => p.ErrorDate)

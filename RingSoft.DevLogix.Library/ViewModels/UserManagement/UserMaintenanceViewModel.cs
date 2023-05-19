@@ -59,6 +59,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         public decimal NonBillableProjects { get; private set; }
 
         public decimal Errors { get; private set; }
+
+        public decimal TestingOutlines { get; private set; }
         public BillabilityData(User user)
         {
             User = user;
@@ -69,17 +71,20 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         {
             var totalMinutes = User.BillableProjectsMinutesSpent
                                + User.NonBillableProjectsMinutesSpent
-                               + User.ErrorsMinutesSpent;
+                               + User.ErrorsMinutesSpent
+                               + User.TestingOutlinesMinutesSpent;
 
             var billableProjectsBillability = (decimal)0;
             var nonBillableProjectsBillability = (decimal)0;
             var errorsBillability = (decimal)0;
+            var testingBillability = (decimal)0;
 
             if (totalMinutes > 0)
             {
                 BillableProjects = User.BillableProjectsMinutesSpent / totalMinutes;
                 NonBillableProjects = User.NonBillableProjectsMinutesSpent / totalMinutes;
                 Errors = User.ErrorsMinutesSpent / totalMinutes;
+                TestingOutlines = User.TestingOutlinesMinutesSpent / totalMinutes;
             }
 
         }
@@ -604,6 +609,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
             BillabilityGridManager.SetRowValues(UserBillabilityRows.Errors,
                 entity.ErrorsMinutesSpent, billabilityData.Errors);
+
+            BillabilityGridManager.SetRowValues(UserBillabilityRows.TestingOutlines,
+                entity.TestingOutlinesMinutesSpent, billabilityData.TestingOutlines);
         }
 
         protected override User GetEntityData()
@@ -638,6 +646,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     user.BillableProjectsMinutesSpent = existUser.BillableProjectsMinutesSpent;
                     user.NonBillableProjectsMinutesSpent = existUser.NonBillableProjectsMinutesSpent;
                     user.ErrorsMinutesSpent = existUser.ErrorsMinutesSpent;
+                    user.TestingOutlinesMinutesSpent = existUser.TestingOutlinesMinutesSpent;
                     user.ClockDate = existUser.ClockDate;
                     user.ClockOutReason = existUser.ClockOutReason;
                     user.OtherClockOutReason = existUser.OtherClockOutReason;
@@ -841,6 +850,18 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                             args.Abort = true;
                             return;
                         }
+                        var testOutlines = user.TimeClocks.Where(p =>
+                            p.TestingOutlineId.HasValue
+                            && p.MinutesSpent.HasValue);
+
+                        user.TestingOutlinesMinutesSpent = testOutlines.Sum(p => p.MinutesSpent.Value);
+                        if (!context.SaveNoCommitEntity(user, "Saving User"))
+                        {
+                            result = DbDataProcessor.LastException;
+                            args.Abort = true;
+                            return;
+                        }
+
                         if (Id == user.Id)
                         {
                             SetBillability(user);

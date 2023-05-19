@@ -395,5 +395,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             var testingOutline = GetTestingOutline(Id);
             View.PunchIn(testingOutline);
         }
+
+        public void RefreshCost(TestingOutlineCost testingOutlineCost)
+        {
+            //ErrorUserGridManager.RefreshCost(errorUser);
+            //GetTotals();
+        }
     }
 }

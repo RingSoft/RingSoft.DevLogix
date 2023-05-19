@@ -16,6 +16,8 @@ namespace RingSoft.DevLogix.DataAccess.Configurations.QualityAssurance
             builder.Property(p => p.AssignedToUserId).HasColumnType(DbConstants.IntegerColumnType);
             builder.Property(p => p.DueDate).HasColumnType(DbConstants.DateColumnType);
             builder.Property(p => p.PercentComplete).HasColumnType(DbConstants.DecimalColumnType);
+            builder.Property(p => p.MinutesSpent).HasColumnType(DbConstants.DecimalColumnType);
+            builder.Property(p => p.TotalCost).HasColumnType(DbConstants.DecimalColumnType);
             builder.Property(p => p.Notes).HasColumnType(DbConstants.MemoColumnType);
 
             builder.HasOne(p => p.Product)
@@ -85,6 +87,29 @@ namespace RingSoft.DevLogix.DataAccess.Configurations.QualityAssurance
             builder.HasOne(p => p.TestingTemplate)
                 .WithMany(p => p.TestingOutlineTemplates)
                 .HasForeignKey(p => p.TestingTemplateId)
+                .OnDelete(DeleteBehavior.Restrict);
+        }
+    }
+
+    public class TestingOutlineCostConfiguration : IEntityTypeConfiguration<TestingOutlineCost>
+    {
+        public void Configure(EntityTypeBuilder<TestingOutlineCost> builder)
+        {
+            builder.Property(p => p.TestingOutlineId).HasColumnType(DbConstants.IntegerColumnType);
+            builder.Property(p => p.UserId).HasColumnType(DbConstants.IntegerColumnType);
+            builder.Property(p => p.TimeSpent).HasColumnType(DbConstants.DecimalColumnType);
+            builder.Property(p => p.Cost).HasColumnType(DbConstants.DecimalColumnType);
+
+            builder.HasKey(p => new { p.TestingOutlineId, p.UserId });
+
+            builder.HasOne(p => p.TestingOutline)
+                .WithMany(p => p.Costs)
+                .HasForeignKey(p => p.TestingOutlineId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(p => p.User)
+                .WithMany(p => p.TestingOutlineCosts)
+                .HasForeignKey(p => p.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

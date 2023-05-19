@@ -15,6 +15,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         BillableProjects = 0,
         NonBillableProjects = 1,
         Errors = 2,
+        TestingOutlines = 3,
     }
     public class UserBillabilityGridManager : DataEntryGridManager
     {
@@ -44,6 +45,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
             billableProjectsRow = new UserBillabilityGridRow(this, UserBillabilityRows.Errors);
             AddRow(billableProjectsRow);
+
+            var testingOutlineRow = new UserBillabilityGridRow(this, UserBillabilityRows.TestingOutlines);
+            AddRow(testingOutlineRow);
 
             Grid?.RefreshGridView();
         }

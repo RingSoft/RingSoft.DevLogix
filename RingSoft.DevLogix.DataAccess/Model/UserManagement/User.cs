@@ -102,6 +102,7 @@ namespace RingSoft.DevLogix.DataAccess.Model
         public virtual ICollection<UserTrackerUser> UserTrackerUsers { get; set; }
         public virtual ICollection<TestingOutline> CreatedTestingOutlines { get; set; }
         public virtual ICollection<TestingOutline> AssignedTestingOutlines { get; set; }
+        public virtual ICollection<TestingOutlineCost> TestingOutlineCosts { get; set; }
 
         public User()
         {
@@ -121,6 +122,7 @@ namespace RingSoft.DevLogix.DataAccess.Model
             UserTrackerUsers = new HashSet<UserTrackerUser>();
             CreatedTestingOutlines = new HashSet<TestingOutline>();
             AssignedTestingOutlines = new HashSet<TestingOutline>();
+            TestingOutlineCosts = new HashSet<TestingOutlineCost>();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace RingSoft.DevLogix.DataAccess.Model.QualityAssurance
@@ -33,10 +34,19 @@ namespace RingSoft.DevLogix.DataAccess.Model.QualityAssurance
         [Required]
         public decimal PercentComplete { get; set; }
 
+        [Required]
+        [DefaultValue(0)]
+        public decimal MinutesSpent { get; set; }
+
+        [Required]
+        [DefaultValue(0)]
+        public decimal TotalCost { get; set; }
+
         public string? Notes { get; set; }
 
         public virtual ICollection<TestingOutlineDetails> Details { get; set; }
         public virtual ICollection<TestingOutlineTemplate> Templates { get; set; }
+        public virtual ICollection<TestingOutlineCost> Costs { get; set; }
         public virtual ICollection<Error> Errors { get; set; }
         public virtual ICollection<TimeClock> TimeClocks { get; set; }
 
@@ -44,6 +54,7 @@ namespace RingSoft.DevLogix.DataAccess.Model.QualityAssurance
         {
             Details = new HashSet<TestingOutlineDetails>();
             Templates = new HashSet<TestingOutlineTemplate>();
+            Costs = new HashSet<TestingOutlineCost>();
             Errors = new HashSet<Error>();
             TimeClocks = new HashSet<TimeClock>();
         }
@@ -85,5 +96,22 @@ namespace RingSoft.DevLogix.DataAccess.Model.QualityAssurance
         public int TestingTemplateId { get; set; }
 
         public virtual TestingTemplate TestingTemplate { get; set; }
+    }
+
+    public class TestingOutlineCost
+    {
+        [Required]
+        public int TestingOutlineId { get; set; }
+
+        public virtual TestingOutline TestingOutline { get; set; }
+
+        [Required]
+        public int UserId { get; set; }
+
+        public virtual User User { get; set; }
+
+        public decimal TimeSpent { get; set; }
+
+        public decimal Cost { get; set; }
     }
 }

@@ -22,4 +22,13 @@
 
         public string TestingTemplate { get; set; }
     }
+
+    public class TestingOutlineCostLookup
+    {
+        public string TestingOutline { get; set; }
+
+        public string UserName { get; set; }
+
+        public decimal MinutesSpent { get; set; }
+    }
 }

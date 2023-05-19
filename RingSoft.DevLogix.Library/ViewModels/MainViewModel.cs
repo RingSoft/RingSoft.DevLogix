@@ -9,6 +9,7 @@ using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 using RingSoft.DevLogix.Library.ViewModels.ProjectManagement;
 using RingSoft.DevLogix.Library.ViewModels.QualityAssurance;
+using RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing;
 using RingSoft.DevLogix.Library.ViewModels.UserManagement;
 
 namespace RingSoft.DevLogix.Library.ViewModels
@@ -55,6 +56,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
         public List<ProjectTaskViewModel> ProjectTaskViewModels { get; } = new List<ProjectTaskViewModel>();
         public List<ProjectMaterialViewModel> MaterialViewModels { get; } = new List<ProjectMaterialViewModel>();
         public List<ErrorViewModel> ErrorViewModels { get; } = new List<ErrorViewModel>();
+        public List<TestingOutlineViewModel> TestingOutlineViewModels { get; } = new List<TestingOutlineViewModel>();
 
         public RelayCommand LogoutCommand { get; set; }
         public RelayCommand<TableDefinitionBase> ShowMaintenanceWindowCommand { get; }

@@ -365,6 +365,12 @@ namespace RingSoft.DevLogix.Library
 
         }
 
+        public static void CalculateTestingOutline(TestingOutline testingOutline, List<TestingOutlineCost> costs)
+        {
+            testingOutline.MinutesSpent = costs.Sum(p => p.TimeSpent);
+            testingOutline.TotalCost = costs.Sum(p => p.Cost);
+        }
+
         public static void ClockInUser(RingSoft.DevLogix.DataAccess.IDbContext context, User user)
         {
             if (user != null && user.ClockOutReason != (byte)ClockOutReasons.ClockedIn)

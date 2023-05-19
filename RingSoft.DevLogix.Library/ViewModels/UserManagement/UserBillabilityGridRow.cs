@@ -35,6 +35,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 case UserBillabilityRows.Errors:
                     Name = "Errors";
                     break;
+                case UserBillabilityRows.TestingOutlines:
+                    Name = "Testing Outlines";
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(rowType), rowType, null);
             }

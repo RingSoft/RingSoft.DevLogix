@@ -987,6 +987,9 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<DateTime?>("DueDate")
                         .HasColumnType("datetime");
 
+                    b.Property<decimal>("MinutesSpent")
+                        .HasColumnType("numeric");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -1001,6 +1004,9 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("integer");
 
+                    b.Property<decimal>("TotalCost")
+                        .HasColumnType("numeric");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AssignedToUserId");
@@ -1010,6 +1016,27 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("TestingOutlines");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingOutlineCost", b =>
+                {
+                    b.Property<int>("TestingOutlineId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("Cost")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("TimeSpent")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("TestingOutlineId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("TestingOutlineCosts");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingOutlineDetails", b =>
@@ -1752,6 +1779,25 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingOutlineCost", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingOutline", "TestingOutline")
+                        .WithMany("Costs")
+                        .HasForeignKey("TestingOutlineId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "User")
+                        .WithMany("TestingOutlineCosts")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("TestingOutline");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingOutlineDetails", b =>
                 {
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.ProductVersion", "CompletedVersion")
@@ -2056,6 +2102,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingOutline", b =>
                 {
+                    b.Navigation("Costs");
+
                     b.Navigation("Details");
 
                     b.Navigation("Errors");
@@ -2106,6 +2154,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("ProjectUsers");
 
                     b.Navigation("Projects");
+
+                    b.Navigation("TestingOutlineCosts");
 
                     b.Navigation("TimeClocks");
 
