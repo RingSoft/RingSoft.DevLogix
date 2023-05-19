@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.DataEntryControls.Engine;
@@ -186,6 +188,50 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             }
         }
 
+        private string _totalTimeSpent;
+
+        public string TotalTimeSpent
+        {
+            get => _totalTimeSpent;
+            set
+            {
+                if (_totalTimeSpent == value)
+                    return;
+
+                _totalTimeSpent = value;
+                OnPropertyChanged(null, false);
+            }
+        }
+
+        private decimal _totalCost;
+
+        public decimal TotalCost
+        {
+            get => _totalCost;
+            set
+            {
+                if (_totalCost == value)
+                    return;
+
+                _totalCost = value;
+                OnPropertyChanged(null, false);
+            }
+        }
+
+        private TestingOutlineCostManager _testingOutlineCostManager;
+
+        public TestingOutlineCostManager TestingOutlineCostManager
+        {
+            get => _testingOutlineCostManager;
+            set
+            {
+                if (_testingOutlineCostManager == value)
+                    return;
+
+                _testingOutlineCostManager = value;
+                OnPropertyChanged();
+            }
+        }
 
         private string? _notes;
 
@@ -210,6 +256,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
         public RelayCommand PunchInCommand { get; private set; }
 
+        public decimal MinutesSpent { get; private set; }
+
         public TestingOutlineViewModel()
         {
             GenerateDetailsCommand = new RelayCommand(GenerateDetails);
@@ -225,6 +273,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
             TablesToDelete.Add(AppGlobals.LookupContext.TestingOutlineDetails);
             TablesToDelete.Add(AppGlobals.LookupContext.TestingOutlineTemplates);
+            TestingOutlineCostManager = new TestingOutlineCostManager(this);
         }
 
         protected override void Initialize()
@@ -233,6 +282,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             {
                 View = testingOutlineView;
             }
+            AppGlobals.MainViewModel.TestingOutlineViewModels.Add(this);
             base.Initialize();
         }
 
@@ -259,6 +309,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
                 .ThenInclude(p => p.TestingTemplate)
                 .Include(p => p.Templates)
                 .ThenInclude(p => p.TestingTemplate)
+                .Include(p => p.Costs)
+                .ThenInclude(p => p.User)
                 .FirstOrDefault(p => p.Id == id);
             return result;
         }
@@ -277,6 +329,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             PercentComplete = entity.PercentComplete;
             DetailsGridManager.LoadGrid(entity.Details);
             TemplatesGridManager.LoadGrid(entity.Templates);
+            TestingOutlineCostManager.LoadGrid(entity.Costs);
+            MinutesSpent = entity.MinutesSpent;
+            TotalCost = entity.TotalCost;
+            TotalTimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
             Notes = entity.Notes;
         }
 
@@ -317,7 +373,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             Notes = null;
             DetailsGridManager.SetupForNewRecord();
             TemplatesGridManager.SetupForNewRecord();
+            TestingOutlineCostManager.SetupForNewRecord();
             PunchInCommand.IsEnabled = false;
+            MinutesSpent = 0;
+            TotalCost = 0;
+            TotalTimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
         }
 
         protected override bool SaveEntity(TestingOutline entity)
@@ -392,14 +452,57 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
         private void PunchIn()
         {
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var table = context.GetTable<TestingOutlineCost>();
+            var user = table.FirstOrDefault(p => p.TestingOutlineId == Id
+                                                 && p.UserId == AppGlobals.LoggedInUser.Id);
+            if (user == null)
+            {
+                user = new TestingOutlineCost()
+                {
+                    TestingOutlineId = Id,
+                    UserId = AppGlobals.LoggedInUser.Id,
+                };
+                context.AddRange(new List<TestingOutlineCost>
+                {
+                    user
+                });
+                if (!context.Commit("Adding Cost"))
+                {
+                    return;
+                }
+                user.User = AppGlobals.LoggedInUser;
+                TestingOutlineCostManager.AddUserRow(user);
+            }
+
             var testingOutline = GetTestingOutline(Id);
             View.PunchIn(testingOutline);
         }
 
-        public void RefreshCost(TestingOutlineCost testingOutlineCost)
+        public void RefreshCost(List<TestingOutlineCost> users)
         {
-            //ErrorUserGridManager.RefreshCost(errorUser);
-            //GetTotals();
+            TestingOutlineCostManager.RefreshCost(users);
+            GetTotals();
+        }
+        public void RefreshCost(TestingOutlineCost costUser)
+        {
+            TestingOutlineCostManager.RefreshCost(costUser);
+            GetTotals();
+        }
+
+        private void GetTotals()
+        {
+            TestingOutlineCostManager.GetTotals(out var minutesSpent, out var total);
+            TotalCost = total;
+            MinutesSpent = minutesSpent;
+            TotalCost = total;
+            TotalTimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
+        }
+
+        public override void OnWindowClosing(CancelEventArgs e)
+        {
+            AppGlobals.MainViewModel.TestingOutlineViewModels.Remove(this);
+            base.OnWindowClosing(e);
         }
     }
 }
