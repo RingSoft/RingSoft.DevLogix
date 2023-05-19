@@ -183,6 +183,36 @@
 
                     </Grid>
                 </TabItem>
+                <TabItem x:Name="TestOutlinesTabItem" Header="Testing Outlines">
+
+                    <Grid>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button Grid.Row="0" Grid.Column="0" x:Name="TestOutlinesAddModifyButton" Content="Add/Modify" Command="{Binding TestOutlinesAddModifyCommand}"/>
+
+                        <lc:LookupControl Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" x:Name="TestOutlinesLookupControl" LookupDefinition="{Binding TestingOutlineLookup}" Command="{Binding TestingOutlineLookupCommand}">
+
+                            <lc:LookupControl.LookupColumns>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf Name, Type={x:Type lm:TestingOutlineLookup}}" Header="Name" Width="200"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf AssignedTo, Type={x:Type lm:TestingOutlineLookup}}" Header="Assigned To" Width="200"/>
+
+                            </lc:LookupControl.LookupColumns>
+
+                        </lc:LookupControl>
+                    </Grid>
+
+                </TabItem>
                 <dec:DataEntryMemoTabItem x:Name="NotesTabItem" Header="Notes" VerticalAlignment="Stretch">
                     <DockPanel>
 

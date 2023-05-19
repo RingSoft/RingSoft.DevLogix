@@ -258,6 +258,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
         public decimal MinutesSpent { get; private set; }
 
+        public AutoFillValue DefaultProductAutoFillValue { get; private set; }
+
         public TestingOutlineViewModel()
         {
             GenerateDetailsCommand = new RelayCommand(GenerateDetails);
@@ -283,6 +285,20 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
                 View = testingOutlineView;
             }
             AppGlobals.MainViewModel.TestingOutlineViewModels.Add(this);
+            if (LookupAddViewArgs != null && LookupAddViewArgs.ParentWindowPrimaryKeyValue != null)
+            {
+                if (LookupAddViewArgs.ParentWindowPrimaryKeyValue.TableDefinition ==
+                    AppGlobals.LookupContext.Products)
+                {
+                    var product =
+                        AppGlobals.LookupContext.Products.GetEntityFromPrimaryKeyValue(LookupAddViewArgs
+                            .ParentWindowPrimaryKeyValue);
+                    DefaultProductAutoFillValue =
+                        AppGlobals.LookupContext.OnAutoFillTextRequest(AppGlobals.LookupContext.Products,
+                            product.Id.ToString());
+                }
+            }
+
             base.Initialize();
         }
 
@@ -365,7 +381,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
         protected override void ClearData()
         {
             Id = 0;
-            ProductValue = null;
+            ProductValue = DefaultProductAutoFillValue;
             CreatedByAutoFillValue = null;
             AssignedToAutoFillValue = null;
             DueDate = null;

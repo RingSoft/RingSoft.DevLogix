@@ -1,4 +1,4 @@
-﻿namespace RingSoft.DevLogix.DataAccess.LookupModel.QualityAssurance
+﻿namespace RingSoft.DevLogix.DataAccess.LookupModel
 {
     public class TestingOutlineLookup
     {

@@ -11,6 +11,8 @@ using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DevLogix.DataAccess.LookupModel;
 using RingSoft.DbMaintenance;
+using RingSoft.DevLogix.DataAccess.LookupModel.QualityAssurance;
+using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 {
@@ -230,10 +232,41 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             }
         }
 
+        private LookupDefinition<TestingOutlineLookup, TestingOutline> _testingOutlineLookup;
+
+        public LookupDefinition<TestingOutlineLookup, TestingOutline> TestingOutlineLookup
+        {
+            get => _testingOutlineLookup;
+            set
+            {
+                if (_testingOutlineLookup == value)
+                    return;
+
+                _testingOutlineLookup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private LookupCommand _testingOutlineLookupCommand;
+
+        public LookupCommand TestingOutlineLookupCommand
+        {
+            get => _testingOutlineLookupCommand;
+            set
+            {
+                if (_testingOutlineLookupCommand == value)
+                    return;
+
+                _testingOutlineLookupCommand = value;
+                OnPropertyChanged();
+            }
+        }
 
 
 
         public RelayCommand VersionsAddModifyCommand { get; set; }
+
+        public RelayCommand TestOutlinesAddModifyCommand { get; set; }
 
         public RelayCommand UpdateVersionsCommand { get; set; }
 
@@ -248,6 +281,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         public ProductViewModel()
         {
             VersionsAddModifyCommand = new RelayCommand(OnVersionsAddModify);
+            TestOutlinesAddModifyCommand = new RelayCommand(OnTestOutlineAddModify);
             UpdateVersionsCommand = new RelayCommand(UpdateVersions);
             InstallerCommand = new RelayCommand(() =>
             {
@@ -261,6 +295,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             {
                 AppGuid = Guid.NewGuid().ToString();
             });
+
+            var testOutlineLookup = new LookupDefinition<TestingOutlineLookup, TestingOutline>(AppGlobals.LookupContext.TestingOutlines);
+            testOutlineLookup.AddVisibleColumnDefinition(p => p.Name
+                , "Name"
+                , p => p.Name, 50);
+            testOutlineLookup.Include(p => p.AssignedToUser)
+                .AddVisibleColumnDefinition(p => p.AssignedTo
+                    , "Assigned To"
+                    , p => p.Name, 50);
+            TestingOutlineLookup = testOutlineLookup;
         }
         protected override void Initialize()
         {
@@ -334,6 +378,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 UpdateVersionsCommand.IsEnabled = true;
             }
 
+            TestingOutlineLookup.FilterDefinition.ClearFixedFilters();
+            TestingOutlineLookup.FilterDefinition.AddFixedFilter(p => p.ProductId, Conditions.Equals, Id);
+            TestingOutlineLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
+
             return result;
         }
 
@@ -379,6 +427,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             UpdateVersionsCommand.IsEnabled = false;
             InstallerFileName = ArchivePath = AppGuid = null;
             CreateDepartmentAutoFillValue = ArchiveDepartmentAutoFillValue = null;
+            TestingOutlineLookupCommand = GetLookupCommand(LookupCommands.Clear);
         }
 
         protected override bool SaveEntity(Product entity)
@@ -453,6 +502,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             if (ExecuteAddModifyCommand() == DbMaintenanceResults.Success)
                 ProductVersionLookupCommand = GetLookupCommand(LookupCommands.AddModify);
 
+        }
+
+        private void OnTestOutlineAddModify()
+        {
+            if (ExecuteAddModifyCommand() == DbMaintenanceResults.Success)
+                TestingOutlineLookupCommand = GetLookupCommand(LookupCommands.AddModify);
         }
 
         private void UpdateVersions()
