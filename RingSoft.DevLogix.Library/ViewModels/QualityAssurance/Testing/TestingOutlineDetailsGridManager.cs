@@ -3,6 +3,8 @@ using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 {
@@ -49,6 +51,34 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
         protected override DbMaintenanceDataEntryGridRow<TestingOutlineDetails> ConstructNewRowFromEntity(TestingOutlineDetails entity)
         {
             return new TestingOutlineDetailsGridRow(this);
+        }
+
+        public void UpdateDetails(List<TestingOutlineDetails> newDetails)
+        {
+            var rows = Rows.OfType<TestingOutlineDetailsGridRow>()
+                .Where(p => p.IsNew == false);
+            var newRow = Rows.LastOrDefault(p => p.IsNew);
+            var lastIndex = 0;
+            if (newRow != null)
+            {
+                lastIndex = Rows.IndexOf(newRow);
+            }
+            foreach (var detail in newDetails)
+            {
+                var row = rows.FirstOrDefault(p => 
+                    p.TemplateId == detail.TestingTemplateId
+                    && p.Step == detail.Step);
+
+                if (row == null)
+                {
+                    row = new TestingOutlineDetailsGridRow(this);
+                    row.LoadFromEntity(detail);
+                    AddRow(row, lastIndex);
+                    lastIndex++;
+                }
+            }
+
+            Grid?.RefreshGridView();
         }
     }
 }

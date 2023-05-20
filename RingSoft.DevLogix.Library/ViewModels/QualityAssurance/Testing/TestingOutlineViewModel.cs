@@ -8,6 +8,7 @@ using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbMaintenance;
+using RingSoft.DevLogix.DataAccess;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 
@@ -311,9 +312,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             return result;
         }
 
-        private static TestingOutline? GetTestingOutline(int id)
+        public TestingOutline? GetTestingOutline(int id, DataAccess.IDbContext context = null)
         {
-            var context = AppGlobals.DataRepository.GetDataContext();
+            if (context == null)
+            {
+                context = AppGlobals.DataRepository.GetDataContext();
+            }
             var table = context.GetTable<TestingOutline>();
             var result = table
                 .Include(p => p.Product)
@@ -458,7 +462,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
         private void GenerateDetails()
         {
+            if (DoSave() == DbMaintenanceResults.Success)
+            {
+                TemplatesGridManager.GenerateDetails();
+            }
+        }
 
+        public void UpdateDetails(List<TestingOutlineDetails> newDetails)
+        {
+            DetailsGridManager.UpdateDetails(newDetails);
         }
 
         private void Retest()

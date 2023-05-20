@@ -56,6 +56,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             switch (column)
             {
                 case TestingOutlineDetailsColumns.Step:
+                    if (TemplateId != 0)
+                    {
+                        return new DataEntryGridCellStyle()
+                        {
+                            State = DataEntryGridCellStates.Disabled,
+                        };
+                    }
                     break;
                 case TestingOutlineDetailsColumns.Complete:
                     return new DataEntryGridControlCellStyle()
@@ -114,6 +121,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             IsComplete = entity.IsComplete;
             CompletedVersionAutoFillValue = entity.CompletedVersion.GetAutoFillValue();
             TemplateAutoFillValue = entity.TestingTemplate.GetAutoFillValue();
+            TemplateId = entity.TestingTemplateId.GetValueOrDefault();
         }
 
         public override bool ValidateRow()
