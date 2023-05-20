@@ -102,6 +102,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
                     if (value is DataEntryGridCheckBoxCellProps checkBoxCellProps)
                     {
                         IsComplete = checkBoxCellProps.Value;
+                        CompleteRow(IsComplete);
                         CalcPercentComplete();
                     }
                     break;
@@ -172,6 +173,30 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             }
 
             Manager.ViewModel.PercentComplete = AppGlobals.CalcPercentComplete(details);
+        }
+
+        public void CompleteRow(bool complete, bool refresh = true)
+        {
+            if (complete)
+            {
+                if (Manager.ViewModel.ProductValue.IsValid())
+                {
+                    var product = Manager.ViewModel.ProductValue.GetEntity<Product>();
+                    if (product != null)
+                    {
+                        CompletedVersionAutoFillValue = AppGlobals.GetVersionForUser(product);
+                    }
+                }
+            }
+            else
+            {
+                CompletedVersionAutoFillValue = null;
+            }
+
+            if (refresh)
+            {
+                Manager.Grid?.RefreshGridView();
+            }
         }
     }
 }

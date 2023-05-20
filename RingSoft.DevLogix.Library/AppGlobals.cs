@@ -10,6 +10,7 @@ using RingSoft.App.Interop;
 using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
+using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.EfCore;
 using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
@@ -392,5 +393,38 @@ namespace RingSoft.DevLogix.Library
             result = (decimal)completedCount / detailsCount;
             return result;
         }
+
+        public static AutoFillValue GetVersionForUser(Product product)
+        {
+            AutoFillValue result = null;
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var productTable = context.GetTable<ProductVersionDepartment>();
+            var productVersions = productTable.Include(p => p.ProductVersion)
+                .OrderByDescending(p => p.ReleaseDateTime)
+                .Where(p => p.ProductVersion.ProductId == product.Id);
+
+            if (productVersions != null)
+            {
+                var productVersion = productVersions.FirstOrDefault();
+
+                if (productVersion != null)
+                {
+                    if (AppGlobals.LoggedInUser != null)
+                    {
+                        var departmentId = AppGlobals.LoggedInUser.DepartmentId;
+                        productVersion = productVersions.FirstOrDefault(p => p.DepartmentId == departmentId);
+                    }
+
+                    if (productVersion == null)
+                    {
+                        productVersion = productVersions.FirstOrDefault();
+                    }
+
+                    result = productVersion.ProductVersion.GetAutoFillValue();
+                }
+            }
+            return result;
+        }
+
     }
 }

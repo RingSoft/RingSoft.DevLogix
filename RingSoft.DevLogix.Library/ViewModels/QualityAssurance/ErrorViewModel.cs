@@ -640,42 +640,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         private AutoFillValue GetVersionForUser()
         {
-            AutoFillValue result = null;
             if (ProductAutoFillValue.IsValid())
             {
-                var product =
-                    AppGlobals.LookupContext.Products.GetEntityFromPrimaryKeyValue(ProductAutoFillValue
-                        .PrimaryKeyValue);
-
-                var context = AppGlobals.DataRepository.GetDataContext();
-                var productTable = context.GetTable<ProductVersionDepartment>();
-                var productVersions = productTable.Include(p => p.ProductVersion)
-                    .OrderByDescending(p => p.ReleaseDateTime)
-                    .Where(p => p.ProductVersion.ProductId == product.Id);
-
-                if (productVersions != null)
-                {
-                    var productVersion = productVersions.FirstOrDefault();
-
-                    if (productVersion != null)
-                    {
-                        if (AppGlobals.LoggedInUser != null)
-                        {
-                            var departmentId = AppGlobals.LoggedInUser.DepartmentId;
-                            productVersion = productVersions.FirstOrDefault(p => p.DepartmentId == departmentId);
-                        }
-
-                        if (productVersion == null)
-                        {
-                            productVersion = productVersions.FirstOrDefault();
-                        }
-
-                        result = FoundVersionAutoFillSetup.GetAutoFillValueForIdValue(productVersion.VersionId);
-                    }
-                }
+                var product = ProductAutoFillValue.GetEntity<Product>();
+                return AppGlobals.GetVersionForUser(product);
             }
 
-            return result;
+            return null;
         }
 
         protected override Error PopulatePrimaryKeyControls(Error newEntity, PrimaryKeyValue primaryKeyValue)
