@@ -476,7 +476,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
         private void Retest()
         {
-
+            DetailsGridManager.Retest();
+            var details = DetailsGridManager.GetEntityList();
+            PercentComplete = AppGlobals.CalcPercentComplete(details);
+            RecordDirty = true;
         }
 
         private void PunchIn()

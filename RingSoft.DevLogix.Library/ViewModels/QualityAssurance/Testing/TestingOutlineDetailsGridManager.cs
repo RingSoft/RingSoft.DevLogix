@@ -80,5 +80,19 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
             Grid?.RefreshGridView();
         }
+
+        public void Retest()
+        {
+            var rows = Rows.OfType<TestingOutlineDetailsGridRow>()
+                .Where(p => p.IsNew == false);
+
+            foreach (var detailsGridRow in rows)
+            {
+                detailsGridRow.IsComplete = false;
+                detailsGridRow.CompleteRow(false, false);
+            }
+
+            Grid?.RefreshGridView();
+        }
     }
 }
