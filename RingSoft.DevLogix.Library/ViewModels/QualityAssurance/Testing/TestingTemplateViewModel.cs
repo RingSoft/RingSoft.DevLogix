@@ -5,6 +5,7 @@ using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.QueryBuilder;
+using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
@@ -190,7 +191,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
         private void UpdateTestingOutlines()
         {
-
+            if (DoSave() == DbMaintenanceResults.Success)
+            {
+                TestingTemplateItemManager.UpdateTestingOutlines();
+            }
         }
     }
 }
