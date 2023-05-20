@@ -59,12 +59,17 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
                 }
             }
 
+            testingOutline = ViewModel.GetTestingOutline(ViewModel.Id, context);
+            testingOutline.PercentComplete = AppGlobals.CalcPercentComplete(testingOutline.Details);
+            context.SaveNoCommitEntity(testingOutline, "Saving Testing Outline");
+
             if (context.Commit("Generating Details"))
             {
                 foreach (var testingOutlineViewModel in AppGlobals.MainViewModel.TestingOutlineViewModels
                              .Where(p => p.Id == ViewModel.Id))
                 {
                     testingOutlineViewModel.UpdateDetails(details);
+                    testingOutlineViewModel.PercentComplete = testingOutline.PercentComplete;
                 }
                 var message = $"{details.Count} Steps generated.";
                 var caption = "Operation Complete";

@@ -155,7 +155,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
                     return;
 
                 _percentComplete = value;
-                OnPropertyChanged();
+                OnPropertyChanged(null, false);
             }
         }
 
@@ -346,7 +346,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             {
                 DueDate = DueDate.Value.ToLocalTime();
             }
-            PercentComplete = entity.PercentComplete;
+
+            PercentComplete = AppGlobals.CalcPercentComplete(entity.Details);
             DetailsGridManager.LoadGrid(entity.Details);
             TemplatesGridManager.LoadGrid(entity.Templates);
             TestingOutlineCostManager.LoadGrid(entity.Costs);

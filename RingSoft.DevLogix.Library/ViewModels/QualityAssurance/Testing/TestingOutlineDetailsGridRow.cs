@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
@@ -18,6 +20,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
         public AutoFillSetup TemplateAutoFillSetup { get; set; }
         public AutoFillValue TemplateAutoFillValue { get; set; }
         public int TemplateId { get; private set; }
+        public bool Disposing { get; private set; }
         
         public TestingOutlineDetailsGridRow(TestingOutlineDetailsGridManager manager) : base(manager)
         {
@@ -99,6 +102,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
                     if (value is DataEntryGridCheckBoxCellProps checkBoxCellProps)
                     {
                         IsComplete = checkBoxCellProps.Value;
+                        CalcPercentComplete();
                     }
                     break;
                 case TestingOutlineDetailsColumns.CompleteVersion:
@@ -144,6 +148,30 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             {
                 entity.TestingTemplateId = null;
             }
+        }
+
+        public override void Dispose()
+        {
+            Disposing = true;
+            CalcPercentComplete();
+            base.Dispose();
+        }
+
+        private void CalcPercentComplete()
+        {
+            var rows = Manager.Rows.OfType<TestingOutlineDetailsGridRow>()
+                .Where(p => p.IsNew == false
+                            && p.Disposing == false);
+
+            var details = new List<TestingOutlineDetails>();
+            foreach (var row in rows)
+            {
+                var entity = new TestingOutlineDetails();
+                row.SaveToEntity(entity, 0);
+                details.Add(entity);
+            }
+
+            Manager.ViewModel.PercentComplete = AppGlobals.CalcPercentComplete(details);
         }
     }
 }

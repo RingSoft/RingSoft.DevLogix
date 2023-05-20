@@ -380,5 +380,17 @@ namespace RingSoft.DevLogix.Library
                 context.SaveEntity(user, "Clocking In");
             }
         }
+
+        public static decimal CalcPercentComplete(IEnumerable<TestingOutlineDetails> details)
+        {
+            var result = (decimal)0;
+            var completeDetails = details
+                .Where(p => p.IsComplete);
+
+            var completedCount = completeDetails.Count();
+            var detailsCount = details.Count();
+            result = (decimal)completedCount / detailsCount;
+            return result;
+        }
     }
 }
