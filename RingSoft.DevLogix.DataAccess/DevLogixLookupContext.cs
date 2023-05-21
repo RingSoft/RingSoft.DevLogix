@@ -641,6 +641,7 @@ namespace RingSoft.DevLogix.DataAccess
                 .DoConvertToLocalTime();
             TimeClocks.GetFieldDefinition(p => p.PunchOutDate).HasDateType(DbDateTypes.DateTime).DoConvertToLocalTime();
             TimeClocks.GetFieldDefinition(p => p.ErrorId).CanSetNull(false);
+            TimeClocks.GetFieldDefinition(p => p.MinutesSpent).HasSearchForHostId(TimeSpentHostId);
 
             Projects.PriorityLevel = 400;
             Projects.GetFieldDefinition(p => p.Notes).IsMemo();

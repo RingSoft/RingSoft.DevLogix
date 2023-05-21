@@ -290,6 +290,36 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             }
         }
 
+        private LookupDefinition<TimeClockLookup, TimeClock> _timeClockLookup;
+
+        public LookupDefinition<TimeClockLookup, TimeClock> TimeClockLookup
+        {
+            get => _timeClockLookup;
+            set
+            {
+                if (_timeClockLookup == value)
+                    return;
+
+                _timeClockLookup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private LookupCommand _timeClockLookupCommand;
+
+        public LookupCommand TimeClockLookupCommand
+        {
+            get => _timeClockLookupCommand;
+            set
+            {
+                if (_timeClockLookupCommand == value)
+                    return;
+
+                _timeClockLookupCommand = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         public new ITestingOutlineView  View { get; private set; }
 
@@ -341,6 +371,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
                     , "Found By"
                     , p => p.Name, 70);
             ErrorLookup = errorLookup;
+
+            var timeClockLookup = new LookupDefinition<TimeClockLookup, TimeClock>(AppGlobals.LookupContext.TimeClocks);
+            timeClockLookup.AddVisibleColumnDefinition(p => p.PunchInDate, p => p.PunchInDate);
+            timeClockLookup.Include(p => p.User)
+                .AddVisibleColumnDefinition(p => p.UserName, p => p.Name);
+            timeClockLookup.AddVisibleColumnDefinition(p => p.MinutesSpent, p => p.MinutesSpent);
+
+            TimeClockLookup = timeClockLookup;
+            TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
         }
 
         protected override void Initialize()
@@ -377,6 +416,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             ErrorLookup.FilterDefinition.ClearFixedFilters();
             ErrorLookup.FilterDefinition.AddFixedFilter(p => p.TestingOutlineId, Conditions.Equals, Id);
             ErrorLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
+
+            TimeClockLookup.FilterDefinition.ClearFixedFilters();
+            TimeClockLookup.FilterDefinition.AddFixedFilter(p => p.TestingOutlineId, Conditions.Equals, Id);
+            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
+
             return result;
         }
 
@@ -468,6 +512,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             TotalCost = 0;
             TotalTimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
             ErrorLookupCommand = GetLookupCommand(LookupCommands.Clear);
+            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Clear);
         }
 
         protected override bool SaveEntity(TestingOutline entity)
