@@ -69,7 +69,6 @@ namespace RingSoft.DevLogix.QualityAssurance
                         LocalViewModel.RecalcCommand;
                 }
             };
-
         }
 
         private void DetailsGrid_SizeChanged(object sender, SizeChangedEventArgs e)

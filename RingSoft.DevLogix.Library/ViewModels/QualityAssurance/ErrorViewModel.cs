@@ -499,7 +499,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                     return;
 
                 _testingOutlineAutoFillValue = value;
-                OnPropertyChanged();
+                OnPropertyChanged(null, _testingOutlineAutoFillSetup.SetDirty);
             }
         }
 
@@ -534,6 +534,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         public new IErrorView View { get; private set; }
 
         public decimal MinutesSpent { get; private set; }
+
+        public AutoFillValue DefaultTestOutlineAutoFillValue { get; private set; }
+
+        public AutoFillValue CurrentTestingOutlineAutoFillValue { get; private set; }
 
         private IDbContext _makeErrorIdContext;
         private bool _makeErrorId;
@@ -599,6 +603,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             TablesToDelete.Add(AppGlobals.LookupContext.ErrorDevelopers);
             TablesToDelete.Add(AppGlobals.LookupContext.ErrorTesters);
             TablesToDelete.Add(AppGlobals.LookupContext.ErrorUsers);
+
+            if (LookupAddViewArgs != null && LookupAddViewArgs.ParentWindowPrimaryKeyValue != null)
+            {
+                if (LookupAddViewArgs.ParentWindowPrimaryKeyValue.TableDefinition ==
+                    AppGlobals.LookupContext.TestingOutlines)
+                {
+                    var outline =
+                        AppGlobals.LookupContext.TestingOutlines.GetEntityFromPrimaryKeyValue(LookupAddViewArgs
+                            .ParentWindowPrimaryKeyValue);
+                    CurrentTestingOutlineAutoFillValue = outline.GetAutoFillValue();
+                    DefaultTestOutlineAutoFillValue =
+                        AppGlobals.LookupContext.OnAutoFillTextRequest(AppGlobals.LookupContext.TestingOutlines,
+                            outline.Id.ToString());
+                }
+            }
+
 
             base.Initialize();
         }
@@ -728,7 +748,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             Description = entity.Description;
             Resolution = entity.Resolution;
             DeveloperManager.LoadGrid(entity.Developers);
-            TestingOutlineAutoFillValue = entity.TestingOutline.GetAutoFillValue();
+            CurrentTestingOutlineAutoFillValue = TestingOutlineAutoFillValue = entity.TestingOutline.GetAutoFillValue();
             ErrorQaManager.LoadGrid(entity.Testers);
             ErrorUserGridManager.LoadGrid(entity.Users);
             MinutesSpent = entity.MinutesSpent;
@@ -842,7 +862,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             TotalCost = 0;
             MinutesSpent = 0;
             TotalTimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
-            TestingOutlineAutoFillValue = null;
+            CurrentTestingOutlineAutoFillValue = TestingOutlineAutoFillValue = DefaultTestOutlineAutoFillValue;
         }
 
         protected override bool SaveEntity(Error entity)

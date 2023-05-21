@@ -10,8 +10,10 @@ using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition;
+using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess;
+using RingSoft.DevLogix.DataAccess.LookupModel;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 
@@ -258,6 +260,37 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             }
         }
 
+        private LookupDefinition<ErrorLookup, Error> _errorLookup;
+
+        public LookupDefinition<ErrorLookup, Error> ErrorLookup
+        {
+            get => _errorLookup;
+            set
+            {
+                if (_errorLookup == value)
+                    return;
+
+                _errorLookup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private LookupCommand _errorLookupCommand;
+
+        public LookupCommand ErrorLookupCommand
+        {
+            get => _errorLookupCommand;
+            set
+            {
+                if (_errorLookupCommand == value)
+                    return;
+
+                _errorLookupCommand = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         public new ITestingOutlineView  View { get; private set; }
 
         public RelayCommand GenerateDetailsCommand { get; private set; }
@@ -267,6 +300,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
         public RelayCommand PunchInCommand { get; private set; }
 
         public RelayCommand RecalcCommand { get; private set; }
+
+        public RelayCommand ErrorAddModifyCommand { get; private set; }
 
         public decimal MinutesSpent { get; private set; }
 
@@ -282,6 +317,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             RetestCommand = new RelayCommand(Retest);
             PunchInCommand = new RelayCommand(PunchIn);
             RecalcCommand = new RelayCommand(Recalculate);
+            ErrorAddModifyCommand = new RelayCommand(OnErrorAddModify);
 
             ProductSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ProductId));
             CreatedByAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.CreatedByUserId));
@@ -295,6 +331,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             TestingOutlineCostManager = new TestingOutlineCostManager(this);
 
             CurrentUserAutoFillValue = AppGlobals.LoggedInUser.GetAutoFillValue();
+
+            var errorLookup = new LookupDefinition<ErrorLookup, Error>(AppGlobals.LookupContext.Errors);
+            errorLookup.AddVisibleColumnDefinition(p => p.ErrorId
+                , "Error ID"
+                , p => p.ErrorId, 30);
+            errorLookup.Include(p => p.FoundByUser)
+                .AddVisibleColumnDefinition(p => p.User
+                    , "Found By"
+                    , p => p.Name, 70);
+            ErrorLookup = errorLookup;
         }
 
         protected override void Initialize()
@@ -327,6 +373,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
             Id = result.Id;
             PunchInCommand.IsEnabled = true;
+
+            ErrorLookup.FilterDefinition.ClearFixedFilters();
+            ErrorLookup.FilterDefinition.AddFixedFilter(p => p.TestingOutlineId, Conditions.Equals, Id);
+            ErrorLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
             return result;
         }
 
@@ -417,6 +467,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             MinutesSpent = 0;
             TotalCost = 0;
             TotalTimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
+            ErrorLookupCommand = GetLookupCommand(LookupCommands.Clear);
         }
 
         protected override bool SaveEntity(TestingOutline entity)
@@ -693,7 +744,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
                 if (currentProduct.Id != oldProduct.Id)
                 {
                     var message =
-                        "Changing Product will force a retest on this Testing Outline.  Are you sure you want to do this?";
+                        "Changing the Product will force a retest on this Testing Outline.  Are you sure you want to do this?";
                     var caption = "Force Retest?";
                     var result = ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, caption, true);
 
@@ -709,6 +760,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             }
             OldProductValue = ProductValue;
             return true;
+        }
+
+        private void OnErrorAddModify()
+        {
+            if (ExecuteAddModifyCommand() == DbMaintenanceResults.Success)
+                ErrorLookupCommand = GetLookupCommand(LookupCommands.AddModify);
         }
     }
 }

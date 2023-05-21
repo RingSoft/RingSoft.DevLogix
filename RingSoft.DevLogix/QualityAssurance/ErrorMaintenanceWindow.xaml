@@ -299,7 +299,7 @@
 
                         <Label Grid.Row="0" Grid.Column="0" Content="Testing Outline"/>
 
-                        <lc:AutoFillControl Grid.Row="0" Grid.Column="1" Width="200" HorizontalAlignment="Left" Setup="{Binding TestingOutlineAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding TestingOutlineAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <lc:AutoFillControl Grid.Row="0" Grid.Column="1" x:Name="TestingOutlineControl" Width="200" HorizontalAlignment="Left" Setup="{Binding TestingOutlineAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding TestingOutlineAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                         <deg:DataEntryGrid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Manager="{Binding ErrorQaManager}" DataEntryCanUserAddRows="False" CanUserDeleteRows="False">
 

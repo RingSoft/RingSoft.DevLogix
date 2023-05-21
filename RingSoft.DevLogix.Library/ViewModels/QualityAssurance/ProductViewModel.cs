@@ -196,7 +196,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                     return;
                 }
                 _createDepartmentAutoFillValue = value;
-                OnPropertyChanged();
+                OnPropertyChanged(null, _createDepartmentAutoFillSetup.SetDirty);
             }
         }
 
@@ -228,7 +228,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                     return;
                 }
                 _archiveDepartmentAutoFillValue = value;
-                OnPropertyChanged();
+                OnPropertyChanged(null, _archiveDepartmentAutoFillSetup.SetDirty);
             }
         }
 
