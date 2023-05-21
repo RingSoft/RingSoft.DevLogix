@@ -992,7 +992,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             if (user != null && user.Department.ErrorFixStatusId.HasValue)
             {
                 StatusAutoFillValue =
-                    StatusAutoFillSetup.GetAutoFillValueForIdValue(user.Department.ErrorPassStatusId.Value);
+                    StatusAutoFillSetup.GetAutoFillValueForIdValue(user.Department.ErrorFixStatusId.Value);
             }
 
             if (user != null && !user.Department.FixText.IsNullOrEmpty())

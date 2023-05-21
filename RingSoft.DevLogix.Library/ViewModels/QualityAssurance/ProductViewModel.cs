@@ -258,7 +258,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                     return;
 
                 _testingOutlineLookupCommand = value;
-                OnPropertyChanged();
+                OnPropertyChanged(null, false);
             }
         }
 
@@ -516,6 +516,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             {
                 FilterVersions();
             }
+        }
+
+        protected override void OnRecordDirtyChanged(bool newValue)
+        {
+            if (newValue)
+            {
+
+            }
+            base.OnRecordDirtyChanged(newValue);
         }
     }
 }
