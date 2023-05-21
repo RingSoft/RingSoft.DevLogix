@@ -12,6 +12,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using RingSoft.DataEntryControls.Engine;
+using RingSoft.DataEntryControls.WPF;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
@@ -77,7 +79,16 @@ namespace RingSoft.DevLogix.QualityAssurance
                     outlineHeaderControl.RecalcButton.Command = LocalViewModel.RecalcCommand;
                 }
             };
-
+            ProductControl.PreviewLostKeyboardFocus += (sender, args) =>
+            {
+                if ((WPFControlsGlobals.ActiveWindow is TestingOutlineMaintenanceWindow))
+                {
+                    if (!LocalViewModel.ChangeProduct())
+                    {
+                        args.Handled = true;
+                    }
+                }
+            };
         }
 
         public override void ResetViewForNewRecord()

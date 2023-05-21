@@ -5,6 +5,7 @@ using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 using System.Collections.Generic;
 using System.Linq;
+using RingSoft.DbLookup;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 {
@@ -93,6 +94,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             }
 
             Grid?.RefreshGridView();
+        }
+
+        public bool CompletedRowsExist()
+        {
+            var result = Rows.OfType<TestingOutlineDetailsGridRow>()
+                .Any(p => p.IsNew == false
+                && (p.IsComplete == true
+                || p.CompletedVersionAutoFillValue.IsValid()));
+            return result;
         }
     }
 }

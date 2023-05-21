@@ -390,7 +390,11 @@ namespace RingSoft.DevLogix.Library
 
             var completedCount = completeDetails.Count();
             var detailsCount = details.Count();
-            result = (decimal)completedCount / detailsCount;
+            if (detailsCount > 0)
+            {
+                result = (decimal)completedCount / detailsCount;
+            }
+
             return result;
         }
 

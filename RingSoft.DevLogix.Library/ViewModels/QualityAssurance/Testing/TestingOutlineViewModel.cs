@@ -272,6 +272,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
         public AutoFillValue DefaultProductAutoFillValue { get; private set; }
 
+        public AutoFillValue OldProductValue { get; private set; }
+
+        public AutoFillValue CurrentUserAutoFillValue { get; private set; }
+
         public TestingOutlineViewModel()
         {
             GenerateDetailsCommand = new RelayCommand(GenerateDetails);
@@ -289,6 +293,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             TablesToDelete.Add(AppGlobals.LookupContext.TestingOutlineDetails);
             TablesToDelete.Add(AppGlobals.LookupContext.TestingOutlineTemplates);
             TestingOutlineCostManager = new TestingOutlineCostManager(this);
+
+            CurrentUserAutoFillValue = AppGlobals.LoggedInUser.GetAutoFillValue();
         }
 
         protected override void Initialize()
@@ -350,7 +356,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
         protected override void LoadFromEntity(TestingOutline entity)
         {
             KeyAutoFillValue = entity.GetAutoFillValue();
-            ProductValue = entity.Product.GetAutoFillValue();
+            OldProductValue = ProductValue = entity.Product.GetAutoFillValue();
             CreatedByAutoFillValue = entity.CreatedByUser.GetAutoFillValue();
             AssignedToAutoFillValue = entity.AssignedToUser.GetAutoFillValue();
             DueDate = entity.DueDate;
@@ -398,8 +404,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
         protected override void ClearData()
         {
             Id = 0;
-            ProductValue = DefaultProductAutoFillValue;
-            CreatedByAutoFillValue = null;
+            OldProductValue = ProductValue = DefaultProductAutoFillValue;
+            CreatedByAutoFillValue = CurrentUserAutoFillValue;
             AssignedToAutoFillValue = null;
             DueDate = null;
             PercentComplete = 0;
@@ -675,6 +681,34 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
                 outlineUser.TimeSpent = outlineUserMinutes.Value;
                 outlineUser.Cost = Math.Round((outlineUserMinutes.Value / 60) * user.HourlyRate, 2);
             }
+        }
+
+        public bool ChangeProduct()
+        {
+            if (DetailsGridManager.CompletedRowsExist())
+            {
+                var oldProduct = OldProductValue.GetEntity<Product>();
+                var currentProduct = ProductValue.GetEntity<Product>();
+
+                if (currentProduct.Id != oldProduct.Id)
+                {
+                    var message =
+                        "Changing Product will force a retest on this Testing Outline.  Are you sure you want to do this?";
+                    var caption = "Force Retest?";
+                    var result = ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, caption, true);
+
+                    if (result == MessageBoxButtonsResult.Yes)
+                    {
+                        Retest();
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+            OldProductValue = ProductValue;
+            return true;
         }
     }
 }
