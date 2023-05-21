@@ -12,11 +12,14 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using RingSoft.DbLookup.Lookup;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
+using RingSoft.DbLookup.Controls.WPF;
+using RingSoft.DbLookup;
 
 namespace RingSoft.DevLogix.QualityAssurance
 {
@@ -28,6 +31,8 @@ namespace RingSoft.DevLogix.QualityAssurance
 
         public Button PunchInButton { get; set; }
 
+        public Button RecalcButton { get; set; }
+
         static TestingOutlineHeaderControl()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(TestingOutlineHeaderControl), new FrameworkPropertyMetadata(typeof(TestingOutlineHeaderControl)));
@@ -38,6 +43,7 @@ namespace RingSoft.DevLogix.QualityAssurance
             GenerateDetailsButton = GetTemplateChild(nameof(GenerateDetailsButton)) as Button;
             RetestButton = GetTemplateChild(nameof(RetestButton)) as Button;
             PunchInButton = GetTemplateChild(nameof(PunchInButton)) as Button;
+            RecalcButton = GetTemplateChild(nameof(RecalcButton)) as Button;
 
             base.OnApplyTemplate();
         }
@@ -50,6 +56,7 @@ namespace RingSoft.DevLogix.QualityAssurance
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Testing Outline";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;
+        public RecalcProcedure RecalcProcedure { get; set; }
 
         public TestingOutlineMaintenanceWindow()
         {
@@ -57,16 +64,17 @@ namespace RingSoft.DevLogix.QualityAssurance
             RegisterFormKeyControl(NameControl);
             TopHeaderControl.Loaded += (sender, args) =>
             {
-                if (TopHeaderControl.CustomPanel is TestingOutlineHeaderControl templateHeaderControl)
+                if (TopHeaderControl.CustomPanel is TestingOutlineHeaderControl outlineHeaderControl)
                 {
                     if (!LocalViewModel.TableDefinition.HasRight(RightTypes.AllowEdit))
                     {
-                        templateHeaderControl.GenerateDetailsButton.Visibility = Visibility.Collapsed;
-                        templateHeaderControl.RetestButton.Visibility = Visibility.Collapsed;
+                        outlineHeaderControl.GenerateDetailsButton.Visibility = Visibility.Collapsed;
+                        outlineHeaderControl.RetestButton.Visibility = Visibility.Collapsed;
                     }
-                    templateHeaderControl.GenerateDetailsButton.Command = LocalViewModel.GenerateDetailsCommand;
-                    templateHeaderControl.RetestButton.Command = LocalViewModel.RetestCommand;
-                    templateHeaderControl.PunchInButton.Command = LocalViewModel.PunchInCommand;
+                    outlineHeaderControl.GenerateDetailsButton.Command = LocalViewModel.GenerateDetailsCommand;
+                    outlineHeaderControl.RetestButton.Command = LocalViewModel.RetestCommand;
+                    outlineHeaderControl.PunchInButton.Command = LocalViewModel.PunchInCommand;
+                    outlineHeaderControl.RecalcButton.Command = LocalViewModel.RecalcCommand;
                 }
             };
 
@@ -81,6 +89,41 @@ namespace RingSoft.DevLogix.QualityAssurance
         public void PunchIn(TestingOutline testingOutline)
         {
             AppGlobals.MainViewModel.MainView.PunchIn(testingOutline);
+        }
+
+        public bool ProcessRecalcLookupFilter(LookupDefinitionBase lookup)
+        {
+            var genericInput = new GenericReportLookupFilterInput
+            {
+                LookupDefinitionToFilter = lookup,
+                CodeNameToFilter = "Testing Outline",
+                KeyAutoFillValue = LocalViewModel.KeyAutoFillValue,
+                ProcessText = "Recalculate"
+            };
+            var genericWindow = new GenericReportFilterWindow(genericInput);
+            genericWindow.Owner = this;
+            genericWindow.ShowInTaskbar = false;
+            genericWindow.ShowDialog();
+            return genericWindow.ViewModel.DialogReesult;
+
+        }
+
+        public string StartRecalcProcedure(LookupDefinitionBase lookup)
+        {
+            var result = string.Empty;
+            RecalcProcedure = new RecalcProcedure();
+            RecalcProcedure.StartRecalculate += (sender, args) =>
+            {
+                result = LocalViewModel.StartRecalcProcedure(lookup);
+            };
+            RecalcProcedure.Start();
+            return result;
+        }
+
+        public void UpdateRecalcProcedure(int currentOutline, int totalOutlines, string currentOutlineText)
+        {
+            var progress = $"Recalculating Testing Outline {currentOutlineText} {currentOutline} / {totalOutlines}";
+            RecalcProcedure.SplashWindow.SetProgress(progress);
         }
     }
 }

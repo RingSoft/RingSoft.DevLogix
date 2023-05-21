@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
+using RingSoft.DbLookup.DataProcessor;
+using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess;
@@ -17,6 +20,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
     public interface ITestingOutlineView : IDbMaintenanceView
     {
         void PunchIn(TestingOutline testingOutline);
+
+        bool ProcessRecalcLookupFilter(LookupDefinitionBase lookup);
+
+        string StartRecalcProcedure(LookupDefinitionBase lookup);
+
+        void UpdateRecalcProcedure(int currentOutline, int totalOutlines, string currentOutlineText);
     }
     public class TestingOutlineViewModel : DevLogixDbMaintenanceViewModel<TestingOutline>
     {
@@ -257,6 +266,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
         public RelayCommand PunchInCommand { get; private set; }
 
+        public RelayCommand RecalcCommand { get; private set; }
+
         public decimal MinutesSpent { get; private set; }
 
         public AutoFillValue DefaultProductAutoFillValue { get; private set; }
@@ -266,6 +277,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             GenerateDetailsCommand = new RelayCommand(GenerateDetails);
             RetestCommand = new RelayCommand(Retest);
             PunchInCommand = new RelayCommand(PunchIn);
+            RecalcCommand = new RelayCommand(Recalculate);
 
             ProductSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ProductId));
             CreatedByAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.CreatedByUserId));
@@ -535,6 +547,134 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
         {
             AppGlobals.MainViewModel.TestingOutlineViewModels.Remove(this);
             base.OnWindowClosing(e);
+        }
+
+        private void Recalculate()
+        {
+            var lookupFilter = ViewLookupDefinition.Clone();
+            if (!View.ProcessRecalcLookupFilter(lookupFilter))
+                return;
+            var result = View.StartRecalcProcedure(lookupFilter);
+            if (!result.IsNullOrEmpty())
+            {
+                ControlsGlobals.UserInterface.ShowMessageBox(result, "Error Recalculating", RsMessageBoxIcons.Error);
+            }
+        }
+
+        public string StartRecalcProcedure(LookupDefinitionBase lookupToFilter)
+        {
+            var result = string.Empty;
+            var lookupUi = new LookupUserInterface { PageSize = 10 };
+            var lookupData = new LookupDataBase(lookupToFilter, lookupUi);
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var outlinesTable = context.GetTable<TestingOutline>();
+            var usersTable = context.GetTable<User>();
+            var timeClocksTable = context.GetTable<TimeClock>();
+            DbDataProcessor.DontDisplayExceptions = true;
+
+            var totalOutlines = lookupData.GetRecordCountWait();
+            var currentOutline = 1;
+
+            lookupData.PrintDataChanged += (sender, e) =>
+            {
+                foreach (DataRow outputTableRow in e.OutputTable.Rows)
+                {
+                    var primaryKey = new PrimaryKeyValue(TableDefinition);
+                    primaryKey.PopulateFromDataRow(outputTableRow);
+                    var outline = TableDefinition.GetEntityFromPrimaryKeyValue(primaryKey);
+                    if (outline != null)
+                    {
+                        outline = outlinesTable
+                            .Include(p => p.Costs)
+                            .ThenInclude(p => p.User)
+                            .FirstOrDefault(p => p.Id == outline.Id);
+                    }
+
+                    if (outline != null)
+                    {
+                        View.UpdateRecalcProcedure(currentOutline, totalOutlines, outline.Name);
+                        var outlineUsers = new List<TestingOutlineCost>(outline.Costs);
+                        outline.MinutesSpent = outline.TotalCost = 0;
+                        var timeClockUsers = timeClocksTable
+                            .Where(p => p.TestingOutlineId == outline.Id)
+                            .Select(p => p.UserId)
+                            .Distinct();
+                        foreach (var timeClockUser in timeClockUsers)
+                        {
+                            var outlineUser = outline.Costs.FirstOrDefault(p => p.UserId == timeClockUser);
+                            if (outlineUser == null)
+                            {
+                                outlineUser = new TestingOutlineCost()
+                                {
+                                    TestingOutlineId = outline.Id,
+                                    UserId = timeClockUser
+                                };
+                                UpdateOutlineUserCost(usersTable, outlineUser, timeClocksTable, outline);
+                                context.AddRange(new List<TestingOutlineCost>()
+                                {
+                                    outlineUser
+                                });
+                                outlineUsers.Add(outlineUser);
+                            }
+                            else
+                            {
+                                UpdateOutlineUserCost(usersTable, outlineUser, timeClocksTable, outline);
+
+                                if (!context.SaveNoCommitEntity(outlineUser, "Saving Timeclock Cost"))
+                                {
+                                    result = DbDataProcessor.LastException;
+                                    e.Abort = true;
+                                    return;
+                                }
+                            }
+
+                            outline.MinutesSpent += outlineUser.TimeSpent;
+                            outline.TotalCost += outlineUser.Cost;
+                        }
+
+                        if (!context.SaveNoCommitEntity(outline, "Saving Error"))
+                        {
+                            result = DbDataProcessor.LastException;
+                            e.Abort = true;
+                            return;
+                        }
+
+                        if (outline.Id == Id)
+                        {
+                            RefreshCost(outlineUsers);
+                        }
+                    }
+
+                    currentOutline++;
+                }
+            };
+            lookupData.GetPrintData();
+            if (result.IsNullOrEmpty())
+            {
+                if (!context.Commit("Recalculating Finished"))
+                {
+                    result = DbDataProcessor.LastException;
+                }
+            }
+
+            DbDataProcessor.DontDisplayExceptions = false;
+            return result;
+        }
+
+        private static void UpdateOutlineUserCost(IQueryable<User> usersTable, TestingOutlineCost outlineUser, IQueryable<TimeClock> timeClocksTable,
+            TestingOutline outline)
+        {
+            var user = usersTable.FirstOrDefault(p => p.Id == outlineUser.UserId);
+            var outlineUserMinutes = timeClocksTable
+                .Where(p => p.TestingOutlineId == outline.Id
+                            && p.UserId == outlineUser.UserId)
+                .ToList()
+                .Sum(p => p.MinutesSpent);
+            if (outlineUserMinutes != null)
+            {
+                outlineUser.TimeSpent = outlineUserMinutes.Value;
+                outlineUser.Cost = Math.Round((outlineUserMinutes.Value / 60) * user.HourlyRate, 2);
+            }
         }
     }
 }
