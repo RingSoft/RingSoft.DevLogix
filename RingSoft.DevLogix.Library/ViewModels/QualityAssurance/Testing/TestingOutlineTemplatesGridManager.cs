@@ -56,6 +56,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
                             , testingOutline
                             , startIndex);
                     details.AddRange(generatedDetails);
+                    startIndex += generatedDetails.Count;
                 }
             }
 
