@@ -768,7 +768,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         }
 
-        public override DbMaintenanceResults DoDelete()
+        public override DbMaintenanceResults DoDelete(bool unitTestMode = false)
         {
             if (AppGlobals.LoggedInUser != null && AppGlobals.LoggedInUser.Id == Id)
             {
@@ -778,7 +778,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 return DbMaintenanceResults.ValidationError;
             }
 
-            return base.DoDelete();
+            return base.DoDelete(unitTestMode);
         }
 
         protected override bool DeleteEntity()
@@ -806,7 +806,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             var context = AppGlobals.DataRepository.GetDataContext();
             var query = context.GetTable<User>();
             var lookupUi = new LookupUserInterface { PageSize = 10 };
-            var lookupData = new LookupDataBase(lookupToFilter, lookupUi);
+            var lookupData = AppGlobals.DataRepository.GetLookupDataBase<User>(lookupToFilter, lookupUi);
             var usersToProcess = lookupData.GetRecordCountWait();
             var userIndex = 1;
             DbDataProcessor.DontDisplayExceptions = true;
@@ -824,7 +824,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                             .ThenInclude(p => p.ProjectTask)
                             .ThenInclude(p => p.Project)
                             .Include(p => p.TimeClocks)
-                            .ThenInclude(p => p.Error)
                             .FirstOrDefault(p => p.Id == user.Id);
                     }
 

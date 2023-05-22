@@ -1,15 +1,19 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RingSoft.DbLookup;
+using RingSoft.DbLookup.Lookup;
 using RingSoft.DevLogix.DataAccess.Model;
+using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using RingSoft.DevLogix.DataAccess.Model.UserManagement;
 using RingSoft.DevLogix.Library;
 using IDataRepository = RingSoft.DevLogix.Library.IDataRepository;
 
 namespace RingSoft.DevLogix.Tests
 {
-    public class DataRepositoryRegistryItemBase
+    public abstract class DataRepositoryRegistryItemBase
     {
         public Type Entity { get; internal set; }
+
+        public abstract void ClearData();
     }
 
     public class DataRepositoryRegistryItem<TEntity> : DataRepositoryRegistryItemBase where TEntity : class
@@ -20,6 +24,11 @@ namespace RingSoft.DevLogix.Tests
         {
             Table = new List<TEntity>();
             Entity = typeof(TEntity);
+        }
+
+        public override void ClearData()
+        {
+            Table.Clear();
         }
     }
 
@@ -138,6 +147,8 @@ namespace RingSoft.DevLogix.Tests
             DataContext.AddEntity(new DataRepositoryRegistryItem<User>(new User()));
             DataContext.AddEntity(new DataRepositoryRegistryItem<Department>(new Department()));
             DataContext.AddEntity(new DataRepositoryRegistryItem<TimeClock>(new TimeClock()));
+            DataContext.AddEntity(new DataRepositoryRegistryItem<Project>(new Project()));
+            DataContext.AddEntity(new DataRepositoryRegistryItem<ProjectTask>(new ProjectTask()));
         }
 
         IDbContext DbLookup.IDataRepository.GetDataContext()
@@ -145,9 +156,23 @@ namespace RingSoft.DevLogix.Tests
             return DataContext;
         }
 
+        public ILookupDataBase GetLookupDataBase<TEntity>(LookupDefinitionBase lookupDefinition, LookupUserInterface lookupUi) where TEntity : class, new()
+        {
+            var result = new TestLookupDataBase<TEntity>(DataContext.GetTable<TEntity>());
+            return result;
+        }
+
         DataAccess.IDbContext IDataRepository.GetDataContext()
         {
             return DataContext;
+        }
+
+        public void ClearData()
+        {
+            foreach (var entity in DataContext.Entities)
+            {
+                entity.ClearData();
+            }
         }
     }
 }

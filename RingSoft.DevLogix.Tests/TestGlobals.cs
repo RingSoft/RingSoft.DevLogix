@@ -1,4 +1,5 @@
 ﻿using RingSoft.App.Library;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.Library.ViewModels.UserManagement;
@@ -9,7 +10,7 @@ using RingSoft.DevLogix.Tests.UserManagement;
 
 namespace RingSoft.DevLogix.Tests
 {
-    public class TestGlobals<TViewModel, TView> where TViewModel : DbMaintenanceViewModelBase
+    public class TestGlobals<TViewModel, TView> : IControlsUserInterface where TViewModel : DbMaintenanceViewModelBase
         where TView : IDbMaintenanceView, new()
     {
         public TestDataRepository DataRepository { get; private set; } = new TestDataRepository();
@@ -24,6 +25,7 @@ namespace RingSoft.DevLogix.Tests
             AppGlobals.DataRepository = DataRepository;
             AppGlobals.LookupContext.Initialize(new DevLogixSqliteDbContext(), DbPlatforms.Sqlite);
             AppGlobals.MainViewModel = new MainViewModel();
+            ControlsGlobals.UserInterface = this;
 
             var viewModel = (TViewModel)Activator.CreateInstance(typeof(TViewModel));
             ViewModel = viewModel;
@@ -32,6 +34,32 @@ namespace RingSoft.DevLogix.Tests
             View = view;
 
             ViewModel.OnViewLoaded(View);
+        }
+
+        public void ClearData()
+        {
+            ViewModel.NewCommand.Execute(null);
+            DataRepository.ClearData();
+        }
+
+        public void SetWindowCursor(WindowCursorTypes cursor)
+        {
+            
+        }
+
+        public void ShowMessageBox(string text, string caption, RsMessageBoxIcons icon)
+        {
+            
+        }
+
+        public MessageBoxButtonsResult ShowYesNoMessageBox(string text, string caption, bool playSound = false)
+        {
+            return MessageBoxButtonsResult.Yes;
+        }
+
+        public MessageBoxButtonsResult ShowYesNoCancelMessageBox(string text, string caption, bool playSound = false)
+        {
+            return MessageBoxButtonsResult.Yes;
         }
     }
 }

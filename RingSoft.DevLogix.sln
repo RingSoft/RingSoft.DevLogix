@@ -15,7 +15,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.DevLogix.Sqlite", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.DevLogix.SqlServer", "RingSoft.DevLogix.SqlServer\RingSoft.DevLogix.SqlServer.csproj", "{124E8EEC-1264-4936-802E-99D935C1CD5B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RingSoft.DevLogix.Tests", "RingSoft.DevLogix.Tests\RingSoft.DevLogix.Tests.csproj", "{FDE1961B-D5A5-415E-B34B-9B190893AF48}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.DevLogix.Tests", "RingSoft.DevLogix.Tests\RingSoft.DevLogix.Tests.csproj", "{FDE1961B-D5A5-415E-B34B-9B190893AF48}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.DbLookup", "..\RingSoft.DbLookup\RingSoft.DbLookup\RingSoft.DbLookup.csproj", "{E1820E3B-7F8F-4B28-8615-F8EABCF93D06}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.DbMaintenance", "..\RingSoft.DbLookup\RingSoft.DbMaintenance\RingSoft.DbMaintenance.csproj", "{6EAA12F8-C017-4638-ABD0-F5614FAA71FF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.DbLookup.Controls.WPF", "..\RingSoft.DbLookup\RingSoft.DbLookup.Controls.WPF\RingSoft.DbLookup.Controls.WPF.csproj", "{55B43096-FD72-411B-8951-ABE4465AE967}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.DbLookup.EfCore", "..\RingSoft.DbLookup\RingSoft.DbLookup.EfCore\RingSoft.DbLookup.EfCore.csproj", "{2D675CD6-DD02-4E46-A646-D78E3B6CE843}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +59,22 @@ Global
 		{FDE1961B-D5A5-415E-B34B-9B190893AF48}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FDE1961B-D5A5-415E-B34B-9B190893AF48}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FDE1961B-D5A5-415E-B34B-9B190893AF48}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1820E3B-7F8F-4B28-8615-F8EABCF93D06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1820E3B-7F8F-4B28-8615-F8EABCF93D06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1820E3B-7F8F-4B28-8615-F8EABCF93D06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1820E3B-7F8F-4B28-8615-F8EABCF93D06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EAA12F8-C017-4638-ABD0-F5614FAA71FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EAA12F8-C017-4638-ABD0-F5614FAA71FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EAA12F8-C017-4638-ABD0-F5614FAA71FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EAA12F8-C017-4638-ABD0-F5614FAA71FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55B43096-FD72-411B-8951-ABE4465AE967}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55B43096-FD72-411B-8951-ABE4465AE967}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55B43096-FD72-411B-8951-ABE4465AE967}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55B43096-FD72-411B-8951-ABE4465AE967}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D675CD6-DD02-4E46-A646-D78E3B6CE843}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D675CD6-DD02-4E46-A646-D78E3B6CE843}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D675CD6-DD02-4E46-A646-D78E3B6CE843}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D675CD6-DD02-4E46-A646-D78E3B6CE843}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
