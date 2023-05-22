@@ -29,6 +29,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
     }
     public interface IUserView : IDbMaintenanceView
     {
+
+        UserMaintenanceViewModel LocalViewModel { get; set; }
+
         public string GetRights();
 
         public void LoadRights(string rightsString);
@@ -378,7 +381,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
         }
 
-        public new IUserView View { get; private set; }
+        public new IUserView View { get; set; }
 
         public RelayCommand ChangeChartCommand { get; private set; }
 
@@ -472,6 +475,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             View = base.View as IUserView;
             if (View == null)
                 throw new Exception($"User View interface must be of type '{nameof(IUserView)}'.");
+            View.LocalViewModel = this;
 
             AppGlobals.MainViewModel.UserViewModels.Add(this);
 

@@ -43,6 +43,14 @@ namespace RingSoft.DevLogix.UserManagement
     {
         public RecalcProcedure RecalcProcedure { get; set; }
 
+        public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
+        public override string ItemText => "User";
+        public override DbMaintenanceViewModelBase ViewModel => UserMaintenanceViewModel;
+
+        public UserMaintenanceViewModel LocalViewModel { get; set; }
+
+        private int _timeOffRowFocus = -1;
+
         public UserMaintenanceWindow()
         {
             InitializeComponent();
@@ -73,12 +81,6 @@ namespace RingSoft.DevLogix.UserManagement
                 }
             };
         }
-
-        public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
-        public override string ItemText => "User";
-        public override DbMaintenanceViewModelBase ViewModel => UserMaintenanceViewModel;
-
-        private int _timeOffRowFocus = -1;
 
         protected override void OnLoaded()
         {
