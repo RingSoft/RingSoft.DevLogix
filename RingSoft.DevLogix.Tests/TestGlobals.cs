@@ -1,65 +1,42 @@
 ﻿using RingSoft.App.Library;
-using RingSoft.DataEntryControls.Engine;
-using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbMaintenance;
-using RingSoft.DevLogix.Library.ViewModels.UserManagement;
+using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels;
 using RingSoft.DevLogix.Sqlite;
-using RingSoft.DevLogix.Tests.UserManagement;
 
 namespace RingSoft.DevLogix.Tests
 {
-    public class TestGlobals<TViewModel, TView> : IControlsUserInterface where TViewModel : DbMaintenanceViewModelBase
+    public class TestGlobals<TViewModel, TView> : DbMaintenanceTestGlobals<TViewModel, TView>
+        where TViewModel : DbMaintenanceViewModelBase
         where TView : IDbMaintenanceView, new()
     {
-        public TestDataRepository DataRepository { get; private set; } = new TestDataRepository();
-        public TViewModel ViewModel { get; private set; }
+        public new DevLogixTestDataRepository DataRepository { get; } 
+            
+        public TestGlobals() : base(new DevLogixTestDataRepository(new TestDataRegistry()))
+        {
+            DataRepository = base.DataRepository as DevLogixTestDataRepository;
+        }
 
-        public TView View { get; private set; }
-
-        public void Initialize()
+        public override void Initialize()
         {
             AppGlobals.UnitTesting = true;
             AppGlobals.Initialize();
             AppGlobals.DataRepository = DataRepository;
             AppGlobals.LookupContext.Initialize(new DevLogixSqliteDbContext(), DbPlatforms.Sqlite);
             AppGlobals.MainViewModel = new MainViewModel();
-            ControlsGlobals.UserInterface = this;
+            AppGlobals.LoggedInUser = new User();
+            AppGlobals.Rights = new AppRights();
 
-            var viewModel = (TViewModel)Activator.CreateInstance(typeof(TViewModel));
-            ViewModel = viewModel;
-
-            var view = (TView)Activator.CreateInstance(typeof(TView));
-            View = view;
-
-            ViewModel.OnViewLoaded(View);
+            base.Initialize();
         }
 
-        public void ClearData()
+        public override void ClearData()
         {
-            ViewModel.NewCommand.Execute(null);
-            DataRepository.ClearData();
-        }
+            AppGlobals.LoggedInUser = new User();
+            AppGlobals.Rights = new AppRights();
 
-        public void SetWindowCursor(WindowCursorTypes cursor)
-        {
-            
-        }
-
-        public void ShowMessageBox(string text, string caption, RsMessageBoxIcons icon)
-        {
-            
-        }
-
-        public MessageBoxButtonsResult ShowYesNoMessageBox(string text, string caption, bool playSound = false)
-        {
-            return MessageBoxButtonsResult.Yes;
-        }
-
-        public MessageBoxButtonsResult ShowYesNoCancelMessageBox(string text, string caption, bool playSound = false)
-        {
-            return MessageBoxButtonsResult.Yes;
+            base.ClearData();
         }
     }
 }

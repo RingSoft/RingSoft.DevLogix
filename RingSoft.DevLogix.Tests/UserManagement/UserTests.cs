@@ -36,6 +36,17 @@ namespace RingSoft.DevLogix.Tests.UserManagement
             Assert.IsTrue(autoFillValue.IsValid());
             Globals.ViewModel.KeyAutoFillValue = autoFillValue;
             Assert.IsTrue(Globals.ViewModel.RecordDirty);
+
+            Globals.ViewModel.NewCommand.Execute(null);
+            var department = new Department()
+            {
+                Id = 1,
+                Description = "Test"
+            };
+            autoFillValue = department.GetAutoFillValue();
+            Assert.IsTrue(autoFillValue.IsValid());
+            Globals.ViewModel.DepartmentAutoFillValue = autoFillValue;
+            Assert.IsTrue(Globals.ViewModel.RecordDirty);
         }
 
         [TestMethod]
