@@ -18,13 +18,13 @@
 
                         <DockPanel DataContext="{DynamicResource RightsViewModel}">
 
-                            <TreeView ItemsSource="{Binding TreeRoot}">
+                            <TreeView x:Name="TreeView" ItemsSource="{Binding TreeRoot}">
 
                                 <TreeView.ItemTemplate>
 
                                     <HierarchicalDataTemplate DataType="dllib:TreeViewItem" ItemsSource="{Binding Items}">
                                         <StackPanel Orientation="Horizontal">
-                                            <CheckBox IsThreeState="{Binding ThreeState}" IsChecked="{Binding Path=IsChecked}" IsEnabled="{Binding AllowsEdit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                            <CheckBox Focusable="False" IsThreeState="{Binding ThreeState}" IsChecked="{Binding Path=IsChecked}" IsEnabled="{Binding AllowsEdit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                                             <TextBlock Text="{Binding Text}"/>
                                         </StackPanel>
                                     </HierarchicalDataTemplate>

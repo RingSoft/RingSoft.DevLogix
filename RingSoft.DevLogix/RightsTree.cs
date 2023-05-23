@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using RingSoft.DataEntryControls.WPF;
 using RingSoft.DevLogix.Library;
+using TreeViewItem = RingSoft.DevLogix.Library.TreeViewItem;
 
 namespace RingSoft.DevLogix
 {
@@ -48,13 +50,18 @@ namespace RingSoft.DevLogix
 
         public RightsTreeViewModel ViewModel { get; set; }
 
+        public TreeView TreeView { get; set; }
+
         private bool _controlLoaded;
         private RightsModes _rightsMode;
         private string _rightsString;
-
+        private bool _setFocus;
+        private bool _gotFocusRan;
 
         static RightsTree()
         {
+            IsTabStopProperty.OverrideMetadata(typeof(RightsTree), new FrameworkPropertyMetadata(false));
+
             DefaultStyleKeyProperty.OverrideMetadata(typeof(RightsTree), new FrameworkPropertyMetadata(typeof(RightsTree)));
         }
 
@@ -87,6 +94,41 @@ namespace RingSoft.DevLogix
 
                 }
             };
+
+            GotFocus += (sender, args) =>
+            {
+                if (!_gotFocusRan)
+                {
+                    _gotFocusRan = true;
+                    if (TreeView == null)
+                    {
+                        _setFocus = true;
+                    }
+                    else
+                    {
+                        SetFocusToFirstNode();
+                    }
+                }
+            };
+
+            KeyDown += (sender, args) =>
+            {
+                if (args.Key == Key.Space)
+                {
+                    var item = TreeView.SelectedItem as TreeViewItem;
+                    if (item != null)
+                    {
+                        if (item.ThreeState)
+                        {
+                            item.IsChecked = false;
+                        }
+                        else
+                        {
+                            item.IsChecked = !item.IsChecked;
+                        }
+                    }
+                }
+            };
         }
 
         public override void OnApplyTemplate()
@@ -99,8 +141,16 @@ namespace RingSoft.DevLogix
             }
 
             ViewModel = Border.TryFindResource("RightsViewModel") as RightsTreeViewModel;
+            TreeView = GetTemplateChild(nameof(TreeView)) as TreeView;
             SetReadOnlyMode(false);
-            
+
+            if (_setFocus)
+            {
+                SetFocusToFirstNode();
+                _setFocus = false;
+            }
+
+
             base.OnApplyTemplate();
         }
 
@@ -147,6 +197,18 @@ namespace RingSoft.DevLogix
         public void SetReadOnlyMode(bool readOnlyValue)
         {
             ViewModel.SetReadOnlyMode(readOnlyValue);
+        }
+
+        public void SetFocusToFirstNode()
+        {
+            TreeView.Focus();
+            var tvi = TreeView.ItemContainerGenerator.ContainerFromItem(TreeView.Items[0])
+                as System.Windows.Controls.TreeViewItem;
+
+            if (tvi != null)
+            {
+                tvi.IsSelected = true;
+            }
         }
     }
 }
