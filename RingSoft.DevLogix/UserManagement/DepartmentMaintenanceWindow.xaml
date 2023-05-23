@@ -70,7 +70,7 @@
 
                             <Label Grid.Row="0" Grid.Column="2" Content="Error Fix Text"/>
 
-                            <dec:StringEditControl Grid.Row="0" Grid.Column="3" x:Name="FixTextControl" Text="{Binding FixStatusText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left"/>
+                            <dec:StringEditControl Grid.Row="0" Grid.Column="3" x:Name="FixTextControl" Text="{Binding FixStatusText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left" MaxLength="50"/>
 
                             <Label Grid.Row="1" Grid.Column="0" Content="Error Pass Status"/>
 
@@ -78,7 +78,7 @@
 
                             <Label Grid.Row="1" Grid.Column="2" Content="Error Pass Text"/>
 
-                            <dec:StringEditControl Grid.Row="1" Grid.Column="3" x:Name="PassTextControl" Text="{Binding PassStatusText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left"/>
+                            <dec:StringEditControl Grid.Row="1" Grid.Column="3" x:Name="PassTextControl" Text="{Binding PassStatusText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left" MaxLength="50"/>
 
                             <Label Grid.Row="2" Grid.Column="0" Content="Error Fail Status"/>
 
@@ -86,19 +86,19 @@
 
                             <Label Grid.Row="2" Grid.Column="2" Content="Error Fail Text"/>
 
-                            <dec:StringEditControl Grid.Row="2" Grid.Column="3" x:Name="FailTextControl" Text="{Binding FailStatusText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left"/>
+                            <dec:StringEditControl Grid.Row="2" Grid.Column="3" x:Name="FailTextControl" Text="{Binding FailStatusText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left" MaxLength="50"/>
 
                             <Label Grid.Row="3" Grid.Column="0" Content="FTP Address"/>
 
-                            <dec:StringEditControl Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" Text="{Binding FtpAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <dec:StringEditControl Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Left" Width="200" Text="{Binding FtpAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="50"/>
 
                             <Label Grid.Row="4" Grid.Column="0" Content="FTP Username"/>
 
-                            <dec:StringEditControl Grid.Row="4" Grid.Column="1" HorizontalAlignment="Stretch" Text="{Binding FtpUserName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <dec:StringEditControl Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left" Width="200" Text="{Binding FtpUserName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="50"/>
 
                             <Label Grid.Row="4" Grid.Column="2" Content="FTP Password"/>
 
-                            <PasswordBox Grid.Row="4" Grid.Column="3" x:Name="FtpPasswordBox" HorizontalAlignment="Stretch" Background="{StaticResource ControlBackgroundBrush}" Height="22" VerticalContentAlignment="Center"/>
+                            <PasswordBox Grid.Row="4" Grid.Column="3" x:Name="FtpPasswordBox" HorizontalAlignment="Left" Width="200" Background="{StaticResource ControlBackgroundBrush}" Height="22" VerticalContentAlignment="Center" MaxLength="50"/>
 
                         </Grid>
                     </DockPanel>
