@@ -44,8 +44,17 @@ namespace RingSoft.DevLogix
     ///     <MyNamespace:RightsTree/>
     ///
     /// </summary>
-    public class RightsTree : Control, IReadOnlyControl
+    public class RightsTree : Control, IReadOnlyControl, IRightsTreeControl
     {
+        public static readonly DependencyProperty DataChangedProperty =
+            DependencyProperty.Register(nameof(DataChanged), typeof(bool), typeof(RightsTree));
+
+        public bool DataChanged
+        {
+            get { return (bool)GetValue(DataChangedProperty); }
+            set { SetValue(DataChangedProperty, value); }
+        }
+
         public Border Border { get; set; }
 
         public RightsTreeViewModel ViewModel { get; set; }
@@ -57,6 +66,7 @@ namespace RingSoft.DevLogix
         private string _rightsString;
         private bool _setFocus;
         private bool _gotFocusRan;
+        private bool _readOnlyMode;
 
         static RightsTree()
         {
@@ -73,7 +83,7 @@ namespace RingSoft.DevLogix
                 {
                     if (!_controlLoaded)
                     {
-                        ViewModel.Initialize();
+                        ViewModel.Initialize(this);
                     }
                     _controlLoaded = true;
                     switch (_rightsMode)
@@ -113,18 +123,21 @@ namespace RingSoft.DevLogix
 
             KeyDown += (sender, args) =>
             {
-                if (args.Key == Key.Space)
+                if (!_readOnlyMode)
                 {
-                    var item = TreeView.SelectedItem as TreeViewItem;
-                    if (item != null)
+                    if (args.Key == Key.Space)
                     {
-                        if (item.ThreeState)
+                        var item = TreeView.SelectedItem as TreeViewItem;
+                        if (item != null)
                         {
-                            item.IsChecked = false;
-                        }
-                        else
-                        {
-                            item.IsChecked = !item.IsChecked;
+                            if (item.ThreeState)
+                            {
+                                item.IsChecked = false;
+                            }
+                            else
+                            {
+                                item.IsChecked = !item.IsChecked;
+                            }
                         }
                     }
                 }
@@ -197,6 +210,7 @@ namespace RingSoft.DevLogix
         public void SetReadOnlyMode(bool readOnlyValue)
         {
             ViewModel.SetReadOnlyMode(readOnlyValue);
+            _readOnlyMode = readOnlyValue;
         }
 
         public void SetFocusToFirstNode()
@@ -209,6 +223,11 @@ namespace RingSoft.DevLogix
             {
                 tvi.IsSelected = true;
             }
+        }
+
+        public void SetDataChanged()
+        {
+            DataChanged = true;
         }
     }
 }

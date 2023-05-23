@@ -47,7 +47,7 @@
 
                     <DockPanel>
 
-                        <local:RightsTree x:Name="RightsTree"/>
+                        <local:RightsTree x:Name="RightsTree" DataChanged="{Binding RightsChanged, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                     </DockPanel>
 

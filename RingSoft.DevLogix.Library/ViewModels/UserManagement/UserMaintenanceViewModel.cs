@@ -301,6 +301,20 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
         }
 
+        private bool _rightsChanged;
+
+        public bool RightsChanged
+        {
+            get => _rightsChanged;
+            set
+            {
+                if (_rightsChanged == value)
+                    return;
+
+                _rightsChanged = value;
+                OnPropertyChanged();
+            }
+        }
 
         private LookupDefinition<TimeClockLookup, TimeClock> _timeClockLookup;
 

@@ -9,6 +9,10 @@ using RingSoft.DbLookup.ModelDefinition;
 
 namespace RingSoft.DevLogix.Library
 {
+    public interface IRightsTreeControl
+    {
+        void SetDataChanged();
+    }
     public class TreeViewItem : INotifyPropertyChanged
     {
         public TreeViewItem Parent { get; set; }
@@ -40,6 +44,7 @@ namespace RingSoft.DevLogix.Library
                     return;
                 }
 
+                RightsTreeViewModel?.SetDataChanged();
                 ThreeState = value == null;
                 _isChecked = value;
                 OnPropertyChanged();
@@ -102,14 +107,16 @@ namespace RingSoft.DevLogix.Library
             }
         }
 
+        public RightsTreeViewModel RightsTreeViewModel { get; }
 
         public event EventHandler CheckChanged;
 
-        public TreeViewItem(string text, bool? isChecked, TreeViewItem parent)
+        public TreeViewItem(string text, bool? isChecked, TreeViewItem parent, RightsTreeViewModel rightsTreeViewModel)
         {
             Parent = parent;
             Text = text;
             IsChecked = isChecked;
+            RightsTreeViewModel = rightsTreeViewModel;
         }
 
         public void CheckParent()
@@ -193,21 +200,24 @@ namespace RingSoft.DevLogix.Library
 
         public ItemRights Rights { get; private set; } = new ItemRights();
 
-        public void Initialize()
+        public IRightsTreeControl Control { get; private set; }
+
+        public void Initialize(IRightsTreeControl control)
         {
+            Control = control;
             TreeRoot = new ObservableCollection<TreeViewItem>();
             foreach (var category in Rights.Categories)
             {
-                var categoryItem = new TreeViewItem(category.Category, false, null);
+                var categoryItem = new TreeViewItem(category.Category, false, null, this);
                 TreeRoot.Add(categoryItem);
 
                 foreach (var rightCategoryItem in category.Items)
                 {
                     var right = Rights.GetRight(rightCategoryItem.TableDefinition);
-                    var item = new TreeViewItem(rightCategoryItem.Description, false, categoryItem);
+                    var item = new TreeViewItem(rightCategoryItem.Description, false, categoryItem, this);
                     categoryItem.Items.Add(item);
 
-                    var viewItem = new TreeViewItem("Allow View", right.AllowView, item)
+                    var viewItem = new TreeViewItem("Allow View", right.AllowView, item, this)
                         {RightType = RightTypes.AllowView, TableDefinition = right.TableDefinition};
                     viewItem.CheckChanged += (sender, args) => right.AllowView = viewItem.IsChecked.Value;
                     right.AllowViewChanged += (sender, args) => viewItem.IsChecked = right.AllowView;
@@ -217,7 +227,7 @@ namespace RingSoft.DevLogix.Library
                     foreach (var rightSpecialRight in right.SpecialRights)
                     {
                         var specialRightItem = new TreeViewItem(rightSpecialRight.Description,
-                            rightSpecialRight.HasRight, item);
+                            rightSpecialRight.HasRight, item, this);
                         specialRightItem.SpecialRight = rightSpecialRight;
                         right.AllowViewChanged += (sender, args) =>
                         {
@@ -242,21 +252,21 @@ namespace RingSoft.DevLogix.Library
                         item.Items.Add(specialRightItem);
                     }
 
-                    var editItem = new TreeViewItem("Allow Edit", right.AllowEdit, item)
+                    var editItem = new TreeViewItem("Allow Edit", right.AllowEdit, item, this)
                         {RightType = RightTypes.AllowEdit, TableDefinition = right.TableDefinition};
                     editItem.CheckChanged += (sender, args) => right.AllowEdit = editItem.IsChecked.Value;
                     right.AllowEditChanged += (sender, args) => editItem.IsChecked = right.AllowEdit;
                     _rightsItems.Add(editItem);
                     item.Items.Add(editItem);
 
-                    var addItem = new TreeViewItem("Allow Add", right.AllowAdd, item) 
+                    var addItem = new TreeViewItem("Allow Add", right.AllowAdd, item, this) 
                         {RightType = RightTypes.AllowAdd, TableDefinition = right.TableDefinition};
                     addItem.CheckChanged += (sender, args) => right.AllowAdd = addItem.IsChecked.Value;
                     right.AllowAddChanged += (sender, args) => addItem.IsChecked = right.AllowAdd;
                     _rightsItems.Add(addItem);
                     item.Items.Add(addItem);
 
-                    var deleteItem = new TreeViewItem("Allow Delete", right.AllowDelete, item)
+                    var deleteItem = new TreeViewItem("Allow Delete", right.AllowDelete, item, this)
                         {RightType = RightTypes.AllowDelete, TableDefinition = right.TableDefinition};
                     deleteItem.CheckChanged += (sender, args) => right.AllowDelete = deleteItem.IsChecked.Value;
                     right.AllowDeleteChanged += (sender, args) => deleteItem.IsChecked = right.AllowDelete;
@@ -341,6 +351,11 @@ namespace RingSoft.DevLogix.Library
                     }
                 }
             }
+        }
+
+        public void SetDataChanged()
+        {
+            Control.SetDataChanged();
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
