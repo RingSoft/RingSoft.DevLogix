@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using RingSoft.App.Controls;
+using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbMaintenance;
 
 namespace RingSoft.DevLogix.QualityAssurance
@@ -24,6 +25,7 @@ namespace RingSoft.DevLogix.QualityAssurance
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Error Status";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;
+        public override DbMaintenanceStatusBar DbStatusBar => StatusBar;
 
         public ErrorStatusMaintenanceWindow()
         {

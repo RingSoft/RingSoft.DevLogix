@@ -80,7 +80,11 @@
 
                 <dec:StringReadOnlyBox Width="200" Text="{Binding Organization, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-                <Label Content="User"/>
+                <Label Content="Database Platform"/>
+
+                <dec:StringReadOnlyBox Width="200" Text="{Binding DbPlatform, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+				<Label Content="User"/>
 
                 <lc:AutoFillReadOnlyControl Width="200" Setup="{Binding UserAutoFillSetup}" Value="{Binding UserAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 

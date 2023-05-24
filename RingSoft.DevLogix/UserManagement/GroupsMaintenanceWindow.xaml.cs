@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using RingSoft.App.Controls;
+using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.Library.ViewModels.UserManagement;
 
@@ -25,7 +26,7 @@ namespace RingSoft.DevLogix.UserManagement
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "User";
         public override DbMaintenanceViewModelBase ViewModel => GroupMaintenanceViewModel;
-
+        public override DbMaintenanceStatusBar DbStatusBar => StatusBar;
 
         public GroupsMaintenanceWindow()
         {

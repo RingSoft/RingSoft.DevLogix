@@ -46,6 +46,7 @@ namespace RingSoft.DevLogix.UserManagement
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "User";
         public override DbMaintenanceViewModelBase ViewModel => UserMaintenanceViewModel;
+        public override DbMaintenanceStatusBar DbStatusBar => StatusBar;
 
         public UserMaintenanceViewModel LocalViewModel { get; set; }
 

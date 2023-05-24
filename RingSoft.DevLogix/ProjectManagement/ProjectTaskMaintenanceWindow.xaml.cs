@@ -46,6 +46,7 @@ namespace RingSoft.DevLogix.ProjectManagement
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Project Task";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;
+        public override DbMaintenanceStatusBar DbStatusBar => StatusBar;
         public RecalcProcedure RecalcProcedure { get; set; }
 
         private bool _settingUserFocus;

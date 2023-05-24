@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using RingSoft.App.Controls;
+using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbMaintenance;
 
 namespace RingSoft.DevLogix.ProjectManagement
@@ -24,6 +25,7 @@ namespace RingSoft.DevLogix.ProjectManagement
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Material Part";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;
+        public override DbMaintenanceStatusBar DbStatusBar => StatusBar;
 
         public MaterialPartMaintenanceWindow()
         {

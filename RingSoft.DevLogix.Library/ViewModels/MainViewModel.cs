@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Timers;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.ModelDefinition;
@@ -73,6 +74,22 @@ namespace RingSoft.DevLogix.Library.ViewModels
                 OnPropertyChanged();
             }
         }
+
+        private string _dbPlatform;
+
+        public string DbPlatform
+        {
+            get => _dbPlatform;
+            set
+            {
+                if (_dbPlatform == value)
+                    return;
+
+                _dbPlatform = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         private AutoFillSetup _userAutoFillSetup;
 
@@ -211,6 +228,10 @@ namespace RingSoft.DevLogix.Library.ViewModels
             var loadVm = true;
             if (AppGlobals.LoggedInOrganization == null)
                 loadVm = view.ChangeOrganization();
+            else
+            {
+                SetOrganizationProps();
+            }
 
             if (loadVm)
             {
@@ -397,7 +418,17 @@ namespace RingSoft.DevLogix.Library.ViewModels
                 _startDate = timeClock.PunchInDate;
                 MainView.ShowTimeClock();
             }
+        }
 
+        public void SetOrganizationProps()
+        {
+            var enumTranslation = new EnumFieldTranslation();
+            enumTranslation.LoadFromEnum<DbPlatforms>();
+            Organization = AppGlobals.LoggedInOrganization.Name;
+            var platform = AppGlobals.LoggedInOrganization.Platform;
+            var description = enumTranslation.TypeTranslations
+                .FirstOrDefault(p => p.NumericValue == platform).TextValue;
+            DbPlatform = description;
         }
     }
 }

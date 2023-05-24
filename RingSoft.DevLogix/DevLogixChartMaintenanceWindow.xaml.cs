@@ -1,6 +1,8 @@
 ﻿using System.Windows;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using RingSoft.App.Controls;
+using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.Library.ViewModels;
 
@@ -14,6 +16,7 @@ namespace RingSoft.DevLogix
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Chart";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;
+        public override DbMaintenanceStatusBar DbStatusBar => StatusBar;
 
         public DevLogixChartMaintenanceWindow()
         {

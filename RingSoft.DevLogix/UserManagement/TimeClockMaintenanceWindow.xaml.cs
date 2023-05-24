@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using RingSoft.App.Controls;
 using RingSoft.DataEntryControls.Engine;
+using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model;
@@ -65,6 +66,7 @@ namespace RingSoft.DevLogix.UserManagement
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Time Clock Entry";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;
+        public override DbMaintenanceStatusBar DbStatusBar => StatusBar;
 
         public event EventHandler<GetErrorEventArgs> GetTimeClockError;
         public event EventHandler<GetProjectTaskEventArgs> GetTimeClockProjectTask;

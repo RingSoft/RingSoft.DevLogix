@@ -53,6 +53,7 @@ namespace RingSoft.DevLogix.QualityAssurance
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Error";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;
+        public override DbMaintenanceStatusBar DbStatusBar => StatusBar;
         public RecalcProcedure RecalcProcedure { get; set; }
 
         public ErrorMaintenanceWindow()

@@ -69,6 +69,7 @@
 
     <DockPanel>
         <ac:DbMaintenanceTopHeaderControl x:Name="TopHeaderControl" DockPanel.Dock="Top"/>
+        <lc:DbMaintenanceStatusBar x:Name="StatusBar" DockPanel.Dock="Bottom"/>
 
         <Grid Margin="5">
 

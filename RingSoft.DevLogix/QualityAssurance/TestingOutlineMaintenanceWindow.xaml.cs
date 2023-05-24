@@ -59,6 +59,7 @@ namespace RingSoft.DevLogix.QualityAssurance
         public override string ItemText => "Testing Outline";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;
         public RecalcProcedure RecalcProcedure { get; set; }
+        public override DbMaintenanceStatusBar DbStatusBar => StatusBar;
 
         public TestingOutlineMaintenanceWindow()
         {

@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using RingSoft.DevLogix.Library;
+using RingSoft.DbLookup.Controls.WPF;
 
 namespace RingSoft.DevLogix.QualityAssurance
 {
@@ -26,6 +27,7 @@ namespace RingSoft.DevLogix.QualityAssurance
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Error Priority";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;
+        public override DbMaintenanceStatusBar DbStatusBar => StatusBar;
 
         public ErrorPriorityMaintenanceWindow()
         {

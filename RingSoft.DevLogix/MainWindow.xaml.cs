@@ -377,7 +377,7 @@ namespace RingSoft.DevLogix
             if (loginResult != null && loginResult.Value == true)
             {
                 result = (bool)loginResult;
-                ViewModel.Organization = AppGlobals.LoggedInOrganization.Name;
+                ViewModel.SetOrganizationProps();
             }
 
             return result;

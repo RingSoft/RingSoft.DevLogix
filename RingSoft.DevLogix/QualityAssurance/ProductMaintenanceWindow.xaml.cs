@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Forms;
 using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using Button = System.Windows.Controls.Button;
+using RingSoft.DbLookup.Controls.WPF;
 
 namespace RingSoft.DevLogix.QualityAssurance
 {
@@ -35,6 +36,7 @@ namespace RingSoft.DevLogix.QualityAssurance
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Product";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;
+        public override DbMaintenanceStatusBar DbStatusBar => StatusBar;
 
         public ProductMaintenanceWindow()
         {

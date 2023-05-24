@@ -19,6 +19,7 @@ using RingSoft.DataEntryControls.Engine;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels.QualityAssurance;
+using RingSoft.DbLookup.Controls.WPF;
 
 namespace RingSoft.DevLogix.QualityAssurance
 {
@@ -70,6 +71,7 @@ namespace RingSoft.DevLogix.QualityAssurance
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Product Version";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;
+        public override DbMaintenanceStatusBar DbStatusBar => StatusBar;
 
         private DeployProcedure _deployProcedure;
 

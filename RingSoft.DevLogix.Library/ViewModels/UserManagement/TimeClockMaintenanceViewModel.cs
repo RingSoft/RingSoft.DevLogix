@@ -317,7 +317,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             {
                 _setDirty = false;
                 PunchOut();
-                AppGlobals.MainViewModel.SetupTimer(null);
+                if (Id == AppGlobals.MainViewModel.ActiveTimeClockId)
+                {
+                    AppGlobals.MainViewModel.SetupTimer(null);
+                }
+
                 _setDirty = true;
             }));
         }

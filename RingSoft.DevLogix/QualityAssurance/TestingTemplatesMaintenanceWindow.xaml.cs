@@ -1,4 +1,5 @@
 ﻿using RingSoft.App.Controls;
+using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.Library;
 using System.Windows;
@@ -31,6 +32,7 @@ namespace RingSoft.DevLogix.QualityAssurance
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Testing Template";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;
+        public override DbMaintenanceStatusBar DbStatusBar => StatusBar;
 
         public TestingTemplatesMaintenanceWindow()
         {

@@ -4,6 +4,7 @@ using RingSoft.DevLogix.Library;
 using System.Windows;
 using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using RingSoft.DevLogix.Library.ViewModels.UserManagement;
+using RingSoft.DbLookup.Controls.WPF;
 
 namespace RingSoft.DevLogix.UserManagement
 {
@@ -15,6 +16,7 @@ namespace RingSoft.DevLogix.UserManagement
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Department";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;
+        public override DbMaintenanceStatusBar DbStatusBar => StatusBar;
 
         public string FtpPassword
         {
