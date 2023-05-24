@@ -26,6 +26,7 @@ using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MessageBox = System.Windows.Forms.MessageBox;
 using Window = System.Windows.Window;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using ExtensionMethods = RingSoft.DbLookup.ExtensionMethods;
 
 namespace RingSoft.DevLogix
 {
@@ -37,6 +38,7 @@ namespace RingSoft.DevLogix
         public RelayCommand AboutCommand { get; private set; }
 
         public event EventHandler TimeClockClosed;
+        private bool _isActive = true;
 
         public MainWindow()
         {
@@ -70,6 +72,11 @@ namespace RingSoft.DevLogix
             {
                 ViewModel.InitChart(MainChart.ViewModel);
                 ChartGrid.Visibility = Visibility.Collapsed;
+            };
+
+            Closing += (sender, args) =>
+            {
+                _isActive = false;
             };
             //var bars = RedrawBars();
             //var barPlot = WpfPlot.Plot.AddBarSeries(bars);
@@ -368,7 +375,10 @@ namespace RingSoft.DevLogix
             var loginResult = loginWindow.ShowDialog();
 
             if (loginResult != null && loginResult.Value == true)
+            {
                 result = (bool)loginResult;
+                ViewModel.Organization = AppGlobals.LoggedInOrganization.Name;
+            }
 
             return result;
         }
@@ -379,6 +389,7 @@ namespace RingSoft.DevLogix
             userLoginWindow.ShowDialog();
             if (userLoginWindow.ViewModel.DialogResult)
             {
+                
                 MakeMenu();
                 if (AppGlobals.LoggedInUser != null)
                 {
@@ -682,6 +693,26 @@ namespace RingSoft.DevLogix
             window.ShowInTaskbar = false;
             window.ShowDialog();
 
+        }
+
+        public void SetElapsedTime()
+        {
+            if (_isActive)
+            {
+                Dispatcher?.Invoke(() => { ElapsedTimeBox.Text = ViewModel.ElapsedTime; });
+            }
+        }
+
+        public void ShowTimeClock(bool show = true)
+        {
+            if (show)
+            {
+                TimeClockPanel.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                TimeClockPanel.Visibility = Visibility.Collapsed;
+            }
         }
 
         private TimeClockMaintenanceWindow GetTimeClockWindow()

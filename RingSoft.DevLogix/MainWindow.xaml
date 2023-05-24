@@ -73,7 +73,28 @@
 
                 <ac:DbMaintenanceButton x:Name="AdvancedFindButton" Content="_Advanced Find" ImageSource="{StaticResource FindImage}" Command="{Binding AdvancedFindCommand}"/>
 
-            </StackPanel>
+			</StackPanel>
+			<StatusBar DockPanel.Dock="Bottom" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="Transparent">
+
+                <Label Content="Organization"/>
+
+                <dec:StringReadOnlyBox Width="200" Text="{Binding Organization, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <Label Content="User"/>
+
+                <lc:AutoFillReadOnlyControl Width="200" Setup="{Binding UserAutoFillSetup}" Value="{Binding UserAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <StackPanel x:Name="TimeClockPanel" Orientation="Horizontal" Visibility="Collapsed">
+
+                    <Button Content="Time Clock" Command="{Binding TimeClockCommand}"/>
+
+                    <Label Content="Elapsed Time"/>
+
+                    <dec:StringReadOnlyBox x:Name="ElapsedTimeBox" Width="100" Text="00 00:00:00"/>
+
+				</StackPanel>
+
+            </StatusBar>
             <Grid x:Name="ChartGrid">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
@@ -87,7 +108,6 @@
                     <Button Content="_Refresh" Width="50" Command="{Binding RefreshChartCommand}"/>
 
                     <Button Content="_Edit" Margin="5,0,0,0" Width="50" Command="{Binding EditChartCommand}"/>
-
                 </StackPanel>
             </Grid>
         </DockPanel>

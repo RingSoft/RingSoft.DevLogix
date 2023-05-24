@@ -317,6 +317,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             {
                 _setDirty = false;
                 PunchOut();
+                AppGlobals.MainViewModel.SetupTimer(null);
                 _setDirty = true;
             }));
         }
@@ -778,6 +779,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 if (SaveEntity(timeClock))
                 {
                     Id = timeClock.Id;
+                    AppGlobals.MainViewModel.SetupTimer(timeClock);
                 }
 
                 var context = AppGlobals.DataRepository.GetDataContext();

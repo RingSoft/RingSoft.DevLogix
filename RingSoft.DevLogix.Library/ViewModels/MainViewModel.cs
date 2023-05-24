@@ -1,7 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Timers;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using RingSoft.DataEntryControls.Engine;
+using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DevLogix.DataAccess;
 using RingSoft.DevLogix.DataAccess.Model;
@@ -45,11 +50,81 @@ namespace RingSoft.DevLogix.Library.ViewModels
         object GetOwnerWindow();
 
         void ShowHistoryPrintFilterWindow(HistoryPrintFilterCallBack callBack);
+
+        void SetElapsedTime();
+
+        void ShowTimeClock(bool show = true);
     }
 
-    public class MainViewModel
+    public class MainViewModel : INotifyPropertyChanged
     {
+        private string _organization;
+
+        public string Organization
+        {
+            get => _organization;
+            set
+            {
+                if (_organization == value)
+                {
+                    return;
+                }
+                _organization = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private AutoFillSetup _userAutoFillSetup;
+
+        public AutoFillSetup UserAutoFillSetup
+        {
+            get => _userAutoFillSetup;
+            set
+            {
+                if (_userAutoFillSetup == value)
+                {
+                    return;
+                }
+
+                _userAutoFillSetup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private AutoFillValue _userAutoFillValue;
+
+        public AutoFillValue UserAutoFillValue
+        {
+            get => _userAutoFillValue;
+            set
+            {
+                if (_userAutoFillValue == value)
+                {
+                    return;
+                }
+
+                _userAutoFillValue = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _elapsedTime;
+
+        public string ElapsedTime
+        {
+            get => _elapsedTime;
+            set
+            {
+                if (_elapsedTime == value)
+                {
+                    return;
+                }
+                _elapsedTime = value;
+            }
+        }
+
         public IMainView MainView { get; set; }
+        public int ActiveTimeClockId { get; set; }
 
         public List<UserMaintenanceViewModel> UserViewModels { get; } = new List<UserMaintenanceViewModel>();
         public List<ProjectMaintenanceViewModel> ProjectViewModels { get; } = new List<ProjectMaintenanceViewModel>();
@@ -65,10 +140,23 @@ namespace RingSoft.DevLogix.Library.ViewModels
         public RelayCommand RefreshChartCommand { get; }
         public RelayCommand EditChartCommand { get; }
         public RelayCommand ChangeOrgCommand { get; }
+        public RelayCommand TimeClockCommand { get; }
         public ChartBarsViewModel ChartViewModel { get; private set; }
-        
+
+        private Timer _timer = new Timer();
+        private DateTime? _startDate;
+
         public MainViewModel()
         {
+            _timer.Interval = 1000;
+            _timer.Elapsed += (sender, args) =>
+            {
+                if (_startDate != null)
+                {
+                    SetElapsedTime(GetElapsedTime());
+                }
+            };
+            _timer.Enabled = true;
             ExitCommand = new RelayCommand(Exit);
             LogoutCommand = new RelayCommand(Logout);
 
@@ -80,9 +168,41 @@ namespace RingSoft.DevLogix.Library.ViewModels
             {
                 SetChartId(0);
                 AppGlobals.LoggedInOrganization = null;
+                SetupTimer(null);
+
                 Initialize(MainView);
             }));
+            TimeClockCommand = new RelayCommand((() =>
+            {
+                var timeClock = new TimeClock()
+                {
+                    Id = ActiveTimeClockId,
+                };
+                var primaryKey = AppGlobals.LookupContext.TimeClocks.GetPrimaryKeyValueFromEntity(timeClock);
+                if (primaryKey.IsValid)
+                {
+                    AppGlobals.LookupContext.TimeClockLookup.ShowAddOnTheFlyWindow(primaryKey);
+                }
+            }));
         }
+
+        private string GetElapsedTime()
+        {
+            var result = string.Empty;
+
+            var duration = DateTime.Now.Subtract(_startDate.Value.ToLocalTime());
+            result = $"{duration.Days.ToString("00")} {duration.ToString("hh\\:mm\\:ss")}";
+
+            return result;
+        }
+
+
+        private void SetElapsedTime(string elapsedTime)
+        {
+            ElapsedTime = elapsedTime;
+            MainView.SetElapsedTime();
+        }
+
         public void Initialize(IMainView view)
         {
             MainView = view;
@@ -94,6 +214,11 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
             if (loadVm)
             {
+                if (UserAutoFillSetup == null)
+                {
+                    UserAutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.UserLookup);
+                }
+
                 var query = AppGlobals.DataRepository.GetDataContext().GetTable<User>();
                 if (!query.Any())
                 {
@@ -111,7 +236,12 @@ namespace RingSoft.DevLogix.Library.ViewModels
                 if (query.Any())
                 {
                     loadVm = view.LoginUser();
-                    if (!loadVm)
+                    if (loadVm)
+                    {
+                        UserAutoFillValue = DbLookup.ExtensionMethods.GetAutoFillValue(AppGlobals.LoggedInUser);
+                        SetUserTimer();
+                    }
+                    else
                     {
                         AppGlobals.LoggedInOrganization = null;
                         Initialize(view);
@@ -121,6 +251,19 @@ namespace RingSoft.DevLogix.Library.ViewModels
                 //{
                 //    MainView.MakeMenu();
                 //}
+            }
+        }
+
+        private void SetUserTimer()
+        {
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var table = context.GetTable<TimeClock>();
+            var timeClock = table
+                .FirstOrDefault(p => p.UserId == AppGlobals.LoggedInUser.Id
+                                     && p.PunchOutDate == null);
+            if (timeClock != null)
+            {
+                SetupTimer(timeClock);
             }
         }
 
@@ -165,8 +308,11 @@ namespace RingSoft.DevLogix.Library.ViewModels
             }
             if (cont)
             {
+                SetupTimer(null);
+
                 if (MainView.LoginUser())
                 {
+                    SetUserTimer();
                     MainView.MakeMenu();
                 }
             }
@@ -207,6 +353,51 @@ namespace RingSoft.DevLogix.Library.ViewModels
             var primaryKey = AppGlobals.LookupContext.DevLogixCharts.GetPrimaryKeyValueFromEntity(devLogixChart);
             var lookup = AppGlobals.LookupContext.DevLogixChartLookup.Clone();
             lookup.ShowAddOnTheFlyWindow(primaryKey, null, MainView.GetOwnerWindow());
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+            field = value;
+            OnPropertyChanged(propertyName);
+            return true;
+        }
+
+        public void SetupTimer(int timeClockId)
+        {
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var table = context.GetTable<TimeClock>();
+            var timeClock = table.FirstOrDefault(p => p.Id == timeClockId);
+            SetupTimer(timeClock);
+        }
+
+        public void SetupTimer(TimeClock timeClock)
+        {
+            int userId = 0;
+            if (timeClock != null)
+            {
+                userId = timeClock.UserId;
+                ActiveTimeClockId = timeClock.Id;
+            }
+            if (userId == 0)
+            {
+                _startDate = null;
+                MainView.ShowTimeClock(false);
+                ActiveTimeClockId = 0;
+            }
+            else
+            {
+                _startDate = timeClock.PunchInDate;
+                MainView.ShowTimeClock();
+            }
+
         }
     }
 }
