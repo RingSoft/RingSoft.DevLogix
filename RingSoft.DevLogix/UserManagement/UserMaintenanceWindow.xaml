@@ -146,7 +146,7 @@
 
                             <Label Grid.Row="4" Grid.Column="2" Content="Hourly Rate"/>
 
-                            <dec:DecimalEditControl Grid.Row="4" Grid.Column="3" x:Name="HourlyRateControl" HorizontalAlignment="Left" Width="100" FormatType="Currency" Value="{Binding HourlyRate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <dec:DecimalEditControl Grid.Row="4" Grid.Column="3" x:Name="HourlyRateControl" HorizontalAlignment="Left" Width="100" FormatType="Currency" Value="{Binding HourlyRate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MinimumValue="0"/>
 
                             <Label Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Left" Content="Billability"/>
 
