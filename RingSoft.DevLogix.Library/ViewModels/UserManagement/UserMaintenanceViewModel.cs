@@ -981,9 +981,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     e.HeaderRow.StringField15 = AppGlobals.MakeTimeSpent(user.BillableProjectsMinutesSpent);
                     e.HeaderRow.StringField16 = AppGlobals.MakeTimeSpent(user.NonBillableProjectsMinutesSpent);
                     e.HeaderRow.StringField17 = AppGlobals.MakeTimeSpent(user.ErrorsMinutesSpent);
+                    e.HeaderRow.StringField18 = AppGlobals.MakeTimeSpent(user.TestingOutlinesMinutesSpent);
                     e.HeaderRow.NumberField15 = percentSetup.FormatValue(billabilityData.BillableProjects);
                     e.HeaderRow.NumberField16 = percentSetup.FormatValue(billabilityData.NonBillableProjects);
                     e.HeaderRow.NumberField17 = percentSetup.FormatValue(billabilityData.Errors);
+                    e.HeaderRow.NumberField18 = percentSetup.FormatValue(billabilityData.TestingOutlines);
 
                     foreach (var userTimeOff in user.UserTimeOff)
                     {
