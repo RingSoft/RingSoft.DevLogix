@@ -19,6 +19,8 @@
             <Image x:Key="RedAlertImage" Source="/Resources/RedAlert.ico" />
             <Image x:Key="YellowAlertImage" Source="Resources/YellowAlert.ico"/>
             <Image x:Key="GreenAlertImage" Source="Resources/gears.ico"/>
+            <BitmapImage x:Key="ClockImage" UriSource="/Resources/clock.png" />
+            <BitmapImage x:Key="CalculatorImage" UriSource="/Resources/calculator.png" />
 
             <LinearGradientBrush x:Key="WindowBackgroundBrush" StartPoint="0.5,0" EndPoint="0.5,1">
                 <GradientStop Color="Gray" Offset="0"/>

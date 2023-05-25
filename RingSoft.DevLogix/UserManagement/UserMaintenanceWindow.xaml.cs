@@ -17,9 +17,9 @@ namespace RingSoft.DevLogix.UserManagement
 {
     public class UserHeaderControl : DbMaintenanceCustomPanel
     {
-        public Button ClockOutButton { get; set; }
+        public DbMaintenanceButton ClockOutButton { get; set; }
 
-        public Button RecalcButton { get; set; }
+        public DbMaintenanceButton RecalcButton { get; set; }
 
         static UserHeaderControl()
         {
@@ -28,9 +28,9 @@ namespace RingSoft.DevLogix.UserManagement
 
         public override void OnApplyTemplate()
         {
-            ClockOutButton = GetTemplateChild(nameof(ClockOutButton)) as Button;
+            ClockOutButton = GetTemplateChild(nameof(ClockOutButton)) as DbMaintenanceButton;
 
-            RecalcButton = GetTemplateChild(nameof(RecalcButton)) as Button;
+            RecalcButton = GetTemplateChild(nameof(RecalcButton)) as DbMaintenanceButton;
 
             base.OnApplyTemplate();
         }
@@ -60,9 +60,14 @@ namespace RingSoft.DevLogix.UserManagement
             {
                 if (TopHeaderControl.CustomPanel is UserHeaderControl userHeaderControl)
                 {
+                    userHeaderControl.ClockOutButton.ToolTip.HeaderText = "Clock Out";
+                    userHeaderControl.ClockOutButton.ToolTip.DescriptionText = "Clock out for a break or to go home.";
                     userHeaderControl.ClockOutButton.Command = UserMaintenanceViewModel.ClockOutCommand;
 
                     userHeaderControl.RecalcButton.Command = UserMaintenanceViewModel.RecalcCommand;
+                    userHeaderControl.RecalcButton.ToolTip.HeaderText = "Recalculate Billability";
+                    userHeaderControl.RecalcButton.ToolTip.DescriptionText =
+                        "Recalculate the billability values for a range of users.";
 
                     if (!UserMaintenanceViewModel.TableDefinition.HasRight(RightTypes.AllowEdit))
                     {
