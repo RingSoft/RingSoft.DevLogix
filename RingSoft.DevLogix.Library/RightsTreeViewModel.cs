@@ -197,6 +197,7 @@ namespace RingSoft.DevLogix.Library
         private bool? _readOnlyMode;
         private bool _initialized;
         private string _loadedRights;
+        private bool _rightsLoaded;
 
         public ItemRights Rights { get; private set; } = new ItemRights();
 
@@ -204,6 +205,7 @@ namespace RingSoft.DevLogix.Library
 
         public void Initialize(IRightsTreeControl control)
         {
+            _rightsLoaded = false;
             Control = control;
             TreeRoot = new ObservableCollection<TreeViewItem>();
             foreach (var category in Rights.Categories)
@@ -283,6 +285,8 @@ namespace RingSoft.DevLogix.Library
             {
                 LoadRights(_loadedRights);
             }
+
+            _rightsLoaded = true;
         }
 
         public void SetReadOnlyMode(bool readOnlyValue = true)
@@ -319,6 +323,7 @@ namespace RingSoft.DevLogix.Library
                 _loadedRights = rightsString;
                 return;
             }
+            _rightsLoaded = false;
             Rights.LoadRights(rightsString);
             foreach (var rightsRight in Rights.Rights)
             {
@@ -351,11 +356,15 @@ namespace RingSoft.DevLogix.Library
                     }
                 }
             }
+            _rightsLoaded = true;
         }
 
         public void SetDataChanged()
         {
-            Control.SetDataChanged();
+            if (_rightsLoaded)
+            {
+                Control.SetDataChanged();
+            }
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

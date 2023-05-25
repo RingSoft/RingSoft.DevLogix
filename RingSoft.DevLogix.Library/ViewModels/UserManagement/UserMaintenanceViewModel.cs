@@ -478,6 +478,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
             var timeClockLookup = new LookupDefinition<TimeClockLookup, TimeClock>(AppGlobals.LookupContext.TimeClocks);
             timeClockLookup.AddVisibleColumnDefinition(p => p.PunchInDate, p => p.PunchInDate);
+            timeClockLookup.AddVisibleColumnDefinition(p => p.MinutesSpent, p => p.MinutesSpent);
+
             TimeClockLookup = timeClockLookup;
             TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
 
@@ -1000,5 +1002,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
         }
 
+        protected override void OnRecordDirtyChanged(bool newValue)
+        {
+            if (newValue)
+            {
+
+            }
+            base.OnRecordDirtyChanged(newValue);
+        }
     }
 }
