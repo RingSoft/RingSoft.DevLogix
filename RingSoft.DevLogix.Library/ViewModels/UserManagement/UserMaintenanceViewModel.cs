@@ -1002,13 +1002,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
         }
 
-        protected override void OnRecordDirtyChanged(bool newValue)
+        public void RefreshTimeClockLookup()
         {
-            if (newValue)
-            {
-
-            }
-            base.OnRecordDirtyChanged(newValue);
+            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh);
         }
     }
 }

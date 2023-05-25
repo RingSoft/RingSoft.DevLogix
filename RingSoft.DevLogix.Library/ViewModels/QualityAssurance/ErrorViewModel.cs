@@ -437,7 +437,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                     return;
 
                 _timeClockLookupCommand = value;
-                OnPropertyChanged();
+                OnPropertyChanged(null, false);
             }
         }
 
@@ -1122,6 +1122,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         {
             ErrorUserGridManager.RefreshCost(errorUser);
             GetTotals();
+        }
+
+        public void RefreshTimeClockLookup()
+        {
+            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh);
         }
 
         private void GetTotals()

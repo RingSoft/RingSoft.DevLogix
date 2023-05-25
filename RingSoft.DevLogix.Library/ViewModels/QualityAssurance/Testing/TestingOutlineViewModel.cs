@@ -316,7 +316,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
                     return;
 
                 _timeClockLookupCommand = value;
-                OnPropertyChanged();
+                OnPropertyChanged(null, false);
             }
         }
 
@@ -812,5 +812,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             if (ExecuteAddModifyCommand() == DbMaintenanceResults.Success)
                 ErrorLookupCommand = GetLookupCommand(LookupCommands.AddModify);
         }
+
+        public void RefreshTimeClockLookup()
+        {
+            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh);
+        }
+
     }
 }

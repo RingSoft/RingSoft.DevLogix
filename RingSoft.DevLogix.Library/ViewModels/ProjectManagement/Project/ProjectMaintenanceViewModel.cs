@@ -507,6 +507,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             {
                 View = projectView;
             }
+
             AppGlobals.MainViewModel.ProjectViewModels.Add(this);
             RecalcCommand.IsEnabled = TableDefinition.HasRight(RightTypes.AllowEdit);
 
@@ -922,6 +923,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             StatusRow.Minutes = estimatedMinutes - (ActualRow.Minutes + remainingMinutes);
             StatusRow.Cost = estimatedCost - (ActualRow.Cost + remainingCost);
             ProjectTotalsManager.RefreshGrid();
+        }
+
+        public void RefreshTimeClockLookup()
+        {
+            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh);
         }
     }
 }

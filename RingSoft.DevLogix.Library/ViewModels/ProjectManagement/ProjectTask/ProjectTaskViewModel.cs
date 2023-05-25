@@ -312,7 +312,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     return;
 
                 _timeClockLookupCommand = value;
-                OnPropertyChanged();
+                OnPropertyChanged(null, false);
             }
         }
 
@@ -914,5 +914,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
             return true;
         }
+        public void RefreshTimeClockLookup()
+        {
+            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh);
+        }
+
     }
 }

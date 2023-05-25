@@ -12,6 +12,7 @@ using RingSoft.DataEntryControls.Engine;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 using IDbContext = RingSoft.DevLogix.DataAccess.IDbContext;
+using System.Diagnostics.Metrics;
 
 namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 {
@@ -660,6 +661,53 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 }
 
             }
+
+            if (result)
+            {
+                //Peter Ringering - 05/25/2023 11:09:38 AM - E-36
+                var userViewModels = AppGlobals.MainViewModel.UserViewModels
+                    .Where(p => p.Id == entity.UserId);
+                foreach (var userViewModel in userViewModels)
+                {
+                    userViewModel.RefreshTimeClockLookup();
+                }
+                if (entity.ErrorId.HasValue)
+                {
+                    var errorViewModels = AppGlobals.MainViewModel.ErrorViewModels
+                        .Where(p => p.Id == entity.ErrorId);
+                    foreach (var errorViewModel in errorViewModels)
+                    {
+                        errorViewModel.RefreshTimeClockLookup();
+                    }
+                }
+
+                if (entity.ProjectTaskId.HasValue)
+                {
+                    var projectTaskViewModels = AppGlobals.MainViewModel.ProjectTaskViewModels
+                        .Where(p => p.Id == entity.ProjectTaskId.Value);
+                    foreach (var projectTaskViewModel in projectTaskViewModels)
+                    {
+                        projectTaskViewModel.RefreshTimeClockLookup();
+                    }
+                    var projectViewModels = AppGlobals.MainViewModel.ProjectViewModels
+                        .Where(p => projectTask != null && p.Id == projectTask.ProjectId);
+                    foreach (var projectViewModel in projectViewModels)
+                    {
+                        projectViewModel.RefreshTimeClockLookup();
+                    }
+
+                }
+
+                if (entity.TestingOutlineId.HasValue)
+                {
+                    var testingOutlineViewModels = AppGlobals.MainViewModel.TestingOutlineViewModels
+                        .Where(p => p.Id == entity.TestingOutlineId.Value);
+                    foreach (var outlineViewModel in testingOutlineViewModels)
+                    {
+                        outlineViewModel.RefreshTimeClockLookup();
+                    }
+                }
+            }
             return result;
         }
 
@@ -682,7 +730,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 result = context.SaveNoCommitEntity(error, "Saving Error");
             }
 
-            var errorViewModels = AppGlobals.MainViewModel.ErrorViewModels.Where(p => p.Id == error.Id);
+            var errorViewModels = AppGlobals.MainViewModel.ErrorViewModels
+                .Where(p => p.Id == error.Id);
             foreach (var errorViewModel in errorViewModels)
             {
                 errorViewModel.RefreshCost(errorUser);
