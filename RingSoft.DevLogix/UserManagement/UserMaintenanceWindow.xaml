@@ -136,13 +136,13 @@
 
                             <Label Grid.Row="3" Grid.Column="0" Content="Email Address"/>
 
-                            <dec:StringEditControl Grid.Row="3" Grid.Column="1" x:Name="EmailAddressControl" HorizontalAlignment="Left" Text="{Binding EmailAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
+                            <dec:StringEditControl Grid.Row="3" Grid.Column="1" x:Name="EmailAddressControl" HorizontalAlignment="Left" Text="{Binding EmailAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" MaxLength="50"/>
 
                             <TextBlock Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" x:Name="SendEmailControl" Text="Send Email" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"/>
 
                             <Label Grid.Row="4" Grid.Column="0" Content="Phone Number"/>
 
-                            <dec:StringEditControl Grid.Row="4" Grid.Column="1" x:Name="PhoneControl" HorizontalAlignment="Left" Text="{Binding PhoneNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
+                            <dec:StringEditControl Grid.Row="4" Grid.Column="1" x:Name="PhoneControl" HorizontalAlignment="Left" Text="{Binding PhoneNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" MaxLength="50"/>
 
                             <Label Grid.Row="4" Grid.Column="2" Content="Hourly Rate"/>
 

@@ -743,6 +743,7 @@ namespace RingSoft.DevLogix
             var lookupDefinition = AppGlobals.LookupContext.TimeClockLookup.Clone();
             lookupDefinition.WindowClosed += (sender, args) =>
             {
+                //Peter Ringering - 05/25/2023 11:26:03 AM - E-37
                 activeWindow.Activate();
             };
 
@@ -755,7 +756,8 @@ namespace RingSoft.DevLogix
             var activeWindow = LookupControlsGlobals.ActiveWindow;
             timeClockWindow.Closed += (sender, args) =>
             {
-                TimeClockClosed?.Invoke(this, EventArgs.Empty);
+                activeWindow.Activate();
+                //TimeClockClosed?.Invoke(this, EventArgs.Empty);
             };
             timeClockWindow.Owner = activeWindow;
             timeClockWindow.ShowInTaskbar = false;
