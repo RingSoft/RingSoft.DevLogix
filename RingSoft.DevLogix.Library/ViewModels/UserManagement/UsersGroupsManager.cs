@@ -29,13 +29,23 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         public override bool ValidateGrid()
         {
-            var rows = Rows.OfType<GroupsUsersGridRow>();
+            var rows = Rows.OfType<UsersGroupsRow>();
             foreach (var row in rows)
             {
                 if (!row.IsNew)
                 {
                     if (!row.ValidateRow())
                     {
+                        return false;
+                    }
+                    var duplicateRow = rows.LastOrDefault(
+                        p => p.GroupId == row.GroupId);
+                    if (duplicateRow != row)
+                    {
+                        var message = "Duplicate Group detected.  Please correct the value";
+                        var caption = "Validation Failure";
+                        Grid?.GotoCell(duplicateRow, 0);
+                        ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
                         return false;
                     }
                 }

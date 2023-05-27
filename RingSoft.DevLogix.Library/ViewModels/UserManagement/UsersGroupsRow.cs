@@ -1,4 +1,5 @@
-﻿using RingSoft.DataEntryControls.Engine.DataEntryGrid;
+﻿
+using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup;
 using RingSoft.DevLogix.DataAccess.Model;
@@ -14,6 +15,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         public AutoFillSetup AutoFillSetup { get; set; }
 
         public AutoFillValue AutoFillValue { get; set; }
+
+        public int GroupId { get; set; }
 
         public UsersGroupsRow(UsersGroupsManager manager) : base(manager)
         {
@@ -35,12 +38,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             if (value is DataEntryGridAutoFillCellProps autoFillCellProps)
             {
                 AutoFillValue = autoFillCellProps.AutoFillValue;
+                GroupId = AutoFillValue.GetEntity<Group>().Id;
             }
             base.SetCellValue(value);
         }
 
         public override void LoadFromEntity(UsersGroup entity)
         {
+            GroupId = entity.GroupId;
             AutoFillValue =
                 AppGlobals.LookupContext.OnAutoFillTextRequest(AppGlobals.LookupContext.Groups,
                     entity.GroupId.ToString());
