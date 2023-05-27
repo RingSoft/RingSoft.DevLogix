@@ -583,6 +583,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                         break;
                 }
             }
+
+            if (user.Id == AppGlobals.LoggedInUser.Id)
+            {
+                AppGlobals.LoggedInUser.ClockOutReason = user.ClockOutReason;
+                AppGlobals.LoggedInUser.ClockDate = user.ClockDate;
+                AppGlobals.LoggedInUser.OtherClockOutReason = user.OtherClockOutReason;
+            }
         }
 
         protected override void LoadFromEntity(User entity)

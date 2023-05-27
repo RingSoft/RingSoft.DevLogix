@@ -367,7 +367,7 @@ namespace RingSoft.DevLogix
             }
         }
 
-            public bool ChangeOrganization()
+        public bool ChangeOrganization() 
         {
             var loginWindow = new LoginWindow { Owner = this };
 

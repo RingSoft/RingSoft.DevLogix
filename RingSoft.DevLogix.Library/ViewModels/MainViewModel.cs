@@ -183,6 +183,17 @@ namespace RingSoft.DevLogix.Library.ViewModels
             EditChartCommand = new RelayCommand(EditChart);
             ChangeOrgCommand = new RelayCommand((() =>
             {
+                if (AppGlobals.LoggedInUser.ClockOutReason == (byte)ClockOutReasons.ClockedIn)
+                {
+                    var message = "You must clock out in order to continue.";
+                    var caption = "Clock Out";
+                    ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
+                    if (!MainView.PunchOut(true, AppGlobals.LoggedInUser))
+                    {
+                        return;
+                    }
+                }
+
                 SetChartId(0);
                 AppGlobals.LoggedInOrganization = null;
                 SetupTimer(null);
