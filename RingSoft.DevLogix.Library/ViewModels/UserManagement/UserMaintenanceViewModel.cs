@@ -41,8 +41,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         public void RefreshView();
 
-        public void OnValGridFail(DataEntryGridManager dataEntryGridManager);
-
         bool SetupRecalcFilter(LookupDefinitionBase lookupDefinition);
 
         string StartRecalcProcedure(LookupDefinitionBase lookupDefinition);

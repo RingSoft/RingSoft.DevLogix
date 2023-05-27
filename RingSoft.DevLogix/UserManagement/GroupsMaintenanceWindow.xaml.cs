@@ -60,10 +60,5 @@ namespace RingSoft.DevLogix.UserManagement
         {
             RightsTree.ViewModel.Reset();
         }
-
-        public void OnValGridFail(DataEntryGridManager dataEntryGridManager)
-        {
-            LookupControlsGlobals.SelectTab(dataEntryGridManager);
-        }
     }
 }

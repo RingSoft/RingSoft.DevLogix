@@ -167,22 +167,6 @@ namespace RingSoft.DevLogix.UserManagement
             
         }
 
-        public void OnValGridFail(DataEntryGridManager dataEntryGridManager)
-        {
-            LookupControlsGlobals.SelectTab(dataEntryGridManager);
-            //switch (userGrid)
-            //{
-            //    case UserGrids.Groups:
-            //        TabControl.SelectedItem = GroupsTab;
-            //        break;
-            //    case UserGrids.TimeOff:
-            //        TabControl.SelectedItem = TimeOffTab;
-            //        break;
-            //    default:
-            //        throw new ArgumentOutOfRangeException(nameof(userGrid), userGrid, null);
-            //}
-        }
-
         public bool SetupRecalcFilter(LookupDefinitionBase lookupDefinition)
         {
             var genericInput = new GenericReportLookupFilterInput

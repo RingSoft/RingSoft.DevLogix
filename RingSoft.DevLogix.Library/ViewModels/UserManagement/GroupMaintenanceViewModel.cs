@@ -24,8 +24,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         public void LoadRights(string rightsString);
 
         public void ResetRights();
-
-        public void OnValGridFail(DataEntryGridManager dataEntryGridManager);
     }
 
     public class GroupMaintenanceViewModel : DevLogixDbMaintenanceViewModel<Group>

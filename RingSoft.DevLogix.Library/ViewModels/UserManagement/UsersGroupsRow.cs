@@ -18,7 +18,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         public UsersGroupsRow(UsersGroupsManager manager) : base(manager)
         {
             Manager = manager;
-            AutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.GroupLookup)
+            AutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.GroupId))
             {
                 AllowLookupAdd = AppGlobals.LookupContext.Groups.HasRight(RightTypes.AllowAdd),
                 AllowLookupView = AppGlobals.LookupContext.Groups.HasRight(RightTypes.AllowView)
@@ -44,21 +44,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             AutoFillValue =
                 AppGlobals.LookupContext.OnAutoFillTextRequest(AppGlobals.LookupContext.Groups,
                     entity.GroupId.ToString());
-        }
-
-        public override bool ValidateRow()
-        {
-            if (!AutoFillValue.IsValid())
-            {
-                Manager.ViewModel.View.OnValGridFail(Manager);
-
-                var message = "Group contains an invalid value.";
-                var caption = "Validation Fail";
-                ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
-                Manager.Grid?.GotoCell(this, 0);
-                return false;
-            }
-            return true;
         }
 
         public override void SaveToEntity(UsersGroup entity, int rowIndex)

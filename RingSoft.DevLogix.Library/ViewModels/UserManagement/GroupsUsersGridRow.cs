@@ -46,21 +46,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     entity.UserId.ToString());
         }
 
-        public override bool ValidateRow()
-        {
-            if (!AutoFillValue.IsValid())
-            {
-                Manager.ViewModel.View.OnValGridFail(Manager);
-                
-                var message = "User contains an invalid value.";
-                var caption = "Validation Fail";
-                ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
-                Manager.Grid?.GotoCell(this, 0);
-                return false;
-            }
-            return true;
-        }
-
         public override void SaveToEntity(UsersGroup entity, int rowIndex)
         {
             entity.UserId = AppGlobals.LookupContext.Users.GetEntityFromPrimaryKeyValue(AutoFillValue.PrimaryKeyValue)
