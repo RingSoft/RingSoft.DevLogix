@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using RingSoft.App.Interop;
 using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
+using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.EfCore;
 using RingSoft.DbLookup.ModelDefinition;
@@ -24,7 +25,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         public void ResetRights();
 
-        public void OnValGridFail();
+        public void OnValGridFail(DataEntryGridManager dataEntryGridManager);
     }
 
     public class GroupMaintenanceViewModel : DevLogixDbMaintenanceViewModel<Group>

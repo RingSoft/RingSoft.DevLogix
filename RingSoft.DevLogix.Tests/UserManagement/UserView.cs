@@ -1,5 +1,7 @@
-﻿using RingSoft.DbLookup.Lookup;
+﻿using RingSoft.DataEntryControls.Engine.DataEntryGrid;
+using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
+using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels.UserManagement;
 
@@ -16,6 +18,11 @@ namespace RingSoft.DevLogix.Tests.UserManagement
             
         }
 
+        public void HandleAutoFillValFail(DbAutoFillMap autoFillMap)
+        {
+            
+        }
+
         public void ResetViewForNewRecord()
         {
             
@@ -24,6 +31,11 @@ namespace RingSoft.DevLogix.Tests.UserManagement
         public void SetReadOnlyMode(bool readOnlyValue)
         {
             
+        }
+
+        public List<DbAutoFillMap> GetAutoFills()
+        {
+            return new List<DbAutoFillMap>();
         }
 
 
@@ -47,7 +59,7 @@ namespace RingSoft.DevLogix.Tests.UserManagement
             
         }
 
-        public void OnValGridFail(UserGrids userGrid)
+        public void OnValGridFail(DataEntryGridManager dataEntryGridManager)
         {
             
         }

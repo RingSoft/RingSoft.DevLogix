@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Linq;
+using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 
 namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 {
@@ -40,7 +41,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         public void RefreshView();
 
-        public void OnValGridFail(UserGrids userGrid);
+        public void OnValGridFail(DataEntryGridManager dataEntryGridManager);
 
         bool SetupRecalcFilter(LookupDefinitionBase lookupDefinition);
 

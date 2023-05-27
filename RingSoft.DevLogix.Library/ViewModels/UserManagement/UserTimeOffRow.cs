@@ -88,7 +88,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             var caption = "Validation Failure";
             if (StartDateTime == null)
             {
-                Manager.ViewModel.View.OnValGridFail(UserGrids.TimeOff);
+                Manager.ViewModel.View.OnValGridFail(Manager);
                 var message = "Start Date has an invalid value";
                 ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
                 Manager.Grid?.GotoCell(this, (int)UserTimeOffColumns.StartDate);
@@ -97,7 +97,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
             if (EndDateTime == null)
             {
-                Manager.ViewModel.View.OnValGridFail(UserGrids.TimeOff);
+                Manager.ViewModel.View.OnValGridFail(Manager);
                 var message = "End Date has an invalid value";
                 ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
                 Manager.Grid?.GotoCell(this, (int)UserTimeOffColumns.EndDate);
@@ -106,7 +106,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
             if (StartDateTime.Value > EndDateTime.Value)
             {
-                Manager.ViewModel.View.OnValGridFail(UserGrids.TimeOff);
+                Manager.ViewModel.View.OnValGridFail(Manager);
                 var message = "Start Date can not come after End Date";
                 ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
                 Manager.Grid?.GotoCell(this, (int)UserTimeOffColumns.StartDate);
@@ -116,7 +116,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
             if (Description.IsNullOrEmpty())
             {
-                Manager.ViewModel.View.OnValGridFail(UserGrids.TimeOff);
+                Manager.ViewModel.View.OnValGridFail(Manager);
                 var message = "Description has an invalid value";
                 ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
                 Manager.Grid?.GotoCell(this, (int)UserTimeOffColumns.Description);

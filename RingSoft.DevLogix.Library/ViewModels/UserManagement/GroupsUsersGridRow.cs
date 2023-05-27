@@ -50,7 +50,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         {
             if (!AutoFillValue.IsValid())
             {
-                Manager.ViewModel.View.OnValGridFail();
+                Manager.ViewModel.View.OnValGridFail(Manager);
                 
                 var message = "User contains an invalid value.";
                 var caption = "Validation Fail";

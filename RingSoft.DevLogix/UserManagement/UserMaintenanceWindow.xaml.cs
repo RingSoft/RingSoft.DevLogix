@@ -12,6 +12,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 
 namespace RingSoft.DevLogix.UserManagement
 {
@@ -163,17 +164,23 @@ namespace RingSoft.DevLogix.UserManagement
 
         public void OnValGridFail(UserGrids userGrid)
         {
-            switch (userGrid)
-            {
-                case UserGrids.Groups:
-                    TabControl.SelectedItem = GroupsTab;
-                    break;
-                case UserGrids.TimeOff:
-                    TabControl.SelectedItem = TimeOffTab;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(userGrid), userGrid, null);
-            }
+            
+        }
+
+        public void OnValGridFail(DataEntryGridManager dataEntryGridManager)
+        {
+            LookupControlsGlobals.SelectTab(dataEntryGridManager);
+            //switch (userGrid)
+            //{
+            //    case UserGrids.Groups:
+            //        TabControl.SelectedItem = GroupsTab;
+            //        break;
+            //    case UserGrids.TimeOff:
+            //        TabControl.SelectedItem = TimeOffTab;
+            //        break;
+            //    default:
+            //        throw new ArgumentOutOfRangeException(nameof(userGrid), userGrid, null);
+            //}
         }
 
         public bool SetupRecalcFilter(LookupDefinitionBase lookupDefinition)
@@ -219,6 +226,9 @@ namespace RingSoft.DevLogix.UserManagement
             PhoneControl.IsEnabled = !value;
             HourlyRateControl.IsEnabled = false;
             NotesControl.SetReadOnlyMode(value);
+            GroupsGrid.SetReadOnlyMode(true);
+            TimeOffGrid.SetReadOnlyMode(true);
+
         }
 
         public void SetExistRecordFocus(UserGrids userGrid, int rowId)

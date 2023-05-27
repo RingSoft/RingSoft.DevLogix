@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using RingSoft.App.Controls;
+using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.Library.ViewModels.UserManagement;
@@ -60,9 +61,9 @@ namespace RingSoft.DevLogix.UserManagement
             RightsTree.ViewModel.Reset();
         }
 
-        public void OnValGridFail()
+        public void OnValGridFail(DataEntryGridManager dataEntryGridManager)
         {
-            TabControl.SelectedItem = UsersTab;
+            LookupControlsGlobals.SelectTab(dataEntryGridManager);
         }
     }
 }
