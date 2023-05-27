@@ -128,6 +128,12 @@ namespace RingSoft.DevLogix
                 {
                     args.AllowDelete = false;
                 }
+
+                if (!args.TableDefinition.HasRight(RightTypes.AllowAdd))
+                {
+                    args.AllowAdd = false;
+                }
+
             };
 
             AppGlobals.LookupContext.GetUserAutoFillEvent += (sender, fill) =>

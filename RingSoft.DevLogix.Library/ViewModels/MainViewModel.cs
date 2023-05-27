@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Timers;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Org.BouncyCastle.Security.Certificates;
 using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup.AutoFill;
@@ -185,12 +186,15 @@ namespace RingSoft.DevLogix.Library.ViewModels
             {
                 if (AppGlobals.LoggedInUser.ClockOutReason == (byte)ClockOutReasons.ClockedIn)
                 {
-                    var message = "You must clock out in order to continue.";
+                    var message = "Do you wish to clock out?";
                     var caption = "Clock Out";
-                    ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
-                    if (!MainView.PunchOut(true, AppGlobals.LoggedInUser))
+                    if (ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, caption) ==
+                        MessageBoxButtonsResult.Yes)
                     {
-                        return;
+                        if (!MainView.PunchOut(true, AppGlobals.LoggedInUser))
+                        {
+                            return;
+                        }
                     }
                 }
 
@@ -344,6 +348,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
                 if (MainView.LoginUser())
                 {
+                    UserAutoFillValue = DbLookup.ExtensionMethods.GetAutoFillValue(AppGlobals.LoggedInUser);
                     SetUserTimer();
                     MainView.MakeMenu();
                 }
@@ -440,6 +445,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
             var description = enumTranslation.TypeTranslations
                 .FirstOrDefault(p => p.NumericValue == platform).TextValue;
             DbPlatform = description;
+            UserAutoFillValue = null;
         }
     }
 }
