@@ -364,12 +364,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
             var errorLookup = new LookupDefinition<ErrorLookup, Error>(AppGlobals.LookupContext.Errors);
             errorLookup.AddVisibleColumnDefinition(p => p.ErrorId
-                , "Error ID"
-                , p => p.ErrorId, 30);
+                , p => p.ErrorId);
             errorLookup.Include(p => p.FoundByUser)
                 .AddVisibleColumnDefinition(p => p.User
-                    , "Found By"
-                    , p => p.Name, 70);
+                    ,p => p.Name);
+            errorLookup.Include(p => p.ErrorStatus)
+                .AddVisibleColumnDefinition(p => p.Status, p => p.Description);
+
+            errorLookup.AddVisibleColumnDefinition(p => p.Date, p => p.ErrorDate);
+
             ErrorLookup = errorLookup;
 
             var timeClockLookup = new LookupDefinition<TimeClockLookup, TimeClock>(AppGlobals.LookupContext.TimeClocks);

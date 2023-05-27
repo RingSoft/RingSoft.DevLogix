@@ -228,6 +228,10 @@
 
                                 <lc:LookupColumn PropertyName="{lc:NameOf User, Type={x:Type lm:ErrorLookup}}" Header="Found By" Width="200"/>
 
+                                <lc:LookupColumn PropertyName="{lc:NameOf Status, Type={x:Type lm:ErrorLookup}}" Header="Status" Width="150"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf Date, Type={x:Type lm:ErrorLookup}}" Header="Date" Width="200"/>
+
                             </lc:LookupControl.LookupColumns>
 
                         </lc:LookupControl>
