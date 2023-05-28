@@ -404,10 +404,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         public EnumFieldTranslation ClockReasonFieldTranslation;
 
+        public int MasterUserId { get; private set; }
+
+        public bool MasterMode { get; private set; }
+        
         private int _rowFocusId = -1;
 
         public UserMaintenanceViewModel()
         {
+            SetMasterUserId();
             ClockReasonFieldTranslation = new EnumFieldTranslation();
             ClockReasonFieldTranslation.LoadFromEnum<ClockOutReasons>();
 
@@ -485,6 +490,17 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             PrintProcessingHeader += UserMaintenanceViewModel_PrintProcessingHeader;
         }
 
+        private void SetMasterUserId()
+        {
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var masterUser = context.GetTable<User>().FirstOrDefault();
+            if (masterUser != null)
+            {
+                MasterUserId = masterUser.Id;
+            }
+
+        }
+
         protected override void Initialize()
         {
             View = base.View as IUserView;
@@ -522,6 +538,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         protected override User PopulatePrimaryKeyControls(User newEntity, PrimaryKeyValue primaryKeyValue)
         {
+            SetMasterMode(newEntity);
             IQueryable<User> query = AppGlobals.DataRepository.GetDataContext().GetTable<User>();
 
             var result = query
@@ -566,6 +583,18 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             return result;
         }
 
+        private void SetMasterMode(User newEntity)
+        {
+            if (MasterUserId == newEntity.Id || MasterUserId == 0)
+            {
+                MasterMode = true;
+            }
+            else
+            {
+                MasterMode = false;
+            }
+        }
+
         private void PopulateClockReason(User user)
         {
             var clockReason =
@@ -584,7 +613,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 }
             }
 
-            if (user.Id == AppGlobals.LoggedInUser.Id)
+            if (AppGlobals.LoggedInUser != null && user.Id == AppGlobals.LoggedInUser.Id)
             {
                 AppGlobals.LoggedInUser.ClockOutReason = user.ClockOutReason;
                 AppGlobals.LoggedInUser.ClockDate = user.ClockDate;
@@ -716,7 +745,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             ClockDateTime = null;
             ClockReason = string.Empty;
             TimeOffGridManager.SetupForNewRecord();
-
+            SetMasterUserId();
+            MasterMode = MasterUserId == 0;
+            View.RefreshView();
             SetBillability(new User());
         }
 
@@ -792,10 +823,17 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         public override DbMaintenanceResults DoDelete(bool unitTestMode = false)
         {
-            if (AppGlobals.LoggedInUser != null && AppGlobals.LoggedInUser.Id == Id)
+            var caption = "Delete Not Allowed";
+            //if (AppGlobals.LoggedInUser != null && AppGlobals.LoggedInUser.Id == Id)
+            //{
+            //    var message = "You cannot delete the logged in user.";
+            //    ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
+            //    return DbMaintenanceResults.ValidationError;
+            //}
+
+            if (MasterMode)
             {
-                var message = "You cannot delete the logged in user.";
-                var caption = "Delete Not Allowed";
+                var message = "You are not allowed to delete the master user.";
                 ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
                 return DbMaintenanceResults.ValidationError;
             }

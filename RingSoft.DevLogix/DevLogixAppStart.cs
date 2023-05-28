@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using RingSoft.App.Controls;
 using RingSoft.App.Library;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.WPF;
 using RingSoft.DataEntryControls.WPF.DataEntryGrid.EditingControlHost;
 using RingSoft.DbLookup.AutoFill;
@@ -11,6 +12,7 @@ using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Controls.WPF.AdvancedFind;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition;
+using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.ProjectManagement;
@@ -124,9 +126,39 @@ namespace RingSoft.DevLogix
                     args.AllowEdit = false;
                 }
 
-                if (!args.TableDefinition.HasRight(RightTypes.AllowDelete))
+                if (args.DeleteMode)
                 {
-                    args.AllowDelete = false;
+                    if (!args.TableDefinition.HasRight(RightTypes.AllowDelete))
+                    {
+                        args.AllowDelete = false;
+                    }
+
+                    if (args.LookupDefinition != null && args.LookupDefinition.TableDefinition == AppGlobals.LookupContext.Users)
+                    {
+                        var lookupToCheck = args.LookupDefinition.Clone();
+                        var context = AppGlobals.DataRepository.GetDataContext();
+                        var table = context.GetTable<User>();
+                        var masterUser = table.FirstOrDefault();
+                        if (masterUser != null)
+                        {
+                            var field = AppGlobals.LookupContext.Users
+                                .GetFieldDefinition(p => p.Id);
+                            lookupToCheck.FilterDefinition.AddFixedFilter(field, Conditions.Equals, masterUser.Id);
+                            var lookupUi = new LookupUserInterface()
+                            {
+                                PageSize = 10,
+                            };
+                            var lookupData = new LookupDataBase(lookupToCheck, lookupUi);
+                            var count = lookupData.GetRecordCountWait();
+                            if (count > 0)
+                            {
+                                args.AllowDelete = false;
+                                var message = $"Deleting the master user '{masterUser.Name}' is not allowed.";
+                                var caption = "Delete Denied!";
+                                ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
+                            }
+                        }
+                    }
                 }
 
                 if (!args.TableDefinition.HasRight(RightTypes.AllowAdd))

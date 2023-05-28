@@ -149,7 +149,14 @@ namespace RingSoft.DevLogix.UserManagement
                 }
             }
 
-            GroupsTab.Visibility = !AppGlobals.LookupContext.Groups.HasRight(RightTypes.AllowView) ? Visibility.Collapsed : Visibility.Visible;
+            SetRightsVisibility();
+        }
+
+        private void SetRightsVisibility()
+        {
+            GroupsTab.Visibility = !AppGlobals.LookupContext.Groups.HasRight(RightTypes.AllowView)
+                ? Visibility.Collapsed
+                : Visibility.Visible;
 
             if (UserMaintenanceViewModel.TableDefinition.HasRight(RightTypes.AllowEdit))
             {
@@ -159,7 +166,7 @@ namespace RingSoft.DevLogix.UserManagement
             {
                 RightsTab.Visibility = Visibility.Collapsed;
             }
-
+            SetMasterUserMode(LocalViewModel.MasterMode);
         }
 
         public void OnValGridFail(UserGrids userGrid)
@@ -218,6 +225,15 @@ namespace RingSoft.DevLogix.UserManagement
         public void SetExistRecordFocus(UserGrids userGrid, int rowId)
         {
             _timeOffRowFocus = rowId;
+        }
+
+        public void SetMasterUserMode(bool value = true)
+        {
+            if (value)
+            {
+                RightsTab.Visibility = Visibility.Collapsed;
+                GroupsTab.Visibility = Visibility.Collapsed;
+            }
         }
 
 

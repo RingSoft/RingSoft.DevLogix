@@ -88,5 +88,10 @@ namespace RingSoft.DevLogix.Tests.UserManagement
         {
             
         }
+
+        public void SetMasterUserMode(bool value = true)
+        {
+            
+        }
     }
 }
