@@ -610,6 +610,7 @@ namespace RingSoft.DevLogix.DataAccess
             TestingOutlines.PriorityLevel = 300;
             TestingOutlines.GetFieldDefinition(p => p.DueDate).HasDateType(DbDateTypes.DateTime).DoConvertToLocalTime(true);
             TestingOutlines.GetFieldDefinition(p => p.Notes).IsMemo();
+            TestingOutlines.GetFieldDefinition(p => p.PercentComplete).HasDecimalFieldType(DecimalFieldTypes.Percent);
 
             TestingOutlineDetails.PriorityLevel = 500;
 
