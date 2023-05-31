@@ -28,13 +28,11 @@ namespace RingSoft.DevLogix.DataAccess
 
         public UserAutoFill UserAutoFill { get; set; }
     }
-    public class DevLogixLookupContext : LookupContext, IAdvancedFindLookupContext
+    public class DevLogixLookupContext : LookupContext
     {
         public const int TimeSpentHostId = 100;
         public override DbDataProcessor DataProcessor => _dbDataProcessor;
         protected override DbContext DbContext => _dbContext;
-        public LookupContextBase Context { get; }
-        public TableDefinition<RecordLock> RecordLocks { get; set; }
 
         public TableDefinition<SystemMaster> SystemMaster { get; set; }
         public TableDefinition<DevLogixChart> DevLogixCharts { get; set; }
@@ -78,10 +76,6 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<ProjectMaterialHistory> ProjectMaterialHistory { get; set; }
         public TableDefinition<ProjectTaskDependency> ProjectTaskDependency { get; set; }
 
-        public TableDefinition<AdvancedFind> AdvancedFinds { get; set; }
-        public TableDefinition<AdvancedFindColumn> AdvancedFindColumns { get; set; }
-        public TableDefinition<AdvancedFindFilter> AdvancedFindFilters { get; set; }
-
         public LookupDefinition<DevLogixChartLookup, DevLogixChart> DevLogixChartLookup { get; set; }
         public LookupDefinition<SystemPreferencesLookup, SystemPreferences> SystemPreferencesLookup { get; set; }
         public LookupDefinition<UserLookup, User> UserLookup { get; set; }
@@ -120,9 +114,6 @@ namespace RingSoft.DevLogix.DataAccess
         public LookupDefinition<ProjectMaterialHistoryLookup, ProjectMaterialHistory> ProjectMaterialHistoryLookup { get; set; }
         public LookupDefinition<ProjectTaskDependencyLookup, ProjectTaskDependency> ProjectTaskDependencyLookup { get; set; }
 
-        public LookupDefinition<AdvancedFindLookup, AdvancedFind> AdvancedFindLookup { get; set; }
-        public LookupDefinition<RecordLockingLookup, RecordLock> RecordLockingLookup { get; set; }
-
         public SqliteDataProcessor SqliteDataProcessor { get; }
         public SqlServerDataProcessor SqlServerDataProcessor { get; }
 
@@ -159,16 +150,16 @@ namespace RingSoft.DevLogix.DataAccess
         {
             dbContext.SetLookupContext(this);
             _dbContext = dbContext.DbContext;
-            SystemGlobals.AdvancedFindLookupContext = this;
+            //SystemGlobals.AdvancedFindLookupContext = this;
 
             SetProcessor(dbPlatform);
             if (_initialized)
             {
                 return;
             }
-            var configuration = new AdvancedFindLookupConfiguration(SystemGlobals.AdvancedFindLookupContext);
-            configuration.InitializeModel();
-            configuration.ConfigureLookups();
+            //var configuration = new AdvancedFindLookupConfiguration(SystemGlobals.AdvancedFindLookupContext);
+            //configuration.InitializeModel();
+            //configuration.ConfigureLookups();
             Initialize();
             _initialized = true;
         }
