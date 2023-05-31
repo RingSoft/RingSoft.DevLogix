@@ -15,7 +15,7 @@ using IDbContext = RingSoft.DbLookup.IDbContext;
 
 namespace RingSoft.DevLogix.SqlServer
 {
-    public class DevLogixSqlServerDbContext : DbContext, IDevLogixDbContext
+    public class DevLogixSqlServerDbContext : DbContextEfCore, IDevLogixDbContext
     {
         public DbSet<AdvancedFind> AdvancedFinds { get; set; }
         public DbSet<AdvancedFindColumn> AdvancedFindColumns { get; set; }
@@ -87,7 +87,7 @@ namespace RingSoft.DevLogix.SqlServer
             return this;
         }
 
-        public IAdvancedFindDbContextEfCore GetNewDbContext()
+        public override IAdvancedFindDbContextEfCore GetNewDbContext()
         {
             return new DevLogixSqlServerDbContext();
         }
@@ -124,54 +124,54 @@ namespace RingSoft.DevLogix.SqlServer
             DbConstants.ConstantGenerator = new SqlServerDbConstants();
         }
 
-        public bool SaveNoCommitEntity<TEntity>(TEntity entity, string message) where TEntity : class
-        {
-            return DataAccessGlobals.SaveNoCommitEntity(entity, message);
-        }
+        //public bool SaveNoCommitEntity<TEntity>(TEntity entity, string message) where TEntity : class
+        //{
+        //    return DataAccessGlobals.SaveNoCommitEntity(entity, message);
+        //}
 
-        public bool SaveEntity<TEntity>(TEntity entity, string message) where TEntity : class
-        {
-            return DataAccessGlobals.SaveEntity(entity, message);
-        }
+        //public bool SaveEntity<TEntity>(TEntity entity, string message) where TEntity : class
+        //{
+        //    return DataAccessGlobals.SaveEntity(entity, message);
+        //}
 
-        public bool DeleteEntity<TEntity>(TEntity entity, string message) where TEntity : class
-        {
-            return DataAccessGlobals.DeleteEntity(entity, message);
-        }
+        //public bool DeleteEntity<TEntity>(TEntity entity, string message) where TEntity : class
+        //{
+        //    return DataAccessGlobals.DeleteEntity(entity, message);
+        //}
 
-        public bool DeleteNoCommitEntity<TEntity>(TEntity entity, string message) where TEntity : class
-        {
-            return DataAccessGlobals.DeleteNoCommitEntity(entity, message);
-        }
+        //public bool DeleteNoCommitEntity<TEntity>(TEntity entity, string message) where TEntity : class
+        //{
+        //    return DataAccessGlobals.DeleteNoCommitEntity(entity, message);
+        //}
 
-        public bool AddNewNoCommitEntity<TEntity>(TEntity entity, string message) where TEntity : class
-        {
-            return DataAccessGlobals.AddNewNoCommitEntity(entity, message);
-        }
+        //public bool AddNewNoCommitEntity<TEntity>(TEntity entity, string message) where TEntity : class
+        //{
+        //    return DataAccessGlobals.AddNewNoCommitEntity(entity, message);
+        //}
 
-        public bool Commit(string message)
-        {
-            return DataAccessGlobals.Commit(message);
-        }
+        //public bool Commit(string message)
+        //{
+        //    return DataAccessGlobals.Commit(message);
+        //}
 
-        public void RemoveRange<TEntity>(IEnumerable<TEntity> listToRemove) where TEntity : class
-        {
-            DataAccessGlobals.RemoveRange(listToRemove);
-        }
+        //public void RemoveRange<TEntity>(IEnumerable<TEntity> listToRemove) where TEntity : class
+        //{
+        //    DataAccessGlobals.RemoveRange(listToRemove);
+        //}
 
-        public void AddRange<TEntity>(List<TEntity> listToAdd) where TEntity : class
-        {
-            DataAccessGlobals.AddRange(listToAdd);
-        }
+        //public void AddRange<TEntity>(List<TEntity> listToAdd) where TEntity : class
+        //{
+        //    DataAccessGlobals.AddRange(listToAdd);
+        //}
 
-        IQueryable<TEntity> DataAccess.IDbContext.GetTable<TEntity>()
-        {
-            return Set<TEntity>();
-        }
+        //IQueryable<TEntity> DataAccess.IDbContext.GetTable<TEntity>()
+        //{
+        //    return Set<TEntity>();
+        //}
 
-        IQueryable<TEntity> IDbContext.GetTable<TEntity>()
-        {
-            return Set<TEntity>();
-        }
+        //IQueryable<TEntity> IDbContext.GetTable<TEntity>()
+        //{
+        //    return Set<TEntity>();
+        //}
     }
 }
