@@ -866,7 +866,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             var context = AppGlobals.DataRepository.GetDataContext();
             var query = context.GetTable<User>();
             var lookupUi = new LookupUserInterface { PageSize = 10 };
-            var lookupData = AppGlobals.DataRepository.GetLookupDataBase<User>(lookupToFilter, lookupUi);
+            var lookupData = SystemGlobals.DataRepository.GetDataContext().GetLookupDataBase<User>(lookupToFilter, lookupUi);
             var usersToProcess = lookupData.GetRecordCountWait();
             var userIndex = 1;
             DbDataProcessor.DontDisplayExceptions = true;

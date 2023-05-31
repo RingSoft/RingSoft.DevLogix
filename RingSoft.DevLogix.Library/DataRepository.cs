@@ -16,11 +16,6 @@ namespace RingSoft.DevLogix.Library
             return AppGlobals.GetNewDbContext();
         }
 
-        public ILookupDataBase GetLookupDataBase<TEntity>(LookupDefinitionBase lookupDefinition, LookupUserInterface lookupUi) where TEntity : class, new()
-        {
-            return new LookupDataBase(lookupDefinition, lookupUi);
-        }
-
         DbLookup.IDbContext DbLookup.IDataRepository.GetDataContext()
         {
             return AppGlobals.GetNewDbContext();
