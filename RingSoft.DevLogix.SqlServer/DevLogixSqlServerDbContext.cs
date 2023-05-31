@@ -17,9 +17,9 @@ namespace RingSoft.DevLogix.SqlServer
 {
     public class DevLogixSqlServerDbContext : DbContextEfCore, IDevLogixDbContext
     {
-        public DbSet<AdvancedFind> AdvancedFinds { get; set; }
-        public DbSet<AdvancedFindColumn> AdvancedFindColumns { get; set; }
-        public DbSet<AdvancedFindFilter> AdvancedFindFilters { get; set; }
+        //public DbSet<AdvancedFind> AdvancedFinds { get; set; }
+        //public DbSet<AdvancedFindColumn> AdvancedFindColumns { get; set; }
+        //public DbSet<AdvancedFindFilter> AdvancedFindFilters { get; set; }
         public DbContext DbContext => this;
         public DbSet<SystemMaster> SystemMaster { get; set; }
         public DbSet<DevLogixChart> DevLogixCharts { get; set; }
@@ -92,7 +92,7 @@ namespace RingSoft.DevLogix.SqlServer
             return new DevLogixSqlServerDbContext();
         }
 
-        public DbSet<RecordLock> RecordLocks { get; set; }
+        //public DbSet<RecordLock> RecordLocks { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
