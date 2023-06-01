@@ -67,10 +67,10 @@ namespace RingSoft.DevLogix.SqlServer
         public DevLogixSqlServerDbContext()
         {
             DbConstants.ConstantGenerator = new SqlServerDbConstants();
-            EfCoreGlobals.DbAdvancedFindContextCore = this;
-            var processor = new AdvancedFindDataProcessorEfCore();
-            SystemGlobals.AdvancedFindDbProcessor = processor;
-            SystemGlobals.DataRepository = processor;
+            //EfCoreGlobals.DbAdvancedFindContextCore = this;
+            //var processor = new AdvancedFindDataProcessorEfCore();
+            //SystemGlobals.AdvancedFindDbProcessor = processor;
+            //SystemGlobals.DataRepository = processor;
 
             DataAccessGlobals.DbContext = this;
         }
@@ -82,10 +82,10 @@ namespace RingSoft.DevLogix.SqlServer
 
         }
 
-        public DbContext GetDbContextEf()
-        {
-            return this;
-        }
+        //public DbContext GetDbContextEf()
+        //{
+        //    return this;
+        //}
 
         public override IAdvancedFindDbContextEfCore GetNewDbContext()
         {
