@@ -6,7 +6,7 @@ using RingSoft.DbMaintenance;
 
 namespace RingSoft.DevLogix.Library
 {
-    public abstract class DevLogixDbMaintenanceViewModel<TEntity> : AppDbMaintenanceViewModel<TEntity> where TEntity : new()
+    public abstract class DevLogixDbMaintenanceViewModel<TEntity> : AppDbMaintenanceViewModel<TEntity> where TEntity : class, new()
     {
         public virtual bool SetReadOnlyMode { get; } = true;
 
