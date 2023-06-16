@@ -19,6 +19,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
+using System.Windows.Input;
 using RingSoft.DevLogix.DataAccess;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 using Error = RingSoft.DevLogix.DataAccess.Model.Error;
@@ -77,6 +78,17 @@ namespace RingSoft.DevLogix
             Closing += (sender, args) =>
             {
                 _isActive = false;
+            };
+
+            KeyDown += (sender, args) =>
+            {
+                if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+                {
+                    if (args.Key == Key.C)
+                    {
+                        PunchOut(true, AppGlobals.LoggedInUser);
+                    }
+                }
             };
             //var bars = RedrawBars();
             //var barPlot = WpfPlot.Plot.AddBarSeries(bars);
