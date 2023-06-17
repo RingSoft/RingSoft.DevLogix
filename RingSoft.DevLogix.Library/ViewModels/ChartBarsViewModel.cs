@@ -19,7 +19,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
         void UpdateBar(ChartBarViewModel bar);
     }
 
-    public class ChartBarViewModel
+    public class ChartBarViewModel : ILookupControl
     {
         public ChartBarsViewModel MainViewModel { get; private set; }
 
@@ -29,7 +29,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         public DevLogixChartBar ChartBar { get; private set; }
 
-        public LookupDataBase LookupData { get; private set; }
+        public LookupDataMauiBase LookupData { get; private set; }
 
         public int Count { get; private set; }
 
@@ -48,7 +48,8 @@ namespace RingSoft.DevLogix.Library.ViewModels
                 PageSize = 10,
                 SearchType = LookupSearchTypes.Equals
             };
-            LookupData = new LookupDataBase(LookupDefinition, lookupControl);
+            LookupData = LookupDefinition.TableDefinition.LookupDefinition.GetLookupDataMaui(LookupDefinition, false);
+            LookupData.SetParentControls(this);
 
             LookupRefresher.SetAlertLevelEvent += (sender, args) =>
             {
@@ -66,7 +67,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         private void GetRecordCount()
         {
-            Count = LookupData.GetRecordCountWait();
+            Count = LookupData.GetRecordCount();
             if (LookupRefresher.RefreshRate != RefreshRate.None)
             {
                 LookupRefresher.UpdateRecordCount(Count);
@@ -88,6 +89,15 @@ namespace RingSoft.DevLogix.Library.ViewModels
                 MainViewModel.View.RefreshChart();
             };
             advFindLookup.ShowAddOnTheFlyWindow(primaryKey, null, ownerWindow);
+        }
+
+        public int PageSize => 1;
+        public LookupSearchTypes SearchType => LookupSearchTypes.Equals;
+        public string SearchText => string.Empty;
+        public int SelectedIndex => 0;
+        public void SetLookupIndex(int index)
+        {
+            
         }
     }
     public class ChartBarsViewModel : INotifyPropertyChanged

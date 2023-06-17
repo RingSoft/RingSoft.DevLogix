@@ -239,11 +239,11 @@ namespace RingSoft.DevLogix.DataAccess
             ProductLookup.AddVisibleColumnDefinition(p => p.Description, "Description", p => p.Description, 100);
             Products.HasLookupDefinition(ProductLookup);
 
-            ProductVersionLookup = MakeProductVersionLookupDefinition();
+            //ProductVersionLookup = MakeProductVersionLookupDefinition();
             //ProductVersionLookup.Include(p => p.Product)
             //    .AddVisibleColumnDefinition(p => p.Product, "Product", p => p.Description, 50);
 
-            ProductVersions.HasLookupDefinition(ProductVersionLookup);
+            //ProductVersions.HasLookupDefinition(ProductVersionLookup);
 
             ProductVersionDepartmentLookup =
                 new LookupDefinition<ProductVersionDepartmentLookup, ProductVersionDepartment>(
@@ -440,49 +440,49 @@ namespace RingSoft.DevLogix.DataAccess
             ProjectTaskDependency.HasLookupDefinition(ProjectTaskDependencyLookup);
         }
 
-        public LookupDefinition<ProductVersionLookup, ProductVersion> MakeProductVersionLookupDefinition()
-        {
-            var result = new LookupDefinition<ProductVersionLookup, ProductVersion>(ProductVersions);
+        //public LookupDefinition<ProductVersionLookup, ProductVersion> MakeProductVersionLookupDefinition()
+        //{
+        //    var result = new LookupDefinition<ProductVersionLookup, ProductVersion>(ProductVersions);
 
-            result.AddVisibleColumnDefinition(p => p.Description, "Version", p => p.Description, 35);
+        //    result.AddVisibleColumnDefinition(p => p.Description, "Version", p => p.Description, 35);
 
-            var tableDefinition = ProductVersions;
-            var query = new SelectQuery(tableDefinition.TableName);
-            foreach (var fieldDefinition in tableDefinition.FieldDefinitions)
-            {
-                query.AddSelectColumn(fieldDefinition.FieldName);
-            }
-            //query.AddSelectColumn(tableDefinition.GetFieldDefinition(p => p.Id).FieldName);
-            //query.AddSelectColumn(tableDefinition.GetFieldDefinition(p => p.ProductId).FieldName);
-            //query.AddSelectColumn(tableDefinition.GetFieldDefinition(p => p.Description).FieldName);
-            query.AddSelectFormulaColumn("VersionDate", MakeVersionDateFormula());
-            query.AddSelectFormulaColumn("MaxDepartment", MakeMaxDepartmentFormula());
+        //    var tableDefinition = ProductVersions;
+        //    var query = new SelectQuery(tableDefinition.TableName);
+        //    foreach (var fieldDefinition in tableDefinition.FieldDefinitions)
+        //    {
+        //        query.AddSelectColumn(fieldDefinition.FieldName);
+        //    }
+        //    //query.AddSelectColumn(tableDefinition.GetFieldDefinition(p => p.Id).FieldName);
+        //    //query.AddSelectColumn(tableDefinition.GetFieldDefinition(p => p.ProductId).FieldName);
+        //    //query.AddSelectColumn(tableDefinition.GetFieldDefinition(p => p.Description).FieldName);
+        //    query.AddSelectFormulaColumn("VersionDate", MakeVersionDateFormula());
+        //    query.AddSelectFormulaColumn("MaxDepartment", MakeMaxDepartmentFormula());
 
-            var sql = DataProcessor.SqlGenerator.GenerateSelectStatement(query);
-            result.HasFromFormula(sql);
+        //    var sql = DataProcessor.SqlGenerator.GenerateSelectStatement(query);
+        //    result.HasFromFormula(sql);
 
-            var column = result.AddVisibleColumnDefinition(p => p.VersionDate
-                , "VersionDate", "");
-            column.HasDateType(DbDateTypes.DateTime)
-                .HasDateFormatString(string.Empty)
-                .HasConvertToLocalTime();
+        //    var column = result.AddVisibleColumnDefinition(p => p.VersionDate
+        //        , "VersionDate", "");
+        //    column.HasDateType(DbDateTypes.DateTime)
+        //        .HasDateFormatString(string.Empty)
+        //        .HasConvertToLocalTime();
 
-            column = result.AddVisibleColumnDefinition(p => p.MaxDepartment
-                , "MaxDepartment", "");
+        //    column = result.AddVisibleColumnDefinition(p => p.MaxDepartment
+        //        , "MaxDepartment", "");
 
-            result.VisibleColumns[0].UpdatePercentWidth(35);
-            result.VisibleColumns[0].UpdateCaption("Version");
-            result.VisibleColumns[1].UpdatePercentWidth(25);
-            result.VisibleColumns[1].UpdateCaption("Release Date");
-            result.VisibleColumns[2].UpdatePercentWidth(40);
-            result.VisibleColumns[2].UpdateCaption("Released To Department");
+        //    result.VisibleColumns[0].UpdatePercentWidth(35);
+        //    result.VisibleColumns[0].UpdateCaption("Version");
+        //    result.VisibleColumns[1].UpdatePercentWidth(25);
+        //    result.VisibleColumns[1].UpdateCaption("Release Date");
+        //    result.VisibleColumns[2].UpdatePercentWidth(40);
+        //    result.VisibleColumns[2].UpdateCaption("Released To Department");
 
-            result.InitialSortColumnDefinition = result.VisibleColumns[0];
-            result.InitialOrderByColumn = result.VisibleColumns[1];
-            result.InitialOrderByType = OrderByTypes.Descending;
+        //    result.InitialSortColumnDefinition = result.VisibleColumns[0];
+        //    result.InitialOrderByColumn = result.VisibleColumns[1];
+        //    result.InitialOrderByType = OrderByTypes.Descending;
 
-            return result;
-        }
+        //    return result;
+        //}
 
         private string MakeVersionDateFormula()
         {
