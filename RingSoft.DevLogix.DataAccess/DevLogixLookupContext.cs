@@ -239,11 +239,12 @@ namespace RingSoft.DevLogix.DataAccess
             ProductLookup.AddVisibleColumnDefinition(p => p.Description, "Description", p => p.Description, 100);
             Products.HasLookupDefinition(ProductLookup);
 
+            ProductVersionLookup = new LookupDefinition<ProductVersionLookup, ProductVersion>(ProductVersions);
             //ProductVersionLookup = MakeProductVersionLookupDefinition();
-            //ProductVersionLookup.Include(p => p.Product)
-            //    .AddVisibleColumnDefinition(p => p.Product, "Product", p => p.Description, 50);
+            ProductVersionLookup.Include(p => p.Product)
+                .AddVisibleColumnDefinition(p => p.Product, "Product", p => p.Description, 50);
 
-            //ProductVersions.HasLookupDefinition(ProductVersionLookup);
+            ProductVersions.HasLookupDefinition(ProductVersionLookup);
 
             ProductVersionDepartmentLookup =
                 new LookupDefinition<ProductVersionDepartmentLookup, ProductVersionDepartment>(
