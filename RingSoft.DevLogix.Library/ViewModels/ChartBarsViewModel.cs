@@ -19,7 +19,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
         void UpdateBar(ChartBarViewModel bar);
     }
 
-    public class ChartBarViewModel : ILookupControl
+    public class ChartBarViewModel
     {
         public ChartBarsViewModel MainViewModel { get; private set; }
 
@@ -29,7 +29,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         public DevLogixChartBar ChartBar { get; private set; }
 
-        public LookupDataMauiBase LookupData { get; private set; }
+        public LookupDataBase LookupData { get; private set; }
 
         public int Count { get; private set; }
 
@@ -48,8 +48,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
                 PageSize = 10,
                 SearchType = LookupSearchTypes.Equals
             };
-            LookupData = LookupDefinition.TableDefinition.LookupDefinition.GetLookupDataMaui(LookupDefinition, false);
-            LookupData.SetParentControls(this);
+            LookupData = new LookupDataBase(LookupDefinition, lookupControl);
 
             LookupRefresher.SetAlertLevelEvent += (sender, args) =>
             {
@@ -67,7 +66,11 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         private void GetRecordCount()
         {
-            Count = LookupData.GetRecordCount();
+            Count = LookupData.GetRecordCountWait();
+            if (LookupRefresher.RefreshRate != RefreshRate.None)
+            {
+                LookupRefresher.UpdateRecordCount(Count);
+            }
             if (LookupRefresher.RefreshRate != RefreshRate.None)
             {
                 LookupRefresher.UpdateRecordCount(Count);

@@ -20,7 +20,7 @@ namespace RingSoft.DevLogix.MasterData
                 return RingSoftAppGlobals.AssemblyDirectory;
 #else
                 return
-                    $"{Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData)}\\RingSoft\\HomeLogix\\";
+                    $"{Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData)}\\RingSoft\\DevLogix\\";
 #endif
             }
         }
