@@ -675,12 +675,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             if (result != null)
             {
                 Id = result.Id;
-                if (_makeErrorIdContext != null && _makeErrorId)
-                {
-                    var errorId = $"E-{result.Id}";
-                    result.ErrorId = errorId;
-                    _makeErrorIdContext.SaveEntity(result, "Updating ErrorId");
-                }
+                //if (_makeErrorIdContext != null && _makeErrorId)
+                //{
+                //    var errorId = $"E-{result.Id}";
+                //    result.ErrorId = errorId;
+                //    _makeErrorIdContext.SaveEntity(result, "Updating ErrorId");
+                //}
                 _makeErrorIdContext = null;
                 _makeErrorId = false;
                 KeyAutoFillValue = result.GetAutoFillValue();
@@ -867,14 +867,19 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         protected override bool SaveEntity(Error entity)
         {
+            var makeErrorId = entity.Id == 0;
             var result = false;
             var context = AppGlobals.DataRepository.GetDataContext();
             if (context != null)
             {
                 result = context.SaveEntity(entity, "Saving Error");
 
-                if (result)
+                if (result && makeErrorId)
                 {
+                    var errorId = $"E-{entity.Id}";
+                    entity.ErrorId = errorId;
+                    result = context.SaveEntity(entity, "Updating Error Id");
+
                     //var developerQuery = AppGlobals.DataRepository.GetDataContext().GetTable<ErrorDeveloper>();
                     //var developers = developerQuery.Where(p => p.ErrorId == Id).ToList();
                     //context.RemoveRange(developers);
@@ -894,10 +899,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
             }
 
-            if (MaintenanceMode == DbMaintenanceModes.AddMode)
-            {
-                _makeErrorIdContext = context as IDbContext;
-            }
+            //if (MaintenanceMode == DbMaintenanceModes.AddMode)
+            //{
+            //    _makeErrorIdContext = context as IDbContext;
+            //}
 
             return result;
         }
