@@ -20,15 +20,29 @@ namespace RingSoft.DevLogix
     /// </summary>
     public partial class UserLoginWindow : IUserLoginView
     {
-        public UserLoginWindow()
+        public UserLoginWindow(int userId)
         {
             InitializeComponent();
-            Loaded += (sender, args) => ViewModel.Initialize(this);
+            Loaded += (sender, args) => ViewModel.Initialize(this, userId);
+            if (userId > 0)
+            {
+                UserControl.IsEnabled = false;
+            }
         }
 
         public void CloseWindow()
         {
             Close();
+        }
+
+        public string GetPassword()
+        {
+            return PasswordBox.Password;
+        }
+
+        public void EnablePassword(bool enable)
+        {
+            PasswordBox.IsEnabled = enable;
         }
     }
 }

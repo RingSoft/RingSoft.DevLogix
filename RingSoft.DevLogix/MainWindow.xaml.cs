@@ -395,12 +395,16 @@ namespace RingSoft.DevLogix
             return result;
         }
 
-        public bool LoginUser()
+        public bool LoginUser(int userId = 0)
         {
-            var userLoginWindow = new UserLoginWindow { Owner = this };
+            var userLoginWindow = new UserLoginWindow(userId) { Owner = this };
             userLoginWindow.ShowDialog();
             if (userLoginWindow.ViewModel.DialogResult)
             {
+                if (userId > 0)
+                {
+                    return true;
+                }
                 
                 MakeMenu();
                 if (AppGlobals.LoggedInUser != null)

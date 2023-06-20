@@ -216,12 +216,18 @@ namespace RingSoft.DevLogix
         public void SetFocusToFirstNode()
         {
             TreeView.Focus();
-            var tvi = TreeView.ItemContainerGenerator.ContainerFromItem(TreeView.Items[0])
-                as System.Windows.Controls.TreeViewItem;
-
-            if (tvi != null)
+            try
             {
-                tvi.IsSelected = true;
+                var tvi = TreeView.ItemContainerGenerator.ContainerFromItem(TreeView.Items[0])
+                    as System.Windows.Controls.TreeViewItem;
+                if (tvi != null)
+                {
+                    tvi.IsSelected = true;
+                }
+
+            }
+            catch (Exception e)
+            {
             }
         }
 

@@ -89,6 +89,16 @@ namespace RingSoft.DevLogix.Tests.UserManagement
             
         }
 
+        public string GetPassword()
+        {
+            return "12345";
+        }
+
+        public void SetPassword(string password)
+        {
+            
+        }
+
         public void SetMasterUserMode(bool value = true)
         {
             

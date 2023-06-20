@@ -14,6 +14,10 @@ namespace RingSoft.DevLogix.Library.ViewModels
     public interface IUserLoginView
     {
         void CloseWindow();
+
+        string GetPassword();
+        
+        void EnablePassword(bool enable);
     }
     public class UserLoginViewModel : INotifyPropertyChanged
     {
@@ -45,6 +49,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
                     return;
                 }
                 _userAutoFillValue = value;
+                EnablePassword();
                 OnPropertyChanged();
             }
         }
@@ -60,11 +65,44 @@ namespace RingSoft.DevLogix.Library.ViewModels
             OkCommand = new RelayCommand(OnOk);
         }
 
-        public void Initialize(IUserLoginView view)
+        private bool _initializing;
+        private int _initUserId = 0;
+
+        public void Initialize(IUserLoginView view, int userId)
         {
+            _initializing = true;
+            View = view;
+            _initUserId = userId;
             UserAutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.UserLookup);
             UserAutoFillSetup.AllowLookupAdd = UserAutoFillSetup.AllowLookupView = false;
-            View = view;
+
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var table = context.GetTable<User>();
+            var user = table.FirstOrDefault(p => p.Id == userId);
+            if (userId > 0)
+            {
+                UserAutoFillValue = user.GetAutoFillValue();
+            }
+            _initializing = false;
+        }
+
+        private void EnablePassword()
+        {
+            var user = UserAutoFillValue.GetEntity<User>();
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var table = context.GetTable<User>();
+            if (user.Id > 0)
+            {
+                user = table.FirstOrDefault(p => p.Id == user.Id);
+                if (user.Password.IsNullOrEmpty())
+                {
+                    View.EnablePassword(false);
+                }
+                else
+                {
+                    View.EnablePassword(true);
+                }
+            }
         }
 
         public void OnOk()
@@ -82,8 +120,31 @@ namespace RingSoft.DevLogix.Library.ViewModels
             IQueryable<User> userTable = context.GetTable<User>();
             userTable = userTable.Include(p => p.UserGroups).ThenInclude(p => p.Group)
                 .Include(p => p.Department);
-            
+
             user = userTable.FirstOrDefault(p => p.Id == user.Id);
+            if (user != null)
+            {
+                var password = user.Password;
+                var loginPassword = View.GetPassword();
+                if (!password.IsNullOrEmpty())
+                {
+                    var match = loginPassword.IsValidPassword(password);
+                    if (!match)
+                    {
+                        var message = "Invalid Password.";
+                        var caption = "Invalid Password.";
+                        ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
+                        return;
+                    }
+                }
+            }
+
+            if (_initUserId > 0)
+            {
+                DialogResult = true;
+                View.CloseWindow();
+            }
+
             AppGlobals.ClockInUser(context, user);
 
             AppGlobals.LoggedInUser = user;

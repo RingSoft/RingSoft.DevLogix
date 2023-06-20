@@ -50,6 +50,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         void SetUserReadOnlyMode(bool value);
 
         void SetExistRecordFocus(UserGrids userGrid, int rowId);
+
+        string GetPassword();
+
+        void SetPassword(string password);
     }
 
     public class BillabilityData
@@ -409,6 +413,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         public bool MasterMode { get; private set; }
         
         private int _rowFocusId = -1;
+        private string? _oldPassword;
+        private const string _dummyPassword = "{1D56EF31}";
 
         public UserMaintenanceViewModel()
         {
@@ -579,6 +585,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 View.SetUserReadOnlyMode(readOnlyMode);
                 SaveButtonEnabled = !readOnlyMode;
             }
+            _oldPassword = result.Password;
 
             return result;
         }
@@ -647,9 +654,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 _rowFocusId = -1;
             }
             SetBillability(entity);
-
-
             HourlyRate = entity.HourlyRate;
+            if (entity.Password.IsNullOrEmpty())
+            {
+                View.SetPassword(string.Empty);
+            }
+            else
+            {
+                View.SetPassword(_dummyPassword);
+            }
+
         }
 
         private void SetBillability(User entity)
@@ -684,6 +698,23 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 SupervisorId = SupervisorAutoFillValue.GetEntity(AppGlobals.LookupContext.Users).Id,
                 HourlyRate = HourlyRate,
             };
+            if (View.GetPassword().IsNullOrEmpty())
+            {
+                user.Password = string.Empty;
+            }
+            else
+            {
+                var password = View.GetPassword();
+                if (password == _dummyPassword)
+                {
+                    user.Password = _oldPassword;
+                }
+                else
+                {
+                    user.Password = password.EncryptPassword();
+                    var len = user.Password.Length;
+                }
+            }
             if (Id != 0)
 
                 if (!TableDefinition.HasRight(RightTypes.AllowEdit))
@@ -749,10 +780,28 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             MasterMode = MasterUserId == 0;
             View.RefreshView();
             SetBillability(new User());
+            View.SetPassword(string.Empty);
+            _oldPassword = string.Empty;
         }
 
         protected override bool ValidateEntity(User entity)
         {
+            var password = View.GetPassword();
+            if (!_oldPassword.IsNullOrEmpty() && password != _dummyPassword)
+            {
+                if (!password.IsValidPassword(_oldPassword))
+                {
+                    var message = "You must login with your old Password in order to continue";
+                    var caption = "Login Needed.";
+                    ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Information);
+                    if (!AppGlobals.MainViewModel.MainView.LoginUser(Id))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            _oldPassword = entity.Password;
             if (!GroupsManager.ValidateGrid())
             {
                 return false;

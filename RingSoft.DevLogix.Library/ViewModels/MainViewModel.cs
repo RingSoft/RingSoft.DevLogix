@@ -25,7 +25,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
     {
         bool ChangeOrganization();
 
-        bool LoginUser();
+        bool LoginUser(int userId = 0);
 
         void CloseWindow();
 

@@ -100,6 +100,7 @@ namespace RingSoft.DevLogix.UserManagement
         {
             NameControl.Focus();
             RefreshView();
+            PasswordBox.Password = string.Empty;
             base.ResetViewForNewRecord();
         }
 
@@ -225,6 +226,16 @@ namespace RingSoft.DevLogix.UserManagement
         public void SetExistRecordFocus(UserGrids userGrid, int rowId)
         {
             _timeOffRowFocus = rowId;
+        }
+
+        public string GetPassword()
+        {
+            return PasswordBox.Password;
+        }
+
+        public void SetPassword(string password)
+        {
+            PasswordBox.Password = password;
         }
 
         public void SetMasterUserMode(bool value = true)

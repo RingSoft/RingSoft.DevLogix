@@ -30,7 +30,7 @@
 
         <Label Grid.Row="0" Grid.Column="0" Content="User"/>
 
-        <lc:AutoFillControl Grid.Column="1" Width="200" Setup="{Binding UserAutoFillSetup}" Value="{Binding UserAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left"/>
+        <lc:AutoFillControl Grid.Column="1" x:Name="UserControl" Width="200" Setup="{Binding UserAutoFillSetup}" Value="{Binding UserAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left"/>
 
         <Label Grid.Row="1" Grid.Column="0" Content="Password"/>
 
