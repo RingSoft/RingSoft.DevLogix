@@ -15,9 +15,10 @@
         <vm:UserLoginViewModel x:Name="ViewModel"/>
     </Window.DataContext>
 
-    <Grid>
+    <Grid Margin="5">
         
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
@@ -31,7 +32,12 @@
 
         <lc:AutoFillControl Grid.Column="1" Width="200" Setup="{Binding UserAutoFillSetup}" Value="{Binding UserAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left"/>
 
-        <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
+        <Label Grid.Row="1" Grid.Column="0" Content="Password"/>
+
+        <PasswordBox Grid.Row="1" Grid.Column="1" x:Name="PasswordBox" HorizontalAlignment="Left" Width="200" Background="{StaticResource ControlBackgroundBrush}" Height="22" VerticalContentAlignment="Center" MaxLength="50"/>
+
+
+		<StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
 
             <Button Content="_OK" Width="50" IsDefault="True" Command="{Binding OkCommand}"/>
 

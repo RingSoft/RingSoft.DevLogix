@@ -130,7 +130,11 @@
 
                             <dec:DateReadOnlyBox Grid.Row="1" Grid.Column="3" HorizontalAlignment="Left" Width="200" DateFormatType="DateTime" Value="{Binding ClockDateTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-                            <Label Grid.Row="2" Grid.Column="2" Content="Clock Reason"/>
+                            <Label Grid.Row="2" Grid.Column="0" Content="Password"/>
+
+                            <PasswordBox Grid.Row="2" Grid.Column="1" x:Name="PasswordBox" HorizontalAlignment="Left" Width="200" Background="{StaticResource ControlBackgroundBrush}" Height="22" VerticalContentAlignment="Center" MaxLength="50"/>
+
+							<Label Grid.Row="2" Grid.Column="2" Content="Clock Reason"/>
 
                             <dec:StringReadOnlyBox Grid.Row="2" Grid.Column="3" Width="200" Text="{Binding ClockReason, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left"/>
 
