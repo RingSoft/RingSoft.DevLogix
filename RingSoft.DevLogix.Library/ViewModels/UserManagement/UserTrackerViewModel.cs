@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
@@ -278,13 +279,19 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     context.RemoveRange(existUsers);
                 }
                 var users = UserManager.GetEntityList();
+                var newUsers = new List<UserTrackerUser>();
                 if (users != null)
                 {
                     foreach (var userTrackerUser in users)
                     {
+                        if (userTrackerUser.UserId == 0)
+                        {
+                            continue;
+                        }
                         userTrackerUser.UserTrackerId = entity.Id;
+                        newUsers.Add(userTrackerUser);
                     }
-                    context.AddRange(users);
+                    context.AddRange(newUsers);
                 }
                 return context.Commit("Saving User Tracker Users");
             }

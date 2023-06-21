@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using MySqlX.XDevAPI.Relational;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbMaintenance;
@@ -10,11 +12,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 {
     public enum UserTrackerColumns
     {
-        User = 0,
-        PunchedOut = 1,
-        PunchedIn = 2,
-        TimeClock = 3,
-        DisableBalloon = 4,
+        User = 1,
+        PunchedOut = 2,
+        PunchedIn = 3,
+        TimeClock = 4,
+        DisableBalloon = 5,
     }
     public class UserTrackerUserManager : DbMaintenanceDataEntryGridManager<UserTrackerUser>
     {

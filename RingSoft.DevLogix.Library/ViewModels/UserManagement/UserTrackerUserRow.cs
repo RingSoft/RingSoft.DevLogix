@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using MySqlX.XDevAPI.Relational;
 using RingSoft.DataEntryControls.Engine;
@@ -145,12 +146,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     {
                         UserAutoFillValue = autoFillCellProps.AutoFillValue;
                         UserId = UserAutoFillValue.GetEntity<User>().Id;
-                        if (UserAutoFillValue.IsValid())
+                        if (UserId > 0)
                         {
-                            Manager.ViewModel.RefreshNowCommand.IsEnabled = true;
+                            if (UserAutoFillValue.IsValid())
+                            {
+                                Manager.ViewModel.RefreshNowCommand.IsEnabled = true;
+                            }
+
+                            RefreshRow();
+                            Manager.Grid?.RefreshGridView();
                         }
-                        RefreshRow();
-                        Manager.Grid?.RefreshGridView();
                     }
                     break;
                 case UserTrackerColumns.PunchedOut:
@@ -182,11 +187,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         {
             UserAutoFillValue = entity.User.GetAutoFillValue();
             UserId = entity.UserId;
-        }
-
-        public override bool ValidateRow()
-        {
-            throw new System.NotImplementedException();
         }
 
         public override void SaveToEntity(UserTrackerUser entity, int rowIndex)
