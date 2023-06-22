@@ -165,6 +165,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
         public RelayCommand ProductsCommand { get; }
         public RelayCommand ErrorsCommand { get; }
         public RelayCommand OutlinesCommand { get; }
+        public RelayCommand ProjectsCommand { get; }
         public ChartBarsViewModel ChartViewModel { get; private set; }
 
         private Timer _timer = new Timer();
@@ -207,6 +208,11 @@ namespace RingSoft.DevLogix.Library.ViewModels
             OutlinesCommand = new RelayCommand((() =>
             {
                 MainView.ShowDbMaintenanceWindow(AppGlobals.LookupContext.TestingOutlines);
+            }));
+
+            ProjectsCommand = new RelayCommand((() =>
+            {
+                MainView.ShowDbMaintenanceWindow(AppGlobals.LookupContext.Projects);
             }));
 
             AdvancedFindCommand = new RelayCommand(ShowAdvancedFind);

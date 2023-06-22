@@ -28,6 +28,7 @@
             <BitmapImage x:Key="ChartImage" UriSource="/RingSoft.DevLogix;component/Resources/chart_bar32.png" />
             <BitmapImage x:Key="ProductImage" UriSource="/RingSoft.DevLogix;component/Resources/software32.png" />
             <BitmapImage x:Key="OutlinesImage" UriSource="/RingSoft.DevLogix;component/Resources/outline32.png" />
+            <BitmapImage x:Key="ProjectsImage" UriSource="/RingSoft.DevLogix;component/Resources/project32.png" />
 
             <LinearGradientBrush x:Key="WindowBackgroundBrush" StartPoint="0.5,0" EndPoint="0.5,1">
                 <GradientStop Color="Gray" Offset="0"/>

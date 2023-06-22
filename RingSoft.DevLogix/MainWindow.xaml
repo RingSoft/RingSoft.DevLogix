@@ -85,6 +85,8 @@
 
                 <ac:DbMaintenanceButton x:Name="OutlinesButton" Content="_Testing Outlines" ImageSource="{StaticResource OutlinesImage}" Command="{Binding OutlinesCommand}"/>
 
+                <ac:DbMaintenanceButton x:Name="ProjectsButton" Content="Pro_jects" ImageSource="{StaticResource ProjectsImage}" Command="{Binding ProjectsCommand}"/>
+
                 <ac:DbMaintenanceButton x:Name="AdvancedFindButton" Content="_Advanced Find" ImageSource="{StaticResource FindImage}" Command="{Binding AdvancedFindCommand}"/>
 
                 <ac:DbMaintenanceButton x:Name="ChartButton" Content="C_hart" ImageSource="{StaticResource ChartImage}" Command="{Binding ChartCommand}"/>

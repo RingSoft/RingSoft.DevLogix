@@ -20,6 +20,7 @@
     <None Remove="Resources\logout32.png" />
     <None Remove="Resources\Organization.png" />
     <None Remove="Resources\outline32.png" />
+    <None Remove="Resources\project32.png" />
     <None Remove="Resources\RedAlert.ico" />
     <None Remove="Resources\software32.png" />
     <None Remove="Resources\user32.png" />
@@ -54,6 +55,7 @@
     <Resource Include="Resources\logout32.png" />
     <Resource Include="Resources\Organization.png" />
     <Resource Include="Resources\outline32.png" />
+    <Resource Include="Resources\project32.png" />
     <Resource Include="Resources\RedAlert.ico" />
     <Resource Include="Resources\software32.png" />
     <Resource Include="Resources\user32.png" />

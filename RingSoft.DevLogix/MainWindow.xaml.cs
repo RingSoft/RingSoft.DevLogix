@@ -553,6 +553,7 @@ namespace RingSoft.DevLogix
                 AdvancedFindButton.Visibility = Visibility.Collapsed;
                 ChartButton.Visibility = Visibility.Collapsed;
                 OutlinesButton.Visibility = Visibility.Collapsed;
+                ProjectsButton.Visibility = Visibility.Collapsed;
                 return;
             }
 
@@ -570,6 +571,11 @@ namespace RingSoft.DevLogix
             OutlinesButton.ToolTip.HeaderText = "Show the Testing Outlines Maintenance Window (Alt + T)";
             OutlinesButton.ToolTip.DescriptionText =
                 "Add or edit Testing Outlines.";
+
+            ProcessButton(ProjectsButton, AppGlobals.LookupContext.Projects);
+            ProjectsButton.ToolTip.HeaderText = "Show the Projects Maintenance Window (Alt + J)";
+            ProjectsButton.ToolTip.DescriptionText =
+                "Add or edit Projects.";
 
             ProcessButton(UsersButton, AppGlobals.LookupContext.Users);
             UsersButton.ToolTip.HeaderText = "Show the Users Maintenance Window (Alt + U)";
