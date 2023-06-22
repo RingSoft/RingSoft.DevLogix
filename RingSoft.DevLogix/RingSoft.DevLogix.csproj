@@ -14,11 +14,18 @@
     <None Remove="Resources\bug_edit32.png" />
     <None Remove="Resources\calculator.png" />
     <None Remove="Resources\chart_bar32.png" />
+    <None Remove="Resources\chronometer32.png" />
     <None Remove="Resources\clock.png" />
     <None Remove="Resources\gears.ico" />
     <None Remove="Resources\logout32.png" />
     <None Remove="Resources\Organization.png" />
+    <None Remove="Resources\outline32.png" />
     <None Remove="Resources\RedAlert.ico" />
+    <None Remove="Resources\software32.png" />
+    <None Remove="Resources\user32.png" />
+    <None Remove="Resources\UsersTrack.png" />
+    <None Remove="Resources\UserTrack.png" />
+    <None Remove="Resources\UserTracker.png" />
     <None Remove="Resources\YellowAlert.ico" />
   </ItemGroup>
 
@@ -42,11 +49,15 @@
     <Resource Include="Resources\bug_edit32.png" />
     <Resource Include="Resources\calculator.png" />
     <Resource Include="Resources\chart_bar32.png" />
-    <Resource Include="Resources\clock.png" />
+    <Resource Include="Resources\chronometer32.png" />
     <Resource Include="Resources\gears.ico" />
     <Resource Include="Resources\logout32.png" />
     <Resource Include="Resources\Organization.png" />
+    <Resource Include="Resources\outline32.png" />
     <Resource Include="Resources\RedAlert.ico" />
+    <Resource Include="Resources\software32.png" />
+    <Resource Include="Resources\user32.png" />
+    <Resource Include="Resources\UsersTrack.png" />
     <Resource Include="Resources\YellowAlert.ico" />
   </ItemGroup>
 

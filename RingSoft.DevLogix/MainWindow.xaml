@@ -75,7 +75,15 @@
 
                 <ac:DbMaintenanceButton x:Name="LogoutButton" Content="_Logout" ImageSource="{StaticResource LogoutImage}" Command="{Binding LogoutCommand}"/>
 
+                <ac:DbMaintenanceButton x:Name="UsersButton" Content="_Users" ImageSource="{StaticResource UsersImage}" Command="{Binding UsersCommand}"/>
+
+                <ac:DbMaintenanceButton x:Name="UserTrackerButton" Content="User T_racker" ImageSource="{StaticResource UserTrackerImage}" Command="{Binding UserTrackerCommand}"/>
+
+                <ac:DbMaintenanceButton x:Name="ProductsButton" Content="_Products" ImageSource="{StaticResource ProductImage}" Command="{Binding ProductsCommand}"/>
+
 				<ac:DbMaintenanceButton x:Name="ErrorsButton" Content="Product _Errors" ImageSource="{StaticResource ErrorsImage}" Command="{Binding ErrorsCommand}"/>
+
+                <ac:DbMaintenanceButton x:Name="OutlinesButton" Content="_Testing Outlines" ImageSource="{StaticResource OutlinesImage}" Command="{Binding OutlinesCommand}"/>
 
                 <ac:DbMaintenanceButton x:Name="AdvancedFindButton" Content="_Advanced Find" ImageSource="{StaticResource FindImage}" Command="{Binding AdvancedFindCommand}"/>
 

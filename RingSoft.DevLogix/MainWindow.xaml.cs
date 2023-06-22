@@ -546,15 +546,40 @@ namespace RingSoft.DevLogix
 
             if (AppGlobals.LookupContext == null)
             {
+                UsersButton.Visibility = Visibility.Collapsed;
+                UserTrackerButton.Visibility = Visibility.Collapsed;
+                ProductsButton.Visibility = Visibility.Collapsed;
                 ErrorsButton.Visibility = Visibility.Collapsed;
                 AdvancedFindButton.Visibility = Visibility.Collapsed;
                 ChartButton.Visibility = Visibility.Collapsed;
+                OutlinesButton.Visibility = Visibility.Collapsed;
                 return;
             }
+
+            ProcessButton(ProductsButton, AppGlobals.LookupContext.Products);
+            ProductsButton.ToolTip.HeaderText = "Show the Product Maintenance Window (Alt + P)";
+            ProductsButton.ToolTip.DescriptionText =
+                "Add or edit Products.";
+
             ProcessButton(ErrorsButton, AppGlobals.LookupContext.Errors);
             ErrorsButton.ToolTip.HeaderText = "Show the Product Error Maintenance Window (Alt + E)";
             ErrorsButton.ToolTip.DescriptionText =
                 "Add or edit Product Errors.";
+
+            ProcessButton(OutlinesButton, AppGlobals.LookupContext.TestingOutlines);
+            OutlinesButton.ToolTip.HeaderText = "Show the Testing Outlines Maintenance Window (Alt + T)";
+            OutlinesButton.ToolTip.DescriptionText =
+                "Add or edit Testing Outlines.";
+
+            ProcessButton(UsersButton, AppGlobals.LookupContext.Users);
+            UsersButton.ToolTip.HeaderText = "Show the Users Maintenance Window (Alt + U)";
+            UsersButton.ToolTip.DescriptionText =
+                "Add or edit Users.";
+
+            ProcessButton(UserTrackerButton, AppGlobals.LookupContext.UserTracker);
+            UserTrackerButton.ToolTip.HeaderText = "Show the User Tracker Maintenance Window (Alt + R)";
+            UserTrackerButton.ToolTip.DescriptionText =
+                "Add or edit User Trackers.";
 
             ProcessButton(AdvancedFindButton, AppGlobals.LookupContext.AdvancedFinds);
             AdvancedFindButton.ToolTip.HeaderText = "Advanced Find (Alt + A)";
