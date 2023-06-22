@@ -155,10 +155,12 @@ namespace RingSoft.DevLogix.Library.ViewModels
         public RelayCommand<TableDefinitionBase> ShowMaintenanceWindowCommand { get; }
         public RelayCommand ExitCommand { get; }
         public RelayCommand AdvancedFindCommand { get; }
+        public RelayCommand ChartCommand { get; }
         public RelayCommand RefreshChartCommand { get; }
         public RelayCommand EditChartCommand { get; }
         public RelayCommand ChangeOrgCommand { get; }
         public RelayCommand TimeClockCommand { get; }
+        public RelayCommand ErrorsCommand { get; }
         public ChartBarsViewModel ChartViewModel { get; private set; }
 
         private Timer _timer = new Timer();
@@ -177,8 +179,16 @@ namespace RingSoft.DevLogix.Library.ViewModels
             _timer.Enabled = true;
             ExitCommand = new RelayCommand(Exit);
             LogoutCommand = new RelayCommand(Logout);
+            ErrorsCommand = new RelayCommand((() =>
+            {
+                MainView.ShowDbMaintenanceWindow(AppGlobals.LookupContext.Errors);
+            }));
 
             AdvancedFindCommand = new RelayCommand(ShowAdvancedFind);
+            ChartCommand = new RelayCommand((() =>
+            {
+                MainView.ShowDbMaintenanceWindow(AppGlobals.LookupContext.DevLogixCharts);
+            }));
             ShowMaintenanceWindowCommand = new RelayCommand<TableDefinitionBase>(ShowMaintenanceWindow);
             RefreshChartCommand = new RelayCommand(RefreshChart);
             EditChartCommand = new RelayCommand(EditChart);

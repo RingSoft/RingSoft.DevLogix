@@ -16,7 +16,6 @@
                   CloseOnEscape="False"
                   Title="DevLogix" WindowState="Maximized">
     <Window.Resources>
-        <BitmapImage x:Key="ErrorsImage" UriSource="/RingSoft.DevLogix;component/Resources/bug_edit32.png" />
 
         <Style TargetType="ac:DbMaintenanceButton" BasedOn="{StaticResource {x:Type ac:DbMaintenanceButton}}">
             <Setter Property="BorderThickness" Value="0"/>
@@ -26,7 +25,8 @@
                     <ControlTemplate TargetType="{x:Type ac:DbMaintenanceButton}">
                         <Border Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}">
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Margin="5">
                             <StackPanel Orientation="Vertical" VerticalAlignment="Center">
                                 <Image x:Name="Image" Height="64" Width="64"/>
                                 <ContentPresenter Content="{Binding Path=Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" RecognizesAccessKey="True"
@@ -71,7 +71,15 @@
                 </StackPanel.Background>
                 <ac:DbMaintenanceButton x:Name="ExitButton"  Content="E_xit" Command="{Binding ExitCommand }" ImageSource="{StaticResource ExitImage}" />
 
+                <ac:DbMaintenanceButton x:Name="ChangeOrgButton" Content="_Change Organization" ImageSource="{StaticResource OrganizationImage}" Command="{Binding ChangeOrgCommand}"/>
+
+                <ac:DbMaintenanceButton x:Name="LogoutButton" Content="_Logout" ImageSource="{StaticResource LogoutImage}" Command="{Binding LogoutCommand}"/>
+
+				<ac:DbMaintenanceButton x:Name="ErrorsButton" Content="Product _Errors" ImageSource="{StaticResource ErrorsImage}" Command="{Binding ErrorsCommand}"/>
+
                 <ac:DbMaintenanceButton x:Name="AdvancedFindButton" Content="_Advanced Find" ImageSource="{StaticResource FindImage}" Command="{Binding AdvancedFindCommand}"/>
+
+                <ac:DbMaintenanceButton x:Name="ChartButton" Content="C_hart" ImageSource="{StaticResource ChartImage}" Command="{Binding ChartCommand}"/>
 
 			</StackPanel>
 			<StatusBar DockPanel.Dock="Bottom" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="Transparent">

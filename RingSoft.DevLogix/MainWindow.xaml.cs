@@ -45,6 +45,8 @@ namespace RingSoft.DevLogix
         {
             InitializeComponent();
 
+            SetupToolbar();
+
             AboutCommand = new RelayCommand(() =>
             {
                 var splashWindow = new AppSplashWindow(false);
@@ -441,9 +443,23 @@ namespace RingSoft.DevLogix
             ShowWindow(new AdvancedFindWindow());
         }
 
+        private void ProcessButton(DbMaintenanceButton button, TableDefinitionBase tableDefinition)
+        {
+            if (tableDefinition.HasRight(RightTypes.AllowView))
+            {
+                button.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                button.Visibility = Visibility.Collapsed;
+            }
+        }
+
         public void MakeMenu()
         {
             MainMenu.Items.Clear();
+
+            SetupToolbar();
 
             var fileMenu = new MenuItem()
             {
@@ -516,6 +532,39 @@ namespace RingSoft.DevLogix
                 Header = "A_bout DevLogix...",
                 Command = AboutCommand,
             });
+        }
+
+        private void SetupToolbar()
+        {
+            ChangeOrgButton.ToolTip.HeaderText = "Change Organization (Alt + C)";
+            ChangeOrgButton.ToolTip.DescriptionText =
+                "Change to a different organization.";
+
+            LogoutButton.ToolTip.HeaderText = "Logout Current User (Alt + L)";
+            LogoutButton.ToolTip.DescriptionText =
+                "Log out of the current user and log into a different user.";
+
+            if (AppGlobals.LookupContext == null)
+            {
+                ErrorsButton.Visibility = Visibility.Collapsed;
+                AdvancedFindButton.Visibility = Visibility.Collapsed;
+                ChartButton.Visibility = Visibility.Collapsed;
+                return;
+            }
+            ProcessButton(ErrorsButton, AppGlobals.LookupContext.Errors);
+            ErrorsButton.ToolTip.HeaderText = "Show the Product Error Maintenance Window (Alt + E)";
+            ErrorsButton.ToolTip.DescriptionText =
+                "Add or edit Product Errors.";
+
+            ProcessButton(AdvancedFindButton, AppGlobals.LookupContext.AdvancedFinds);
+            AdvancedFindButton.ToolTip.HeaderText = "Advanced Find (Alt + A)";
+            AdvancedFindButton.ToolTip.DescriptionText =
+                "Search any table in the database for information you're looking for.";
+
+            ProcessButton(ChartButton, AppGlobals.LookupContext.DevLogixCharts);
+            ChartButton.ToolTip.HeaderText = "Dashboard Charts (Alt + H)";
+            ChartButton.ToolTip.DescriptionText =
+                "Manage Charts that you can use as the program dashboard. Click on a chart bar to see its associated Advanced Find Lookup.";
         }
 
         public void CloseWindow()

@@ -21,6 +21,10 @@
             <Image x:Key="GreenAlertImage" Source="Resources/gears.ico"/>
             <BitmapImage x:Key="ClockImage" UriSource="/Resources/clock.png" />
             <BitmapImage x:Key="CalculatorImage" UriSource="/Resources/calculator.png" />
+            <BitmapImage x:Key="ErrorsImage" UriSource="/RingSoft.DevLogix;component/Resources/bug_edit32.png" />
+            <BitmapImage x:Key="OrganizationImage" UriSource="/RingSoft.DevLogix;component/Resources/Organization.png" />
+            <BitmapImage x:Key="LogoutImage" UriSource="/RingSoft.DevLogix;component/Resources/logout32.png" />
+            <BitmapImage x:Key="ChartImage" UriSource="/RingSoft.DevLogix;component/Resources/chart_bar32.png" />
 
             <LinearGradientBrush x:Key="WindowBackgroundBrush" StartPoint="0.5,0" EndPoint="0.5,1">
                 <GradientStop Color="Gray" Offset="0"/>
