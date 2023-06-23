@@ -148,7 +148,34 @@ namespace RingSoft.DevLogix
             return bars;
         }
 
-        private void MakeUserMenu()
+        private void MakeCustomersMenu()
+        {
+            var userCategory =
+                AppGlobals.Rights.UserRights.Categories.FirstOrDefault(p =>
+                    p.MenuCategory == MenuCategories.Customers);
+
+            var items = userCategory.Items.Where(p => p.TableDefinition.HasRight(RightTypes.AllowView));
+            if (items.Any())
+            {
+                var menuItem = new MenuItem() { Header = "_Customer Management" };
+                MainMenu.Items.Add(menuItem);
+
+                if (AppGlobals.LookupContext.TimeZone.HasRight(RightTypes.AllowView))
+                {
+                    var categoryItem =
+                        userCategory.Items.FirstOrDefault(p => 
+                            p.TableDefinition == AppGlobals.LookupContext.TimeZone);
+                    menuItem.Items.Add(new MenuItem()
+                    {
+                        Header = "Add/Edit _Time,Zones...",
+                        Command = ViewModel.ShowMaintenanceWindowCommand,
+                        CommandParameter = AppGlobals.LookupContext.TimeZone,
+                    });
+                }
+            }
+        }
+
+            private void MakeUserMenu()
         {
             var userCategory =
                 AppGlobals.Rights.UserRights.Categories.FirstOrDefault(p =>
@@ -157,7 +184,7 @@ namespace RingSoft.DevLogix
             var items = userCategory.Items.Where(p => p.TableDefinition.HasRight(RightTypes.AllowView));
             if (items.Any())
             {
-                var menuItem = new MenuItem() { Header = "_User  Management" };
+                var menuItem = new MenuItem() { Header = "_User Management" };
                 MainMenu.Items.Add(menuItem);
 
                 if (AppGlobals.LookupContext.Users.HasRight(RightTypes.AllowView))
@@ -486,6 +513,7 @@ namespace RingSoft.DevLogix
             MainMenu.Items.Add(fileMenu);
 
             MakeUserMenu();
+            MakeCustomersMenu();
             MakeQaMenu();
             MakeProjectMenu();
 

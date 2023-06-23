@@ -17,6 +17,7 @@ namespace RingSoft.DevLogix.Library
         Tools = 1,
         Qa = 2,
         Projects = 3,
+        Customers = 4,
     }
     public enum RightTypes
     {
@@ -264,6 +265,11 @@ namespace RingSoft.DevLogix.Library
             
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Material Parts", AppGlobals.LookupContext.MaterialParts));
 
+            Categories.Add(category);
+
+            category = new RightCategory("Customer Management", MenuCategories.Customers);
+            categoryItem = new RightCategoryItem(item: "Add/Edit Time Zones", AppGlobals.LookupContext.TimeZone);
+            category.Items.Add(categoryItem);
             Categories.Add(category);
 
             category = new RightCategory("Miscellaneous", MenuCategories.Tools);
