@@ -71,7 +71,7 @@
                 </StackPanel.Background>
                 <ac:DbMaintenanceButton x:Name="ExitButton"  Content="E_xit" Command="{Binding ExitCommand }" ImageSource="{StaticResource ExitImage}" />
 
-                <ac:DbMaintenanceButton x:Name="ChangeOrgButton" Content="_Change Organization" ImageSource="{StaticResource OrganizationImage}" Command="{Binding ChangeOrgCommand}"/>
+                <ac:DbMaintenanceButton x:Name="ChangeOrgButton" Content="Change Organi_zation" ImageSource="{StaticResource OrganizationImage}" Command="{Binding ChangeOrgCommand}"/>
 
                 <ac:DbMaintenanceButton x:Name="LogoutButton" Content="_Logout" ImageSource="{StaticResource LogoutImage}" Command="{Binding LogoutCommand}"/>
 

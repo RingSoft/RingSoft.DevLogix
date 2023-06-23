@@ -536,7 +536,7 @@ namespace RingSoft.DevLogix
 
         private void SetupToolbar()
         {
-            ChangeOrgButton.ToolTip.HeaderText = "Change Organization (Alt + C)";
+            ChangeOrgButton.ToolTip.HeaderText = "Change Organization (Alt + Z)";
             ChangeOrgButton.ToolTip.DescriptionText =
                 "Change to a different organization.";
 
