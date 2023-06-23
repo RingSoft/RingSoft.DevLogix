@@ -18,12 +18,13 @@ using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.Library.ViewModels.UserManagement;
 using RingSoft.DevLogix.Library;
 using RingSoft.DbLookup.Controls.WPF;
+using RingSoft.DevLogix.QualityAssurance;
 
 namespace RingSoft.DevLogix.UserManagement
 {
     public class UserTrackerHeaderControl : DbMaintenanceCustomPanel
     {
-        public Button RefreshNowButton { get; set; }
+        public DbMaintenanceButton RefreshNowButton { get; set; }
 
         static UserTrackerHeaderControl()
         {
@@ -33,7 +34,7 @@ namespace RingSoft.DevLogix.UserManagement
 
         public override void OnApplyTemplate()
         {
-            RefreshNowButton = GetTemplateChild(nameof(RefreshNowButton)) as Button;
+            RefreshNowButton = GetTemplateChild(nameof(RefreshNowButton)) as DbMaintenanceButton;
 
             base.OnApplyTemplate();
         }
@@ -60,6 +61,8 @@ namespace RingSoft.DevLogix.UserManagement
                 if (TopHeaderControl.CustomPanel is UserTrackerHeaderControl userHeaderControl)
                 {
                     userHeaderControl.RefreshNowButton.Command = LocalViewModel.RefreshNowCommand;
+                    userHeaderControl.RefreshNowButton.ToolTip.HeaderText = "Refresh Now (Alt + R)";
+                    userHeaderControl.RefreshNowButton.ToolTip.DescriptionText = "Refresh the data in the grid from the database.";
                 }
             };
 

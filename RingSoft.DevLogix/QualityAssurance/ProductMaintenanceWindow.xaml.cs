@@ -13,7 +13,7 @@ namespace RingSoft.DevLogix.QualityAssurance
 {
     public class ProductHeaderControl : DbMaintenanceCustomPanel
     {
-        public Button UpdateVersionsButton { get; set; }
+        public DbMaintenanceButton UpdateVersionsButton { get; set; }
 
         static ProductHeaderControl()
         {
@@ -22,7 +22,7 @@ namespace RingSoft.DevLogix.QualityAssurance
 
         public override void OnApplyTemplate()
         {
-            UpdateVersionsButton = GetTemplateChild(nameof(UpdateVersionsButton)) as Button;
+            UpdateVersionsButton = GetTemplateChild(nameof(UpdateVersionsButton)) as DbMaintenanceButton;
 
             base.OnApplyTemplate();
         }
@@ -53,6 +53,10 @@ namespace RingSoft.DevLogix.QualityAssurance
                     {
                         productHeaderControl.UpdateVersionsButton.Visibility = Visibility.Collapsed;
                     }
+
+                    productHeaderControl.UpdateVersionsButton.ToolTip.HeaderText = "Update Department Versions (Alt + U)";
+                    productHeaderControl.UpdateVersionsButton.ToolTip.DescriptionText = "Update Versions departments.";
+
                 }
             };
 

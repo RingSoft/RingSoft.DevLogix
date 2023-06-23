@@ -318,10 +318,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             {
                 _setDirty = false;
                 PunchOut();
-                if (Id == AppGlobals.MainViewModel.ActiveTimeClockId)
-                {
-                    AppGlobals.MainViewModel.SetupTimer(null);
-                }
 
                 _setDirty = true;
             }));
@@ -568,6 +564,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         protected override bool SaveEntity(TimeClock entity)
         {
+            if (Id == AppGlobals.MainViewModel.ActiveTimeClockId && PunchOutDate != null)
+            {
+                AppGlobals.MainViewModel.SetupTimer(null);
+            }
+
             var saveChildren = entity.Id != 0;
             var context = AppGlobals.DataRepository.GetDataContext();
             var user = context.GetTable<User>().FirstOrDefault(p => p.Id == entity.UserId);

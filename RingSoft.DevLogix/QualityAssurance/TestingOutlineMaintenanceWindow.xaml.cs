@@ -27,13 +27,13 @@ namespace RingSoft.DevLogix.QualityAssurance
 {
     public class TestingOutlineHeaderControl : DbMaintenanceCustomPanel
     {
-        public Button GenerateDetailsButton { get; set; }
+        public DbMaintenanceButton GenerateDetailsButton { get; set; }
 
-        public Button RetestButton { get; set; }
+        public DbMaintenanceButton RetestButton { get; set; }
 
-        public Button PunchInButton { get; set; }
+        public DbMaintenanceButton PunchInButton { get; set; }
 
-        public Button RecalcButton { get; set; }
+        public DbMaintenanceButton RecalcButton { get; set; }
 
         static TestingOutlineHeaderControl()
         {
@@ -42,10 +42,10 @@ namespace RingSoft.DevLogix.QualityAssurance
 
         public override void OnApplyTemplate()
         {
-            GenerateDetailsButton = GetTemplateChild(nameof(GenerateDetailsButton)) as Button;
-            RetestButton = GetTemplateChild(nameof(RetestButton)) as Button;
-            PunchInButton = GetTemplateChild(nameof(PunchInButton)) as Button;
-            RecalcButton = GetTemplateChild(nameof(RecalcButton)) as Button;
+            GenerateDetailsButton = GetTemplateChild(nameof(GenerateDetailsButton)) as DbMaintenanceButton;
+            RetestButton = GetTemplateChild(nameof(RetestButton)) as DbMaintenanceButton;
+            PunchInButton = GetTemplateChild(nameof(PunchInButton)) as DbMaintenanceButton;
+            RecalcButton = GetTemplateChild(nameof(RecalcButton)) as DbMaintenanceButton;
 
             base.OnApplyTemplate();
         }
@@ -78,6 +78,21 @@ namespace RingSoft.DevLogix.QualityAssurance
                     outlineHeaderControl.RetestButton.Command = LocalViewModel.RetestCommand;
                     outlineHeaderControl.PunchInButton.Command = LocalViewModel.PunchInCommand;
                     outlineHeaderControl.RecalcButton.Command = LocalViewModel.RecalcCommand;
+
+                    outlineHeaderControl.PunchInButton.ToolTip.HeaderText = "Punch In (Alt + U)";
+                    outlineHeaderControl.PunchInButton.ToolTip.DescriptionText = "Punch into this Testing Outline. ";
+
+                    outlineHeaderControl.RecalcButton.ToolTip.HeaderText = "Recalculate Cost (Alt + E)";
+                    outlineHeaderControl.RecalcButton.ToolTip.DescriptionText =
+                        "Recalculate the cost values for a range of Testing Outlines.";
+
+                    outlineHeaderControl.GenerateDetailsButton.ToolTip.HeaderText = "Generate Steps (Alt + G)";
+                    outlineHeaderControl.GenerateDetailsButton.ToolTip.DescriptionText =
+                        "Generate Steps from the attached Testing Templates.";
+
+                    outlineHeaderControl.RetestButton.ToolTip.HeaderText = "Retest Testing Outline (Alt + R)";
+                    outlineHeaderControl.RetestButton.ToolTip.DescriptionText =
+                        "Clear all completed values in the Steps grid.";
                 }
             };
             ProductControl.PreviewLostKeyboardFocus += (sender, args) =>

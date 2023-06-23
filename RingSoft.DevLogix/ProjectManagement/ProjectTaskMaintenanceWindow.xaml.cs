@@ -15,14 +15,15 @@ using RingSoft.DevLogix.Library.ViewModels.ProjectManagement;
 using System.Windows;
 using System.Windows.Controls;
 using RingSoft.DevLogix.Library.ViewModels.UserManagement;
+using RingSoft.DevLogix.UserManagement;
 
 namespace RingSoft.DevLogix.ProjectManagement
 {
     public class ProjectTaskHeaderControl : DbMaintenanceCustomPanel
     {
-        public Button PunchInButton { get; set; }
+        public DbMaintenanceButton PunchInButton { get; set; }
 
-        public Button RecalcButton { get; set; }
+        public DbMaintenanceButton RecalcButton { get; set; }
 
         static ProjectTaskHeaderControl()
         {
@@ -31,8 +32,8 @@ namespace RingSoft.DevLogix.ProjectManagement
 
         public override void OnApplyTemplate()
         {
-            PunchInButton = GetTemplateChild(nameof(PunchInButton)) as Button;
-            RecalcButton = GetTemplateChild(nameof(RecalcButton)) as Button;
+            PunchInButton = GetTemplateChild(nameof(PunchInButton)) as DbMaintenanceButton;
+            RecalcButton = GetTemplateChild(nameof(RecalcButton)) as DbMaintenanceButton;
 
             base.OnApplyTemplate();
         }
@@ -63,6 +64,14 @@ namespace RingSoft.DevLogix.ProjectManagement
                 {
                     projectHeaderControl.PunchInButton.Command =
                         LocalViewModel.PunchInCommand;
+
+                    projectHeaderControl.PunchInButton.ToolTip.HeaderText = "Punch In (Alt + U)";
+                    projectHeaderControl.PunchInButton.ToolTip.DescriptionText = "Punch into this Project Task. ";
+
+                    projectHeaderControl.RecalcButton.ToolTip.HeaderText = "Recalculate Cost (Alt + R)";
+                    projectHeaderControl.RecalcButton.ToolTip.DescriptionText =
+                        "Recalculate the cost values for a range of project tasks.";
+
 
                     if (!LocalViewModel.TableDefinition.HasRight(RightTypes.AllowEdit))
                     {

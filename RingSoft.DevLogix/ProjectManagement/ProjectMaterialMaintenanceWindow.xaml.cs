@@ -22,14 +22,15 @@ using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels.ProjectManagement;
+using RingSoft.DevLogix.QualityAssurance;
 
 namespace RingSoft.DevLogix.ProjectManagement
 {
     public class ProjectMaterialHeaderControl : DbMaintenanceCustomPanel
     {
-        public Button RecalcButton { get; set; }
+        public DbMaintenanceButton RecalcButton { get; set; }
 
-        public Button PostButton { get; set; }
+        public DbMaintenanceButton PostButton { get; set; }
 
         static ProjectMaterialHeaderControl()
         {
@@ -38,8 +39,8 @@ namespace RingSoft.DevLogix.ProjectManagement
 
         public override void OnApplyTemplate()
         {
-            RecalcButton = GetTemplateChild(nameof(RecalcButton)) as Button;
-            PostButton = GetTemplateChild(nameof(PostButton)) as Button;
+            RecalcButton = GetTemplateChild(nameof(RecalcButton)) as DbMaintenanceButton;
+            PostButton = GetTemplateChild(nameof(PostButton)) as DbMaintenanceButton;
 
             base.OnApplyTemplate();
         }
@@ -76,6 +77,15 @@ namespace RingSoft.DevLogix.ProjectManagement
                     }
                     projectMaterialHeaderControl.RecalcButton.Command = LocalViewModel.RecalcCommand;
                     projectMaterialHeaderControl.PostButton.Command = LocalViewModel.PostCommand;
+
+                    projectMaterialHeaderControl.RecalcButton.ToolTip.HeaderText = "Recalculate Cost";
+                    projectMaterialHeaderControl.RecalcButton.ToolTip.DescriptionText =
+                        "Recalculate the cost values for a range of project materials.";
+
+                    projectMaterialHeaderControl.PostButton.ToolTip.HeaderText = "Post Costs";
+                    projectMaterialHeaderControl.PostButton.ToolTip.DescriptionText =
+                        "Post actual costs for this project material.";
+
                 }
             };
 

@@ -19,9 +19,9 @@ namespace RingSoft.DevLogix.ProjectManagement
 {
     public class ProjectHeaderControl : DbMaintenanceCustomPanel
     {
-        public Button RecalcButton { get; set; }
+        public DbMaintenanceButton RecalcButton { get; set; }
 
-        public Button CalcDeadlineButton { get; set; }
+        public DbMaintenanceButton CalcDeadlineButton { get; set; }
 
         static ProjectHeaderControl()
         {
@@ -30,8 +30,8 @@ namespace RingSoft.DevLogix.ProjectManagement
 
         public override void OnApplyTemplate()
         {
-            RecalcButton = GetTemplateChild(nameof(RecalcButton)) as Button;
-            CalcDeadlineButton = GetTemplateChild(nameof(CalcDeadlineButton)) as Button;
+            RecalcButton = GetTemplateChild(nameof(RecalcButton)) as DbMaintenanceButton;
+            CalcDeadlineButton = GetTemplateChild(nameof(CalcDeadlineButton)) as DbMaintenanceButton;
 
             base.OnApplyTemplate();
         }
@@ -64,6 +64,14 @@ namespace RingSoft.DevLogix.ProjectManagement
                     }
                     projectHeaderControl.RecalcButton.Command = LocalViewModel.RecalcCommand;
                     projectHeaderControl.CalcDeadlineButton.Command = LocalViewModel.CalculateDeadlineCommand;
+
+                    projectHeaderControl.RecalcButton.ToolTip.HeaderText = "Recalculate Cost";
+                    projectHeaderControl.RecalcButton.ToolTip.DescriptionText =
+                        "Recalculate the cost values for a range of projects.";
+
+                    projectHeaderControl.CalcDeadlineButton.ToolTip.HeaderText = "Calculate Deadline";
+                    projectHeaderControl.CalcDeadlineButton.ToolTip.DescriptionText =
+                        "Calculate the projected deadline for the current project.";
                 }
             };
 

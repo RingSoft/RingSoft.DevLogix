@@ -20,6 +20,7 @@ using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels.QualityAssurance;
 using RingSoft.DbLookup.Controls.WPF;
+using RingSoft.DevLogix.ProjectManagement;
 
 namespace RingSoft.DevLogix.QualityAssurance
 {
@@ -48,7 +49,7 @@ namespace RingSoft.DevLogix.QualityAssurance
 
     public class ProductVersionHeaderControl : DbMaintenanceCustomPanel
     {
-        public Button CreateVersionButton { get; set; }
+        public DbMaintenanceButton CreateVersionButton { get; set; }
 
         static ProductVersionHeaderControl()
         {
@@ -57,7 +58,7 @@ namespace RingSoft.DevLogix.QualityAssurance
 
         public override void OnApplyTemplate()
         {
-            CreateVersionButton = GetTemplateChild(nameof(CreateVersionButton)) as Button;
+            CreateVersionButton = GetTemplateChild(nameof(CreateVersionButton)) as DbMaintenanceButton;
 
             base.OnApplyTemplate();
         }
@@ -90,6 +91,12 @@ namespace RingSoft.DevLogix.QualityAssurance
                     {
                         productVersionHeaderControl.CreateVersionButton.Visibility = Visibility.Collapsed;
                     }
+
+                    productVersionHeaderControl.CreateVersionButton.ToolTip.HeaderText = "Create New Version (Alt + R)";
+                    productVersionHeaderControl.CreateVersionButton.ToolTip.DescriptionText =
+                        "Create a new Product Version.";
+
+
                 }
             };
         }

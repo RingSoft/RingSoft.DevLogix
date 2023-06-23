@@ -9,7 +9,7 @@ namespace RingSoft.DevLogix.QualityAssurance
 {
     public class TestingTemplateHeaderControl : DbMaintenanceCustomPanel
     {
-        public Button UpdateOutlinesButton { get; set; }
+        public DbMaintenanceButton UpdateOutlinesButton { get; set; }
 
         static TestingTemplateHeaderControl()
         {
@@ -18,7 +18,7 @@ namespace RingSoft.DevLogix.QualityAssurance
 
         public override void OnApplyTemplate()
         {
-            UpdateOutlinesButton = GetTemplateChild(nameof(UpdateOutlinesButton)) as Button;
+            UpdateOutlinesButton = GetTemplateChild(nameof(UpdateOutlinesButton)) as DbMaintenanceButton;
 
             base.OnApplyTemplate();
         }
@@ -47,6 +47,9 @@ namespace RingSoft.DevLogix.QualityAssurance
                         templateHeaderControl.UpdateOutlinesButton.Visibility = Visibility.Collapsed;
                     }
                     templateHeaderControl.UpdateOutlinesButton.Command = LocalViewModel.UpdateOutlinesCommand;
+                    templateHeaderControl.UpdateOutlinesButton.ToolTip.HeaderText = "Update Testing Outlines (Alt + U)";
+                    templateHeaderControl.UpdateOutlinesButton.ToolTip.DescriptionText =
+                        "Generate Steps for the attached Testing Outlines";
                 }
             };
 

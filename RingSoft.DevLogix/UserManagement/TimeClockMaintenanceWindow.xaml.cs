@@ -43,7 +43,7 @@ namespace RingSoft.DevLogix.UserManagement
 
     public class TimeClockHeaderControl : DbMaintenanceCustomPanel
     {
-        public Button PunchOutButton { get; set; }
+        public DbMaintenanceButton PunchOutButton { get; set; }
 
         static TimeClockHeaderControl()
         {
@@ -52,7 +52,7 @@ namespace RingSoft.DevLogix.UserManagement
 
         public override void OnApplyTemplate()
         {
-            PunchOutButton = GetTemplateChild(nameof(PunchOutButton)) as Button;
+            PunchOutButton = GetTemplateChild(nameof(PunchOutButton)) as DbMaintenanceButton;
 
             base.OnApplyTemplate();
         }
@@ -85,6 +85,9 @@ namespace RingSoft.DevLogix.UserManagement
                 {
                     timeClockHeaderControl.PunchOutButton.Command =
                         LocalViewModel.PunchOutCommand;
+                    timeClockHeaderControl.PunchOutButton.ToolTip.HeaderText = "Punch Out (Alt + P)";
+                    timeClockHeaderControl.PunchOutButton.ToolTip.DescriptionText =
+                        "Punch Out of the current Time Clock record.";
                 }
 
                 if (Processor is AppDbMaintenanceWindowProcessor processor)

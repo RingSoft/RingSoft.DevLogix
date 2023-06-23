@@ -21,15 +21,16 @@ using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels;
 using RingSoft.DevLogix.Library.ViewModels.QualityAssurance;
+using RingSoft.DevLogix.ProjectManagement;
 using RingSoft.DevLogix.UserManagement;
 
 namespace RingSoft.DevLogix.QualityAssurance
 {
     public class ErrorHeaderControl : DbMaintenanceCustomPanel
     {
-        public Button PunchInButton { get; set; }
+        public DbMaintenanceButton PunchInButton { get; set; }
 
-        public Button RecalculateButton { get; set; }
+        public DbMaintenanceButton RecalculateButton { get; set; }
 
         static ErrorHeaderControl()
         {
@@ -38,8 +39,8 @@ namespace RingSoft.DevLogix.QualityAssurance
 
         public override void OnApplyTemplate()
         {
-            PunchInButton = GetTemplateChild(nameof(PunchInButton)) as Button;
-            RecalculateButton = GetTemplateChild(nameof(RecalculateButton)) as Button;
+            PunchInButton = GetTemplateChild(nameof(PunchInButton)) as DbMaintenanceButton;
+            RecalculateButton = GetTemplateChild(nameof(RecalculateButton)) as DbMaintenanceButton;
 
             base.OnApplyTemplate();
         }
@@ -67,7 +68,14 @@ namespace RingSoft.DevLogix.QualityAssurance
                     errorHeaderControl.PunchInButton.Command =
                         LocalViewModel.PunchInCommand;
                     errorHeaderControl.RecalculateButton.Command =
-                        LocalViewModel.RecalcCommand;
+                    LocalViewModel.RecalcCommand;
+
+                    errorHeaderControl.PunchInButton.ToolTip.HeaderText = "Punch In (Alt + U)";
+                    errorHeaderControl.PunchInButton.ToolTip.DescriptionText = "Punch into this Product Error. ";
+
+                    errorHeaderControl.RecalculateButton.ToolTip.HeaderText = "Recalculate Cost (Alt + R)";
+                    errorHeaderControl.RecalculateButton.ToolTip.DescriptionText =
+                        "Recalculate the cost values for a range of product errors.";
                 }
             };
         }
