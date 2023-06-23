@@ -3,6 +3,7 @@ using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.EfCore;
 using RingSoft.DevLogix.DataAccess;
 using RingSoft.DevLogix.DataAccess.Model;
+using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 using RingSoft.DevLogix.DataAccess.Model.UserManagement;
@@ -49,6 +50,8 @@ namespace RingSoft.DevLogix.SqlServer
         public DbSet<ProjectMaterialPart> ProjectMaterialParts { get; set; }
         public DbSet<ProjectMaterialHistory> ProjectMaterialHistory { get; set; }
         public DbSet<ProjectTaskDependency> ProjectTaskDependency { get; set; }
+        public DbSet<TimeZone> TimeZone { get; set; }
+        public DbSet<Customer> Customer { get; set; }
         public DbSet<TestingTemplate> TestingTemplates { get; set; }
 
         public bool IsDesignTime { get; set; }

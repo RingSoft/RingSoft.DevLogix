@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RingSoft.DbLookup.EfCore;
 using RingSoft.DevLogix.DataAccess.Model;
+using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 using RingSoft.DevLogix.DataAccess.Model.UserManagement;
@@ -52,6 +53,9 @@ namespace RingSoft.DevLogix.DataAccess
         DbSet<ProjectMaterialPart> ProjectMaterialParts { get; set; }
         DbSet<ProjectMaterialHistory> ProjectMaterialHistory { get; set; }
         DbSet<ProjectTaskDependency> ProjectTaskDependency { get; set; }
+
+        DbSet<TimeZone> TimeZone { get; set; }
+        DbSet<Customer> Customer { get; set; }
 
         void SetLookupContext(DevLogixLookupContext lookupContext);
     }

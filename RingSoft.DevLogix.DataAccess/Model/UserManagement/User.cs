@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Org.BouncyCastle.Utilities.Collections;
+using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 using RingSoft.DevLogix.DataAccess.Model.UserManagement;
@@ -103,6 +104,7 @@ namespace RingSoft.DevLogix.DataAccess.Model
         public virtual ICollection<TestingOutline> CreatedTestingOutlines { get; set; }
         public virtual ICollection<TestingOutline> AssignedTestingOutlines { get; set; }
         public virtual ICollection<TestingOutlineCost> TestingOutlineCosts { get; set; }
+        public virtual ICollection<Customer> Customers { get; set; }
 
         public User()
         {
@@ -123,6 +125,7 @@ namespace RingSoft.DevLogix.DataAccess.Model
             CreatedTestingOutlines = new HashSet<TestingOutline>();
             AssignedTestingOutlines = new HashSet<TestingOutline>();
             TestingOutlineCosts = new HashSet<TestingOutlineCost>();
+            Customers = new HashSet<Customer>();
         }
     }
 }

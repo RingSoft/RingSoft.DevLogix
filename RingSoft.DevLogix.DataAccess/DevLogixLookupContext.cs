@@ -12,12 +12,15 @@ using RingSoft.DevLogix.DataAccess.LookupModel;
 using RingSoft.DevLogix.DataAccess.Model;
 using System;
 using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
+using RingSoft.DevLogix.DataAccess.LookupModel.CustomerManagement;
 using RingSoft.DevLogix.DataAccess.LookupModel.ProjectManagement;
 using RingSoft.DevLogix.DataAccess.LookupModel.QualityAssurance;
 using RingSoft.DevLogix.DataAccess.LookupModel.UserManagement;
+using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 using RingSoft.DevLogix.DataAccess.Model.UserManagement;
+using TimeZone = RingSoft.DevLogix.DataAccess.Model.CustomerManagement.TimeZone;
 
 namespace RingSoft.DevLogix.DataAccess
 {
@@ -76,6 +79,9 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<ProjectMaterialHistory> ProjectMaterialHistory { get; set; }
         public TableDefinition<ProjectTaskDependency> ProjectTaskDependency { get; set; }
 
+        public TableDefinition<TimeZone> TimeZone { get; set; }
+        public TableDefinition<Customer> Customer { get; set; }
+
         public LookupDefinition<DevLogixChartLookup, DevLogixChart> DevLogixChartLookup { get; set; }
         public LookupDefinition<SystemPreferencesLookup, SystemPreferences> SystemPreferencesLookup { get; set; }
         public LookupDefinition<UserLookup, User> UserLookup { get; set; }
@@ -113,6 +119,9 @@ namespace RingSoft.DevLogix.DataAccess
         public LookupDefinition<ProjectMaterialPartLookup, ProjectMaterialPart> ProjectMaterialPartLookup { get; set; }
         public LookupDefinition<ProjectMaterialHistoryLookup, ProjectMaterialHistory> ProjectMaterialHistoryLookup { get; set; }
         public LookupDefinition<ProjectTaskDependencyLookup, ProjectTaskDependency> ProjectTaskDependencyLookup { get; set; }
+
+        public LookupDefinition<TimeZoneLookup, TimeZone> TimeZoneLookup { get; set; }
+        public LookupDefinition<CustomerLookup, Customer> CustomerLookup { get; set; }
 
         public SqliteDataProcessor SqliteDataProcessor { get; }
         public SqlServerDataProcessor SqlServerDataProcessor { get; }
@@ -437,6 +446,25 @@ namespace RingSoft.DevLogix.DataAccess
             ProjectTaskDependencyLookup.Include(p => p.DependsOnProjectTask)
                 .AddVisibleColumnDefinition(p => p.DependsOn, "Depends On", p => p.Name, 50);
             ProjectTaskDependency.HasLookupDefinition(ProjectTaskDependencyLookup);
+
+            TimeZoneLookup = new LookupDefinition<TimeZoneLookup, TimeZone>(TimeZone);
+            TimeZoneLookup.AddVisibleColumnDefinition(
+                p => p.Name
+                , "Name"
+                , p => p.Name, 99);
+            TimeZone.HasLookupDefinition(TimeZoneLookup);
+
+            CustomerLookup = new LookupDefinition<CustomerLookup, Customer>(Customer);
+            CustomerLookup.AddVisibleColumnDefinition(
+                p => p.CompanyName
+                , "Company Name"
+                , p => p.CompanyName, 50);
+            CustomerLookup.AddVisibleColumnDefinition(
+                p => p.PhoneNumber
+                , "Phone Number"
+                , p => p.Phone, 50);
+            Customer.HasLookupDefinition(CustomerLookup);
+
         }
 
         public LookupDefinition<ProductVersionLookup, ProductVersion> MakeProductVersionLookupDefinition()
@@ -674,6 +702,9 @@ namespace RingSoft.DevLogix.DataAccess
 
             TestingTemplates.PriorityLevel = 100;
             //TestingTemplates.GetFieldDefinition(p => p.BaseTemplateId).DoesAllowRecursion(false);
+
+            Customer.PriorityLevel = 500;
+            Customer.GetFieldDefinition(p => p.Notes).IsMemo();
         }
 
         public override UserAutoFill GetUserAutoFill(string userName)

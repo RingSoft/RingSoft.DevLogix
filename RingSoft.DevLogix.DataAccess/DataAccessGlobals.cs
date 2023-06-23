@@ -7,6 +7,7 @@ using System.Linq;
 using RingSoft.DevLogix.DataAccess.Configurations.ProjectManagement;
 using RingSoft.DevLogix.DataAccess.Configurations.QualityAssurance;
 using Microsoft.EntityFrameworkCore.Migrations;
+using RingSoft.DevLogix.DataAccess.Configurations.CustomerManagement;
 using RingSoft.DevLogix.DataAccess.Configurations.UserManagement;
 using RingSoft.DevLogix.DataAccess.Model;
 
@@ -55,6 +56,8 @@ namespace RingSoft.DevLogix.DataAccess
             modelBuilder.ApplyConfiguration(new TestingOutlineDetailsConfiguration());
             modelBuilder.ApplyConfiguration(new TestingOutlineTemplateConfiguration());
             modelBuilder.ApplyConfiguration(new TestingOutlineCostConfiguration());
+            modelBuilder.ApplyConfiguration(new TimeZoneConfiguration());
+            modelBuilder.ApplyConfiguration(new CustomerConfiguration());
 
             AdvancedFindDataProcessorEfCore.ConfigureAdvancedFind(modelBuilder);
         }

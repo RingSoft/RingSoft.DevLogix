@@ -207,6 +207,106 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.ToTable("RecordLocks");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Customer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<int>("AssignedUserId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("City")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("CompanyName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("ContactName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("ContactTitle")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("Country")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("PostalCode")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("Region")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<decimal?>("SalesCost")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal?>("SalesMinutesSpent")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal?>("SupportCost")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal?>("SupportMinutesPurchased")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal?>("SupportMinutesSpent")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("TimeZoneId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AssignedUserId");
+
+                    b.HasIndex("TimeZoneId");
+
+                    b.ToTable("Customer");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.TimeZone", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("HourToGMT")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TimeZone");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Department", b =>
                 {
                     b.Property<int>("Id")
@@ -1445,6 +1545,25 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("SearchForAdvancedFind");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Customer", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "AssignedUser")
+                        .WithMany("Customers")
+                        .HasForeignKey("AssignedUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.TimeZone", "TimeZone")
+                        .WithMany("Customers")
+                        .HasForeignKey("TimeZoneId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("AssignedUser");
+
+                    b.Navigation("TimeZone");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Department", b =>
                 {
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.ErrorStatus", "ErrorFailStatus")
@@ -2040,6 +2159,11 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("SearchForAdvancedFindFilters");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.TimeZone", b =>
+                {
+                    b.Navigation("Customers");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Department", b =>
                 {
                     b.Navigation("ArchiveVersionProducts");
@@ -2189,6 +2313,8 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("AssignedTestingOutlines");
 
                     b.Navigation("CreatedTestingOutlines");
+
+                    b.Navigation("Customers");
 
                     b.Navigation("ErrorDevelopers");
 
