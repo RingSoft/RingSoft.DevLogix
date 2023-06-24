@@ -11,4 +11,11 @@
     {
         public string Name { get; set; }
     }
+
+    public class TerritoryLookup
+    {
+        public string Name { get; set; }
+
+        public string Salesperson { get; set; }
+    }
 }

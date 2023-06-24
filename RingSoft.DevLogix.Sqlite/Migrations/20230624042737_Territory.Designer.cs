@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RingSoft.DevLogix.Sqlite;
 
@@ -10,9 +11,11 @@ using RingSoft.DevLogix.Sqlite;
 namespace RingSoft.DevLogix.Sqlite.Migrations
 {
     [DbContext(typeof(DevLogixSqliteDbContext))]
-    partial class DevLogixSqliteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230624042737_Territory")]
+    partial class Territory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.1");
@@ -295,12 +298,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
-                    b.Property<int>("SalespersonId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("SalespersonId");
 
                     b.ToTable("Territory");
                 });
@@ -1545,17 +1543,6 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("TimeZone");
                 });
 
-            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Territory", b =>
-                {
-                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "Salesperson")
-                        .WithMany("Territories")
-                        .HasForeignKey("SalespersonId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Salesperson");
-                });
-
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Department", b =>
                 {
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.ErrorStatus", "ErrorFailStatus")
@@ -2328,8 +2315,6 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("ProjectUsers");
 
                     b.Navigation("Projects");
-
-                    b.Navigation("Territories");
 
                     b.Navigation("TestingOutlineCosts");
 

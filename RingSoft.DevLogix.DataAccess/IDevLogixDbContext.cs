@@ -55,6 +55,7 @@ namespace RingSoft.DevLogix.DataAccess
         DbSet<ProjectTaskDependency> ProjectTaskDependency { get; set; }
 
         DbSet<TimeZone> TimeZone { get; set; }
+        DbSet<Territory> Territory { get; set; }
         DbSet<Customer> Customer { get; set; }
 
         void SetLookupContext(DevLogixLookupContext lookupContext);

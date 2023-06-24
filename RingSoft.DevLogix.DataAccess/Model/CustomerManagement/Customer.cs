@@ -43,19 +43,15 @@ namespace RingSoft.DevLogix.DataAccess.Model.CustomerManagement
         public virtual TimeZone TimeZone { get; set; }
 
         [Required]
-        public int AssignedUserId { get; set; }
+        public int TerritoryId { get; set; }
 
-        public virtual User AssignedUser { get; set; }
+        public virtual Territory Territory { get; set; }
 
         public decimal? SupportMinutesPurchased { get; set; }
 
         public decimal? SupportMinutesSpent { get; set; }
 
         public decimal? SupportCost { get; set; }
-
-        public decimal? SalesMinutesSpent { get; set; }
-
-        public decimal? SalesCost { get; set; }
 
         public string? Notes { get; set; }
 

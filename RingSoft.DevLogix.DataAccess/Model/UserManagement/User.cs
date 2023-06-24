@@ -105,6 +105,7 @@ namespace RingSoft.DevLogix.DataAccess.Model
         public virtual ICollection<TestingOutline> AssignedTestingOutlines { get; set; }
         public virtual ICollection<TestingOutlineCost> TestingOutlineCosts { get; set; }
         public virtual ICollection<Customer> Customers { get; set; }
+        public virtual ICollection<Territory> Territories { get; set; }
 
         public User()
         {
@@ -126,6 +127,7 @@ namespace RingSoft.DevLogix.DataAccess.Model
             AssignedTestingOutlines = new HashSet<TestingOutline>();
             TestingOutlineCosts = new HashSet<TestingOutlineCost>();
             Customers = new HashSet<Customer>();
+            Territories = new HashSet<Territory>();
         }
     }
 }

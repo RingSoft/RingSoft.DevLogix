@@ -51,6 +51,7 @@ namespace RingSoft.DevLogix.SqlServer
         public DbSet<ProjectMaterialHistory> ProjectMaterialHistory { get; set; }
         public DbSet<ProjectTaskDependency> ProjectTaskDependency { get; set; }
         public DbSet<TimeZone> TimeZone { get; set; }
+        public DbSet<Territory> Territory { get; set; }
         public DbSet<Customer> Customer { get; set; }
         public DbSet<TestingTemplate> TestingTemplates { get; set; }
 

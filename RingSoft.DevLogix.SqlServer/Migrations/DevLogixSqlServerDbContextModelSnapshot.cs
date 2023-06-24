@@ -263,12 +263,6 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
-                    b.Property<decimal?>("SalesCost")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal?>("SalesMinutesSpent")
-                        .HasColumnType("numeric");
-
                     b.Property<decimal?>("SupportCost")
                         .HasColumnType("numeric");
 
@@ -277,6 +271,9 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
                     b.Property<decimal?>("SupportMinutesSpent")
                         .HasColumnType("numeric");
+
+                    b.Property<int>("TerritoryId")
+                        .HasColumnType("integer");
 
                     b.Property<int>("TimeZoneId")
                         .HasColumnType("integer");
@@ -289,9 +286,34 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
                     b.HasIndex("AssignedUserId");
 
+                    b.HasIndex("TerritoryId");
+
                     b.HasIndex("TimeZoneId");
 
                     b.ToTable("Customer");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Territory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<int>("SalespersonId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SalespersonId");
+
+                    b.ToTable("Territory");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.TimeZone", b =>
@@ -1561,6 +1583,12 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Territory", "Territory")
+                        .WithMany("Customers")
+                        .HasForeignKey("TerritoryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.TimeZone", "TimeZone")
                         .WithMany("Customers")
                         .HasForeignKey("TimeZoneId")
@@ -1569,7 +1597,20 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
                     b.Navigation("AssignedUser");
 
+                    b.Navigation("Territory");
+
                     b.Navigation("TimeZone");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Territory", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "Salesperson")
+                        .WithMany("Territories")
+                        .HasForeignKey("SalespersonId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Salesperson");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Department", b =>
@@ -2167,6 +2208,11 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("SearchForAdvancedFindFilters");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Territory", b =>
+                {
+                    b.Navigation("Customers");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.TimeZone", b =>
                 {
                     b.Navigation("Customers");
@@ -2339,6 +2385,8 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("ProjectUsers");
 
                     b.Navigation("Projects");
+
+                    b.Navigation("Territories");
 
                     b.Navigation("TestingOutlineCosts");
 

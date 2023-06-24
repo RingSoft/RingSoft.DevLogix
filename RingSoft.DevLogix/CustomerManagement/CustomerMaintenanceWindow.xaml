@@ -99,6 +99,12 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -106,6 +112,47 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
+
+                        <Label Grid.Row="0" Grid.Column="0" Content="Contact Name"/>
+
+                        <dec:StringEditControl Grid.Row="0" Grid.Column="1" Width="200" HorizontalAlignment="Left" Text="{Binding ContactName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="50"/>
+
+                        <Label Grid.Row="0" Grid.Column="2" Content="Contact Title"/>
+
+                        <dec:StringEditControl Grid.Row="0" Grid.Column="3" Width="200" HorizontalAlignment="Left" Text="{Binding ContactTitle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="50"/>
+
+                        <Label Grid.Row="1" Grid.Column="0" Content="Address"/>
+
+                        <dec:StringEditControl Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Width="300" HorizontalAlignment="Left" Text="{Binding Address, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="50"/>
+
+                        <Label Grid.Row="2" Grid.Column="0" Content="City"/>
+
+                        <dec:StringEditControl Grid.Row="2" Grid.Column="1" Width="200" HorizontalAlignment="Left" Text="{Binding City, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="50"/>
+
+                        <Label Grid.Row="2" Grid.Column="2" Content="Region"/>
+
+                        <dec:StringEditControl Grid.Row="2" Grid.Column="3" Width="200" HorizontalAlignment="Left" Text="{Binding Region, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="50"/>
+
+                        <Label Grid.Row="3" Grid.Column="0" Content="Postal Code"/>
+
+                        <dec:StringEditControl Grid.Row="3" Grid.Column="1" Width="200" HorizontalAlignment="Left" Text="{Binding PostalCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="50"/>
+
+                        <Label Grid.Row="3" Grid.Column="2" Content="Country"/>
+
+                        <dec:StringEditControl Grid.Row="3" Grid.Column="3" Width="200" HorizontalAlignment="Left" Text="{Binding Country, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="50"/>
+
+                        <Label Grid.Row="4" Grid.Column="0" Content="Phone Number"/>
+
+                        <dec:StringEditControl Grid.Row="4" Grid.Column="1" Width="200" HorizontalAlignment="Left" Text="{Binding PhoneNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="50"/>
+
+                        <Label Grid.Row="4" Grid.Column="2" Content="Time Zone"/>
+
+                        <lc:AutoFillControl Grid.Row="4" Grid.Column="3" Width="200" HorizontalAlignment="Left" Setup="{Binding TimeZoneAutoFillSetup}" Value="{Binding TimeZoneAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        <Label Grid.Row="5" Grid.Column="0" Content="Territory"/>
+
+                        <lc:AutoFillControl Grid.Row="5" Grid.Column="1" Width="200" HorizontalAlignment="Left" Setup="{Binding TerritoryAutoFillSetup}" Value="{Binding TerritoryAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
                     </Grid>
                 </TabItem>
             </TabControl>

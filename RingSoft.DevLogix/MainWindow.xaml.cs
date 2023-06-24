@@ -174,11 +174,22 @@ namespace RingSoft.DevLogix
                 {
                     menuItem.Items.Add(new MenuItem()
                     {
-                        Header = "Add/Edit _Time,Zones...",
+                        Header = "Add/Edit _Time Zones...",
                         Command = ViewModel.ShowMaintenanceWindowCommand,
                         CommandParameter = AppGlobals.LookupContext.TimeZone,
                     });
                 }
+
+                if (AppGlobals.LookupContext.Territory.HasRight(RightTypes.AllowView))
+                {
+                    menuItem.Items.Add(new MenuItem()
+                    {
+                        Header = "Add/Edit T_erritories...",
+                        Command = ViewModel.ShowMaintenanceWindowCommand,
+                        CommandParameter = AppGlobals.LookupContext.Territory,
+                    });
+                }
+
             }
         }
 

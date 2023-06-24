@@ -80,6 +80,7 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<ProjectTaskDependency> ProjectTaskDependency { get; set; }
 
         public TableDefinition<TimeZone> TimeZone { get; set; }
+        public TableDefinition<Territory> Territory { get; set; }
         public TableDefinition<Customer> Customer { get; set; }
 
         public LookupDefinition<DevLogixChartLookup, DevLogixChart> DevLogixChartLookup { get; set; }
@@ -121,6 +122,7 @@ namespace RingSoft.DevLogix.DataAccess
         public LookupDefinition<ProjectTaskDependencyLookup, ProjectTaskDependency> ProjectTaskDependencyLookup { get; set; }
 
         public LookupDefinition<TimeZoneLookup, TimeZone> TimeZoneLookup { get; set; }
+        public LookupDefinition<TerritoryLookup, Territory> TerritoryLookup { get; set; }
         public LookupDefinition<CustomerLookup, Customer> CustomerLookup { get; set; }
 
         public SqliteDataProcessor SqliteDataProcessor { get; }
@@ -454,6 +456,19 @@ namespace RingSoft.DevLogix.DataAccess
                 , p => p.Name, 99);
             TimeZone.HasLookupDefinition(TimeZoneLookup);
 
+            TerritoryLookup = new LookupDefinition<TerritoryLookup, Territory>(Territory);
+            TerritoryLookup.AddVisibleColumnDefinition(
+                p => p.Name
+                , "Name"
+                , p => p.Name, 50);
+
+            TerritoryLookup.Include(p => p.Salesperson)
+                .AddVisibleColumnDefinition(
+                    p => p.Salesperson
+                    , "Salesperson"
+                    , p => p.Name, 50);
+            Territory.HasLookupDefinition(TerritoryLookup);
+
             CustomerLookup = new LookupDefinition<CustomerLookup, Customer>(Customer);
             CustomerLookup.AddVisibleColumnDefinition(
                 p => p.CompanyName
@@ -702,6 +717,8 @@ namespace RingSoft.DevLogix.DataAccess
 
             TestingTemplates.PriorityLevel = 100;
             //TestingTemplates.GetFieldDefinition(p => p.BaseTemplateId).DoesAllowRecursion(false);
+
+            Territory.PriorityLevel = 400;
 
             Customer.PriorityLevel = 500;
             Customer.GetFieldDefinition(p => p.Notes).IsMemo();
