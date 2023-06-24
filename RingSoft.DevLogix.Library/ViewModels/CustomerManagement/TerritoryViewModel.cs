@@ -1,7 +1,10 @@
 ﻿using System.Linq;
+using System.Net.Sockets;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.App.Library;
 using RingSoft.DbLookup;
+using RingSoft.DbLookup.AutoFill;
+using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
 
 namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
@@ -24,6 +27,42 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
         }
 
+        private AutoFillSetup _salespersonAutoFillSetup;
+
+        public AutoFillSetup SalespersonAutoFillSetup
+        {
+            get => _salespersonAutoFillSetup;
+            set
+            {
+                if (_salespersonAutoFillSetup == value)
+                    return;
+
+                _salespersonAutoFillSetup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private AutoFillValue _salespersonAutoFillValue;
+
+        public AutoFillValue SalespersonAutoFillValue
+        {
+            get => _salespersonAutoFillValue;
+            set
+            {
+                if (_salespersonAutoFillValue == value)
+                    return;
+
+                _salespersonAutoFillValue = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public TerritoryViewModel()
+        {
+            SalespersonAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.SalespersonId));
+
+        }
+
         protected override Territory PopulatePrimaryKeyControls(Territory newEntity, PrimaryKeyValue primaryKeyValue)
         {
             var context = AppGlobals.DataRepository.GetDataContext();
@@ -39,7 +78,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         protected override void LoadFromEntity(Territory entity)
         {
-            
+            SalespersonAutoFillValue = entity.Salesperson.GetAutoFillValue();
         }
 
         protected override Territory GetEntityData()
@@ -48,6 +87,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             {
                 Id = Id,
                 Name = KeyAutoFillValue.Text,
+                SalespersonId = SalespersonAutoFillValue.GetEntity<User>().Id,
             };
             return result;
         }
@@ -56,6 +96,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         {
             Id = 0;
             KeyAutoFillValue = null;
+            SalespersonAutoFillValue = null;
         }
 
         protected override bool SaveEntity(Territory entity)

@@ -21,6 +21,28 @@
         <lc:DbMaintenanceStatusBar x:Name="StatusBar" DockPanel.Dock="Bottom"/>
 
         <Grid Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Row="0" Grid.Column="0" Content="Territory ID"/>
+
+            <dec:StringReadOnlyBox Grid.Row="0" Grid.Column="1" Text="{Binding Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="50" HorizontalAlignment="Left"/>
+
+            <Label Grid.Row="1" Grid.Column="0" Content="Description"/>
+
+            <lc:AutoFillControl Grid.Row="1" Grid.Column="1" x:Name="DescriptionControl" Width="200" HorizontalAlignment="Left"/>
+
+            <Label Grid.Row="2" Grid.Column="0" Content="Assigned Salesperson"/>
+
+            <lc:AutoFillControl Grid.Row="2" Grid.Column="1" Setup="{Binding SalespersonAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding SalespersonAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left"/>
 
         </Grid>
 

@@ -19,5 +19,17 @@ namespace RingSoft.DevLogix.CustomerManagement
         public override string ItemText => "Territory";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;
         public override DbMaintenanceStatusBar DbStatusBar => StatusBar;
+
+        protected override void OnLoaded()
+        {
+            RegisterFormKeyControl(DescriptionControl);
+            base.OnLoaded();
+        }
+
+        public override void ResetViewForNewRecord()
+        {
+            DescriptionControl.Focus();
+            base.ResetViewForNewRecord();
+        }
     }
 }
