@@ -27,6 +27,8 @@ namespace RingSoft.DevLogix.DataAccess.Configurations.CustomerManagement
             builder.Property(p => p.SalesMinutesSpent).HasColumnType(DbConstants.DecimalColumnType);
             builder.Property(p => p.SalesCost).HasColumnType(DbConstants.DecimalColumnType);
             builder.Property(p => p.Notes).HasColumnType(DbConstants.StringColumnType);
+            builder.Property(p => p.EmailAddress).HasColumnType(DbConstants.StringColumnType);
+            builder.Property(p => p.WebAddress).HasColumnType(DbConstants.StringColumnType);
 
             builder.HasOne(p => p.AssignedUser)
                 .WithMany(p => p.Customers)

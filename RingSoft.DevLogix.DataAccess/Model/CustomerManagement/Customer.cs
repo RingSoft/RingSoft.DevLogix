@@ -58,5 +58,11 @@ namespace RingSoft.DevLogix.DataAccess.Model.CustomerManagement
         public decimal? SalesCost { get; set; }
 
         public string? Notes { get; set; }
+
+        [MaxLength(100)]
+        public string? EmailAddress { get; set; }
+
+        [MaxLength(100)]
+        public string? WebAddress { get; set; }
     }
 }

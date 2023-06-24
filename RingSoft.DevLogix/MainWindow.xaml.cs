@@ -160,11 +160,18 @@ namespace RingSoft.DevLogix
                 var menuItem = new MenuItem() { Header = "_Customer Management" };
                 MainMenu.Items.Add(menuItem);
 
+                if (AppGlobals.LookupContext.Customer.HasRight(RightTypes.AllowView))
+                {
+                    menuItem.Items.Add(new MenuItem()
+                    {
+                        Header = "Add/Edit _Customers...",
+                        Command = ViewModel.ShowMaintenanceWindowCommand,
+                        CommandParameter = AppGlobals.LookupContext.Customer,
+                    });
+                }
+
                 if (AppGlobals.LookupContext.TimeZone.HasRight(RightTypes.AllowView))
                 {
-                    var categoryItem =
-                        userCategory.Items.FirstOrDefault(p => 
-                            p.TableDefinition == AppGlobals.LookupContext.TimeZone);
                     menuItem.Items.Add(new MenuItem()
                     {
                         Header = "Add/Edit _Time,Zones...",

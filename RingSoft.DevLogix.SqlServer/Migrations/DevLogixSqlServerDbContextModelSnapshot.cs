@@ -243,6 +243,10 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
+                    b.Property<string>("EmailAddress")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar");
+
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar");
 
@@ -276,6 +280,10 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
                     b.Property<int>("TimeZoneId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("WebAddress")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar");
 
                     b.HasKey("Id");
 
