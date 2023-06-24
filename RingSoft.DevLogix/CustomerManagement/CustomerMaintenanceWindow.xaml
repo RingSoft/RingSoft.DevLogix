@@ -91,6 +91,25 @@
 
             <lc:AutoFillControl Grid.Row="0" Grid.Column="3" Width="200" x:Name="CompanyControl" HorizontalAlignment="Left"/>
 
+            <TabControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5">
+
+                <TabItem Header="Details">
+
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </TabItem>
+            </TabControl>
+
         </Grid>
     </DockPanel>
 </ac:DbMaintenanceWindow>

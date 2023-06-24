@@ -44,6 +44,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 .FirstOrDefault(p => p.Id == newEntity.Id);
 
             Id = newEntity.Id;
+            KeyAutoFillValue = result.GetAutoFillValue();
             return result;
         }
 
@@ -54,7 +55,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         protected override Customer GetEntityData()
         {
-            throw new System.NotImplementedException();
+            var result = new Customer
+            {
+                Id = Id,
+                CompanyName = KeyAutoFillValue.Text,
+            };
+            return result;
         }
 
         protected override void ClearData()
@@ -66,12 +72,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         protected override bool SaveEntity(Customer entity)
         {
-            throw new System.NotImplementedException();
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var result = context.SaveEntity(entity, "Saving Customer");
+            return result;
         }
 
         protected override bool DeleteEntity()
         {
-            throw new System.NotImplementedException();
+            var result = true;
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var table = (context.GetTable<Customer>());
+            var delCustomer = table.FirstOrDefault(p => p.Id == Id);
+            if (delCustomer != null)
+            {
+                result = context.DeleteEntity(delCustomer, "Deleting Customer");
+            }
+            return result;
         }
 
         private void PunchIn()
