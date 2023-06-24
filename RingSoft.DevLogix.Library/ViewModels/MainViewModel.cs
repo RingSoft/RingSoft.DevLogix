@@ -599,45 +599,8 @@ namespace RingSoft.DevLogix.Library.ViewModels
                 {
                     user.OtherClockOutReason = null;
                 }
-
-                var table = AppGlobals.LookupContext.Users;
-                var clockDateField = table.GetFieldDefinition(p => p.ClockDate);
-                var clockReasonField = table.GetFieldDefinition(p => p.ClockOutReason);
-                var otherReasonField = table.GetFieldDefinition(p => p.OtherClockOutReason);
-
-                var sqlData = new SqlData(clockDateField.FieldName
-                    , clockReasonField.FormatValue(user.ClockDate.ToString())
-                    , ValueTypes.DateTime
-                    , DbDateTypes.DateTime);
-                var updateStatement = new UpdateDataStatement(table.GetPrimaryKeyValueFromEntity(user));
-                updateStatement.AddSqlData(sqlData);
-
-                sqlData = new SqlData(clockReasonField.FieldName
-                    , user.ClockOutReason.ToString()
-                    , ValueTypes.Numeric);
-                updateStatement.AddSqlData(sqlData);
-
-                if (user.OtherClockOutReason.IsNullOrEmpty())
-                {
-                    sqlData = new SqlData(otherReasonField.FieldName
-                        , ""
-                        , ValueTypes.String);
-                }
-                else
-                {
-                    sqlData = new SqlData(otherReasonField.FieldName
-                        , user.OtherClockOutReason
-                        , ValueTypes.String);
-                }
-
-                updateStatement.AddSqlData(sqlData);
-
-                var sql = AppGlobals.LookupContext.DataProcessor.SqlGenerator.GenerateUpdateSql(updateStatement);
-                var dataResult = AppGlobals.LookupContext.DataProcessor.ExecuteSql(sql);
-                return dataResult.ResultCode == GetDataResultCodes.Success;
-
-                //return context.SaveEntity(user, "Clocking Out");
-
+                result = context.SaveEntity(user, "Saving Clock Reason");
+                return result;
             }
 
             return false;
