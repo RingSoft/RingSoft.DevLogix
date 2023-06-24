@@ -30,7 +30,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         void CopyToClipboard(string text);
 
-        void PunchIn(Error error);
+        //void PunchIn(Error error);
 
         bool ProcessRecalcLookupFilter(LookupDefinitionBase lookup);
 
@@ -1115,7 +1115,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 user.User = AppGlobals.LoggedInUser;
                 ErrorUserGridManager.AddUserRow(user);
             }
-            View.PunchIn(GetError(Id));
+            AppGlobals.MainViewModel.PunchIn(GetError(Id));
         }
 
         public void RefreshCost(List<ErrorUser> users)

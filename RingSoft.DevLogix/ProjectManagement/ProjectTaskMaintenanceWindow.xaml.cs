@@ -220,7 +220,7 @@ namespace RingSoft.DevLogix.ProjectManagement
 
         public void PunchIn(ProjectTask projectTask)
         {
-            AppGlobals.MainViewModel.MainView.PunchIn(projectTask);
+            AppGlobals.MainViewModel.PunchIn(projectTask);
         }
 
         public bool SetupRecalcFilter(LookupDefinitionBase lookupDefinition)

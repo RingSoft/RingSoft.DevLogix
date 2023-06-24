@@ -10,6 +10,7 @@ namespace RingSoft.DevLogix.DataAccess.Configurations
         public void Configure(EntityTypeBuilder<TimeClock> builder)
         {
             builder.Property(p => p.Id).HasColumnType(DbConstants.IntegerColumnType);
+            builder.Property(p => p.Name).HasColumnType(DbConstants.StringColumnType);
             builder.Property(p => p.PunchInDate).HasColumnType(DbConstants.DateColumnType);
             builder.Property(p => p.PunchOutDate).HasColumnType(DbConstants.DateColumnType);
             builder.Property(p => p.MinutesSpent).HasColumnType(DbConstants.DecimalColumnType);

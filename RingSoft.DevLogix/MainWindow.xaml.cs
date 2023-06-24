@@ -22,12 +22,14 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using RingSoft.DevLogix.DataAccess;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
+using RingSoft.DevLogix.Library.ViewModels.UserManagement;
 using Error = RingSoft.DevLogix.DataAccess.Model.Error;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MessageBox = System.Windows.Forms.MessageBox;
 using Window = System.Windows.Window;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using ExtensionMethods = RingSoft.DbLookup.ExtensionMethods;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace RingSoft.DevLogix
 {
@@ -88,7 +90,7 @@ namespace RingSoft.DevLogix
                 {
                     if (args.Key == Key.C)
                     {
-                        PunchOut(true, AppGlobals.LoggedInUser);
+                        ViewModel.PunchOut(true, AppGlobals.LoggedInUser);
                     }
                 }
             };
@@ -669,153 +671,20 @@ namespace RingSoft.DevLogix
 
         public void PunchIn(Error error)
         {
-            var timeClockWindow = GetTimeClockWindow();
-            if (timeClockWindow != null)
-            {
-                timeClockWindow.GetTimeClockError += (sender, args) =>
-                {
-                    args.Error = error;
-                };
-                ShowTimeClockWindow(timeClockWindow);
-            }
+            var timeClockWindow = new TimeClockMaintenanceWindow(error);
+            ShowTimeClockWindow(timeClockWindow);
         }
 
         public void PunchIn(ProjectTask projectTask)
         {
-            var timeClockWindow = GetTimeClockWindow();
-            if (timeClockWindow != null)
-            {
-                timeClockWindow.GetTimeClockProjectTask += (sender, args) =>
-                {
-                    args.ProjectTask = projectTask;
-                };
-                ShowTimeClockWindow(timeClockWindow);
-            }
-
+            var timeClockWindow = new TimeClockMaintenanceWindow(projectTask);
+            ShowTimeClockWindow(timeClockWindow);
         }
 
         public void PunchIn(TestingOutline testingOutline)
         {
-            var timeClockWindow = GetTimeClockWindow();
-            if (timeClockWindow != null)
-            {
-                timeClockWindow.GetTimeClockTestingOutline += (sender, args) =>
-                {
-                    args.TestingOutline = testingOutline;
-                };
-                ShowTimeClockWindow(timeClockWindow);
-            }
-        }
-
-        public bool PunchOut(bool clockOut, int userId)
-        {
-            if (userId == 0)
-            {
-                userId = AppGlobals.LoggedInUser.Id;
-            }
-
-            var context = AppGlobals.DataRepository.GetDataContext();
-            var table = context.GetTable<User>();
-            var user = table.FirstOrDefault(p => p.Id == userId);
-
-            return PunchOut(clockOut, user, context);
-        }
-
-        public bool PunchOut(bool clockOut, User user, IDbContext context = null)
-        {
-            if (context == null)
-            {
-                context = AppGlobals.DataRepository.GetDataContext();
-            }
-
-            var tableQuery = context.GetTable<TimeClock>();
-
-            var activeTimeCard =
-                tableQuery.FirstOrDefault(p => p.PunchOutDate == null && p.UserId == user.Id && p.PunchOutDate == null);
-
-            var result = true;
-
-            var lookupDefinition = AppGlobals.LookupContext.TimeClockLookup.Clone();
-
-            var dialogInput = new DialogInput();
-
-            if (activeTimeCard != null)
-            {
-                lookupDefinition.ShowAddOnTheFlyWindow(
-                    AppGlobals.LookupContext.TimeClocks.GetPrimaryKeyValueFromEntity(activeTimeCard), dialogInput);
-            }
-            else
-            {
-                dialogInput.DialogResult = true;
-            }
-
-            if (!clockOut)
-            {
-                return true;
-            }
-
-            if (dialogInput.DialogResult)
-            {
-                var clockReasonDialog = new UserClockReasonWindow(user);
-                clockReasonDialog.ShowDialog();
-                if (!clockReasonDialog.LocalViewModel.DialogResult)
-                {
-                    return false;
-                }
-
-                if (user != null)
-                {
-                    user.ClockDate = DateTime.Now.ToUniversalTime();
-                    user.ClockOutReason = (byte)clockReasonDialog.LocalViewModel.ClockOutReason;
-                    if (clockReasonDialog.LocalViewModel.ClockOutReason == ClockOutReasons.Other)
-                    {
-                        user.OtherClockOutReason = clockReasonDialog.LocalViewModel.OtherReason;
-                    }
-                    else
-                    {
-                        user.OtherClockOutReason = null;
-                    }
-
-                    var table = AppGlobals.LookupContext.Users;
-                    var clockDateField = table.GetFieldDefinition(p => p.ClockDate);
-                    var clockReasonField = table.GetFieldDefinition(p => p.ClockOutReason);
-                    var otherReasonField = table.GetFieldDefinition(p => p.OtherClockOutReason);
-
-                    var sqlData = new SqlData(clockDateField.FieldName
-                        , clockReasonField.FormatValue(user.ClockDate.ToString())
-                        , ValueTypes.DateTime
-                        , DbDateTypes.DateTime);
-                    var updateStatement = new UpdateDataStatement(table.GetPrimaryKeyValueFromEntity(user));
-                    updateStatement.AddSqlData(sqlData);
-
-                    sqlData = new SqlData(clockReasonField.FieldName
-                        , user.ClockOutReason.ToString()
-                        , ValueTypes.Numeric);
-                    updateStatement.AddSqlData(sqlData);
-
-                    if (user.OtherClockOutReason.IsNullOrEmpty())
-                    {
-                        sqlData = new SqlData(otherReasonField.FieldName
-                            , ""
-                            , ValueTypes.String);
-                    }
-                    else
-                    {
-                        sqlData = new SqlData(otherReasonField.FieldName
-                            , user.OtherClockOutReason
-                            , ValueTypes.String);
-                    }
-                    updateStatement.AddSqlData(sqlData);
-
-                    var sql = AppGlobals.LookupContext.DataProcessor.SqlGenerator.GenerateUpdateSql(updateStatement);
-                    var dataResult = AppGlobals.LookupContext.DataProcessor.ExecuteSql(sql);
-                    return dataResult.ResultCode == GetDataResultCodes.Success;
-
-                    //return context.SaveEntity(user, "Clocking Out");
-                }
-
-            }
-            return false;
+            var timeClockWindow = new TimeClockMaintenanceWindow(testingOutline);
+            ShowTimeClockWindow(timeClockWindow);
         }
 
         public void ShowMainChart(bool show = true)
@@ -857,29 +726,8 @@ namespace RingSoft.DevLogix
             }
         }
 
-        private TimeClockMaintenanceWindow GetTimeClockWindow()
-        {
-            var context = AppGlobals.DataRepository.GetDataContext();
-            var tableQuery = context.GetTable<TimeClock>();
-            var activeTimeCard =
-                tableQuery.FirstOrDefault(p => p.PunchOutDate == null && p.UserId == AppGlobals.LoggedInUser.Id);
-            if (activeTimeCard != null)
-            {
-                var message = "You currently are punched into an active time card. Do you wish to load that time card instead?";
-                var caption = "Already Punched in";
-                if (MessageBox.Show(message, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) ==
-                    System.Windows.Forms.DialogResult.Yes)
-                {
-                    LaunchTimeClock(activeTimeCard);
-                }
 
-                return null;
-            }
-
-            return new TimeClockMaintenanceWindow();
-        }
-
-        private static void LaunchTimeClock(TimeClock activeTimeCard)
+        public void LaunchTimeClock(TimeClock activeTimeCard)
         {
             var activeWindow = LookupControlsGlobals.ActiveWindow;
             var lookupDefinition = AppGlobals.LookupContext.TimeClockLookup.Clone();
@@ -891,6 +739,21 @@ namespace RingSoft.DevLogix
 
             lookupDefinition.ShowAddOnTheFlyWindow(
                 AppGlobals.LookupContext.TimeClocks.GetPrimaryKeyValueFromEntity(activeTimeCard));
+        }
+
+        public UserClockReasonViewModel GetUserClockReason()
+        {
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var table = context.GetTable<User>();
+            var user = table.FirstOrDefault(p => p.Id == AppGlobals.LoggedInUser.Id);
+            return GetUserClockReason(user);
+        }
+
+        public UserClockReasonViewModel GetUserClockReason(User user)
+        {
+            var clockReasonDialog = new UserClockReasonWindow(user);
+            clockReasonDialog.ShowDialog();
+            return clockReasonDialog.LocalViewModel;
         }
 
         private void ShowTimeClockWindow(TimeClockMaintenanceWindow timeClockWindow)
@@ -914,32 +777,10 @@ namespace RingSoft.DevLogix
 
         protected override void OnClosing(CancelEventArgs e)
         {
-            if (AppGlobals.LoggedInUser == null)
+            if (!ViewModel.ValidateWindowClose())
             {
-                base.OnClosing(e);
+                e.Cancel = true;
                 return;
-            }
-            var context = AppGlobals.DataRepository.GetDataContext();
-            if (context != null)
-            {
-                var userQuery = context.GetTable<User>();
-                if (userQuery != null)
-                {
-                    var user = userQuery.FirstOrDefault(p => p.Id == AppGlobals.LoggedInUser.Id);
-                    if (user != null && (ClockOutReasons)user.ClockOutReason == ClockOutReasons.ClockedIn)
-                    {
-                        var message = "Do you want to clock out before you exit the application?";
-                        var caption = "Clock Out?";
-                        var clockOut = ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, caption);
-                        if (clockOut == MessageBoxButtonsResult.Yes)
-                        {
-                            if (!PunchOut(true, user.Id))
-                            {
-                                e.Cancel = true;
-                            }
-                        }
-                    }
-                }
             }
             base.OnClosing(e);
         }

@@ -4,6 +4,7 @@ namespace RingSoft.DevLogix.DataAccess.LookupModel
 {
     public class TimeClockLookup
     {
+        public string Name { get; set; }
         public string UserName { get; set; }
 
         public DateTime PunchInDate { get; set; }

@@ -271,6 +271,7 @@ namespace RingSoft.DevLogix.Library
             try
             {
                 migrateContext.Database.Migrate();
+                ConvertData();
             }
             catch (Exception e)
             {
@@ -278,6 +279,24 @@ namespace RingSoft.DevLogix.Library
             }
 
             return string.Empty;
+        }
+
+        private static void ConvertData()
+        {
+            var context = DataRepository.GetDataContext();
+            var table = context.GetTable<TimeClock>();
+
+            if (table.Any(p => p.Name == null))
+            {
+                var timeClocks = table.Where(p => p.Name == null);
+                foreach (var timeClock in timeClocks)
+                {
+                    timeClock.Name = $"T-{timeClock.Id}";
+                    context.SaveNoCommitEntity(timeClock, "Saving TimeClock");
+                }
+
+                context.Commit("Committing TimeClocks");
+            }
         }
 
         public static void LoadDataProcessor(Organization organization, DbPlatforms? platform = null)

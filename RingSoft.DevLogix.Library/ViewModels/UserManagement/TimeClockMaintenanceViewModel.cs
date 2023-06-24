@@ -13,6 +13,7 @@ using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 using IDbContext = RingSoft.DevLogix.DataAccess.IDbContext;
 using System.Diagnostics.Metrics;
+using MySqlX.XDevAPI.Common;
 
 namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 {
@@ -24,12 +25,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
     }
     public interface ITimeClockView : IDbMaintenanceView
     {
-        Error GetError();
-
-        ProjectTask GetProjectTask();
-
-        TestingOutline GetTestingOutline();
-
         void SetTimeClockMode(TimeClockModes timeClockMode);
 
         void SetElapsedTime();
@@ -321,6 +316,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
                 _setDirty = true;
             }));
+            AppGlobals.MainViewModel.TimeClockMaintenanceViewModel = this;
         }
 
         private void SetError(Error error)
@@ -362,31 +358,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             {
                 View = timeClockView;
 
-                var timeClockMode = TimeClockModes.Error;
-                var error = View.GetError();
-                if (error != null)
-                {
-                    SetError(error);
-                    punchIn = true;
-                }
-                var projectTask = View.GetProjectTask();
-                if (projectTask != null)
-                {
-                    SetProjectTask(projectTask);
-                    punchIn = true;
-                    timeClockMode = TimeClockModes.ProjectTask;
-                }
-
-                var testingOutline = View.GetTestingOutline();
-                if (testingOutline != null)
-                {
-                    SetTestingOutline(testingOutline);
-                    punchIn = true;
-                    timeClockMode = TimeClockModes.TestingOutline;
-                }
-
-                View.SetTimeClockMode(timeClockMode);
-
                 if (InputParameter is DialogInput dialogInput)
                 {
                     DialogInput = dialogInput;
@@ -408,13 +379,42 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             base.Initialize();
             if (punchIn)
             {
-                if (TableDefinition.HasRight(RightTypes.AllowDelete))
-                {
-                    DeleteButtonEnabled = true;
-                }
+                DoPostPunchIn();
             }
 
             _loading = false;
+        }
+
+        private void DoPostPunchIn()
+        {
+            if (TableDefinition.HasRight(RightTypes.AllowDelete))
+            {
+                DeleteButtonEnabled = true;
+            }
+        }
+
+        public void PunchIn(Error error)
+        {
+            SetError(error);
+            PunchIn(true);
+            DoPostPunchIn();
+            View.SetTimeClockMode(TimeClockModes.Error);
+        }
+
+        public void PunchIn(ProjectTask task)
+        {
+            SetProjectTask(task);
+            PunchIn(true);
+            DoPostPunchIn();
+            View.SetTimeClockMode(TimeClockModes.ProjectTask);
+        }
+
+        public void PunchIn(TestingOutline outline)
+        {
+            SetTestingOutline(outline);
+            PunchIn(true);
+            DoPostPunchIn();
+            View.SetTimeClockMode(TimeClockModes.TestingOutline);
         }
 
         protected override TimeClock PopulatePrimaryKeyControls(TimeClock newEntity, PrimaryKeyValue primaryKeyValue)
@@ -444,6 +444,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     PunchOutCommand.IsEnabled = false;
                 }
             }
+            KeyAutoFillValue = timeClock.GetAutoFillValue();
             return timeClock;
         }
 
@@ -535,6 +536,19 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 Notes = Notes,
                 AreDatesEdited = IsEdited
             };
+            var name = string.Empty;
+            if (KeyAutoFillValue != null)
+            {
+                name = KeyAutoFillValue.Text;
+            }
+
+            if (name.IsNullOrEmpty())
+            {
+                name = Guid.NewGuid().ToString();
+                KeyAutoFillValue = new AutoFillValue(new PrimaryKeyValue(TableDefinition), name);
+            }
+            timeClock.Name = name;
+
             if (timeClock.PunchOutDate.HasValue)
             {
                 timeClock.PunchOutDate = timeClock.PunchOutDate.Value.ToUniversalTime();
@@ -573,7 +587,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             var context = AppGlobals.DataRepository.GetDataContext();
             var user = context.GetTable<User>().FirstOrDefault(p => p.Id == entity.UserId);
             ProjectTask projectTask = null;
-            var result = context.SaveNoCommitEntity(entity, "Saving Time Clock");
+            var result = context.SaveEntity(entity, "Saving Time Clock");
+            if (result)
+            {
+                entity.Name = $"T-{entity.Id}";
+                result = context.SaveEntity(entity, "Updating Name");
+            }
             if (result && saveChildren)
             {
                 if (entity.ProjectTaskId.HasValue)
@@ -737,6 +756,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             {
                 errorViewModel.RefreshCost(errorUser);
             }
+
             return result;
 
         }
@@ -832,8 +852,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 var timeClock = GetEntityData();
                 if (SaveEntity(timeClock))
                 {
+                    var primaryKey = TableDefinition.GetPrimaryKeyValueFromEntity(timeClock);
+                    GblMethods.DoRecordLock(primaryKey);
+                    LockDate = DateTime.Now;
+                    
+                    KeyAutoFillValue = timeClock.GetAutoFillValue();
                     Id = timeClock.Id;
                     AppGlobals.MainViewModel.SetupTimer(timeClock);
+                    RecordDirty = false;
                 }
 
                 var context = AppGlobals.DataRepository.GetDataContext();
@@ -870,6 +896,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             {
                 DialogInput.DialogResult = true;
             }
+
+            AppGlobals.MainViewModel.TimeClockMaintenanceViewModel = null;
             base.OnWindowClosing(e);
         }
 

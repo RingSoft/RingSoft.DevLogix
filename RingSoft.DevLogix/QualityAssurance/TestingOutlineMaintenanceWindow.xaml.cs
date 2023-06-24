@@ -115,7 +115,7 @@ namespace RingSoft.DevLogix.QualityAssurance
 
         public void PunchIn(TestingOutline testingOutline)
         {
-            AppGlobals.MainViewModel.MainView.PunchIn(testingOutline);
+            AppGlobals.MainViewModel.PunchIn(testingOutline);
         }
 
         public bool ProcessRecalcLookupFilter(LookupDefinitionBase lookup)

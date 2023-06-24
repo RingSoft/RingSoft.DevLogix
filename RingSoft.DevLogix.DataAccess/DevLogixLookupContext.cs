@@ -212,11 +212,24 @@ namespace RingSoft.DevLogix.DataAccess
             UsersGroups.HasLookupDefinition(UsersGroupsLookup);
 
             TimeClockLookup = new LookupDefinition<TimeClockLookup, TimeClock>(TimeClocks);
+            TimeClockLookup.AddVisibleColumnDefinition(
+                p => p.Name
+                , "Time Clock ID"
+                , p => p.Name, 25);
             TimeClockLookup.Include(p => p.User)
-                .AddVisibleColumnDefinition(p => p.UserName, "User", p => p.Name, 50);
-            TimeClockLookup.AddVisibleColumnDefinition(p => p.PunchInDate, "Punch In Date", p => p.PunchInDate, 25);
+                .AddVisibleColumnDefinition(
+                    p => p.UserName
+                    , "User"
+                    , p => p.Name, 25);
+            TimeClockLookup.AddVisibleColumnDefinition(
+                p => p.PunchInDate
+                , "Punch In Date"
+                , p => p.PunchInDate, 25);
             var column =
-                TimeClockLookup.AddVisibleColumnDefinition(p => p.MinutesSpent, "Time Spent", p => p.MinutesSpent,
+                TimeClockLookup.AddVisibleColumnDefinition(
+                    p => p.MinutesSpent
+                    , "Time Spent"
+                    , p => p.MinutesSpent,
                     25);
             column.HasSearchForHostId(TimeSpentHostId);
             TimeClocks.HasLookupDefinition(TimeClockLookup);

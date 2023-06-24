@@ -11,6 +11,9 @@ namespace RingSoft.DevLogix.DataAccess.Model
         [Key]
         public int Id { get; set; }
 
+        [MaxLength(50)]
+        public string? Name { get; set; }
+
         [Required]
         public DateTime PunchInDate { get; set; }
 

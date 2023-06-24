@@ -467,7 +467,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             ClockOutCommand = new RelayCommand(() =>
             {
                 var recordDirty = RecordDirty;
-                if (AppGlobals.MainViewModel.MainView.PunchOut(true, Id))
+                if (AppGlobals.MainViewModel.PunchOut(true, Id))
                 {
                     var context = AppGlobals.DataRepository.GetDataContext();
                     var user = context.GetTable<User>().FirstOrDefault(p => p.Id == Id);

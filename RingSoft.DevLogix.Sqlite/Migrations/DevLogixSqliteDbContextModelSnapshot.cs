@@ -210,9 +210,6 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar");
 
-                    b.Property<int>("AssignedUserId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("City")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
@@ -269,17 +266,20 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<int>("TimeZoneId")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("WebAddress")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AssignedUserId");
-
                     b.HasIndex("TerritoryId");
 
                     b.HasIndex("TimeZoneId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Customer");
                 });
@@ -1302,6 +1302,10 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<decimal?>("MinutesSpent")
                         .HasColumnType("numeric");
 
+                    b.Property<string>("Name")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
                     b.Property<string>("Notes")
                         .HasColumnType("ntext");
 
@@ -1520,12 +1524,6 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Customer", b =>
                 {
-                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "AssignedUser")
-                        .WithMany("Customers")
-                        .HasForeignKey("AssignedUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Territory", "Territory")
                         .WithMany("Customers")
                         .HasForeignKey("TerritoryId")
@@ -1538,7 +1536,9 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("AssignedUser");
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", null)
+                        .WithMany("Customers")
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Territory");
 

@@ -74,9 +74,45 @@ namespace RingSoft.DevLogix.UserManagement
 
         private bool _isActive = true;
 
+        public TimeClockMaintenanceWindow(Error error)
+        {
+            InitializeComponent();
+            SetupControl();
+            Loaded += (sender, args) =>
+            {
+                LocalViewModel.PunchIn(error);
+            };
+        }
+
+        public TimeClockMaintenanceWindow(ProjectTask task)
+        {
+            InitializeComponent();
+            SetupControl();
+            Loaded += (sender, args) =>
+            {
+                LocalViewModel.PunchIn(task);
+            };
+        }
+
+        public TimeClockMaintenanceWindow(TestingOutline outline)
+        {
+            InitializeComponent();
+            SetupControl();
+            Loaded += (sender, args) =>
+            {
+                LocalViewModel.PunchIn(outline);
+            };
+        }
+
+
         public TimeClockMaintenanceWindow()
         {
             InitializeComponent();
+            SetupControl();
+        }
+
+        private void SetupControl()
+        {
             TopHeaderControl.Loaded += (sender, args) =>
             {
                 TopHeaderControl.PrintButton.Visibility = Visibility.Collapsed;
@@ -105,10 +141,13 @@ namespace RingSoft.DevLogix.UserManagement
                 NotesControl.MaxHeight = NotesControl.ActualHeight;
             };
 
-            Closed += (sender, args) =>
-            {
-                _isActive = false;
-            };
+            Closed += (sender, args) => { _isActive = false; };
+        }
+
+        protected override void OnLoaded()
+        {
+            RegisterFormKeyControl(NameControl);
+            base.OnLoaded();
         }
 
         public override void ResetViewForNewRecord()
@@ -124,27 +163,6 @@ namespace RingSoft.DevLogix.UserManagement
                 PunchOutControl.Focus();
             }
             base.OnValidationFail(fieldDefinition, text, caption);
-        }
-
-        public Error GetError()
-        {
-            var args = new GetErrorEventArgs();
-            GetTimeClockError?.Invoke(this, args);
-            return args.Error;
-        }
-
-        public ProjectTask GetProjectTask()
-        {
-            var args = new GetProjectTaskEventArgs();
-            GetTimeClockProjectTask?.Invoke(this, args);
-            return args.ProjectTask;
-        }
-
-        public TestingOutline GetTestingOutline()
-        {
-            var args = new GetTestingOutlineEventArgs();
-            GetTimeClockTestingOutline?.Invoke(this, args);
-            return args.TestingOutline;
         }
 
         public void SetTimeClockMode(TimeClockModes timeClockMode)
