@@ -280,7 +280,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 Country = Country,
                 Phone = PhoneNumber,
                 TimeZoneId = TimeZoneAutoFillValue.GetEntity<TimeZone>().Id,
-                TerritoryId = TerritoryAutoFillValue.GetEntity<User>().Id,
+                TerritoryId = TerritoryAutoFillValue.GetEntity<Territory>().Id,
                 EmailAddress = EmailAddress,
             };
             return result;
