@@ -63,13 +63,13 @@ namespace RingSoft.DevLogix.DataAccess.Model.CustomerManagement
         public string? WebAddress { get; set; }
 
         public virtual ICollection<TimeClock> TimeClocks { get; set; }
-        //public virtual ICollection<Order> Orders { get; set; }
+        public virtual ICollection<Order> Orders { get; set; }
         public virtual ICollection<CustomerProduct> CustomerProducts { get; set; }
 
         public Customer()
         {
             TimeClocks = new HashSet<TimeClock>();
-            //Orders = new HashSet<Order>();
+            Orders = new HashSet<Order>();
             CustomerProducts = new HashSet<CustomerProduct>();
         }
     }

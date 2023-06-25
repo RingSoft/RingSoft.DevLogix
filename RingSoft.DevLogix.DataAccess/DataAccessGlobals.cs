@@ -60,6 +60,7 @@ namespace RingSoft.DevLogix.DataAccess
             modelBuilder.ApplyConfiguration(new TerritoryConfiguration());
             modelBuilder.ApplyConfiguration(new CustomerConfiguration());
             modelBuilder.ApplyConfiguration(new CustomerProductConfiguration());
+            modelBuilder.ApplyConfiguration(new OrderConfiguration());
 
             AdvancedFindDataProcessorEfCore.ConfigureAdvancedFind(modelBuilder);
         }

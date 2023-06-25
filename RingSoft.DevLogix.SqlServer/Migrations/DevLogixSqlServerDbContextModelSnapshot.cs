@@ -311,6 +311,80 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.ToTable("CustomerProduct");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Order", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("City")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("CompanyName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("ContactName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("ContactTitle")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("Country")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal?>("Freight")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("OrderId")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("PostalCode")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("Region")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<DateTime?>("ShippedDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<decimal?>("SubTotal")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal?>("Total")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal?>("TotalDiscount")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("Order");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Territory", b =>
                 {
                     b.Property<int>("Id")
@@ -1653,6 +1727,17 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Order", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Customer", "Customer")
+                        .WithMany("Orders")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Territory", b =>
                 {
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "Salesperson")
@@ -2269,6 +2354,8 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Customer", b =>
                 {
                     b.Navigation("CustomerProducts");
+
+                    b.Navigation("Orders");
 
                     b.Navigation("TimeClocks");
                 });

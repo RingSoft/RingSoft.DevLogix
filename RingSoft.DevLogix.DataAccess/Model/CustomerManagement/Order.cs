@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace RingSoft.DevLogix.DataAccess.Model.CustomerManagement
 {
@@ -16,6 +17,11 @@ namespace RingSoft.DevLogix.DataAccess.Model.CustomerManagement
         public int CustomerId { get; set; }
 
         public virtual Customer Customer { get; set; }
+
+        [Required]
+        public DateTime OrderDate { get; set; }
+        
+        public DateTime? ShippedDate { get; set; }
 
         [Required]
         [MaxLength(50)]
@@ -42,15 +48,13 @@ namespace RingSoft.DevLogix.DataAccess.Model.CustomerManagement
         [MaxLength(50)]
         public string? Country { get; set; }
 
-        [Required]
-        public decimal SubTotal { get; set; }
+        public decimal? SubTotal { get; set; }
 
         public decimal? TotalDiscount { get; set; }
 
         public decimal? Freight { get; set; }
 
-        [Required]
-        public decimal Total { get; set; }
+        public decimal? Total { get; set; }
 
     }
 }

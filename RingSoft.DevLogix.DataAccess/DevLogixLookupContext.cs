@@ -83,6 +83,7 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<Territory> Territory { get; set; }
         public TableDefinition<Customer> Customer { get; set; }
         public TableDefinition<CustomerProduct> CustomerProduct { get; set; }
+        public TableDefinition<Order> Order { get; set; }
 
         public LookupDefinition<DevLogixChartLookup, DevLogixChart> DevLogixChartLookup { get; set; }
         public LookupDefinition<SystemPreferencesLookup, SystemPreferences> SystemPreferencesLookup { get; set; }
@@ -126,6 +127,7 @@ namespace RingSoft.DevLogix.DataAccess
         public LookupDefinition<TerritoryLookup, Territory> TerritoryLookup { get; set; }
         public LookupDefinition<CustomerLookup, Customer> CustomerLookup { get; set; }
         public LookupDefinition<CustomerProductLookup, CustomerProduct> CustomerProductsLookup { get; set; }
+        public LookupDefinition<OrderLookup, Order> OrderLookup { get; set; }
 
         public SqliteDataProcessor SqliteDataProcessor { get; }
         public SqlServerDataProcessor SqlServerDataProcessor { get; }
@@ -530,6 +532,26 @@ namespace RingSoft.DevLogix.DataAccess
                     , p => p.ExpirationDate, 33);
 
             CustomerProduct.HasLookupDefinition(CustomerProductsLookup);
+
+            OrderLookup = new LookupDefinition<OrderLookup, Order>(Order);
+            OrderLookup.AddVisibleColumnDefinition(
+                p => p.OrderId
+                , "Order ID"
+                , p => p.OrderId, 25);
+
+            OrderLookup.Include(
+                    p => p.Customer)
+                .AddVisibleColumnDefinition(
+                    p => p.Customer
+                    , "Customer"
+                    , p => p.CompanyName, 50);
+
+            OrderLookup.AddVisibleColumnDefinition(
+                p => p.OrderDate
+                , "Order Date"
+                , p => p.OrderDate, 25);
+
+            Order.HasLookupDefinition(OrderLookup);
         }
 
         public LookupDefinition<ProductVersionLookup, ProductVersion> MakeProductVersionLookupDefinition()
@@ -779,7 +801,10 @@ namespace RingSoft.DevLogix.DataAccess
 
             CustomerProduct.PriorityLevel = 600;
             CustomerProduct.GetFieldDefinition(
-                p => p.ExpirationDate).HasDateType(DbDateTypes.DateOnly);
+                p => p.ExpirationDate).HasDateType(DbDateTypes.DateOnly)
+                .DoConvertToLocalTime(false);
+
+            Order.PriorityLevel = 700;
         }
 
         public override UserAutoFill GetUserAutoFill(string userName)

@@ -58,6 +58,7 @@ namespace RingSoft.DevLogix.DataAccess
         DbSet<Territory> Territory { get; set; }
         DbSet<Customer> Customer { get; set; }
         DbSet<CustomerProduct> CustomerProduct { get; set; }
+        DbSet<Order> Order { get; set; }
 
         void SetLookupContext(DevLogixLookupContext lookupContext);
     }
