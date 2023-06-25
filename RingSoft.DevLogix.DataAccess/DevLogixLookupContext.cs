@@ -807,6 +807,10 @@ namespace RingSoft.DevLogix.DataAccess
             Order.PriorityLevel = 700;
             Order.GetFieldDefinition(p => p.OrderDate).HasDateType(DbDateTypes.DateTime);
             Order.GetFieldDefinition(p => p.ShippedDate).HasDateType(DbDateTypes.DateTime);
+            Order.GetFieldDefinition(p => p.SubTotal).HasDecimalFieldType(DecimalFieldTypes.Currency);
+            Order.GetFieldDefinition(p => p.Freight).HasDecimalFieldType(DecimalFieldTypes.Currency);
+            Order.GetFieldDefinition(p => p.TotalDiscount).HasDecimalFieldType(DecimalFieldTypes.Currency);
+            Order.GetFieldDefinition(p => p.Total).HasDecimalFieldType(DecimalFieldTypes.Currency);
         }
 
         public override UserAutoFill GetUserAutoFill(string userName)

@@ -14,7 +14,7 @@
                         xmlns:local="clr-namespace:RingSoft.DevLogix.CustomerManagement"
                         mc:Ignorable="d"
                         Style="{StaticResource BaseWindowStyle}"
-                        Title="Order Window" Height="750" Width="850">
+                        Title="Order Window" Height="500" Width="650">
 
     <Window.DataContext>
         <vm:OrderViewModel x:Name="LocalViewModel"/>
@@ -30,6 +30,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -115,6 +116,39 @@
                 </TabItem>
             </TabControl>
 
+            <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="5" HorizontalAlignment="Right">
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.Row="0" Grid.Column="0" Content="Sub Total"/>
+
+                    <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" Width="100" Value="{Binding SubTotal, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency"/>
+    
+                    <Label Grid.Row="1" Grid.Column="0" Content="Freight"/>
+
+                    <dec:DecimalEditControl Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" Width="100" Value="{Binding Freight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency"/>
+
+                    <Label Grid.Row="2" Grid.Column="0" Content="Total Discount"/>
+
+                    <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left" Width="100" Value="{Binding TotalDiscount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency"/>
+
+                    <Label Grid.Row="3" Grid.Column="0" Content="Total"/>
+
+                    <dec:DecimalReadOnlyBox Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left" Width="100" Value="{Binding Total, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency"/>
+
+                </Grid>
+            </StackPanel>
         </Grid>
     </DockPanel>
 </ac:DbMaintenanceWindow>

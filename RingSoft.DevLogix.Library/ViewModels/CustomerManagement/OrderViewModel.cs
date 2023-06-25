@@ -212,6 +212,67 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
         }
 
+        private decimal _subTotal;
+
+        public decimal SubTotal
+        {
+            get => _subTotal;
+            set
+            {
+                if (_subTotal == value)
+                    return;
+
+                _subTotal = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private decimal _freight;
+
+        public decimal Freight
+        {
+            get => _freight;
+            set
+            {
+                if (_freight == value)
+                    return;
+
+                _freight = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private decimal _totalDiscount;
+
+        public decimal TotalDiscount
+        {
+            get => _totalDiscount;
+            set
+            {
+                if (_totalDiscount == value)
+                    return;
+
+                _totalDiscount = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private decimal _total;
+
+        public decimal Total
+        {
+            get => _total;
+            set
+            {
+                if (_total == value)
+                    return;
+
+                _total = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         private bool _loading;
 
         public OrderViewModel()
@@ -257,6 +318,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             Region = entity.Region;
             PostalCode = entity.PostalCode;
             Country = entity.Country;
+            SubTotal = entity.SubTotal.GetValueOrDefault();
+            Freight = entity.Freight.GetValueOrDefault();
+            TotalDiscount = entity.TotalDiscount.GetValueOrDefault();
+            Total = entity.Total.GetValueOrDefault();
             _loading = false;
         }
 
@@ -276,6 +341,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 Region = Region,
                 PostalCode = PostalCode,
                 Country = Country,
+                SubTotal = SubTotal,
+                Freight = Freight,
+                TotalDiscount = TotalDiscount,
+                Total = Total,
             };
             if (ShippedDate == null)
             {
@@ -309,6 +378,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             Region = string.Empty;
             PostalCode = string.Empty;
             Country = string.Empty;
+            SubTotal = 0;
+            Freight = 0;
+            TotalDiscount = 0;
+            Total = 0;
         }
 
         protected override bool SaveEntity(Order entity)
