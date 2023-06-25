@@ -104,6 +104,32 @@ namespace RingSoft.DevLogix.UserManagement
 
         private void SetupControl()
         {
+            PreviewKeyDown += (sender, args) =>
+            {
+                var ctrlKeyDown = Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl);
+                if (ctrlKeyDown)
+                {
+                    if (args.Key == Key.C)
+                    {
+                        if (ErrorControl.Visibility == Visibility.Visible)
+                        {
+                            ErrorControl.ShowLookupWindow();
+                        }
+                        if (TestingOutlineControl.Visibility == Visibility.Visible)
+                        {
+                            TestingOutlineControl.ShowLookupWindow();
+                        }
+                        if (ProjectTaskControl.Visibility == Visibility.Visible)
+                        {
+                            ProjectTaskControl.ShowLookupWindow();
+                        }
+                        if (CustomerControl.Visibility == Visibility.Visible)
+                        {
+                            CustomerControl.ShowLookupWindow();
+                        }
+                    }
+                }
+            };
             TopHeaderControl.Loaded += (sender, args) =>
             {
                 TopHeaderControl.PrintButton.Visibility = Visibility.Collapsed;
@@ -130,6 +156,14 @@ namespace RingSoft.DevLogix.UserManagement
                 NotesControl.TextBox.Focus();
                 NotesControl.MaxWidth = NotesControl.ActualWidth;
                 NotesControl.MaxHeight = NotesControl.ActualHeight;
+
+                NotesControl.TextBox.KeyDown += (sender, args) =>
+                {
+                    if (NotesControl.TextBox.Text.IsNullOrEmpty())
+                    {
+                        NotesControl.TextBox.SelectionLength = 0;
+                    }
+                };
             };
 
             Closed += (sender, args) => { _isActive = false; };
