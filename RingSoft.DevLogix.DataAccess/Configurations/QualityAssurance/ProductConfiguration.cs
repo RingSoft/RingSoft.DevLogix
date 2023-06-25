@@ -17,6 +17,9 @@ namespace RingSoft.DevLogix.DataAccess.Configurations
             builder.Property(p => p.AppGuid).HasColumnType(DbConstants.StringColumnType);
             builder.Property(p => p.CreateDepartmentId).HasColumnType(DbConstants.IntegerColumnType);
             builder.Property(p => p.ArchiveDepartmentId).HasColumnType(DbConstants.IntegerColumnType);
+            builder.Property(p => p.Price).HasColumnType(DbConstants.DecimalColumnType);
+            builder.Property(p => p.Revenue).HasColumnType(DbConstants.DecimalColumnType);
+            builder.Property(p => p.Cost).HasColumnType(DbConstants.DecimalColumnType);
 
             builder.HasOne(p => p.CreateDepartment)
                 .WithMany(p => p.CreateVersionProducts)

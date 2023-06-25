@@ -137,6 +137,8 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -182,6 +184,9 @@
 
                         <lc:AutoFillControl Grid.Row="4" Grid.Column="1" Setup="{Binding ArchiveDepartmentAutoFillSetup}" Value="{Binding ArchiveDepartmentAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="300" HorizontalAlignment="Left"/>
 
+                        <Label Grid.Row="5" Grid.Column="0" Content="Price"/>
+
+                        <dec:DecimalEditControl Grid.Row="5" Grid.Column="1" HorizontalAlignment="Left"  FormatType="Currency" Value="{Binding Price, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
                     </Grid>
                 </TabItem>
                 <TabItem x:Name="TestOutlinesTabItem" Header="Testing Outlines">

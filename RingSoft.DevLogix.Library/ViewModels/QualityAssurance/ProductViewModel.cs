@@ -262,6 +262,20 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             }
         }
 
+        private decimal? _price;
+
+        public decimal? Price
+        {
+            get => _price;
+            set
+            {
+                if (_price == value)
+                    return;
+
+                _price = value;
+                OnPropertyChanged();
+            }
+        }
 
 
         public RelayCommand VersionsAddModifyCommand { get; set; }
@@ -395,6 +409,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 CreateDepartmentAutoFillSetup.GetAutoFillValueForIdValue(entity.CreateDepartmentId);
             ArchiveDepartmentAutoFillValue =
                 ArchiveDepartmentAutoFillSetup.GetAutoFillValueForIdValue(entity.ArchiveDepartmentId);
+            Price = entity.Price;
         }
 
         protected override Product GetEntityData()
@@ -409,6 +424,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 AppGuid = AppGuid,
                 CreateDepartmentId = CreateDepartmentAutoFillValue.GetEntity(AppGlobals.LookupContext.Departments).Id,
                 ArchiveDepartmentId = ArchiveDepartmentAutoFillValue.GetEntity(AppGlobals.LookupContext.Departments).Id,
+                Price = Price,
             };
 
             if (result.ArchiveDepartmentId == 0)
@@ -428,6 +444,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             InstallerFileName = ArchivePath = AppGuid = null;
             CreateDepartmentAutoFillValue = ArchiveDepartmentAutoFillValue = null;
             TestingOutlineLookupCommand = GetLookupCommand(LookupCommands.Clear);
+            Price = null;
         }
 
         protected override bool SaveEntity(Product entity)

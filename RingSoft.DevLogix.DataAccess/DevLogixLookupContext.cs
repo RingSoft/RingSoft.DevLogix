@@ -260,7 +260,19 @@ namespace RingSoft.DevLogix.DataAccess
             ErrorPriorities.HasLookupDefinition(ErrorPriorityLookup);
 
             ProductLookup = new LookupDefinition<ProductLookup, Product>(Products);
-            ProductLookup.AddVisibleColumnDefinition(p => p.Description, "Description", p => p.Description, 100);
+            ProductLookup.AddVisibleColumnDefinition(
+                p => p.Description
+                , "Description"
+                , p => p.Description, 50);
+            ProductLookup.AddVisibleColumnDefinition(
+                p => p.Revenue
+                , "Revenue"
+                , p => p.Revenue, 25);
+            ProductLookup.AddVisibleColumnDefinition(
+                p => p.Revenue
+                , "Cost"
+                , p => p.Cost, 25);
+
             Products.HasLookupDefinition(ProductLookup);
 
             ProductVersionLookup = new LookupDefinition<ProductVersionLookup, ProductVersion>(ProductVersions);
@@ -643,6 +655,10 @@ namespace RingSoft.DevLogix.DataAccess
 
 
             UsersGroups.PriorityLevel = 400;
+
+            Products.GetFieldDefinition(p => p.Price).HasDecimalFieldType(DecimalFieldTypes.Currency);
+            Products.GetFieldDefinition(p => p.Revenue).HasDecimalFieldType(DecimalFieldTypes.Currency);
+            Products.GetFieldDefinition(p => p.Cost).HasDecimalFieldType(DecimalFieldTypes.Currency);
 
             ProductVersions.PriorityLevel = 400;
             ProductVersions.GetFieldDefinition(p => p.Notes).IsMemo();

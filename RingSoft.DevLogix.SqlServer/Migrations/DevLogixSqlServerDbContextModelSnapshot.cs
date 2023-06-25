@@ -651,6 +651,9 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
+                    b.Property<decimal?>("Cost")
+                        .HasColumnType("numeric");
+
                     b.Property<int>("CreateDepartmentId")
                         .HasColumnType("integer");
 
@@ -665,6 +668,12 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
                     b.Property<string>("Notes")
                         .HasColumnType("ntext");
+
+                    b.Property<decimal?>("Price")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal?>("Revenue")
+                        .HasColumnType("numeric");
 
                     b.HasKey("Id");
 
