@@ -8,7 +8,8 @@ namespace RingSoft.DevLogix.DataAccess.Model.CustomerManagement
         [Key]
         public int Id { get; set; }
 
-        [Required] 
+        [Required]
+        [MaxLength(50)]
         public string OrderId { get; set; }
 
         [Required]

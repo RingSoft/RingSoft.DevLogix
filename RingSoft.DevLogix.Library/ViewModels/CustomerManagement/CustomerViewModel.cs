@@ -222,6 +222,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
         }
 
+        private string? _webAddress;
+
+        public string? WebAddress
+        {
+            get => _webAddress;
+            set
+            {
+                if (_webAddress == value)
+                    return;
+
+                _webAddress = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         private CustomerProductManager _productManager;
 
         public CustomerProductManager ProductManager
@@ -291,6 +307,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             TimeZoneAutoFillValue = entity.TimeZone.GetAutoFillValue();
             TerritoryAutoFillValue = entity.Territory.GetAutoFillValue();
             EmailAddress = entity.EmailAddress;
+            WebAddress = entity.WebAddress;
             ProductManager.LoadGrid(entity.CustomerProducts);
         }
 
@@ -311,6 +328,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 TimeZoneId = TimeZoneAutoFillValue.GetEntity<TimeZone>().Id,
                 TerritoryId = TerritoryAutoFillValue.GetEntity<Territory>().Id,
                 EmailAddress = EmailAddress,
+                WebAddress = WebAddress,
             };
             return result;
         }
@@ -330,6 +348,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             TimeZoneAutoFillValue = null;
             TerritoryAutoFillValue = null;
             EmailAddress = null;
+            WebAddress = null;
             ProductManager.SetupForNewRecord();
         }
 

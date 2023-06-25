@@ -153,6 +153,13 @@
 
                         <lc:AutoFillControl Grid.Row="5" Grid.Column="1" Width="200" HorizontalAlignment="Left" Setup="{Binding TerritoryAutoFillSetup}" Value="{Binding TerritoryAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
+                        <Label Grid.Row="6" Grid.Column="0" Content="Email Address"/>
+
+                        <dec:StringEditControl Grid.Row="6" Grid.Column="1" Width="300" HorizontalAlignment="Left" Text="{Binding EmailAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="100"/>
+
+                        <Label Grid.Row="7" Grid.Column="0" Content="Web Address"/>
+
+                        <dec:StringEditControl Grid.Row="7" Grid.Column="1" Width="300" HorizontalAlignment="Left" Text="{Binding WebAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="100"/>
                     </Grid>
                 </TabItem>
                 <TabItem Header="Products">

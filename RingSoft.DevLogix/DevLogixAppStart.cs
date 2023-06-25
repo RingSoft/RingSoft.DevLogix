@@ -118,6 +118,7 @@ namespace RingSoft.DevLogix
             WindowRegistry.RegisterWindow<CustomerMaintenanceWindow>(AppGlobals.LookupContext.Customer);
             WindowRegistry.RegisterWindow<TimeZoneMaintenanceWindow>(AppGlobals.LookupContext.TimeZone);
             WindowRegistry.RegisterWindow<TerritoryMaintenanceWindow>(AppGlobals.LookupContext.Territory);
+            WindowRegistry.RegisterWindow<CustomerMaintenanceWindow>(AppGlobals.LookupContext.CustomerProduct);
 
             AppGlobals.LookupContext.CanProcessTableEvent += (sender, args) =>
             {
