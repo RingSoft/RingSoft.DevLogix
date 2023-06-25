@@ -805,6 +805,8 @@ namespace RingSoft.DevLogix.DataAccess
                 .DoConvertToLocalTime(false);
 
             Order.PriorityLevel = 700;
+            Order.GetFieldDefinition(p => p.OrderDate).HasDateType(DbDateTypes.DateTime);
+            Order.GetFieldDefinition(p => p.ShippedDate).HasDateType(DbDateTypes.DateTime);
         }
 
         public override UserAutoFill GetUserAutoFill(string userName)

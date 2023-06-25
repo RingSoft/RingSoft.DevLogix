@@ -71,13 +71,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         public override void LoadFromEntity(CustomerProduct entity)
         {
             ProductAutoFillValue = entity.Product.GetAutoFillValue();
-            ExpirationDate = entity.ExpirationDate;
+            ExpirationDate = entity.ExpirationDate.ToLocalTime();
         }
 
         public override void SaveToEntity(CustomerProduct entity, int rowIndex)
         {
             entity.ProductId = ProductAutoFillValue.GetEntity<Product>().Id;
-            entity.ExpirationDate = ExpirationDate.GetValueOrDefault();
+            entity.ExpirationDate = ExpirationDate.GetValueOrDefault().ToUniversalTime();
         }
     }
 }

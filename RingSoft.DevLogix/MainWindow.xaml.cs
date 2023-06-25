@@ -164,6 +164,16 @@ namespace RingSoft.DevLogix
                     });
                 }
 
+                if (AppGlobals.LookupContext.Order.HasRight(RightTypes.AllowView))
+                {
+                    menuItem.Items.Add(new MenuItem()
+                    {
+                        Header = "Add/Edit _Orders...",
+                        Command = ViewModel.ShowMaintenanceWindowCommand,
+                        CommandParameter = AppGlobals.LookupContext.Order,
+                    });
+                }
+
                 if (AppGlobals.LookupContext.TimeZone.HasRight(RightTypes.AllowView))
                 {
                     menuItem.Items.Add(new MenuItem()
