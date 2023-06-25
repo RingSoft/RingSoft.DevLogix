@@ -238,15 +238,21 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         protected override Customer PopulatePrimaryKeyControls(Customer newEntity, PrimaryKeyValue primaryKeyValue)
         {
+            var result = GetCustomer(newEntity.Id);
+
+            Id = newEntity.Id;
+            KeyAutoFillValue = result.GetAutoFillValue();
+            return result;
+        }
+
+        private static Customer? GetCustomer(int customerId)
+        {
             var context = AppGlobals.DataRepository.GetDataContext();
             var table = context.GetTable<Customer>();
             var result = table
                 .Include(p => p.TimeZone)
                 .Include(p => p.Territory)
-                .FirstOrDefault(p => p.Id == newEntity.Id);
-
-            Id = newEntity.Id;
-            KeyAutoFillValue = result.GetAutoFillValue();
+                .FirstOrDefault(p => p.Id == customerId);
             return result;
         }
 
@@ -325,7 +331,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         private void PunchIn()
         {
-
+            var customer = GetCustomer(Id);
+            AppGlobals.MainViewModel.PunchIn(customer);
         }
 
         private void Recalc()

@@ -18,6 +18,7 @@ using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model;
+using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 using RingSoft.DevLogix.Library;
@@ -26,21 +27,6 @@ using RingSoft.DevLogix.QualityAssurance;
 
 namespace RingSoft.DevLogix.UserManagement
 {
-    public class GetErrorEventArgs
-    {
-        public Error Error { get; set; }
-    }
-
-    public class GetProjectTaskEventArgs
-    {
-        public ProjectTask ProjectTask { get; set; }
-    }
-
-    public class GetTestingOutlineEventArgs
-    {
-        public TestingOutline TestingOutline { get; set; }
-    }
-
     public class TimeClockHeaderControl : DbMaintenanceCustomPanel
     {
         public DbMaintenanceButton PunchOutButton { get; set; }
@@ -67,10 +53,6 @@ namespace RingSoft.DevLogix.UserManagement
         public override string ItemText => "Time Clock Entry";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;
         public override DbMaintenanceStatusBar DbStatusBar => StatusBar;
-
-        public event EventHandler<GetErrorEventArgs> GetTimeClockError;
-        public event EventHandler<GetProjectTaskEventArgs> GetTimeClockProjectTask;
-        public event EventHandler<GetTestingOutlineEventArgs> GetTimeClockTestingOutline;
 
         private bool _isActive = true;
 
@@ -104,6 +86,15 @@ namespace RingSoft.DevLogix.UserManagement
             };
         }
 
+        public TimeClockMaintenanceWindow(Customer customer)
+        {
+            InitializeComponent();
+            SetupControl();
+            Loaded += (sender, args) =>
+            {
+                LocalViewModel.PunchIn(customer);
+            };
+        }
 
         public TimeClockMaintenanceWindow()
         {
@@ -170,6 +161,7 @@ namespace RingSoft.DevLogix.UserManagement
             ErrorControl.Visibility = Visibility.Collapsed;
             ProjectTaskControl.Visibility = Visibility.Collapsed;
             TestingOutlineControl.Visibility = Visibility.Collapsed;
+            CustomerControl.Visibility = Visibility.Collapsed;
 
             switch (timeClockMode)
             {
@@ -185,6 +177,11 @@ namespace RingSoft.DevLogix.UserManagement
                     KeyLabel.Content = "Testing Outline";
                     TestingOutlineControl.Visibility = Visibility.Visible;
                     break;
+                case TimeClockModes.Customer:
+                    KeyLabel.Content = "Customer";
+                    CustomerControl.Visibility = Visibility.Visible;
+                    break;
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(timeClockMode), timeClockMode, null);
             }

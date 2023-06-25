@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 
@@ -37,6 +38,10 @@ namespace RingSoft.DevLogix.DataAccess.Model
         public int? TestingOutlineId { get; set; }
 
         public virtual TestingOutline TestingOutline { get; set; }
+
+        public int? CustomerId { get; set; }
+
+        public virtual Customer Customer { get; set; }
 
         public string? Notes { get; set; }
 

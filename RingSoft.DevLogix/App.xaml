@@ -19,6 +19,7 @@
             <Image x:Key="RedAlertImage" Source="/Resources/RedAlert.ico" />
             <Image x:Key="YellowAlertImage" Source="Resources/YellowAlert.ico"/>
             <Image x:Key="GreenAlertImage" Source="Resources/gears.ico"/>
+            <BitmapImage x:Key="GearsImage" UriSource="/Resources/gears.png" />
             <BitmapImage x:Key="ClockImage" UriSource="/Resources/chronometer32.png" />
             <BitmapImage x:Key="ErrorsImage" UriSource="/RingSoft.DevLogix;component/Resources/bug_edit32.png" />
             <BitmapImage x:Key="UsersImage" UriSource="/RingSoft.DevLogix;component/Resources/user32.png" />

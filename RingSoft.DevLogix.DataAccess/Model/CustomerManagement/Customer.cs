@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace RingSoft.DevLogix.DataAccess.Model.CustomerManagement
 {
@@ -60,5 +61,12 @@ namespace RingSoft.DevLogix.DataAccess.Model.CustomerManagement
 
         [MaxLength(100)]
         public string? WebAddress { get; set; }
+
+        public virtual ICollection<TimeClock> TimeClocks { get; set; }
+
+        public Customer()
+        {
+            TimeClocks = new HashSet<TimeClock>();
+        }
     }
 }

@@ -14,6 +14,7 @@ using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DevLogix.DataAccess;
 using RingSoft.DevLogix.DataAccess.Model;
+using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 using RingSoft.DevLogix.Library.ViewModels.ProjectManagement;
@@ -45,6 +46,8 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         void PunchIn(TestingOutline testingOutline);
 
+        void PunchIn(Customer customer);
+
         void ShowMainChart(bool show = true);
 
         object GetOwnerWindow();
@@ -58,6 +61,10 @@ namespace RingSoft.DevLogix.Library.ViewModels
         void LaunchTimeClock(TimeClock activeTimeCard);
 
         UserClockReasonViewModel GetUserClockReason();
+
+        bool UpgradeVersion();
+
+        void ShowAbout();
     }
 
     public class MainViewModel : INotifyPropertyChanged
@@ -171,6 +178,8 @@ namespace RingSoft.DevLogix.Library.ViewModels
         public RelayCommand ErrorsCommand { get; }
         public RelayCommand OutlinesCommand { get; }
         public RelayCommand ProjectsCommand { get; }
+        public RelayCommand UpgradeCommand { get; }
+        public RelayCommand AboutCommand { get; }
         public ChartBarsViewModel ChartViewModel { get; private set; }
 
         private Timer _timer = new Timer();
@@ -223,6 +232,23 @@ namespace RingSoft.DevLogix.Library.ViewModels
             {
                 MainView.ShowDbMaintenanceWindow(AppGlobals.LookupContext.DevLogixCharts);
             }));
+
+            UpgradeCommand = new RelayCommand(() =>
+            {
+                if (!MainView.UpgradeVersion())
+                {
+                    var message = "You are already on the latest version.";
+                    var caption = "Upgrade Not Necessary";
+                    ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Information);
+                }
+            });
+
+            AboutCommand = new RelayCommand((() =>
+            {
+                MainView.ShowAbout();
+            }));
+
+
             ShowMaintenanceWindowCommand = new RelayCommand<TableDefinitionBase>(ShowMaintenanceWindow);
             RefreshChartCommand = new RelayCommand(RefreshChart);
             EditChartCommand = new RelayCommand(EditChart);
@@ -543,6 +569,14 @@ namespace RingSoft.DevLogix.Library.ViewModels
             }
         }
 
+        public void PunchIn(Customer customer)
+        {
+            if (ValidateNewTimeClock())
+            {
+                MainView.PunchIn(customer);
+            }
+        }
+
         public bool PunchOut(bool clockOut, User user, IDbContext context = null)
         {
             if (context == null)
@@ -651,5 +685,6 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
             return true;
         }
+
     }
 }

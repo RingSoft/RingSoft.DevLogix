@@ -79,7 +79,7 @@
 
                 <ac:DbMaintenanceButton x:Name="UserTrackerButton" Content="User T_racker" ImageSource="{StaticResource UserTrackerImage}" Command="{Binding UserTrackerCommand}"/>
 
-                <ac:DbMaintenanceButton x:Name="ProductsButton" Content="_Products" ImageSource="{StaticResource ProductImage}" Command="{Binding ProductsCommand}"/>
+                <ac:DbMaintenanceButton x:Name="ProductsButton" Content="Pro_ducts" ImageSource="{StaticResource ProductImage}" Command="{Binding ProductsCommand}"/>
 
 				<ac:DbMaintenanceButton x:Name="ErrorsButton" Content="Product _Errors" ImageSource="{StaticResource ErrorsImage}" Command="{Binding ErrorsCommand}"/>
 
@@ -90,6 +90,11 @@
                 <ac:DbMaintenanceButton x:Name="AdvancedFindButton" Content="_Advanced Find" ImageSource="{StaticResource FindImage}" Command="{Binding AdvancedFindCommand}"/>
 
                 <ac:DbMaintenanceButton x:Name="ChartButton" Content="C_hart" ImageSource="{StaticResource ChartImage}" Command="{Binding ChartCommand}"/>
+
+                <ac:DbMaintenanceButton x:Name="UpgradeButton" Content="_Upgrade Version" ImageSource="{StaticResource AfUpImage}" Command="{Binding UpgradeCommand}"/>
+
+                <ac:DbMaintenanceButton x:Name="AboutButton" Content="About DevLogix" ImageSource="{StaticResource GearsImage}" Command="{Binding AboutCommand}"/>
+
 
 			</StackPanel>
 			<StatusBar DockPanel.Dock="Bottom" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="Transparent">

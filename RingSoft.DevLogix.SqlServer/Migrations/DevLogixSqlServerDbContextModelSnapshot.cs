@@ -1349,6 +1349,9 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<bool>("AreDatesEdited")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("CustomerId")
+                        .HasColumnType("integer");
+
                     b.Property<int?>("ErrorId")
                         .HasColumnType("integer");
 
@@ -1378,6 +1381,8 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
 
                     b.HasIndex("ErrorId");
 
@@ -2095,6 +2100,11 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.TimeClock", b =>
                 {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Customer", "Customer")
+                        .WithMany("TimeClocks")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.Error", "Error")
                         .WithMany("TimeClocks")
                         .HasForeignKey("ErrorId")
@@ -2115,6 +2125,8 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("Customer");
 
                     b.Navigation("Error");
 
@@ -2206,6 +2218,11 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("Filters");
 
                     b.Navigation("SearchForAdvancedFindFilters");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Customer", b =>
+                {
+                    b.Navigation("TimeClocks");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Territory", b =>

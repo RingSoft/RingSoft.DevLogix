@@ -21,6 +21,7 @@ using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Input;
 using RingSoft.DevLogix.DataAccess;
+using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 using RingSoft.DevLogix.Library.ViewModels.UserManagement;
 using Error = RingSoft.DevLogix.DataAccess.Model.Error;
@@ -30,16 +31,15 @@ using Window = System.Windows.Window;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using ExtensionMethods = RingSoft.DbLookup.ExtensionMethods;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using RingSoft.App.Library;
 
 namespace RingSoft.DevLogix
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : IMainView
+    public partial class MainWindow : IMainView, ICheckVersionView
     {
-        public RelayCommand AboutCommand { get; private set; }
-
         public event EventHandler TimeClockClosed;
         private bool _isActive = true;
 
@@ -49,14 +49,6 @@ namespace RingSoft.DevLogix
 
             SetupToolbar();
 
-            AboutCommand = new RelayCommand(() =>
-            {
-                var splashWindow = new AppSplashWindow(false);
-                splashWindow.Title = "About DevLogix";
-                splashWindow.Owner = this;
-                splashWindow.ShowInTaskbar = false;
-                splashWindow.ShowDialog();
-            });
             ContentRendered += (sender, args) =>
             {
 #if DEBUG
@@ -578,7 +570,7 @@ namespace RingSoft.DevLogix
             MainMenu.Items.Add(new MenuItem()
             {
                 Header = "A_bout DevLogix...",
-                Command = AboutCommand,
+                Command = ViewModel.AboutCommand,
             });
         }
 
@@ -591,6 +583,14 @@ namespace RingSoft.DevLogix
             LogoutButton.ToolTip.HeaderText = "Logout Current User (Alt + L)";
             LogoutButton.ToolTip.DescriptionText =
                 "Log out of the current user and log into a different user.";
+
+            UpgradeButton.ToolTip.HeaderText = "Upgrade Version (Alt + U)";
+            UpgradeButton.ToolTip.DescriptionText =
+                "Upgrade to the latest version of DevLogix.";
+
+            AboutButton.ToolTip.HeaderText = "About DevLogix (Alt + B)";
+            AboutButton.ToolTip.DescriptionText =
+                "See information about this application.";
 
             if (AppGlobals.LookupContext == null)
             {
@@ -606,7 +606,7 @@ namespace RingSoft.DevLogix
             }
 
             ProcessButton(ProductsButton, AppGlobals.LookupContext.Products);
-            ProductsButton.ToolTip.HeaderText = "Show the Product Maintenance Window (Alt + P)";
+            ProductsButton.ToolTip.HeaderText = "Show the Product Maintenance Window (Alt + D)";
             ProductsButton.ToolTip.DescriptionText =
                 "Add or edit Products.";
 
@@ -684,6 +684,12 @@ namespace RingSoft.DevLogix
         public void PunchIn(TestingOutline testingOutline)
         {
             var timeClockWindow = new TimeClockMaintenanceWindow(testingOutline);
+            ShowTimeClockWindow(timeClockWindow);
+        }
+
+        public void PunchIn(Customer customer)
+        {
+            var timeClockWindow = new TimeClockMaintenanceWindow(customer);
             ShowTimeClockWindow(timeClockWindow);
         }
 
@@ -784,5 +790,26 @@ namespace RingSoft.DevLogix
             }
             base.OnClosing(e);
         }
+
+        public bool UpgradeVersion()
+        {
+            return AppStart.CheckVersion(this, true);
+        }
+
+        public void ShutDownApp()
+        {
+            System.Windows.Application.Current.Shutdown();
+            Environment.Exit(0);
+        }
+
+        public void ShowAbout()
+        {
+            var splashWindow = new AppSplashWindow(false);
+            splashWindow.Title = "About DevLogix";
+            splashWindow.Owner = this;
+            splashWindow.ShowInTaskbar = false;
+            splashWindow.ShowDialog();
+        }
+
     }
 }
