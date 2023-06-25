@@ -222,6 +222,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
         }
 
+        private CustomerProductManager _productManager;
+
+        public CustomerProductManager ProductManager
+        {
+            get => _productManager;
+            set
+            {
+                if (_productManager == value)
+                    return;
+
+                _productManager = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         public RelayCommand PunchInCommand { get; private set; }
 
         public RelayCommand RecalcCommand { get; private set; }
@@ -234,6 +250,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             PunchInCommand = new RelayCommand(PunchIn);
 
             RecalcCommand = new RelayCommand(Recalc);
+
+            ProductManager = new CustomerProductManager(this);
+
+            TablesToDelete.Add(AppGlobals.LookupContext.CustomerProduct);
         }
 
         protected override Customer PopulatePrimaryKeyControls(Customer newEntity, PrimaryKeyValue primaryKeyValue)
@@ -252,6 +272,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             var result = table
                 .Include(p => p.TimeZone)
                 .Include(p => p.Territory)
+                .Include(p => p.CustomerProducts)
+                .ThenInclude(p => p.Product)
                 .FirstOrDefault(p => p.Id == customerId);
             return result;
         }
@@ -269,6 +291,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             TimeZoneAutoFillValue = entity.TimeZone.GetAutoFillValue();
             TerritoryAutoFillValue = entity.Territory.GetAutoFillValue();
             EmailAddress = entity.EmailAddress;
+            ProductManager.LoadGrid(entity.CustomerProducts);
         }
 
         protected override Customer GetEntityData()
@@ -307,12 +330,33 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             TimeZoneAutoFillValue = null;
             TerritoryAutoFillValue = null;
             EmailAddress = null;
+            ProductManager.SetupForNewRecord();
         }
 
         protected override bool SaveEntity(Customer entity)
         {
+            var customerProducts = ProductManager.GetEntityList();
             var context = AppGlobals.DataRepository.GetDataContext();
             var result = context.SaveEntity(entity, "Saving Customer");
+
+            var table = context.GetTable<CustomerProduct>();
+            var existingProducts = table.Where(
+                p => p.CustomerId == entity.Id).ToList();
+
+            if (result)
+            {
+                foreach (var customerProduct in customerProducts)
+                {
+                    customerProduct.CustomerId = entity.Id;
+                }
+                context.RemoveRange(existingProducts);
+                context.AddRange(customerProducts);
+            }
+
+            if (result)
+            {
+                result = context.Commit("Finializing Customer Save");
+            }
             return result;
         }
 
@@ -324,6 +368,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             var delCustomer = table.FirstOrDefault(p => p.Id == Id);
             if (delCustomer != null)
             {
+                var productTable = context.GetTable<CustomerProduct>();
+                var existingProducts = productTable.Where(
+                    p => p.CustomerId == Id).ToList();
+
+                context.RemoveRange(existingProducts);
+
                 result = context.DeleteEntity(delCustomer, "Deleting Customer");
             }
             return result;

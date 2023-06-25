@@ -155,6 +155,20 @@
 
                     </Grid>
                 </TabItem>
+                <TabItem Header="Products">
+                    <DockPanel>
+                        <deg:DataEntryGrid Manager="{Binding ProductManager}">
+
+                            <deg:DataEntryGrid.Columns>
+
+                                <deg:DataEntryGridTextColumn Header="Product" Width="200" ColumnId="{x:Static vm:CustomerProductManager.ProductColumnId}"/>
+
+                                <deg:DataEntryGridTextColumn Header="Expiration Date" Width="100" ColumnId="{x:Static vm:CustomerProductManager.ExpirationDateColumnId}"/>
+
+                            </deg:DataEntryGrid.Columns>
+                        </deg:DataEntryGrid>
+                    </DockPanel>
+                </TabItem>
             </TabControl>
 
         </Grid>

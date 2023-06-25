@@ -1,4 +1,6 @@
-﻿namespace RingSoft.DevLogix.DataAccess.LookupModel.CustomerManagement
+﻿using System;
+
+namespace RingSoft.DevLogix.DataAccess.LookupModel.CustomerManagement
 {
     public class CustomerLookup
     {
@@ -17,5 +19,14 @@
         public string Name { get; set; }
 
         public string Salesperson { get; set; }
+    }
+
+    public class CustomerProductLookup
+    {
+        public string Customer { get; set; }
+
+        public string Product { get; set; }
+
+        public DateTime ExpirationDate { get; set; }
     }
 }

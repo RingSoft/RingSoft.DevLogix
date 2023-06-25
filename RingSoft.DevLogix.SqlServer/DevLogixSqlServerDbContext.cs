@@ -53,6 +53,7 @@ namespace RingSoft.DevLogix.SqlServer
         public DbSet<TimeZone> TimeZone { get; set; }
         public DbSet<Territory> Territory { get; set; }
         public DbSet<Customer> Customer { get; set; }
+        public DbSet<CustomerProduct> CustomerProduct { get; set; }
         public DbSet<TestingTemplate> TestingTemplates { get; set; }
 
         public bool IsDesignTime { get; set; }

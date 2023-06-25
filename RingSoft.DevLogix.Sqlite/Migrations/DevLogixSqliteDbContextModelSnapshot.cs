@@ -284,6 +284,24 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.ToTable("Customer");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.CustomerProduct", b =>
+                {
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("ExpirationDate")
+                        .HasColumnType("datetime");
+
+                    b.HasKey("CustomerId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("CustomerProduct");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Territory", b =>
                 {
                     b.Property<int>("Id")
@@ -1559,6 +1577,25 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("TimeZone");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.CustomerProduct", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Customer", "Customer")
+                        .WithMany("CustomerProducts")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.Product", "Product")
+                        .WithMany("CustomerProducts")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Territory", b =>
                 {
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "Salesperson")
@@ -2174,6 +2211,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Customer", b =>
                 {
+                    b.Navigation("CustomerProducts");
+
                     b.Navigation("TimeClocks");
                 });
 
@@ -2241,6 +2280,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Product", b =>
                 {
+                    b.Navigation("CustomerProducts");
+
                     b.Navigation("Errors");
 
                     b.Navigation("Projects");

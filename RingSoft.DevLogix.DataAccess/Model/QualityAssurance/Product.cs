@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 
@@ -48,12 +49,15 @@ namespace RingSoft.DevLogix.DataAccess.Model
 
         public ICollection<TestingOutline> TestingOutlines { get; set; }
 
+        public ICollection<CustomerProduct> CustomerProducts { get; set; }
+
         public Product()
         {
             Versions = new HashSet<ProductVersion>();
             Errors = new HashSet<Error>();
             Projects = new HashSet<Project>();
             TestingOutlines = new HashSet<TestingOutline>();
+            CustomerProducts = new HashSet<CustomerProduct>();
         }
     }
 }
