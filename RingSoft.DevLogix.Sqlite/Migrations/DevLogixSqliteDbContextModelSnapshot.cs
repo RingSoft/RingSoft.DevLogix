@@ -374,6 +374,36 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.ToTable("Order");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.OrderDetail", b =>
+                {
+                    b.Property<int>("OrderId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("DetailId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal?>("Discount")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("ExtendedPrice")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("OrderId", "DetailId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("OrderDetail");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Territory", b =>
                 {
                     b.Property<int>("Id")
@@ -1679,6 +1709,25 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("Customer");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.OrderDetail", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Order", "Order")
+                        .WithMany("Details")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.Product", "Product")
+                        .WithMany("OrderDetailProducts")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Territory", b =>
                 {
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "Salesperson")
@@ -2301,6 +2350,11 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("TimeClocks");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Order", b =>
+                {
+                    b.Navigation("Details");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Territory", b =>
                 {
                     b.Navigation("Customers");
@@ -2368,6 +2422,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("CustomerProducts");
 
                     b.Navigation("Errors");
+
+                    b.Navigation("OrderDetailProducts");
 
                     b.Navigation("Projects");
 

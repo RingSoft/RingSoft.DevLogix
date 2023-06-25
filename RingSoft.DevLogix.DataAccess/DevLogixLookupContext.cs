@@ -84,6 +84,7 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<Customer> Customer { get; set; }
         public TableDefinition<CustomerProduct> CustomerProduct { get; set; }
         public TableDefinition<Order> Order { get; set; }
+        public TableDefinition<OrderDetail> OrderDetail { get; set; }
 
         public LookupDefinition<DevLogixChartLookup, DevLogixChart> DevLogixChartLookup { get; set; }
         public LookupDefinition<SystemPreferencesLookup, SystemPreferences> SystemPreferencesLookup { get; set; }
@@ -128,6 +129,7 @@ namespace RingSoft.DevLogix.DataAccess
         public LookupDefinition<CustomerLookup, Customer> CustomerLookup { get; set; }
         public LookupDefinition<CustomerProductLookup, CustomerProduct> CustomerProductsLookup { get; set; }
         public LookupDefinition<OrderLookup, Order> OrderLookup { get; set; }
+        public LookupDefinition<OrderDetailLookup, OrderDetail> OrderDetailLookup { get; set; }
 
         public SqliteDataProcessor SqliteDataProcessor { get; }
         public SqlServerDataProcessor SqlServerDataProcessor { get; }
@@ -552,6 +554,24 @@ namespace RingSoft.DevLogix.DataAccess
                 , p => p.OrderDate, 25);
 
             Order.HasLookupDefinition(OrderLookup);
+
+            OrderDetailLookup = new LookupDefinition<OrderDetailLookup, OrderDetail>(OrderDetail);
+
+            OrderDetailLookup.Include(
+                    p => p.Order)
+                .AddVisibleColumnDefinition(
+                    p => p.OrderId
+                    , "Order ID"
+                    , p => p.OrderId, 30);
+
+            OrderDetailLookup.Include(
+                    p => p.Product)
+                .AddVisibleColumnDefinition(
+                    p => p.Product
+                    , "Product"
+                    , p => p.Description, 70);
+
+            OrderDetail.HasLookupDefinition(OrderDetailLookup);
         }
 
         public LookupDefinition<ProductVersionLookup, ProductVersion> MakeProductVersionLookupDefinition()
@@ -811,6 +831,15 @@ namespace RingSoft.DevLogix.DataAccess
             Order.GetFieldDefinition(p => p.Freight).HasDecimalFieldType(DecimalFieldTypes.Currency);
             Order.GetFieldDefinition(p => p.TotalDiscount).HasDecimalFieldType(DecimalFieldTypes.Currency);
             Order.GetFieldDefinition(p => p.Total).HasDecimalFieldType(DecimalFieldTypes.Currency);
+
+            OrderDetail.PriorityLevel = 800;
+            OrderDetail.GetFieldDefinition(p => p.UnitPrice)
+                .HasDecimalFieldType(DecimalFieldTypes.Currency);
+            OrderDetail.GetFieldDefinition(p => p.ExtendedPrice)
+                .HasDecimalFieldType(DecimalFieldTypes.Currency);
+            OrderDetail.GetFieldDefinition(p => p.Discount)
+                .HasDecimalFieldType(DecimalFieldTypes.Currency);
+
         }
 
         public override UserAutoFill GetUserAutoFill(string userName)

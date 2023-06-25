@@ -10,4 +10,11 @@ namespace RingSoft.DevLogix.DataAccess.LookupModel.CustomerManagement
 
         public DateTime OrderDate { get; set; }
     }
+
+    public class OrderDetailLookup
+    {
+        public string OrderId { get; set; }
+
+        public string Product { get; set; }
+    }
 }

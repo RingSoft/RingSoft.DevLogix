@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace RingSoft.DevLogix.DataAccess.Model.CustomerManagement
@@ -56,5 +57,11 @@ namespace RingSoft.DevLogix.DataAccess.Model.CustomerManagement
 
         public decimal? Total { get; set; }
 
+        public virtual ICollection<OrderDetail> Details { get; set; }
+
+        public Order()
+        {
+            Details = new HashSet<OrderDetail>();
+        }
     }
 }

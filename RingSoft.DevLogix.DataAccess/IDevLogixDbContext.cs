@@ -59,6 +59,7 @@ namespace RingSoft.DevLogix.DataAccess
         DbSet<Customer> Customer { get; set; }
         DbSet<CustomerProduct> CustomerProduct { get; set; }
         DbSet<Order> Order { get; set; }
+        DbSet<OrderDetail> OrderDetail { get; set; }
 
         void SetLookupContext(DevLogixLookupContext lookupContext);
     }

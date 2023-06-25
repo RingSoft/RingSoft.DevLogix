@@ -51,6 +51,8 @@ namespace RingSoft.DevLogix.DataAccess.Model
 
         public ICollection<CustomerProduct> CustomerProducts { get; set; }
 
+        public ICollection<OrderDetail> OrderDetailProducts { get; set; }
+
         public Product()
         {
             Versions = new HashSet<ProductVersion>();
@@ -58,6 +60,7 @@ namespace RingSoft.DevLogix.DataAccess.Model
             Projects = new HashSet<Project>();
             TestingOutlines = new HashSet<TestingOutline>();
             CustomerProducts = new HashSet<CustomerProduct>();
+            OrderDetailProducts = new HashSet<OrderDetail>();
         }
     }
 }
