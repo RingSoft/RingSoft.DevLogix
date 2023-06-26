@@ -498,6 +498,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             return result;
         }
 
+        protected override bool ValidateEntity(TestingOutline entity)
+        {
+            if (!base.ValidateEntity(entity))
+            {
+                return false;
+            }
+
+            return TemplatesGridManager.ValidateGrid();
+        }
+
         protected override void ClearData()
         {
             Id = 0;

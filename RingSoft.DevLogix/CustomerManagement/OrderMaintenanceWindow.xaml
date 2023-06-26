@@ -58,6 +58,28 @@
 
             <TabControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="5">
 
+                <TabItem Header="Products">
+
+                    <DockPanel>
+
+                        <deg:DataEntryGrid Manager="{Binding DetailsManager}">
+                            <deg:DataEntryGrid.Columns>
+
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:OrderDetailsManager.ProductColumnId}" Header="Product" Width="200"/>
+
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:OrderDetailsManager.QuantityColumnId}" Header="Quantity" Width="100" Alignment="Right"/>
+
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:OrderDetailsManager.PriceColumnId}" Header="Price" Width="100" Alignment="Right"/>
+
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:OrderDetailsManager.ExtendedColumnId}" Header="Extended&#10;Price" Width="100" Alignment="Right"/>
+
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:OrderDetailsManager.DiscountColumnId}" Header="Discount" Width="75" Alignment="Right"/>
+
+                            </deg:DataEntryGrid.Columns>
+                        </deg:DataEntryGrid>
+                    </DockPanel>
+                </TabItem>
+
                 <TabItem Header="Details">
 
                     <Grid>

@@ -3,6 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
+using RingSoft.DbLookup.Lookup;
+using RingSoft.DbLookup.QueryBuilder;
+using RingSoft.DbMaintenance;
+using RingSoft.DevLogix.DataAccess.LookupModel;
+using RingSoft.DevLogix.DataAccess.LookupModel.CustomerManagement;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
 
@@ -253,10 +258,87 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
         }
 
+        private LookupDefinition<OrderLookup, Order> _orderLookupDefinition;
+
+        public LookupDefinition<OrderLookup, Order> OrderLookupDefinition
+        {
+            get => _orderLookupDefinition;
+            set
+            {
+                if (_orderLookupDefinition == value)
+                    return;
+
+                _orderLookupDefinition = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private LookupCommand _orderLookupCommand;
+
+        public LookupCommand OrderLookupCommand
+        {
+            get => _orderLookupCommand;
+            set
+            {
+                if (_orderLookupCommand == value)
+                    return;
+
+                _orderLookupCommand = value;
+                OnPropertyChanged(null, false);
+            }
+        }
+
+        private LookupDefinition<TimeClockLookup, TimeClock> _timeClockLookup;
+
+        public LookupDefinition<TimeClockLookup, TimeClock> TimeClockLookup
+        {
+            get => _timeClockLookup;
+            set
+            {
+                if (_timeClockLookup == value)
+                    return;
+
+                _timeClockLookup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private LookupCommand _timeClockLookupCommand;
+
+        public LookupCommand TimeClockLookupCommand
+        {
+            get => _timeClockLookupCommand;
+            set
+            {
+                if (_timeClockLookupCommand == value)
+                    return;
+
+                _timeClockLookupCommand = value;
+                OnPropertyChanged(null, false);
+            }
+        }
+
+        private string? _notes;
+
+        public string? Notes
+        {
+            get => _notes;
+            set
+            {
+                if (_notes == value)
+                    return;
+
+                _notes = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         public RelayCommand PunchInCommand { get; private set; }
 
         public RelayCommand RecalcCommand { get; private set; }
+
+        public RelayCommand AddModifyOrderLookupCommand { get; set; }
 
         public CustomerViewModel()
         {
@@ -270,6 +352,19 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             ProductManager = new CustomerProductManager(this);
 
             TablesToDelete.Add(AppGlobals.LookupContext.CustomerProduct);
+
+            OrderLookupDefinition = AppGlobals.LookupContext.OrderLookup.Clone();
+
+            AddModifyOrderLookupCommand = new RelayCommand(AddModifyOrder);
+
+            var timeClockLookup = new LookupDefinition<TimeClockLookup, TimeClock>(AppGlobals.LookupContext.TimeClocks);
+            timeClockLookup.AddVisibleColumnDefinition(p => p.PunchInDate, p => p.PunchInDate);
+            timeClockLookup.Include(p => p.User)
+                .AddVisibleColumnDefinition(p => p.UserName, p => p.Name);
+            timeClockLookup.AddVisibleColumnDefinition(p => p.MinutesSpent, p => p.MinutesSpent);
+            TimeClockLookup = timeClockLookup;
+            TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
+
         }
 
         protected override Customer PopulatePrimaryKeyControls(Customer newEntity, PrimaryKeyValue primaryKeyValue)
@@ -278,6 +373,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
             Id = newEntity.Id;
             KeyAutoFillValue = result.GetAutoFillValue();
+
+            OrderLookupDefinition.FilterDefinition.ClearFixedFilters();
+            OrderLookupDefinition.FilterDefinition.AddFixedFilter(p => p.CustomerId, Conditions.Equals, Id);
+            OrderLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
+
+            TimeClockLookup.FilterDefinition.ClearFixedFilters();
+            TimeClockLookup.FilterDefinition.AddFixedFilter(p => p.CustomerId, Conditions.Equals, Id);
+            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
+
             return result;
         }
 
@@ -309,6 +413,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             EmailAddress = entity.EmailAddress;
             WebAddress = entity.WebAddress;
             ProductManager.LoadGrid(entity.CustomerProducts);
+            Notes = entity.Notes;
         }
 
         protected override Customer GetEntityData()
@@ -329,7 +434,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 TerritoryId = TerritoryAutoFillValue.GetEntity<Territory>().Id,
                 EmailAddress = EmailAddress,
                 WebAddress = WebAddress,
+                Notes = Notes,
             };
+            return result;
+        }
+
+        protected override bool ValidateEntity(Customer entity)
+        {
+            var result = base.ValidateEntity(entity);
+            if (result)
+            {
+                if (!ProductManager.ValidateGrid())
+                {
+                    result = false;
+                }
+            }
+
             return result;
         }
 
@@ -350,8 +470,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             EmailAddress = null;
             WebAddress = null;
             ProductManager.SetupForNewRecord();
+            OrderLookupCommand = GetLookupCommand(LookupCommands.Clear);
+            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Clear);
+            Notes = null;
         }
-
+        
         protected override bool SaveEntity(Customer entity)
         {
             var customerProducts = ProductManager.GetEntityList();
@@ -407,6 +530,17 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         private void Recalc()
         {
 
+        }
+
+        private void AddModifyOrder()
+        {
+            if (ExecuteAddModifyCommand() == DbMaintenanceResults.Success)
+                OrderLookupCommand = GetLookupCommand(LookupCommands.AddModify);
+        }
+
+        public void RefreshTimeClockLookup()
+        {
+            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh);
         }
     }
 }

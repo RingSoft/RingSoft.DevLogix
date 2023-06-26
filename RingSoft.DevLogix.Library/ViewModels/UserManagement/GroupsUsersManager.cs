@@ -26,22 +26,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             return new GroupsUsersGridRow(this);
         }
 
-        public override bool ValidateGrid()
-        {
-            var rows = Rows.OfType<GroupsUsersGridRow>();
-            foreach (var row in rows)
-            {
-                if (!row.IsNew)
-                {
-                    if (!row.ValidateRow())
-                    {
-                        return false;
-                    }
-                }
-            }
-            return base.ValidateGrid();
-        }
-
         public List<UsersGroup> GetList()
         {
             var result = new List<UsersGroup>();

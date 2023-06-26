@@ -57,6 +57,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                             DepartmentId = AppGlobals.LookupContext.Departments
                                 .GetEntityFromPrimaryKeyValue(DepartmentAutoFillValue.PrimaryKeyValue).Id;
                         }
+                        else
+                        {
+                            DepartmentId = 0;
+                        }
                         if (ReleaseDateTime == null)
                         {
                             var newDate = DateTime.Now;
@@ -83,24 +87,29 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 AppGlobals.LookupContext.OnAutoFillTextRequest(AppGlobals.LookupContext.Departments,
                     entity.DepartmentId.ToString());
             ReleaseDateTime = entity.ReleaseDateTime.ToLocalTime();
+            DepartmentId = entity.DepartmentId;
         }
 
         public override bool ValidateRow()
         {
-            if (!IsNew)
+            if (!base.ValidateRow())
             {
-                if (!DepartmentAutoFillValue.IsValid())
-                {
-                    return false;
-                }
-
+                return false;
+            }
+            if (!IsNew && DepartmentId != 0)
+            {
                 var department =
                     AppGlobals.LookupContext.Departments.GetEntityFromPrimaryKeyValue(DepartmentAutoFillValue
                         .PrimaryKeyValue);
 
                 var rows = Manager.Rows.OfType<ProductVersionDepartmentsRow>();
-                if (rows.Where(p => p.DepartmentId == DepartmentId).ToList().Count > 1)
+                var dupRows = rows.Where(p => p.DepartmentId == DepartmentId).ToList();
+                if (dupRows.Count > 1)
                 {
+                    var message = "Duplicate Departments not allowed!";
+                    var caption = "Validation Fail";
+                    Manager.Grid?.GotoCell(this, ProductVersionDepartmentsManager.DepartmentColumnId);
+                    ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
                     return false;
                 }
 

@@ -227,7 +227,7 @@ namespace RingSoft.DevLogix.UserManagement
         {
             _timeOffRowFocus = rowId;
         }
-
+    
         public string GetPassword()
         {
             return PasswordBox.Password;

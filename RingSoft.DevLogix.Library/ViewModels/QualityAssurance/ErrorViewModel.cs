@@ -840,6 +840,18 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             return result;
         }
 
+        protected override bool ValidateEntity(Error entity)
+        {
+            var result = base.ValidateEntity(entity);
+
+            if (!result && MaintenanceMode == DbMaintenanceModes.AddMode)
+            {
+                KeyAutoFillValue = null;
+            }
+            return result;
+        }
+
+
         protected override void ClearData()
         {
             Id = 0;

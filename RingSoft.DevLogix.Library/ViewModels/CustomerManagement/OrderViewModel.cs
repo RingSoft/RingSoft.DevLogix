@@ -212,6 +212,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
         }
 
+        private OrderDetailsManager _detailsManager;
+
+        public OrderDetailsManager DetailsManager
+        {
+            get => _detailsManager;
+            set
+            {
+                if (_detailsManager == value)
+                    return;
+
+                _detailsManager = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         private decimal _subTotal;
 
         public decimal SubTotal
@@ -238,6 +254,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                     return;
 
                 _freight = value;
+                if (!_loading)
+                {
+                    DetailsManager.CalculateTotals();
+                }
                 OnPropertyChanged();
             }
         }
@@ -272,6 +292,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
         }
 
+        public AutoFillValue DefaultCustomerAutoFillValue { get; private set; }
 
         private bool _loading;
 
@@ -279,6 +300,30 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         {
             CustomerAutoFillSetup = new AutoFillSetup(
                 TableDefinition.GetFieldDefinition(p => p.CustomerId));
+
+            TablesToDelete.Add(AppGlobals.LookupContext.OrderDetail);
+            DetailsManager = new OrderDetailsManager(this);
+        }
+
+        protected override void Initialize()
+        {
+            if (LookupAddViewArgs != null && LookupAddViewArgs.ParentWindowPrimaryKeyValue != null)
+            {
+                if (LookupAddViewArgs.ParentWindowPrimaryKeyValue.TableDefinition ==
+                    AppGlobals.LookupContext.Customer)
+                {
+                    var customer =
+                        AppGlobals.LookupContext.Customer.GetEntityFromPrimaryKeyValue(LookupAddViewArgs
+                            .ParentWindowPrimaryKeyValue);
+
+                    var context = AppGlobals.DataRepository.GetDataContext();
+                    var table = context.GetTable<Customer>();
+                    customer = table.FirstOrDefault(p => p.Id == customer.Id);
+                    DefaultCustomerAutoFillValue = customer.GetAutoFillValue();
+                }
+            }
+
+            base.Initialize();
         }
 
         protected override Order PopulatePrimaryKeyControls(Order newEntity, PrimaryKeyValue primaryKeyValue)
@@ -288,6 +333,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
             var order = table
                 .Include(p => p.Customer)
+                .Include(p => p.Details)
+                .ThenInclude(p => p.Product)
                 .FirstOrDefault(p => p.Id == newEntity.Id);
 
             Id = newEntity.Id;
@@ -322,6 +369,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             Freight = entity.Freight.GetValueOrDefault();
             TotalDiscount = entity.TotalDiscount.GetValueOrDefault();
             Total = entity.Total.GetValueOrDefault();
+            DetailsManager.LoadGrid(entity.Details);
             _loading = false;
         }
 
@@ -350,10 +398,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             {
                 result.ShippedDate = null;
             }
-            if (MaintenanceMode == DbMaintenanceModes.AddMode && KeyAutoFillValue.Text.IsNullOrEmpty())
+
+            if (KeyAutoFillValue == null || !KeyAutoFillValue.IsValid())
             {
-                result.OrderId = Guid.NewGuid().ToString();
-                KeyAutoFillValue = new AutoFillValue(new PrimaryKeyValue(TableDefinition), result.OrderId);
+                if (Entity.Id == 0)
+                {
+                    result.OrderId = Guid.NewGuid().ToString();
+                    KeyAutoFillValue = new AutoFillValue(new PrimaryKeyValue(TableDefinition), result.OrderId);
+                }
             }
             else
             {
@@ -363,11 +415,25 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             return result;
         }
 
+        protected override bool ValidateEntity(Order entity)
+        {
+            var result = base.ValidateEntity(entity);
+            if (result && !DetailsManager.ValidateGrid())
+            {
+                result = false;
+            }
+
+            if (!result && MaintenanceMode == DbMaintenanceModes.AddMode)
+            {
+                KeyAutoFillValue = null;
+            }
+            return result;
+        }
+
         protected override void ClearData()
         {
             Id = 0;
             KeyAutoFillValue = null;
-            CustomerAutoFillValue = null;
             OrderDate = DateTime.Now;
             ShippedDate = DateTime.Now;
             CompanyName = string.Empty;
@@ -382,6 +448,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             Freight = 0;
             TotalDiscount = 0;
             Total = 0;
+            DetailsManager.SetupForNewRecord();
+            CustomerAutoFillValue = DefaultCustomerAutoFillValue;
         }
 
         protected override bool SaveEntity(Order entity)
@@ -394,6 +462,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 entity.OrderId = $"O-{entity.Id}";
                 result = context.SaveEntity(entity, "Updating Order ID");
             }
+
+            if (result)
+            {
+                var newDetails = DetailsManager.GetEntityList();
+                foreach (var orderDetail in newDetails)
+                {
+                    orderDetail.OrderId = entity.Id;
+                }
+
+                var detailsTable = context.GetTable<OrderDetail>();
+                var existingDetails = detailsTable
+                    .Where(p => p.OrderId == Id).ToList();
+                context.RemoveRange(existingDetails);
+                context.AddRange(newDetails);
+                result = context.Commit("Updating Details");
+            }
             return result;
         }
 
@@ -405,6 +489,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             var order = table.FirstOrDefault(p => p.Id == Id);
             if (order != null)
             {
+                var detailsTable = context.GetTable<OrderDetail>();
+                var existingDetails = detailsTable
+                    .Where(p => p.OrderId == Id).ToList();
+                context.RemoveRange(existingDetails);
+
                 result = context.DeleteEntity(order, "Deleting Order");
             }
             return result;

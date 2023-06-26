@@ -17,7 +17,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
         public TestingOutlineTemplatesGridRow(TestingOutlineTemplatesGridManager manager) : base(manager)
         {
             Manager = manager;
-            AutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.TestingTemplateLookup);
+            AutoFillSetup = new AutoFillSetup(TableDefinition
+                .GetFieldDefinition(p => p.TestingTemplateId));
         }
 
         public override DataEntryGridCellProps GetCellProps(int columnId)
@@ -37,11 +38,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
         public override void LoadFromEntity(TestingOutlineTemplate entity)
         {
             AutoFillValue = entity.TestingTemplate.GetAutoFillValue();
-        }
-
-        public override bool ValidateRow()
-        {
-            throw new System.NotImplementedException();
         }
 
         public override void SaveToEntity(TestingOutlineTemplate entity, int rowIndex)

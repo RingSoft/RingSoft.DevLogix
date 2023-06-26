@@ -10,11 +10,12 @@
                         xmlns:dl="clr-namespace:RingSoft.DevLogix"
                         xmlns:vm="clr-namespace:RingSoft.DevLogix.Library.ViewModels.CustomerManagement;assembly=RingSoft.DevLogix.Library"
                         xmlns:customerManagement="clr-namespace:RingSoft.DevLogix.DataAccess.LookupModel.CustomerManagement;assembly=RingSoft.DevLogix.DataAccess"
-                        xmlns:lm="clr-namespace:RingSoft.DevLogix.DataAccess.LookupModel;assembly=RingSoft.DevLogix.DataAccess"
+                        xmlns:lm="clr-namespace:RingSoft.DevLogix.DataAccess.LookupModel.CustomerManagement;assembly=RingSoft.DevLogix.DataAccess"
                         xmlns:local="clr-namespace:RingSoft.DevLogix.CustomerManagement"
+                        xmlns:lookupModel="clr-namespace:RingSoft.DevLogix.DataAccess.LookupModel;assembly=RingSoft.DevLogix.DataAccess"
                         mc:Ignorable="d"
                         Style="{StaticResource BaseWindowStyle}"
-                        Title="Customer Maintenance Window" Height="750" Width="850">
+                        Title="Customer Maintenance Window" Height="500" Width="650">
 
     <Window.Resources>
         <Style TargetType="{x:Type local:CustomerHeaderControl}">
@@ -93,6 +94,29 @@
 
             <TabControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5">
 
+                <TabItem Header="Orders">
+                    <DockPanel>
+
+                    <Button Content="_Add/Modify" x:Name="AddModifyOrderButton" Command="{Binding AddModifyOrderLookupCommand}" Height="20"  DockPanel.Dock="Left" VerticalAlignment="Top"/>
+
+                    <lc:LookupControl LookupDefinition="{Binding OrderLookupDefinition}" Command="{Binding OrderLookupCommand}" >
+
+                        <lc:LookupControl.LookupColumns>
+
+                            <lc:LookupColumn PropertyName="{lc:NameOf OrderId, Type={x:Type lm:OrderLookup}}" Header="Order ID" Width="100"/>
+
+                            <lc:LookupColumn PropertyName="{lc:NameOf OrderDate, Type={x:Type lm:OrderLookup}}" Header="Order Date" Width="200"/>
+
+                            <lc:LookupColumn PropertyName="{lc:NameOf Total, Type={x:Type lm:OrderLookup}}" Header="Order Total" Width="100" TextAlignment="Right"/>
+
+                        </lc:LookupControl.LookupColumns>
+
+                    </lc:LookupControl>
+
+                </DockPanel>
+                </TabItem>
+
+
                 <TabItem Header="Details">
 
                     <Grid>
@@ -155,11 +179,11 @@
 
                         <Label Grid.Row="6" Grid.Column="0" Content="Email Address"/>
 
-                        <dec:StringEditControl Grid.Row="6" Grid.Column="1" Width="300" HorizontalAlignment="Left" Text="{Binding EmailAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="100"/>
+                        <dec:StringEditControl Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="3" Width="300" HorizontalAlignment="Left" Text="{Binding EmailAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="100"/>
 
                         <Label Grid.Row="7" Grid.Column="0" Content="Web Address"/>
 
-                        <dec:StringEditControl Grid.Row="7" Grid.Column="1" Width="300" HorizontalAlignment="Left" Text="{Binding WebAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="100"/>
+                        <dec:StringEditControl Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="3" Width="300" HorizontalAlignment="Left" Text="{Binding WebAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="100"/>
                     </Grid>
                 </TabItem>
                 <TabItem Header="Products">
@@ -176,8 +200,37 @@
                         </deg:DataEntryGrid>
                     </DockPanel>
                 </TabItem>
-            </TabControl>
+                <TabItem Header="Time Clocks" x:Name="TimeClockTab" VerticalAlignment="Stretch">
 
+                    <DockPanel>
+
+                        <lc:LookupControl LookupDefinition="{Binding TimeClockLookup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Command="{Binding TimeClockLookupCommand, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+
+                            <lc:LookupControl.LookupColumns>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf PunchInDate, Type={x:Type lookupModel:TimeClockLookup}}" Header="Punch In Date" Width="200"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf UserName, Type={x:Type lookupModel:TimeClockLookup}}" Header="User" Width="200"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf MinutesSpent, Type={x:Type lookupModel:TimeClockLookup}}" Header="Time Spent" Width="100"/>
+
+                            </lc:LookupControl.LookupColumns>
+
+                        </lc:LookupControl>
+
+                    </DockPanel>
+
+                </TabItem>
+
+                <dec:DataEntryMemoTabItem Header="Notes" VerticalAlignment="Stretch">
+                    <DockPanel>
+
+                        <dec:DataEntryMemoEditor x:Name="NotesControl" Text="{Binding Path=Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    </DockPanel>
+                </dec:DataEntryMemoTabItem>
+
+            </TabControl>
         </Grid>
     </DockPanel>
 </ac:DbMaintenanceWindow>

@@ -56,7 +56,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 return false;
             }
 
-            return true;
+            return base.ValidateGrid();
         }
     }
 }

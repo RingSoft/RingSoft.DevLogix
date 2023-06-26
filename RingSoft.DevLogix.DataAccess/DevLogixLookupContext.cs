@@ -539,19 +539,25 @@ namespace RingSoft.DevLogix.DataAccess
             OrderLookup.AddVisibleColumnDefinition(
                 p => p.OrderId
                 , "Order ID"
-                , p => p.OrderId, 25);
+                , p => p.OrderId, 15);
 
             OrderLookup.Include(
                     p => p.Customer)
                 .AddVisibleColumnDefinition(
                     p => p.Customer
                     , "Customer"
-                    , p => p.CompanyName, 50);
+                    , p => p.CompanyName, 35);
 
             OrderLookup.AddVisibleColumnDefinition(
                 p => p.OrderDate
                 , "Order Date"
                 , p => p.OrderDate, 25);
+
+            OrderLookup.AddVisibleColumnDefinition(
+                p => p.Total
+                , "Order\r\nTotal"
+                , p => p.Total, 25)
+                .HasHorizontalAlignmentType(LookupColumnAlignmentTypes.Right);
 
             Order.HasLookupDefinition(OrderLookup);
 

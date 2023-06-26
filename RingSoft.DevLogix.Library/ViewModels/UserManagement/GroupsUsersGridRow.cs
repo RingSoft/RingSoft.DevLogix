@@ -18,7 +18,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         public GroupsUsersGridRow(GroupsUsersManager manager) : base(manager)
         {
             Manager = manager;
-            AutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.UserLookup)
+            AutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext
+                .UsersGroups.GetFieldDefinition(p => p.UserId))
             {
                 AllowLookupAdd = AppGlobals.LookupContext.Users.HasRight(RightTypes.AllowAdd),
                 AllowLookupView = AppGlobals.LookupContext.Users.HasRight(RightTypes.AllowView)
