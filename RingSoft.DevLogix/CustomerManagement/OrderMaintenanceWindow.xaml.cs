@@ -36,6 +36,7 @@ namespace RingSoft.DevLogix.CustomerManagement
         {
             RegisterFormKeyControl(OrderIdControl);
             base.OnLoaded();
+            TopHeaderControl.PrintButton.Content = "_Print Invoice";
         }
 
         public override void ResetViewForNewRecord()

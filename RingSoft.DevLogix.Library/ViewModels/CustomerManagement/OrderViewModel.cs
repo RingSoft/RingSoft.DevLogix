@@ -1,12 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
+using RingSoft.Printing.Interop;
 
 namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 {
@@ -303,6 +306,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
             TablesToDelete.Add(AppGlobals.LookupContext.OrderDetail);
             DetailsManager = new OrderDetailsManager(this);
+            PrintProcessingHeader += OrderViewModel_PrintProcessingHeader;
         }
 
         protected override void Initialize()
@@ -328,6 +332,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         protected override Order PopulatePrimaryKeyControls(Order newEntity, PrimaryKeyValue primaryKeyValue)
         {
+            var order = GetOrder(newEntity.Id);
+
+            Id = newEntity.Id;
+            KeyAutoFillValue = order.GetAutoFillValue();
+
+            return order;
+        }
+
+        private static Order? GetOrder(int orderId)
+        {
             var context = AppGlobals.DataRepository.GetDataContext();
             var table = context.GetTable<Order>();
 
@@ -335,11 +349,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 .Include(p => p.Customer)
                 .Include(p => p.Details)
                 .ThenInclude(p => p.Product)
-                .FirstOrDefault(p => p.Id == newEntity.Id);
-
-            Id = newEntity.Id;
-            KeyAutoFillValue = order.GetAutoFillValue();
-
+                .FirstOrDefault(p => p.Id == orderId);
             return order;
         }
 
@@ -401,7 +411,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
             if (KeyAutoFillValue == null || !KeyAutoFillValue.IsValid())
             {
-                if (Entity.Id == 0)
+                if (result.Id == 0)
                 {
                     result.OrderId = Guid.NewGuid().ToString();
                     KeyAutoFillValue = new AutoFillValue(new PrimaryKeyValue(TableDefinition), result.OrderId);
@@ -519,6 +529,122 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 Region = customer.Region;
                 PostalCode = customer.PostalCode;
                 Country = customer.Country;
+            }
+        }
+
+        protected override void SetupPrinterArgs(PrinterSetupArgs printerSetupArgs, int stringFieldIndex = 1, int numericFieldIndex = 1,
+            int memoFieldIndex = 1)
+        {
+            printerSetupArgs.PrintingProperties.ReportType = ReportTypes.Custom;
+            printerSetupArgs.PrintingProperties.CustomReportPathFileName =
+                $"{RingSoftAppGlobals.AssemblyDirectory}\\CustomerManagement\\Invoice.rpt";
+
+            base.SetupPrinterArgs(printerSetupArgs, stringFieldIndex, numericFieldIndex, memoFieldIndex);
+            printerSetupArgs.CodeDescription = "Invoice";
+            printerSetupArgs.PrintingProperties.ReportTitle = "Invoice";
+        }
+
+        public override void ProcessPrintOutputData(PrinterSetupArgs printerSetupArgs)
+        {
+            base.ProcessPrintOutputData(printerSetupArgs);
+            var customProperties = new List<PrintingCustomProperty>();
+            customProperties.Add(new PrintingCustomProperty
+            {
+                Name = "lblOrderDate",
+                Value = "Order Date",
+            });
+
+            var dateSetup = new DateEditControlSetup
+            {
+                DateFormatType = DateFormatTypes.DateTime,
+            };
+            customProperties.Add(new PrintingCustomProperty
+            {
+                Name = "strDate",
+                Value = dateSetup.FormatValueForDisplay(DateTime.Now),
+            });
+
+            customProperties.Add(new PrintingCustomProperty
+            {
+                Name = "lblInvoiceDate",
+                Value = "Invoice Date",
+            });
+
+            customProperties.Add(new PrintingCustomProperty
+            {
+                Name = "lblCompany",
+                Value = AppGlobals.LoggedInOrganization.Name,
+            });
+
+            customProperties.Add(new PrintingCustomProperty
+            {
+                Name = "lblTo",
+                Value = "To",
+            });
+
+            customProperties.Add(new PrintingCustomProperty
+            {
+                Name = "lblSubTotal",
+                Value = "Sub Total",
+            });
+
+            customProperties.Add(new PrintingCustomProperty
+            {
+                Name = "lblTotal",
+                Value = "Total",
+            });
+
+            PrintingInteropGlobals.PropertiesProcessor.CustomProperties = customProperties;
+        }
+
+        private void OrderViewModel_PrintProcessingHeader(object? sender, PrinterDataProcessedEventArgs e)
+        {
+            var dateSetup = new DateEditControlSetup
+            {
+                DateFormatType = DateFormatTypes.DateTime,
+            };
+
+            var qtySetup = new DecimalEditControlSetup()
+            {
+                FormatType = DecimalEditFormatTypes.Number,
+            };
+
+            var currencySetup = new DecimalEditControlSetup()
+            {
+                FormatType = DecimalEditFormatTypes.Currency,
+            };
+
+            var primaryKey = new PrimaryKeyValue(TableDefinition);
+            primaryKey.PopulateFromDataRow(e.OutputRow);
+
+            var order = TableDefinition.GetEntityFromPrimaryKeyValue(primaryKey);
+            order = GetOrder(order.Id);
+            if (order != null)
+            {
+                e.HeaderRow.StringField01 = dateSetup.FormatValueForDisplay(order.OrderDate.ToLocalTime());
+                e.HeaderRow.StringField02 = order.CompanyName;
+                e.HeaderRow.StringField03 = order.Address;
+                e.HeaderRow.StringField04 = order.City;
+                e.HeaderRow.StringField05 = order.Region;
+                e.HeaderRow.StringField06 = order.PostalCode;
+                e.HeaderRow.StringField07 = order.Country;
+                e.HeaderRow.NumberField01 = currencySetup.FormatValue(order.SubTotal);
+                e.HeaderRow.NumberField02 = currencySetup.FormatValue(order.Total);
+                var detailsChunk = new List<PrintingInputDetailsRow>();
+                foreach (var detail in order.Details)
+                {
+                    var detailRow = new PrintingInputDetailsRow();
+                    detailRow.HeaderRowKey = e.HeaderRow.RowKey;
+                    detailRow.TablelId = 1;
+                    detailRow.StringField01 = detail.Product.Description;
+                    detailRow.NumberField01 = qtySetup.FormatValue(detail.Quantity);
+                    detailRow.NumberField02 = currencySetup.FormatValue(detail.ExtendedPrice);
+                    detailsChunk.Add(detailRow);
+                }
+
+                PrintingInteropGlobals.DetailsProcessor.AddChunk(detailsChunk, e.PrinterSetup.PrintingProperties);
+
+                detailsChunk.Clear();
             }
         }
     }
