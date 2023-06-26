@@ -362,3 +362,4 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /RingSoft.DevLogix.Sqlite/DevLogixSqliteDbContext.cs
+/RingSoft.DevLogix/RingSoft.DevLogix.csproj
