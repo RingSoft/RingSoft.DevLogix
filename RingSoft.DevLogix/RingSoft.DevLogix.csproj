@@ -1,0 +1,87 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net7.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>Resources\gears.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ReferencePath>C:\Program Files (x86)\SAP BusinessObjects\Crystal Reports for .NET Framework 4.0\Common\SAP BusinessObjects Enterprise XI 4.0\win64_x64\dotnet\</ReferencePath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\bug_edit32.png" />
+    <None Remove="Resources\calculator.png" />
+    <None Remove="Resources\chart_bar32.png" />
+    <None Remove="Resources\chronometer32.png" />
+    <None Remove="Resources\clock.png" />
+    <None Remove="Resources\gears.ico" />
+    <None Remove="Resources\gears.png" />
+    <None Remove="Resources\logout32.png" />
+    <None Remove="Resources\Organization.png" />
+    <None Remove="Resources\outline32.png" />
+    <None Remove="Resources\project32.png" />
+    <None Remove="Resources\RedAlert.ico" />
+    <None Remove="Resources\software32.png" />
+    <None Remove="Resources\user32.png" />
+    <None Remove="Resources\UsersTrack.png" />
+    <None Remove="Resources\UserTrack.png" />
+    <None Remove="Resources\UserTracker.png" />
+    <None Remove="Resources\YellowAlert.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\gears.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="RingSoft.App.Controls" Version="7.14.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RingSoft.DevLogix.Library\RingSoft.DevLogix.Library.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\bug_edit32.png" />
+    <Resource Include="Resources\calculator.png" />
+    <Resource Include="Resources\chart_bar32.png" />
+    <Resource Include="Resources\chronometer32.png" />
+    <Resource Include="Resources\gears.ico" />
+    <Resource Include="Resources\gears.png" />
+    <Resource Include="Resources\logout32.png" />
+    <Resource Include="Resources\Organization.png" />
+    <Resource Include="Resources\outline32.png" />
+    <Resource Include="Resources\project32.png" />
+    <Resource Include="Resources\RedAlert.ico" />
+    <Resource Include="Resources\software32.png" />
+    <Resource Include="Resources\user32.png" />
+    <Resource Include="Resources\UsersTrack.png" />
+    <Resource Include="Resources\YellowAlert.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="CustomerManagement\Invoice.rpt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="ProjectManagement\ProjectSchedule.rpt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="QualityAssurance\Error.rpt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="UserManagement\User.rpt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{c0c07587-41a7-46c8-8fbd-3f9c8ebe2ddc}" />
+  </ItemGroup>
+
+</Project>
