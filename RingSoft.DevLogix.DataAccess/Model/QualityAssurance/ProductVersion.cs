@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 
@@ -23,6 +24,12 @@ namespace RingSoft.DevLogix.DataAccess.Model
         public string? Notes { get; set; }
 
         public DateTime? ArchiveDateTime { get; set; }
+
+        public int? DepartmentId { get; set; }
+
+        public virtual Department Department { get; set; }
+
+        public DateTime? VersionDate { get; set; }
 
         public virtual ICollection<ProductVersionDepartment> ProductVersionDepartments { get; set; }
 

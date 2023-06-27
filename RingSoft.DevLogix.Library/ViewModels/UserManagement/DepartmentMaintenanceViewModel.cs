@@ -239,6 +239,21 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
         }
 
+        private int _releaseLevel;
+
+        public int ReleaseLevel
+        {
+            get => _releaseLevel;
+            set
+            {
+                if (_releaseLevel == value) return;
+
+                _releaseLevel = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         public new IDepartmentView View { get; private set; }
 
         public RelayCommand AddModifyUserLookupCommand { get; set; }
@@ -318,7 +333,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             {
                 View.FtpPassword = entity.FtpPassword.Decrypt();
             }
-
+            ReleaseLevel = entity.ReleaseLevel;
         }
 
         protected override Department GetEntityData()
@@ -333,6 +348,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 Notes = Notes,
                 FtpAddress = FtpAddress,
                 FtpUsername = FtpUserName,
+                ReleaseLevel = ReleaseLevel,
             };
 
             if (!View.FtpPassword.IsNullOrEmpty())
@@ -372,6 +388,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             View.FtpPassword = string.Empty;
             UserLookupCommand = GetLookupCommand(LookupCommands.Clear);
             Notes = null;
+            ReleaseLevel = 0;
         }
 
         protected override AutoFillValue GetAutoFillValueForNullableForeignKeyField(FieldDefinition fieldDefinition)

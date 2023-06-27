@@ -21,6 +21,7 @@ namespace RingSoft.DevLogix.DataAccess.Configurations
             builder.Property(p => p.FtpAddress).HasColumnType(DbConstants.StringColumnType);
             builder.Property(p => p.FtpUsername).HasColumnType(DbConstants.StringColumnType);
             builder.Property(p => p.FtpPassword).HasColumnType(DbConstants.StringColumnType);
+            builder.Property(p => p.ReleaseLevel).HasColumnType(DbConstants.IntegerColumnType);
 
             builder.HasOne(p => p.ErrorFixStatus)
                 .WithMany(p => p.FixedDepartments)

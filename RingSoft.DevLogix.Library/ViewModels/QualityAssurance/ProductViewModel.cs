@@ -346,33 +346,56 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         {
             var lookupDefinition = ProductVersionLookupDefinition;
             lookupDefinition.FilterDefinition.ClearFixedFilters();
+            lookupDefinition.FilterDefinition.AddFixedFilter(
+                p => p.ProductId
+                , Conditions.Equals
+                , Id);
+
             if (Id > 0)
             {
-                lookupDefinition.FilterDefinition.AddFixedFilter("ProductId", Conditions.Equals,
-                    Id.ToString(), "ProductId");
-
                 if (DepartmentFilterAutoFillValue.IsValid())
                 {
-                    var department =
-                        AppGlobals.LookupContext.Departments.GetEntityFromPrimaryKeyValue(DepartmentFilterAutoFillValue
-                            .PrimaryKeyValue);
-
-                    var tableDefinition = AppGlobals.LookupContext.ProductVersionDepartments;
-                    var field = tableDefinition.GetFieldDefinition(p => p.VersionId).FieldName;
-                    var query = new SelectQuery(tableDefinition.TableName);
-                    query.AddSelectColumn(field);
-                    query.AddWhereItem(tableDefinition.GetFieldDefinition(p => p.DepartmentId).FieldName,
-                        Conditions.Equals, department.Id);
-
-                    var versionsTableDefinition = AppGlobals.LookupContext.ProductVersions;
-                    field = versionsTableDefinition.GetFieldDefinition(p => p.Id).FieldName;
-                    field = AppGlobals.LookupContext.DataProcessor.SqlGenerator.FormatSqlObject(field);
-                    field =
-                        $"{AppGlobals.LookupContext.DataProcessor.SqlGenerator.FormatSqlObject(versionsTableDefinition.TableName)}.{field}";
-                    var sql = AppGlobals.LookupContext.DataProcessor.SqlGenerator.GenerateSelectStatement(query);
-                    sql = $"{field} IN ({sql})";
-                    lookupDefinition.FilterDefinition.AddFixedFilter("Department", null, "", sql);
+                    var department = DepartmentFilterAutoFillValue.GetEntity<Department>();
+                    if (department != null)
+                    {
+                        var context = AppGlobals.DataRepository.GetDataContext();
+                        var table = context.GetTable<Department>();
+                        department = table.FirstOrDefault(p => p.Id == department.Id);
+                        if (department != null)
+                        {
+                            lookupDefinition.FilterDefinition
+                                .Include(p => p.Department)
+                                .AddFixedFilter(p => p.ReleaseLevel
+                                    , Conditions.GreaterThanEquals
+                                    , department.ReleaseLevel);
+                        }
+                    }
                 }
+                //lookupDefinition.FilterDefinition.AddFixedFilter("ProductId", Conditions.Equals,
+                //    Id.ToString(), "ProductId");
+
+                //if (DepartmentFilterAutoFillValue.IsValid())
+                //{
+                //    var department =
+                //        AppGlobals.LookupContext.Departments.GetEntityFromPrimaryKeyValue(DepartmentFilterAutoFillValue
+                //            .PrimaryKeyValue);
+
+                //    var tableDefinition = AppGlobals.LookupContext.ProductVersionDepartments;
+                //    var field = tableDefinition.GetFieldDefinition(p => p.VersionId).FieldName;
+                //    var query = new SelectQuery(tableDefinition.TableName);
+                //    query.AddSelectColumn(field);
+                //    query.AddWhereItem(tableDefinition.GetFieldDefinition(p => p.DepartmentId).FieldName,
+                //        Conditions.Equals, department.Id);
+
+                //    var versionsTableDefinition = AppGlobals.LookupContext.ProductVersions;
+                //    field = versionsTableDefinition.GetFieldDefinition(p => p.Id).FieldName;
+                //    field = AppGlobals.LookupContext.DataProcessor.SqlGenerator.FormatSqlObject(field);
+                //    field =
+                //        $"{AppGlobals.LookupContext.DataProcessor.SqlGenerator.FormatSqlObject(versionsTableDefinition.TableName)}.{field}";
+                //    var sql = AppGlobals.LookupContext.DataProcessor.SqlGenerator.GenerateSelectStatement(query);
+                //    sql = $"{field} IN ({sql})";
+                //    lookupDefinition.FilterDefinition.AddFixedFilter("Department", null, "", sql);
+                //}
             }
 
             ProductVersionLookupCommand = GetLookupCommand(LookupCommands.Refresh);
@@ -469,6 +492,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             {
                 Description = "00.85.1",
                 ProductId = product.Id,
+                VersionDate = DateTime.Now.ToUniversalTime(),
+                DepartmentId = product.CreateDepartmentId,
             };
             if (context.SaveEntity(newVersion, "Creating new version"))
             {
@@ -476,7 +501,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 {
                     VersionId = newVersion.Id,
                     DepartmentId = product.CreateDepartmentId,
-                    ReleaseDateTime = DateTime.Now.ToUniversalTime(),
+                    ReleaseDateTime = newVersion.VersionDate.GetValueOrDefault(),
                 };
                 var versionDepartments = new List<ProductVersionDepartment>();
                 versionDepartments.Add(versionDepartment);

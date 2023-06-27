@@ -574,6 +574,9 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
+                    b.Property<int>("ReleaseLevel")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ErrorFailStatusId");
@@ -883,6 +886,9 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<DateTime?>("ArchiveDateTime")
                         .HasColumnType("datetime");
 
+                    b.Property<int?>("DepartmentId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -894,7 +900,12 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("integer");
 
+                    b.Property<DateTime?>("VersionDate")
+                        .HasColumnType("datetime");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("DepartmentId");
 
                     b.HasIndex("ProductId");
 
@@ -2046,11 +2057,18 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProductVersion", b =>
                 {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.Department", "Department")
+                        .WithMany("ProductVersions")
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.Product", "Product")
                         .WithMany("Versions")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("Department");
 
                     b.Navigation("Product");
                 });
@@ -2510,6 +2528,8 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("CreateVersionProducts");
 
                     b.Navigation("ProductVersionDepartments");
+
+                    b.Navigation("ProductVersions");
 
                     b.Navigation("Users");
                 });

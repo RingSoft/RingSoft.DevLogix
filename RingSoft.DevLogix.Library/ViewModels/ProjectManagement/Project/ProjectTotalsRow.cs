@@ -10,9 +10,26 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public string RowTitle { get; set; }
 
-        public decimal Minutes { get; set; }
+        private decimal _minutes;
 
-        public decimal Cost { get; set; }
+        public decimal Minutes {
+            get => _minutes;
+            set
+            {
+                _minutes = Math.Round(value, 2);
+            }
+        }
+
+        private decimal _cost;
+
+        public decimal Cost
+        {
+            get => _cost;
+            set
+            {
+                _cost = Math.Round(value, 2);
+            }
+    }
 
         public int NegativeDisplayStyleId { get; set; }
 

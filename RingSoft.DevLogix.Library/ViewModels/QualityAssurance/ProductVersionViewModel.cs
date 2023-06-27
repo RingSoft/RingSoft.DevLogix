@@ -18,6 +18,7 @@ using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbMaintenance;
 using IDbContext = RingSoft.DevLogix.DataAccess.IDbContext;
+using MySqlX.XDevAPI.Common;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 {
@@ -336,6 +337,17 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 Notes = Notes,
             };
 
+            var list = DepartmentsManager.GetEntityList()
+                .OrderByDescending(p => p.ReleaseDateTime);
+            if (list.Any())
+            {
+                var versionDepartment = list.FirstOrDefault();
+                if (versionDepartment != null)
+                {
+                    result.VersionDate = versionDepartment.ReleaseDateTime;
+                    result.DepartmentId = versionDepartment.DepartmentId;
+                }
+            }
             if (ArchiveDateTime.HasValue)
             {
                 result.ArchiveDateTime = ArchiveDateTime.Value.ToUniversalTime();
@@ -427,21 +439,26 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         private bool ValidateOnlyVersion()
         {
-            var selectQuery = new SelectQuery(TableDefinition.TableName);
-            selectQuery.SetMaxRecords(2);
-            selectQuery.AddWhereItem(TableDefinition.GetFieldDefinition(p => p.ProductId).FieldName,
-                Conditions.Equals, _originalProductId);
-            var result = TableDefinition.Context.DataProcessor.GetData(selectQuery);
-            if (result.ResultCode == GetDataResultCodes.Success)
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var table = context.GetTable<ProductVersion>();
+            var query = table.Where(p => p.ProductId == _originalProductId);
+
+            //var selectQuery = new SelectQuery(TableDefinition.TableName);
+            //selectQuery.SetMaxRecords(2);
+            //selectQuery.AddWhereItem(TableDefinition.GetFieldDefinition(p => p.ProductId).FieldName,
+            //    Conditions.Equals, _originalProductId);
+            //var result = TableDefinition.Context.DataProcessor.GetData(selectQuery);
+            //if (result.ResultCode == GetDataResultCodes.Success)
+            //{
+            //}
+            if (query.Count() < 2)
             {
-                if (result.DataSet.Tables[0].Rows.Count < 2)
-                {
-                    var message = "You cannot delete the version or change the product for only version of this product.";
-                    var caption = "Delete Validation Fail";
-                    ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
-                    return false;
-                }
+                var message = "You cannot delete the version or change the product for only version of this product.";
+                var caption = "Delete Validation Fail";
+                ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
+                return false;
             }
+
 
             return true;
         }

@@ -596,105 +596,121 @@ namespace RingSoft.DevLogix.DataAccess
         {
             var result = new LookupDefinition<ProductVersionLookup, ProductVersion>(ProductVersions);
 
-            result.AddVisibleColumnDefinition(p => p.Description, "Version", p => p.Description, 35);
+            result.AddVisibleColumnDefinition(p => p.Description, "Version", p => p.Description, 34);
 
-            var tableDefinition = ProductVersions;
-            var query = new SelectQuery(tableDefinition.TableName);
-            foreach (var fieldDefinition in tableDefinition.FieldDefinitions)
-            {
-                query.AddSelectColumn(fieldDefinition.FieldName);
-            }
-            //query.AddSelectColumn(tableDefinition.GetFieldDefinition(p => p.Id).FieldName);
-            //query.AddSelectColumn(tableDefinition.GetFieldDefinition(p => p.ProductId).FieldName);
-            //query.AddSelectColumn(tableDefinition.GetFieldDefinition(p => p.Description).FieldName);
-            query.AddSelectFormulaColumn("VersionDate", MakeVersionDateFormula());
-            query.AddSelectFormulaColumn("MaxDepartment", MakeMaxDepartmentFormula());
+            result.AddVisibleColumnDefinition(
+                p => p.VersionDate
+                , "Release Date"
+                , p => p.VersionDate, 33);
 
-            var sql = DataProcessor.SqlGenerator.GenerateSelectStatement(query);
-            result.HasFromFormula(sql);
-
-            var column = result.AddVisibleColumnDefinition(p => p.VersionDate
-                , "VersionDate", "");
-            column.HasDateType(DbDateTypes.DateTime)
-                .HasDateFormatString(string.Empty)
-                .HasConvertToLocalTime();
-
-            column = result.AddVisibleColumnDefinition(p => p.MaxDepartment
-                , "MaxDepartment", "");
-
-            result.VisibleColumns[0].UpdatePercentWidth(35);
-            result.VisibleColumns[0].UpdateCaption("Version");
-            result.VisibleColumns[1].UpdatePercentWidth(25);
-            result.VisibleColumns[1].UpdateCaption("Release Date");
-            result.VisibleColumns[2].UpdatePercentWidth(40);
-            result.VisibleColumns[2].UpdateCaption("Released To Department");
+            result.Include(
+                    p => p.Department)
+                .AddVisibleColumnDefinition(
+                    p => p.MaxDepartment
+                    , "Released To Department"
+                    , p => p.Description, 33);
 
             result.InitialSortColumnDefinition = result.VisibleColumns[0];
             result.InitialOrderByColumn = result.VisibleColumns[1];
             result.InitialOrderByType = OrderByTypes.Descending;
 
+            //var tableDefinition = ProductVersions;
+            //var query = new SelectQuery(tableDefinition.TableName);
+            //foreach (var fieldDefinition in tableDefinition.FieldDefinitions)
+            //{
+            //    query.AddSelectColumn(fieldDefinition.FieldName);
+            //}
+            ////query.AddSelectColumn(tableDefinition.GetFieldDefinition(p => p.Id).FieldName);
+            ////query.AddSelectColumn(tableDefinition.GetFieldDefinition(p => p.ProductId).FieldName);
+            ////query.AddSelectColumn(tableDefinition.GetFieldDefinition(p => p.Description).FieldName);
+            //query.AddSelectFormulaColumn("VersionDate", MakeVersionDateFormula());
+            //query.AddSelectFormulaColumn("MaxDepartment", MakeMaxDepartmentFormula());
+
+            //var sql = DataProcessor.SqlGenerator.GenerateSelectStatement(query);
+            //result.HasFromFormula(sql);
+
+            //var column = result.AddVisibleColumnDefinition(p => p.VersionDate
+            //    , "VersionDate", "");
+            //column.HasDateType(DbDateTypes.DateTime)
+            //    .HasDateFormatString(string.Empty)
+            //    .HasConvertToLocalTime();
+
+            //column = result.AddVisibleColumnDefinition(p => p.MaxDepartment
+            //    , "MaxDepartment", "");
+
+            //result.VisibleColumns[0].UpdatePercentWidth(35);
+            //result.VisibleColumns[0].UpdateCaption("Version");
+            //result.VisibleColumns[1].UpdatePercentWidth(25);
+            //result.VisibleColumns[1].UpdateCaption("Release Date");
+            //result.VisibleColumns[2].UpdatePercentWidth(40);
+            //result.VisibleColumns[2].UpdateCaption("Released To Department");
+
+            //result.InitialSortColumnDefinition = result.VisibleColumns[0];
+            //result.InitialOrderByColumn = result.VisibleColumns[1];
+            //result.InitialOrderByType = OrderByTypes.Descending;
+
             return result;
         }
 
-        private string MakeVersionDateFormula()
-        {
-            var result = string.Empty;
+        //private string MakeVersionDateFormula()
+        //{
+        //    var result = string.Empty;
 
-            var tableDefinition = ProductVersionDepartments;
-            var field = tableDefinition.GetFieldDefinition(p => p.ReleaseDateTime).FieldName;
-            field = DataProcessor.SqlGenerator.FormatSqlObject(field);
-            field = $"{DataProcessor.SqlGenerator.FormatSqlObject(tableDefinition.TableName)}.{field}";
-            var query = new SelectQuery(tableDefinition.TableName);
-            query.AddSelectFormulaColumn("VersionDate", $"MAX({field})");
+        //    var tableDefinition = ProductVersionDepartments;
+        //    var field = tableDefinition.GetFieldDefinition(p => p.ReleaseDateTime).FieldName;
+        //    field = DataProcessor.SqlGenerator.FormatSqlObject(field);
+        //    field = $"{DataProcessor.SqlGenerator.FormatSqlObject(tableDefinition.TableName)}.{field}";
+        //    var query = new SelectQuery(tableDefinition.TableName);
+        //    query.AddSelectFormulaColumn("VersionDate", $"MAX({field})");
 
-            field = tableDefinition.GetFieldDefinition(p => p.VersionId).FieldName;
-            field = DataProcessor.SqlGenerator.FormatSqlObject(field);
-            field = $"{DataProcessor.SqlGenerator.FormatSqlObject(tableDefinition.TableName)}.{field}";
+        //    field = tableDefinition.GetFieldDefinition(p => p.VersionId).FieldName;
+        //    field = DataProcessor.SqlGenerator.FormatSqlObject(field);
+        //    field = $"{DataProcessor.SqlGenerator.FormatSqlObject(tableDefinition.TableName)}.{field}";
 
-            var targetField = ProductVersions
-                .GetFieldDefinition(p => p.Id).FieldName;
-            targetField = DataProcessor.SqlGenerator.FormatSqlObject(targetField);
-            targetField = $"{DataProcessor.SqlGenerator.FormatSqlObject(ProductVersions.TableName)}.{targetField}";
+        //    var targetField = ProductVersions
+        //        .GetFieldDefinition(p => p.Id).FieldName;
+        //    targetField = DataProcessor.SqlGenerator.FormatSqlObject(targetField);
+        //    targetField = $"{DataProcessor.SqlGenerator.FormatSqlObject(ProductVersions.TableName)}.{targetField}";
 
-            query.AddWhereItemFormula($"{field} = {targetField}");
+        //    query.AddWhereItemFormula($"{field} = {targetField}");
 
-            result = DataProcessor.SqlGenerator.GenerateSelectStatement(query);
+        //    result = DataProcessor.SqlGenerator.GenerateSelectStatement(query);
 
-            return result;
-        }
+        //    return result;
+        //}
 
-        private string MakeMaxDepartmentFormula()
-        {
-            var result = string.Empty;
-            var tableDefinition = ProductVersionDepartments;
-            var descriptionField = Departments.GetFieldDefinition(p => p.Description).FieldName;
-            var query = new SelectQuery(tableDefinition.TableName);
-            var departmentJoin =
-                query.AddPrimaryJoinTable(JoinTypes.InnerJoin, Departments.TableName)
-                    .AddJoinField(Departments.GetFieldDefinition(p => p.Id).FieldName
-                    , tableDefinition.GetFieldDefinition(p => p.DepartmentId).FieldName);
-            query.AddSelectColumn(descriptionField, departmentJoin);
+        //private string MakeMaxDepartmentFormula()
+        //{
+        //    var result = string.Empty;
+        //    var tableDefinition = ProductVersionDepartments;
+        //    var descriptionField = Departments.GetFieldDefinition(p => p.Description).FieldName;
+        //    var query = new SelectQuery(tableDefinition.TableName);
+        //    var departmentJoin =
+        //        query.AddPrimaryJoinTable(JoinTypes.InnerJoin, Departments.TableName)
+        //            .AddJoinField(Departments.GetFieldDefinition(p => p.Id).FieldName
+        //            , tableDefinition.GetFieldDefinition(p => p.DepartmentId).FieldName);
+        //    query.AddSelectColumn(descriptionField, departmentJoin);
 
-            var field = tableDefinition.GetFieldDefinition(p => p.VersionId).FieldName;
-            field = DataProcessor.SqlGenerator.FormatSqlObject(field);
-            field = $"{DataProcessor.SqlGenerator.FormatSqlObject(tableDefinition.TableName)}.{field}";
+        //    var field = tableDefinition.GetFieldDefinition(p => p.VersionId).FieldName;
+        //    field = DataProcessor.SqlGenerator.FormatSqlObject(field);
+        //    field = $"{DataProcessor.SqlGenerator.FormatSqlObject(tableDefinition.TableName)}.{field}";
 
-            var targetField = ProductVersions
-                .GetFieldDefinition(p => p.Id).FieldName;
-            targetField = DataProcessor.SqlGenerator.FormatSqlObject(targetField);
-            targetField = $"{DataProcessor.SqlGenerator.FormatSqlObject(ProductVersions.TableName)}.{targetField}";
+        //    var targetField = ProductVersions
+        //        .GetFieldDefinition(p => p.Id).FieldName;
+        //    targetField = DataProcessor.SqlGenerator.FormatSqlObject(targetField);
+        //    targetField = $"{DataProcessor.SqlGenerator.FormatSqlObject(ProductVersions.TableName)}.{targetField}";
 
-            query.AddWhereItemFormula($"{field} = {targetField}");
+        //    query.AddWhereItemFormula($"{field} = {targetField}");
 
-            field = tableDefinition.GetFieldDefinition(p => p.ReleaseDateTime).FieldName;
-            field = DataProcessor.SqlGenerator.FormatSqlObject(field);
-            field = $"{DataProcessor.SqlGenerator.FormatSqlObject(tableDefinition.TableName)}.{field}";
+        //    field = tableDefinition.GetFieldDefinition(p => p.ReleaseDateTime).FieldName;
+        //    field = DataProcessor.SqlGenerator.FormatSqlObject(field);
+        //    field = $"{DataProcessor.SqlGenerator.FormatSqlObject(tableDefinition.TableName)}.{field}";
 
-            query.AddWhereItemFormula($"{field} = ({MakeVersionDateFormula()})");
+        //    query.AddWhereItemFormula($"{field} = ({MakeVersionDateFormula()})");
 
-            result = DataProcessor.SqlGenerator.GenerateSelectStatement(query);
-            return result;
-        }
+        //    result = DataProcessor.SqlGenerator.GenerateSelectStatement(query);
+        //    return result;
+        //}
 
 
         protected override void SetupModel()
@@ -747,7 +763,12 @@ namespace RingSoft.DevLogix.DataAccess
 
             ProductVersions.PriorityLevel = 400;
             ProductVersions.GetFieldDefinition(p => p.Notes).IsMemo();
-            ProductVersions.GetFieldDefinition(p => p.ArchiveDateTime).HasDateType(DbDateTypes.DateTime)
+            ProductVersions.GetFieldDefinition(p => p.ArchiveDateTime)
+                .HasDateType(DbDateTypes.DateTime)
+                .DoConvertToLocalTime();
+
+            ProductVersions.GetFieldDefinition(p => p.VersionDate)
+                .HasDateType(DbDateTypes.DateTime)
                 .DoConvertToLocalTime();
 
             ProductVersionDepartments.PriorityLevel = 500;
@@ -833,6 +854,8 @@ namespace RingSoft.DevLogix.DataAccess
             //TestingTemplates.GetFieldDefinition(p => p.BaseTemplateId).DoesAllowRecursion(false);
 
             Territory.PriorityLevel = 400;
+
+            TimeZone.PriorityLevel = 100;
 
             Customer.PriorityLevel = 500;
             Customer.GetFieldDefinition(p => p.Notes).IsMemo();

@@ -14,11 +14,19 @@ namespace RingSoft.DevLogix.DataAccess.Configurations
             builder.Property(p => p.ProductId).HasColumnType(DbConstants.IntegerColumnType);
             builder.Property(p => p.Notes).HasColumnType(DbConstants.MemoColumnType);
             builder.Property(p => p.ArchiveDateTime).HasColumnType(DbConstants.DateColumnType);
+            builder.Property(p => p.DepartmentId).HasColumnType(DbConstants.IntegerColumnType);
+            builder.Property(p => p.VersionDate).HasColumnType(DbConstants.DateColumnType);
 
             builder.HasOne(p => p.Product)
                 .WithMany(p => p.Versions)
                 .HasForeignKey(p => p.ProductId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            builder.HasOne(p => p.Department)
+                .WithMany(p => p.ProductVersions)
+                .HasForeignKey(p => p.DepartmentId)
+                .OnDelete(DeleteBehavior.NoAction)
+                .IsRequired(false);
         }
     }
 }

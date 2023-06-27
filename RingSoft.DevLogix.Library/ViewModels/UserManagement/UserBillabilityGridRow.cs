@@ -9,16 +9,27 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 {
     public class UserBillabilityGridRow : DataEntryGridRow
     {
+        private decimal _minutesSpent;
+        private decimal _billability;
         public new UserBillabilityGridManager Manager { get; private set; }
 
         public UserBillabilityRows RowType { get; private set; }
 
         public string Name { get; private set; }
 
-        public decimal MinutesSpent { get; private set; }
+        public decimal MinutesSpent
+        {
+            get => _minutesSpent;
+            private set { _minutesSpent = Math.Round(value, 2); }
+        }
+
         public string TimeSpent { get; private set; }
 
-        public decimal Billability { get; private set; }
+        public decimal Billability
+        {
+            get => _billability;
+            private set => _billability = Math.Round(value, 4);
+        }
 
         public UserBillabilityGridRow(UserBillabilityGridManager manager, UserBillabilityRows rowType) : base(manager)
         {

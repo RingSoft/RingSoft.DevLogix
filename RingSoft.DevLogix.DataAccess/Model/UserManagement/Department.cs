@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace RingSoft.DevLogix.DataAccess.Model
@@ -45,10 +46,15 @@ namespace RingSoft.DevLogix.DataAccess.Model
 
         public string? Notes { get; set; }
 
+        [Required]
+        [DefaultValue(0)]
+        public int ReleaseLevel { get; set; }
+
         public virtual ICollection<User> Users { get; set; }
         public virtual ICollection<ProductVersionDepartment> ProductVersionDepartments { get; set; }
         public virtual ICollection<Product> CreateVersionProducts { get; set; }
         public virtual ICollection<Product> ArchiveVersionProducts { get; set; }
+        public virtual ICollection<ProductVersion> ProductVersions { get; set; }
 
         public Department()
         {
@@ -56,6 +62,7 @@ namespace RingSoft.DevLogix.DataAccess.Model
             ProductVersionDepartments = new HashSet<ProductVersionDepartment>();
             CreateVersionProducts = new HashSet<Product>();
             ArchiveVersionProducts = new HashSet<Product>();
+            ProductVersions = new HashSet<ProductVersion>();
         }
     }
 }

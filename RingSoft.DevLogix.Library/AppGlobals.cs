@@ -187,6 +187,7 @@ namespace RingSoft.DevLogix.Library
 
                     var databases = RingSoftAppGlobals.GetSqlServerDatabaseList(organization.Server);
                     {
+                        var migrate = true;
                         if (databases.IndexOf(organization.Database) < 0)
                         {
                             migrateResult = MigrateContext(migrateContext);
@@ -197,8 +198,6 @@ namespace RingSoft.DevLogix.Library
                         }
                         else
                         {
-                            var migrate = true;
-
                             migrate = AllowMigrate();
 
                             if (migrate)
@@ -235,34 +234,53 @@ namespace RingSoft.DevLogix.Library
             Rights = new AppRights();
 
             AppSplashProgress?.Invoke(null, new AppProgressArgs($"Connecting to the {organization.Name} Database."));
-            var selectQuery = new SelectQuery(LookupContext.SystemMaster.TableName);
-            LookupContext.DataProcessor.GetData(selectQuery, false);
+            //var selectQuery = new SelectQuery(LookupContext.SystemMaster.TableName);
+            //LookupContext.DataProcessor.GetData(selectQuery, false);
             DataAccessGlobals.SetupSysPrefs();
             return string.Empty;
         }
 
         public static bool AllowMigrate(DbDataProcessor processor = null)
         {
-            if (processor == null)
+            //if (processor == null)
+            //{
+            //    processor = LookupContext.DataProcessor;
+            //}
+
+            var migrate = true;
+            var context = DataRepository.GetDataContext();
+            var table = context.GetTable<SystemMaster>();
+            var sysMaster = new SystemMaster()
             {
-                processor = LookupContext.DataProcessor;
+                OrganizationName = Guid.NewGuid().ToString(),
+            };
+
+            var sysMasters = new List<SystemMaster>();
+            sysMasters.Add(sysMaster);
+
+            context.AddRange(sysMasters);
+            migrate = context.Commit("Checking System Master");
+            if (migrate)
+            {
+                context.RemoveRange(sysMasters);
+                migrate = context.Commit("Checking Migrate");
             }
-            bool migrate;
-            var sqlValue = Guid.NewGuid().ToString();
-            var field = LookupContext.SystemMaster.GetFieldDefinition(p => p.OrganizationName);
-            var insertStatement = new InsertDataStatement(LookupContext.SystemMaster);
-            var sqlData = new SqlData(field.FieldName, sqlValue, field.ValueType);
-            insertStatement.AddSqlData(sqlData);
-            var sqls = new List<string>();
-            sqls.Add(processor.SqlGenerator.GenerateInsertSqlStatement(
-                insertStatement));
-            var orgQuery = new SelectQuery(LookupContext.SystemMaster.TableName);
-            orgQuery.AddWhereItem(field.FieldName, Conditions.Equals, sqlValue);
 
-            sqls.Add(processor.SqlGenerator.GenerateDeleteStatement(orgQuery));
+            //var sqlValue = Guid.NewGuid().ToString();
+            //var field = LookupContext.SystemMaster.GetFieldDefinition(p => p.OrganizationName);
+            //var insertStatement = new InsertDataStatement(LookupContext.SystemMaster);
+            //var sqlData = new SqlData(field.FieldName, sqlValue, field.ValueType);
+            //insertStatement.AddSqlData(sqlData);
+            //var sqls = new List<string>();
+            //sqls.Add(processor.SqlGenerator.GenerateInsertSqlStatement(
+            //    insertStatement));
+            //var orgQuery = new SelectQuery(LookupContext.SystemMaster.TableName);
+            //orgQuery.AddWhereItem(field.FieldName, Conditions.Equals, sqlValue);
 
-            var orgResult = processor.ExecuteSqls(sqls, true, false, false);
-            migrate = orgResult.ResultCode == GetDataResultCodes.Success;
+            //sqls.Add(processor.SqlGenerator.GenerateDeleteStatement(orgQuery));
+
+            //var orgResult = processor.ExecuteSqls(sqls, true, false, false);
+            //migrate = orgResult.ResultCode == GetDataResultCodes.Success;
             return migrate;
         }
 
@@ -296,6 +314,28 @@ namespace RingSoft.DevLogix.Library
                 }
 
                 context.Commit("Committing TimeClocks");
+            }
+
+            var prodVersionsTable = context.GetTable<ProductVersion>();
+            var prodVersionQuery = prodVersionsTable
+                .Include(p => p.ProductVersionDepartments)
+                .Where(p => p.DepartmentId == null
+                && p.ProductVersionDepartments.Any());
+            if (prodVersionQuery.Any())
+            {
+                foreach (var productVersion in prodVersionQuery)
+                {
+                    var lastDepartment = productVersion.ProductVersionDepartments
+                        .OrderByDescending(p => p.ReleaseDateTime).FirstOrDefault();
+                    if (lastDepartment != null)
+                    {
+                        productVersion.DepartmentId = lastDepartment.DepartmentId;
+                        productVersion.VersionDate = lastDepartment.ReleaseDateTime;
+                        context.SaveNoCommitEntity(productVersion, "Updating Product Version");
+                    }
+                }
+
+                context.Commit("Finalizing Product Versions");
             }
         }
 

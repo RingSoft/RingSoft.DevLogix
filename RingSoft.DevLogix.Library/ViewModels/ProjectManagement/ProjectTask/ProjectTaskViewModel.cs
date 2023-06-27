@@ -110,7 +110,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 }
 
                 _projectAutoFillValue = value;
-                SetUserFilter();
+                //SetUserFilter();
                 OnPropertyChanged();
             }
         }
@@ -511,27 +511,27 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         }
 
 
-        private void SetUserFilter()
-        {
-            UserAutoFillSetup.LookupDefinition.FilterDefinition.ClearFixedFilters();
-            if (ProjectAutoFillValue.IsValid())
-            {
-                var project = ProjectAutoFillValue.GetEntity<Project>();
-                if (project != null)
-                {
-                    var formula = string.Empty;
-                    var selectQuery = new SelectQuery(AppGlobals.LookupContext.ProjectUsers.TableName);
-                    selectQuery.AddSelectColumn(AppGlobals.LookupContext.ProjectUsers.GetFieldDefinition(p => p.UserId).FieldName);
-                    selectQuery.AddWhereItem(AppGlobals.LookupContext.ProjectUsers.GetFieldDefinition(p => p.ProjectId).FieldName
-                        , Conditions.Equals, project.Id.ToString(), false, ValueTypes.Numeric);
-                    var selectStatement =
-                        TableDefinition.Context.DataProcessor.SqlGenerator.GenerateSelectStatement(selectQuery);
-                    formula = $"{AppGlobals.LookupContext.Users.GetFieldDefinition(p => p.Id).GetSqlFormatObject()} IN ({selectStatement})";
-                    UserAutoFillSetup.LookupDefinition.FilterDefinition.AddFixedFilter("User", null, "", formula);
+        //private void SetUserFilter()
+        //{
+        //    UserAutoFillSetup.LookupDefinition.FilterDefinition.ClearFixedFilters();
+        //    if (ProjectAutoFillValue.IsValid())
+        //    {
+        //        var project = ProjectAutoFillValue.GetEntity<Project>();
+        //        if (project != null)
+        //        {
+        //            var formula = string.Empty;
+        //            var selectQuery = new SelectQuery(AppGlobals.LookupContext.ProjectUsers.TableName);
+        //            selectQuery.AddSelectColumn(AppGlobals.LookupContext.ProjectUsers.GetFieldDefinition(p => p.UserId).FieldName);
+        //            selectQuery.AddWhereItem(AppGlobals.LookupContext.ProjectUsers.GetFieldDefinition(p => p.ProjectId).FieldName
+        //                , Conditions.Equals, project.Id.ToString(), false, ValueTypes.Numeric);
+        //            var selectStatement =
+        //                TableDefinition.Context.DataProcessor.SqlGenerator.GenerateSelectStatement(selectQuery);
+        //            formula = $"{AppGlobals.LookupContext.Users.GetFieldDefinition(p => p.Id).GetSqlFormatObject()} IN ({selectStatement})";
+        //            UserAutoFillSetup.LookupDefinition.FilterDefinition.AddFixedFilter("User", null, "", formula);
 
-                }
-            }
-        }
+        //        }
+        //    }
+        //}
         protected override void LoadFromEntity(ProjectTask entity)
         {
             _loading = true;
@@ -597,16 +597,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         protected override bool ValidateEntity(ProjectTask entity)
         {
-            if (entity.UserId == 0)
-            {
-                var message =
-                    "The Assigned To User is invalid.  Please select a valid User that is added to this project.";
-                var caption = "Invalid Assigned To User";
+            //if (entity.UserId == 0)
+            //{
+            //    var message =
+            //        "The Assigned To User is invalid.  Please select a valid User that is added to this project.";
+            //    var caption = "Invalid Assigned To User";
 
-                View.OnValidationFail(TableDefinition.GetFieldDefinition(p => p.UserId),
-                    message, caption);
-                return false;
-            }
+            //    View.OnValidationFail(TableDefinition.GetFieldDefinition(p => p.UserId),
+            //        message, caption);
+            //    return false;
+            //}
 
             if (entity.ProjectId == 0)
             {
