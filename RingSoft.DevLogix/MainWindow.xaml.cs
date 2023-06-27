@@ -194,6 +194,15 @@ namespace RingSoft.DevLogix
                     });
                 }
 
+                if (AppGlobals.LookupContext.CustomerComputer.HasRight(RightTypes.AllowView))
+                {
+                    menuItem.Items.Add(new MenuItem()
+                    {
+                        Header = "Add/Edit C_ustomer Computers...",
+                        Command = ViewModel.ShowMaintenanceWindowCommand,
+                        CommandParameter = AppGlobals.LookupContext.CustomerComputer,
+                    });
+                }
             }
         }
 
