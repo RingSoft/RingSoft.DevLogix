@@ -13,6 +13,11 @@ namespace RingSoft.DevLogix
             {
                 return new TimeSpentLookupSearchForHost();
             }
+            if (hostId == DevLogixLookupContext.SpeedHostId)
+            {
+                return new SpeedLookupSearchForHost();
+            }
+
             return base.CreateSearchForHost(hostId);
         }
 

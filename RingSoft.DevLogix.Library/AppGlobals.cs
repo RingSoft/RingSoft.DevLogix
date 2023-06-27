@@ -362,6 +362,103 @@ namespace RingSoft.DevLogix.Library
 
             return timeSpent;
         }
+
+        public static string MakeSpeed(decimal megaHertz)
+        {
+            var negative = false;
+            if (megaHertz < 0)
+            {
+                megaHertz = Math.Abs(megaHertz);
+                negative = true;
+            }
+
+            var speed = "0 MHz";
+            var gigaHertz = (decimal)0;
+            var teraHertz = (decimal)0;
+            var petaHertz = (decimal)0;
+            var numFormatString = GblMethods.GetNumFormat(2, false);
+
+            if (megaHertz >= 0)
+            {
+                if (megaHertz > 1000)
+                {
+                    gigaHertz = Math.Round(megaHertz / 1000, 2);
+                    speed = $"{FormatValue(gigaHertz, DecimalFieldTypes.Decimal)} GHz";
+                }
+                else
+                {
+                    megaHertz = Math.Round(megaHertz, 2);
+                    speed = $"{FormatValue(megaHertz, DecimalFieldTypes.Decimal)} MHz";
+                }
+            }
+
+            if (gigaHertz > 1000)
+            {
+                teraHertz = Math.Round(gigaHertz / 1000, 2);
+                speed = $"{FormatValue(teraHertz, DecimalFieldTypes.Decimal)} THz";
+            }
+
+            if (teraHertz > 1000)
+            {
+                petaHertz = Math.Round(teraHertz / 1000, 2);
+                speed = $"{FormatValue(petaHertz, DecimalFieldTypes.Decimal)} PHz";
+            }
+
+
+            if (negative)
+                speed = $"-{speed}";
+
+            return speed;
+        }
+
+        public static string MakeSpace(decimal megaBytes)
+        {
+            var negative = false;
+            if (megaBytes < 0)
+            {
+                megaBytes = Math.Abs(megaBytes);
+                negative = true;
+            }
+
+            var space = "0 Megabytes";
+            var gigaBytes = (decimal)0;
+            var teraBytes = (decimal)0;
+            var petaBytes = (decimal)0;
+            var numFormatString = GblMethods.GetNumFormat(2, false);
+
+            if (megaBytes >= 0)
+            {
+                if (megaBytes > 1000)
+                {
+                    gigaBytes = Math.Round(megaBytes / 1000, 2);
+                    space = $"{FormatValue(gigaBytes, DecimalFieldTypes.Decimal)} GB";
+                }
+                else
+                {
+                    megaBytes = Math.Round(megaBytes, 2);
+                    space = $"{FormatValue(megaBytes, DecimalFieldTypes.Decimal)} MB";
+                }
+            }
+
+            if (gigaBytes > 1000)
+            {
+                teraBytes = Math.Round(gigaBytes / 1000, 2);
+                space = $"{FormatValue(teraBytes, DecimalFieldTypes.Decimal)} TB";
+            }
+
+            if (teraBytes > 1000)
+            {
+                petaBytes = Math.Round(teraBytes / 1000, 2);
+                space = $"{FormatValue(petaBytes, DecimalFieldTypes.Decimal)} PB";
+            }
+
+            if (negative)
+                space = $"-{space}";
+
+            return space;
+        }
+
+
         private static string FormatValue(decimal value, DecimalFieldTypes decimalFieldType)
         {
             var result = string.Empty;

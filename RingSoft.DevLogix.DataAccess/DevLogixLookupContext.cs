@@ -34,6 +34,7 @@ namespace RingSoft.DevLogix.DataAccess
     public class DevLogixLookupContext : LookupContext
     {
         public const int TimeSpentHostId = 100;
+        public const int SpeedHostId = 200;
         public override DbDataProcessor DataProcessor => _dbDataProcessor;
         protected override DbContext DbContext => _dbContext;
 
@@ -859,7 +860,8 @@ namespace RingSoft.DevLogix.DataAccess
 
             CustomerComputer.PriorityLevel = 700;
             CustomerComputer.GetFieldDefinition(p => p.Notes).IsMemo();
-
+            CustomerComputer.GetFieldDefinition(p => p.Speed)
+                .HasSearchForHostId(SpeedHostId);
         }
 
         public override UserAutoFill GetUserAutoFill(string userName)

@@ -36,4 +36,37 @@ namespace RingSoft.DevLogix
             
         }
     }
+
+    public class SpeedLookupSearchForHost : LookupSearchForHost<SpeedControl>
+    {
+        public override string SearchText
+        {
+            get => Control.Speed.ToString();
+            set => Control.Speed = value.ToDecimal();
+        }
+
+
+        public override void SelectAll()
+        {
+        }
+
+        protected virtual double? DefaultWidth { get; set; } = 100;
+
+        protected override SpeedControl ConstructControl()
+        {
+            return new SpeedControl();
+        }
+
+        protected override void Initialize(SpeedControl control, LookupColumnDefinitionBase columnDefinition)
+        {
+            control.Width = DefaultWidth.Value;
+            control.HorizontalAlignment = HorizontalAlignment.Left;
+            control.ControlDirty += (sender, args) => OnTextChanged();
+        }
+
+        protected override void Initialize(SpeedControl control)
+        {
+
+        }
+    }
 }

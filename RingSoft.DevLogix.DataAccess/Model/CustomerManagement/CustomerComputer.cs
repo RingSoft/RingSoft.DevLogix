@@ -33,9 +33,8 @@ namespace RingSoft.DevLogix.DataAccess.Model.CustomerManagement
 
         public int? InternetSpeed { get; set; }
 
-        [Required]
         [MaxLength(50)]
-        public byte DatabasePlatform { get; set; }
+        public string? DatabasePlatform { get; set; }
 
         [MaxLength(50)]
         public string? Printer { get; set; }

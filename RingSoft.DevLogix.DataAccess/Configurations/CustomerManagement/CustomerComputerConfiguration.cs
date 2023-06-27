@@ -19,7 +19,7 @@ namespace RingSoft.DevLogix.DataAccess.Configurations.CustomerManagement
             builder.Property(p => p.HardDriveSize).HasColumnType(DbConstants.IntegerColumnType);
             builder.Property(p => p.HardDriveFree).HasColumnType(DbConstants.IntegerColumnType);
             builder.Property(p => p.InternetSpeed).HasColumnType(DbConstants.IntegerColumnType);
-            builder.Property(p => p.DatabasePlatform).HasColumnType(DbConstants.ByteColumnType);
+            builder.Property(p => p.DatabasePlatform).HasColumnType(DbConstants.StringColumnType);
             builder.Property(p => p.Printer).HasColumnType(DbConstants.StringColumnType);
             builder.Property(p => p.Notes).HasColumnType(DbConstants.MemoColumnType);
 

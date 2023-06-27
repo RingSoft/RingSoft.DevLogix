@@ -313,9 +313,9 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<int>("CustomerId")
                         .HasColumnType("integer");
 
-                    b.Property<byte>("DatabasePlatform")
+                    b.Property<string>("DatabasePlatform")
                         .HasMaxLength(50)
-                        .HasColumnType("tinyint");
+                        .HasColumnType("nvarchar");
 
                     b.Property<int?>("HardDriveFree")
                         .HasColumnType("integer");
