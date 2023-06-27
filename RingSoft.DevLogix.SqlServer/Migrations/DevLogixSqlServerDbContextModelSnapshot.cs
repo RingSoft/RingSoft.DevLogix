@@ -244,8 +244,11 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar");
 
+                    b.Property<decimal>("MinutesCost")
+                        .HasColumnType("numeric");
+
                     b.Property<string>("Notes")
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("ntext");
 
                     b.Property<string>("Phone")
                         .IsRequired()
@@ -275,6 +278,12 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<int>("TimeZoneId")
                         .HasColumnType("integer");
 
+                    b.Property<decimal>("TotalCost")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("TotalSales")
+                        .HasColumnType("numeric");
+
                     b.Property<int?>("UserId")
                         .HasColumnType("integer");
 
@@ -291,6 +300,63 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Customer");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.CustomerComputer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("integer");
+
+                    b.Property<byte>("DatabasePlatform")
+                        .HasMaxLength(50)
+                        .HasColumnType("tinyint");
+
+                    b.Property<int?>("HardDriveFree")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("HardDriveSize")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("InternetSpeed")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("ntext");
+
+                    b.Property<string>("OperatingSystem")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("Printer")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<int?>("RamSize")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ScreenResolution")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<decimal?>("Speed")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("CustomerComputer");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.CustomerProduct", b =>
@@ -1738,6 +1804,17 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("TimeZone");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.CustomerComputer", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Customer", "Customer")
+                        .WithMany("CustomerComputers")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.CustomerProduct", b =>
                 {
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Customer", "Customer")
@@ -2402,6 +2479,8 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Customer", b =>
                 {
+                    b.Navigation("CustomerComputers");
+
                     b.Navigation("CustomerProducts");
 
                     b.Navigation("Orders");

@@ -85,6 +85,7 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<CustomerProduct> CustomerProduct { get; set; }
         public TableDefinition<Order> Order { get; set; }
         public TableDefinition<OrderDetail> OrderDetail { get; set; }
+        public TableDefinition<CustomerComputer> CustomerComputer { get; set; }
 
         public LookupDefinition<DevLogixChartLookup, DevLogixChart> DevLogixChartLookup { get; set; }
         public LookupDefinition<SystemPreferencesLookup, SystemPreferences> SystemPreferencesLookup { get; set; }
@@ -130,6 +131,7 @@ namespace RingSoft.DevLogix.DataAccess
         public LookupDefinition<CustomerProductLookup, CustomerProduct> CustomerProductsLookup { get; set; }
         public LookupDefinition<OrderLookup, Order> OrderLookup { get; set; }
         public LookupDefinition<OrderDetailLookup, OrderDetail> OrderDetailLookup { get; set; }
+        public LookupDefinition<CustomerComputerLookup, CustomerComputer> CustomerComputerLookup { get; set; }
 
         public SqliteDataProcessor SqliteDataProcessor { get; }
         public SqlServerDataProcessor SqlServerDataProcessor { get; }
@@ -578,6 +580,15 @@ namespace RingSoft.DevLogix.DataAccess
                     , p => p.Description, 70);
 
             OrderDetail.HasLookupDefinition(OrderDetailLookup);
+
+            CustomerComputerLookup = new LookupDefinition<CustomerComputerLookup, CustomerComputer>(
+                CustomerComputer);
+
+            CustomerComputerLookup.AddVisibleColumnDefinition(
+                p => p.Name
+                , "Name"
+                , p => p.Name, 99);
+            CustomerComputer.HasLookupDefinition(CustomerComputerLookup);
         }
 
         public LookupDefinition<ProductVersionLookup, ProductVersion> MakeProductVersionLookupDefinition()
@@ -845,6 +856,9 @@ namespace RingSoft.DevLogix.DataAccess
                 .HasDecimalFieldType(DecimalFieldTypes.Currency);
             OrderDetail.GetFieldDefinition(p => p.Discount)
                 .HasDecimalFieldType(DecimalFieldTypes.Currency);
+
+            CustomerComputer.PriorityLevel = 700;
+            CustomerComputer.GetFieldDefinition(p => p.Notes).IsMemo();
 
         }
 

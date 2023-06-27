@@ -29,4 +29,9 @@ namespace RingSoft.DevLogix.DataAccess.LookupModel.CustomerManagement
 
         public DateTime ExpirationDate { get; set; }
     }
+
+    public class CustomerComputerLookup
+    {
+        public string Name { get; set; }
+    }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace RingSoft.DevLogix.DataAccess.Model.CustomerManagement
@@ -62,15 +63,26 @@ namespace RingSoft.DevLogix.DataAccess.Model.CustomerManagement
         [MaxLength(100)]
         public string? WebAddress { get; set; }
 
+        [DefaultValue(0)]
+        public decimal TotalSales { get; set; }
+
+        [DefaultValue(0)]
+        public decimal TotalCost { get; set; }
+
+        [DefaultValue(0)]
+        public decimal MinutesCost { get; set; }
+
         public virtual ICollection<TimeClock> TimeClocks { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
         public virtual ICollection<CustomerProduct> CustomerProducts { get; set; }
+        public virtual ICollection<CustomerComputer> CustomerComputers { get; set; }
 
         public Customer()
         {
             TimeClocks = new HashSet<TimeClock>();
             Orders = new HashSet<Order>();
             CustomerProducts = new HashSet<CustomerProduct>();
+            CustomerComputers = new HashSet<CustomerComputer>();
         }
     }
 }
