@@ -38,7 +38,7 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     PrimaryTableName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     PrimaryFieldName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     Caption = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
-                    PercentWidth = table.Column<decimal>(type: "numeric(38,17)", nullable: false),
+                    PercentWidth = table.Column<double>(type: "numeric(38,17)", nullable: false),
                     Formula = table.Column<string>(type: "ntext", nullable: true),
                     FieldDataType = table.Column<byte>(type: "tinyint", nullable: false),
                     DecimalFormatType = table.Column<byte>(type: "tinyint", nullable: false)

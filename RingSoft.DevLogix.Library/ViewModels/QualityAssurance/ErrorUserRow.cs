@@ -18,11 +18,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         public int UserId { get; private set; }
 
-        public decimal MinutesSpent { get; private set; }
+        public double MinutesSpent { get; private set; }
 
         public string TimeSpent { get; private set;  }
 
-        public decimal Cost { get; private set; }
+        public double Cost { get; private set; }
 
         public ErrorUserRow(ErrorUserGridManager manager) : base(manager)
         {
@@ -45,7 +45,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                     {
                         FormatType = DecimalEditFormatTypes.Currency,
                         Precision = 2,
-                    }, Cost);
+                    }, (decimal)Cost);
                 default:
                     throw new ArgumentOutOfRangeException();
             }

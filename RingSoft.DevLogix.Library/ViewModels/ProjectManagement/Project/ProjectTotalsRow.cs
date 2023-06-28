@@ -10,9 +10,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public string RowTitle { get; set; }
 
-        private decimal _minutes;
+        private double _minutes;
 
-        public decimal Minutes {
+        public double Minutes {
             get => _minutes;
             set
             {
@@ -20,9 +20,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
-        private decimal _cost;
+        private double _cost;
 
-        public decimal Cost
+        public double Cost
         {
             get => _cost;
             set
@@ -54,7 +54,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     return new DataEntryGridDecimalCellProps(this, columnId, new DecimalEditControlSetup
                     {
                         FormatType = DecimalEditFormatTypes.Currency
-                    }, Cost);
+                    }, (decimal)Cost);
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -87,7 +87,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             };
         }
 
-        public int GetDisplayStyleId(decimal value)
+        public int GetDisplayStyleId(double value)
         {
             var result = 0;
 

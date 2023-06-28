@@ -16,11 +16,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public AutoFillValue MaterialPartAutoFillValue { get; private set; }
 
-        public decimal Quantity { get; private set; } = 1;
+        public double Quantity { get; private set; } = 1;
 
-        public decimal Cost { get; private set; }
+        public double Cost { get; private set; }
 
-        public decimal ExtendedCost { get; private set; }
+        public double ExtendedCost { get; private set; }
 
         public ProjectMaterialPartMaterialPartRow(ProjectMaterialPartManager manager) : base(manager)
         {
@@ -68,7 +68,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             Manager.CalculateTotalCost();
         }
 
-        public override decimal GetExtendedCost()
+        public override double GetExtendedCost()
         {
             return Quantity * Cost;
         }
@@ -85,18 +85,18 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     return new DataEntryGridDecimalCellProps(this, columnId, new DecimalEditControlSetup
                     {
                         AllowNullValue = false,
-                    }, Quantity);
+                    }, (decimal)Quantity);
                 case ProjectMaterialPartColumns.Cost:
                     return new DataEntryGridDecimalCellProps(this, columnId, new DecimalEditControlSetup
                     {
                         FormatType = DecimalEditFormatTypes.Currency,
-                    }, Cost);
+                    }, (decimal)Cost);
 
                 case ProjectMaterialPartColumns.ExtendedCost:
                     return new DataEntryGridDecimalCellProps(this, columnId, new DecimalEditControlSetup
                     {
                         FormatType = DecimalEditFormatTypes.Currency,
-                    }, ExtendedCost);
+                    }, (decimal)ExtendedCost);
             }
             return base.GetCellProps(columnId);
         }
@@ -115,14 +115,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 case ProjectMaterialPartColumns.Quantity:
                     if (value is DataEntryGridDecimalCellProps decimalCellProps)
                     {
-                        Quantity = decimalCellProps.Value.Value;
+                        Quantity = decimalCellProps.Value.Value.ToDouble();
                         CalculateRow();
                     }
                     break;
                 case ProjectMaterialPartColumns.Cost:
                     if (value is DataEntryGridDecimalCellProps costDecimalCellProps)
                     {
-                        Cost = costDecimalCellProps.Value.Value;
+                        Cost = costDecimalCellProps.Value.Value.ToDouble();
                         CalculateRow();
                     }
                     break;

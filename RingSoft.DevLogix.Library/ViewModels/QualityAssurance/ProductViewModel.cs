@@ -262,9 +262,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             }
         }
 
-        private decimal? _price;
+        private double? _price;
 
-        public decimal? Price
+        public double? Price
         {
             get => _price;
             set

@@ -29,10 +29,10 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     Region = table.Column<string>(type: "nvarchar", maxLength: 50, nullable: true),
                     PostalCode = table.Column<string>(type: "nvarchar", maxLength: 50, nullable: true),
                     Country = table.Column<string>(type: "nvarchar", maxLength: 50, nullable: true),
-                    SubTotal = table.Column<decimal>(type: "numeric", nullable: true),
-                    TotalDiscount = table.Column<decimal>(type: "numeric", nullable: true),
-                    Freight = table.Column<decimal>(type: "numeric", nullable: true),
-                    Total = table.Column<decimal>(type: "numeric", nullable: true)
+                    SubTotal = table.Column<double>(type: "numeric", nullable: true),
+                    TotalDiscount = table.Column<double>(type: "numeric", nullable: true),
+                    Freight = table.Column<double>(type: "numeric", nullable: true),
+                    Total = table.Column<double>(type: "numeric", nullable: true)
                 },
                 constraints: table =>
                 {

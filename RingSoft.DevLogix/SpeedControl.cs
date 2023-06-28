@@ -40,12 +40,12 @@ namespace RingSoft.DevLogix
     public class SpeedControl : Control, ISpeedControlView
     {
         public static readonly DependencyProperty SpeedProperty =
-            DependencyProperty.Register(nameof(Speed), typeof(decimal), typeof(SpeedControl),
+            DependencyProperty.Register(nameof(Speed), typeof(double), typeof(SpeedControl),
                 new FrameworkPropertyMetadata(SpeedChangedCallback));
 
-        public decimal Speed
+        public double Speed
         {
-            get { return (decimal)GetValue(SpeedProperty); }
+            get { return (double)GetValue(SpeedProperty); }
             set { SetValue(SpeedProperty, value); }
         }
 
@@ -128,7 +128,7 @@ namespace RingSoft.DevLogix
         public Button Button { get; private set; }
 
         private bool _setFocus;
-        private decimal? _setMegaHz;
+        private double? _setMegaHz;
         private Brush _setBrush;
         private Brush _setSelectionBrush;
         private Brush _setForegroundBrush;

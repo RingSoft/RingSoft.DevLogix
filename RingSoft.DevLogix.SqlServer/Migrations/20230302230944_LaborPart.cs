@@ -10,12 +10,12 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<decimal>(
+            migrationBuilder.AlterColumn<double>(
                 name: "PercentWidth",
                 table: "AdvancedFindColumns",
                 type: "numeric(38,17)",
                 nullable: false,
-                oldClrType: typeof(decimal),
+                oldClrType: typeof(double),
                 oldType: "numeric(18,0)");
 
             migrationBuilder.CreateTable(
@@ -25,7 +25,7 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    MinutesCost = table.Column<decimal>(type: "numeric(18,0)", nullable: false)
+                    MinutesCost = table.Column<double>(type: "numeric(18,0)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -39,12 +39,12 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
             migrationBuilder.DropTable(
                 name: "LaborParts");
 
-            migrationBuilder.AlterColumn<decimal>(
+            migrationBuilder.AlterColumn<double>(
                 name: "PercentWidth",
                 table: "AdvancedFindColumns",
                 type: "numeric(18,0)",
                 nullable: false,
-                oldClrType: typeof(decimal),
+                oldClrType: typeof(double),
                 oldType: "numeric(38,17)");
         }
     }

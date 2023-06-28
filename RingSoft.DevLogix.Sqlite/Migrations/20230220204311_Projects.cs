@@ -21,13 +21,13 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     Deadline = table.Column<DateTime>(type: "datetime", nullable: false),
                     OriginalDeadline = table.Column<DateTime>(type: "datetime", nullable: false),
                     ProductId = table.Column<int>(type: "integer", nullable: true),
-                    SundayHours = table.Column<decimal>(type: "numeric", nullable: true),
-                    MondayHours = table.Column<decimal>(type: "numeric", nullable: true),
-                    TuesdayHours = table.Column<decimal>(type: "numeric", nullable: true),
-                    WednesdayHours = table.Column<decimal>(type: "numeric", nullable: true),
-                    ThursdayHours = table.Column<decimal>(type: "numeric", nullable: true),
-                    FridayHours = table.Column<decimal>(type: "numeric", nullable: true),
-                    SaturdayHours = table.Column<decimal>(type: "numeric", nullable: true)
+                    SundayHours = table.Column<double>(type: "numeric", nullable: true),
+                    MondayHours = table.Column<double>(type: "numeric", nullable: true),
+                    TuesdayHours = table.Column<double>(type: "numeric", nullable: true),
+                    WednesdayHours = table.Column<double>(type: "numeric", nullable: true),
+                    ThursdayHours = table.Column<double>(type: "numeric", nullable: true),
+                    FridayHours = table.Column<double>(type: "numeric", nullable: true),
+                    SaturdayHours = table.Column<double>(type: "numeric", nullable: true)
                 },
                 constraints: table =>
                 {

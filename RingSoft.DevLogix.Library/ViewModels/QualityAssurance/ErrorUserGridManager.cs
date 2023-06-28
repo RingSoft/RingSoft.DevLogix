@@ -60,7 +60,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             }
         }
 
-        public void GetTotals(out decimal minutesSpent, out decimal totalCost)
+        public void GetTotals(out double minutesSpent, out double totalCost)
         {
             var rows = Rows.OfType<ErrorUserRow>();
             minutesSpent = rows.Sum(p => p.MinutesSpent);

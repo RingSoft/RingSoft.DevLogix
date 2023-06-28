@@ -10,7 +10,7 @@ namespace RingSoft.DevLogix
         public override string SearchText
         {
             get => Control.Minutes.ToString();
-            set => Control.Minutes = value.ToDecimal();
+            set => Control.Minutes = value.ToDecimal().ToDouble();
         }
 
         public override void SelectAll()
@@ -42,7 +42,7 @@ namespace RingSoft.DevLogix
         public override string SearchText
         {
             get => Control.Speed.ToString();
-            set => Control.Speed = value.ToDecimal();
+            set => Control.Speed = value.ToDecimal().ToDouble();
         }
 
 

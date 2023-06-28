@@ -128,7 +128,7 @@ namespace RingSoft.DevLogix
             {
                 if (args.SearchForHostId == DevLogixLookupContext.TimeSpentHostId)
                 {
-                    args.Value = AppGlobals.MakeTimeSpent(args.RawValue.ToDecimal());
+                    args.Value = AppGlobals.MakeTimeSpent(args.RawValue.ToDecimal().ToDouble());
                 }
             };
             AppGlobals.LookupContext.CanProcessTableEvent += (sender, args) =>

@@ -9,15 +9,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 {
     public class UserBillabilityGridRow : DataEntryGridRow
     {
-        private decimal _minutesSpent;
-        private decimal _billability;
+        private double _minutesSpent;
+        private double _billability;
         public new UserBillabilityGridManager Manager { get; private set; }
 
         public UserBillabilityRows RowType { get; private set; }
 
         public string Name { get; private set; }
 
-        public decimal MinutesSpent
+        public double MinutesSpent
         {
             get => _minutesSpent;
             private set { _minutesSpent = Math.Round(value, 2); }
@@ -25,7 +25,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         public string TimeSpent { get; private set; }
 
-        public decimal Billability
+        public double Billability
         {
             get => _billability;
             private set => _billability = Math.Round(value, 4);
@@ -68,7 +68,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     return new DataEntryGridDecimalCellProps(this, columnId, new DecimalEditControlSetup()
                     {
                         FormatType = DecimalEditFormatTypes.Percent,
-                    }, Billability);
+                    }, (decimal)Billability);
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -83,7 +83,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             };
         }
 
-        public void SetRowValues(decimal minutesSpent, decimal billability)
+        public void SetRowValues(double minutesSpent, double billability)
         {
             MinutesSpent = minutesSpent;
             TimeSpent = AppGlobals.MakeTimeSpent(minutesSpent);

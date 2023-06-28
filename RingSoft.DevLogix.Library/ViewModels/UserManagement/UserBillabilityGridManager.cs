@@ -52,7 +52,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             Grid?.RefreshGridView();
         }
 
-        public void SetRowValues(UserBillabilityRows rowType, decimal minutesSpent, decimal billability)
+        public void SetRowValues(UserBillabilityRows rowType, double minutesSpent, double billability)
         {
             var rows = Rows.OfType<UserBillabilityGridRow>();
             var row = rows.FirstOrDefault(p => p.RowType == rowType);
@@ -63,7 +63,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             Grid?.RefreshGridView();
         }
 
-        public decimal GetMinutesSpent(UserBillabilityRows rowType)
+        public double GetMinutesSpent(UserBillabilityRows rowType)
         {
             var rows = Rows.OfType<UserBillabilityGridRow>();
             var row = rows.FirstOrDefault(p => p.RowType == rowType);

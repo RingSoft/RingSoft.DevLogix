@@ -19,13 +19,13 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         public AutoFillValue ProductAutoFillValue { get; set; }
 
-        public decimal Quantity { get; set; }
+        public double Quantity { get; set; }
 
-        public decimal UnitPrice { get; set; }
+        public double UnitPrice { get; set; }
 
-        public decimal ExtendedPrice { get; set; }
+        public double ExtendedPrice { get; set; }
 
-        public decimal Discount { get; set; }
+        public double Discount { get; set; }
 
         private AutoFillValue _oldAutoFillValue;
 
@@ -50,25 +50,25 @@ namespace RingSoft.DevLogix.Library.ViewModels
                         , new DecimalEditControlSetup
                         {
                             FormatType = DecimalEditFormatTypes.Number,
-                        }, Quantity);
+                        }, (decimal)Quantity);
                 case OrderDetailsColumns.Price:
                     return new DataEntryGridDecimalCellProps(this, columnId
                         , new DecimalEditControlSetup
                         {
                             FormatType = DecimalEditFormatTypes.Currency,
-                        }, UnitPrice);
+                        }, (decimal)UnitPrice);
                 case OrderDetailsColumns.ExtendedPrice:
                     return new DataEntryGridDecimalCellProps(this, columnId
                         , new DecimalEditControlSetup
                         {
                             FormatType = DecimalEditFormatTypes.Currency,
-                        }, ExtendedPrice);
+                        }, (decimal)ExtendedPrice);
                 case OrderDetailsColumns.Discount:
                     return new DataEntryGridDecimalCellProps(this, columnId
                         , new DecimalEditControlSetup
                         {
                             FormatType = DecimalEditFormatTypes.Currency,
-                        }, Discount);
+                        }, (decimal)Discount);
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -101,19 +101,19 @@ namespace RingSoft.DevLogix.Library.ViewModels
                 case OrderDetailsColumns.Quantity:
                     if (value is DataEntryGridDecimalCellProps decimalCellProps)
                     {
-                        Quantity = decimalCellProps.Value.GetValueOrDefault();
+                        Quantity = decimalCellProps.Value.GetValueOrDefault().ToDouble();
                     }
                     break;
                 case OrderDetailsColumns.Price:
                     if (value is DataEntryGridDecimalCellProps decimalCellProps1)
                     {
-                        UnitPrice = decimalCellProps1.Value.GetValueOrDefault();
+                        UnitPrice = decimalCellProps1.Value.GetValueOrDefault().ToDouble();
                     }
                     break;
                 case OrderDetailsColumns.Discount:
                     if (value is DataEntryGridDecimalCellProps decimalCellProps2)
                     {
-                        Discount = decimalCellProps2.Value.GetValueOrDefault();
+                        Discount = decimalCellProps2.Value.GetValueOrDefault().ToDouble();
                     }
                     break;
                 default:

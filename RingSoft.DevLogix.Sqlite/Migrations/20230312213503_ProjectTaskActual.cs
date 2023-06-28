@@ -10,14 +10,14 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<decimal>(
+            migrationBuilder.AddColumn<double>(
                 name: "Cost",
                 table: "ProjectTasks",
                 type: "numeric",
                 nullable: false,
                 defaultValue: 0m);
 
-            migrationBuilder.AddColumn<decimal>(
+            migrationBuilder.AddColumn<double>(
                 name: "MinutesSpent",
                 table: "ProjectTasks",
                 type: "numeric",

@@ -25,27 +25,27 @@ namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
         public virtual User User { get; set; }
 
         [Required]
-        public decimal MinutesCost { get; set; }
+        public double MinutesCost { get; set; }
 
         [Required]
         [DefaultValue(false)]
         public bool MinutesEdited { get; set; }
 
         [DefaultValue(0)]
-        public decimal EstimatedCost { get; set; }
+        public double EstimatedCost { get; set; }
 
         [DefaultValue(0)]
-        public decimal MinutesSpent { get; set; }
+        public double MinutesSpent { get; set; }
 
         [DefaultValue(0)]
-        public decimal Cost { get; set; }
+        public double Cost { get; set; }
 
         [Required]
-        public decimal PercentComplete { get; set; }
+        public double PercentComplete { get; set; }
 
         [Required]
         [DefaultValue(0)]
-        public decimal HourlyRate { get; set; }
+        public double HourlyRate { get; set; }
 
         public string? Notes { get; set; }
 

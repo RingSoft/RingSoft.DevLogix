@@ -19,8 +19,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     Name = table.Column<string>(type: "nvarchar", nullable: false),
                     ProjectId = table.Column<int>(type: "integer", nullable: false),
                     UserId = table.Column<int>(type: "integer", nullable: false),
-                    MinutesCost = table.Column<decimal>(type: "numeric", nullable: false),
-                    PercentComplete = table.Column<decimal>(type: "numeric", nullable: false),
+                    MinutesCost = table.Column<double>(type: "numeric", nullable: false),
+                    PercentComplete = table.Column<double>(type: "numeric", nullable: false),
                     Notes = table.Column<string>(type: "ntext", nullable: true)
                 },
                 constraints: table =>

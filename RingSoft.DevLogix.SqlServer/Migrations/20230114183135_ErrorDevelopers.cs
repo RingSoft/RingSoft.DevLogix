@@ -22,12 +22,12 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                 name: "FixedByByUserId",
                 table: "Errors");
 
-            migrationBuilder.AlterColumn<decimal>(
+            migrationBuilder.AlterColumn<double>(
                 name: "PercentWidth",
                 table: "AdvancedFindColumns",
                 type: "numeric(38,17)",
                 nullable: false,
-                oldClrType: typeof(decimal),
+                oldClrType: typeof(double),
                 oldType: "numeric(18,0)");
 
             migrationBuilder.CreateTable(
@@ -70,12 +70,12 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                 type: "integer",
                 nullable: true);
 
-            migrationBuilder.AlterColumn<decimal>(
+            migrationBuilder.AlterColumn<double>(
                 name: "PercentWidth",
                 table: "AdvancedFindColumns",
                 type: "numeric(18,0)",
                 nullable: false,
-                oldClrType: typeof(decimal),
+                oldClrType: typeof(double),
                 oldType: "numeric(38,17)");
 
             migrationBuilder.CreateIndex(

@@ -11,12 +11,12 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<decimal>(
+            migrationBuilder.AlterColumn<double>(
                 name: "PercentWidth",
                 table: "AdvancedFindColumns",
                 type: "numeric(38,17)",
                 nullable: false,
-                oldClrType: typeof(decimal),
+                oldClrType: typeof(double),
                 oldType: "numeric(18,0)");
 
             migrationBuilder.CreateTable(
@@ -29,13 +29,13 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     Deadline = table.Column<DateTime>(type: "datetime", nullable: false),
                     OriginalDeadline = table.Column<DateTime>(type: "datetime", nullable: false),
                     ProductId = table.Column<int>(type: "integer", nullable: true),
-                    SundayHours = table.Column<decimal>(type: "numeric(18,0)", nullable: true),
-                    MondayHours = table.Column<decimal>(type: "numeric(18,0)", nullable: true),
-                    TuesdayHours = table.Column<decimal>(type: "numeric(18,0)", nullable: true),
-                    WednesdayHours = table.Column<decimal>(type: "numeric(18,0)", nullable: true),
-                    ThursdayHours = table.Column<decimal>(type: "numeric(18,0)", nullable: true),
-                    FridayHours = table.Column<decimal>(type: "numeric(18,0)", nullable: true),
-                    SaturdayHours = table.Column<decimal>(type: "numeric(18,0)", nullable: true)
+                    SundayHours = table.Column<double>(type: "numeric(18,0)", nullable: true),
+                    MondayHours = table.Column<double>(type: "numeric(18,0)", nullable: true),
+                    TuesdayHours = table.Column<double>(type: "numeric(18,0)", nullable: true),
+                    WednesdayHours = table.Column<double>(type: "numeric(18,0)", nullable: true),
+                    ThursdayHours = table.Column<double>(type: "numeric(18,0)", nullable: true),
+                    FridayHours = table.Column<double>(type: "numeric(18,0)", nullable: true),
+                    SaturdayHours = table.Column<double>(type: "numeric(18,0)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -59,12 +59,12 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
             migrationBuilder.DropTable(
                 name: "Projects");
 
-            migrationBuilder.AlterColumn<decimal>(
+            migrationBuilder.AlterColumn<double>(
                 name: "PercentWidth",
                 table: "AdvancedFindColumns",
                 type: "numeric(18,0)",
                 nullable: false,
-                oldClrType: typeof(decimal),
+                oldClrType: typeof(double),
                 oldType: "numeric(38,17)");
         }
     }

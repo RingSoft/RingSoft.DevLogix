@@ -20,25 +20,25 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public string TimeSpent { get; private set; }
 
-        public decimal MinutesSpent { get; private set; }
+        public double MinutesSpent { get; private set; }
 
-        public decimal Cost { get; private set; }
+        public double Cost { get; private set; }
 
         public bool IsStandard { get; private set; } = true;
 
-        public decimal SundayMinutes { get; set; }
+        public double SundayMinutes { get; set; }
 
-        public decimal MondayMinutes { get; set; }
+        public double MondayMinutes { get; set; }
 
-        public decimal TuesdayMinutes { get; set; }
+        public double TuesdayMinutes { get; set; }
 
-        public decimal WednesdayMinutes { get; set; }
+        public double WednesdayMinutes { get; set; }
 
-        public decimal ThursdayMinutes { get; set; }
+        public double ThursdayMinutes { get; set; }
 
-        public decimal FridayMinutes { get; set; }
+        public double FridayMinutes { get; set; }
 
-        public decimal SaturdayMinutes { get; set; }
+        public double SaturdayMinutes { get; set; }
 
         public ProjectUsersGridRow(ProjectUsersGridManager manager) : base(manager)
         {
@@ -62,7 +62,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     return new DataEntryGridDecimalCellProps(this, columnId, new DecimalEditControlSetup
                     {
                         FormatType = DecimalEditFormatTypes.Currency,
-                    }, Cost);
+                    }, (decimal)Cost);
                 case ProjectUserColumns.IsStandard:
                     return new DataEntryGridCheckBoxCellProps(this, columnId, IsStandard);
                 case ProjectUserColumns.Sunday:
@@ -331,7 +331,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
-        public decimal GetTotalMinutes()
+        public double GetTotalMinutes()
         {
             return SundayMinutes + MondayMinutes + TuesdayMinutes + WednesdayMinutes + ThursdayMinutes + FridayMinutes +
                    SaturdayMinutes;

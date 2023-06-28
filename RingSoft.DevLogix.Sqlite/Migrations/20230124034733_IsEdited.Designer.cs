@@ -541,7 +541,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<bool>("IsEdited")
                         .HasColumnType("INTEGER");
 
-                    b.Property<decimal?>("MinutesSpent")
+                    b.Property<double?>("MinutesSpent")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Notes")

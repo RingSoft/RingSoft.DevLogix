@@ -19,8 +19,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     Name = table.Column<string>(type: "nvarchar", maxLength: 50, nullable: false),
                     RefreshInterval = table.Column<int>(type: "integer", nullable: false),
                     RefreshType = table.Column<byte>(type: "smallint", nullable: false),
-                    RedMinutes = table.Column<decimal>(type: "numeric", nullable: true),
-                    YellowMinutes = table.Column<decimal>(type: "numeric", nullable: true)
+                    RedMinutes = table.Column<double>(type: "numeric", nullable: true),
+                    YellowMinutes = table.Column<double>(type: "numeric", nullable: true)
                 },
                 constraints: table =>
                 {

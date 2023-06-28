@@ -4,13 +4,13 @@ namespace RingSoft.DevLogix.Library
 {
     public class TimeCostCellProps : DataEntryGridEditingCellProps
     {
-        public decimal Minutes { get; set; }
+        public double Minutes { get; set; }
 
         public const int MinutesControlId = 100;
 
         public override int EditingControlId => MinutesControlId;
 
-        public TimeCostCellProps(DataEntryGridRow row, int columnId, decimal minutes)
+        public TimeCostCellProps(DataEntryGridRow row, int columnId, double minutes)
             : base(row, columnId)
         {
             Minutes = minutes;

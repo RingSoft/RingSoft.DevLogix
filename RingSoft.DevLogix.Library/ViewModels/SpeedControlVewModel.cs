@@ -32,8 +32,8 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         public RelayCommand ShowPopupCommand { get; private set; }
 
-        private decimal _localSpeed;
-        public decimal LocalSpeed
+        private double _localSpeed;
+        public double LocalSpeed
         {
             get => _localSpeed;
             set

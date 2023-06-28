@@ -19,7 +19,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     PunchInDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     PunchOutDate = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    MinutesSpent = table.Column<decimal>(type: "TEXT", nullable: true),
+                    MinutesSpent = table.Column<double>(type: "TEXT", nullable: true),
                     UserId = table.Column<int>(type: "integer", nullable: false),
                     ErrorId = table.Column<int>(type: "integer", nullable: true),
                     Notes = table.Column<string>(type: "TEXT", nullable: true)

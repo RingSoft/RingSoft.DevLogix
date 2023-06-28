@@ -26,15 +26,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public abstract LaborPartLineTypes LaborPartLineType { get; }
 
-        public abstract decimal GetExtendedMinutesCost();
+        public abstract double GetExtendedMinutesCost();
 
         public EnumFieldTranslation EnumTranslation { get; private set; } = new EnumFieldTranslation();
 
-        //public decimal MinutesCost { get; private set; }
+        //public double MinutesCost { get; private set; }
 
         public bool IsComplete { get; private set; }
 
-        public decimal PercentComplete { get; set; }
+        public double PercentComplete { get; set; }
 
         protected ProjectTaskLaborPartRow(ProjectTaskLaborPartsManager manager) : base(manager)
         {
@@ -56,7 +56,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     return new DataEntryGridDecimalCellProps(this, columnId, new DecimalEditControlSetup()
                     {
                         FormatType = DecimalEditFormatTypes.Percent,
-                    }, PercentComplete);
+                    }, (decimal)PercentComplete);
             }
             return new DataEntryGridTextCellProps(this, columnId);
         }
@@ -167,7 +167,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 case ProjectTaskLaborPartColumns.PercentComplete:
                     if (value is DataEntryGridDecimalCellProps decimalCellProps)
                     {
-                        PercentComplete = decimalCellProps.Value.GetValueOrDefault();
+                        PercentComplete = decimalCellProps.Value.GetValueOrDefault().ToDouble();
                         IsComplete = PercentComplete == 1;
                         Manager.CalcPercentComplete();
                     }

@@ -11,7 +11,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
     public class ProjectTaskLaborPartCommentRow : ProjectTaskLaborPartRow
     {
         public override LaborPartLineTypes LaborPartLineType => LaborPartLineTypes.Comment;
-        public override decimal GetExtendedMinutesCost()
+        public override double GetExtendedMinutesCost()
         {
             return 0;
         }

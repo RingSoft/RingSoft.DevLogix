@@ -37,7 +37,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             EnumTranslation.LoadFromEnum<MaterialPartLineTypes>();
         }
 
-        public abstract decimal GetExtendedCost();
+        public abstract double GetExtendedCost();
 
         public override DataEntryGridCellProps GetCellProps(int columnId)
         {

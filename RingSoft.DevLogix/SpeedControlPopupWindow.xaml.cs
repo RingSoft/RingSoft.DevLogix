@@ -7,7 +7,7 @@ namespace RingSoft.DevLogix
     /// </summary>
     public partial class SpeedControlPopupWindow : ISpeedControlPopupView
     {
-        public SpeedControlPopupWindow(decimal speed)
+        public SpeedControlPopupWindow(double speed)
         {
             InitializeComponent();
             Loaded += (sender, args) =>

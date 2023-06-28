@@ -29,6 +29,6 @@
 
         public string UserName { get; set; }
 
-        public decimal MinutesSpent { get; set; }
+        public double MinutesSpent { get; set; }
     }
 }

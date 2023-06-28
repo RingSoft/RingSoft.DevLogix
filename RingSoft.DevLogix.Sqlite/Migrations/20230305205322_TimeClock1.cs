@@ -41,12 +41,12 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                 oldType: "TEXT",
                 oldNullable: true);
 
-            migrationBuilder.AlterColumn<decimal>(
+            migrationBuilder.AlterColumn<double>(
                 name: "MinutesSpent",
                 table: "TimeClocks",
                 type: "numeric",
                 nullable: true,
-                oldClrType: typeof(decimal),
+                oldClrType: typeof(double),
                 oldType: "TEXT",
                 oldNullable: true);
 
@@ -109,12 +109,12 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                 oldType: "ntext",
                 oldNullable: true);
 
-            migrationBuilder.AlterColumn<decimal>(
+            migrationBuilder.AlterColumn<double>(
                 name: "MinutesSpent",
                 table: "TimeClocks",
                 type: "TEXT",
                 nullable: true,
-                oldClrType: typeof(decimal),
+                oldClrType: typeof(double),
                 oldType: "numeric",
                 oldNullable: true);
 

@@ -32,8 +32,8 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         public RelayCommand ShowPopupCommand { get; private set; }
 
-        private decimal _minutes;
-        public decimal Minutes
+        private double _minutes;
+        public double Minutes
         {
             get => _minutes;
             set

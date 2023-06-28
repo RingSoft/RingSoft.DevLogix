@@ -10,7 +10,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<decimal>(
+            migrationBuilder.AlterColumn<double>(
                 name: "Quantity",
                 table: "ProjectTaskLaborParts",
                 type: "numeric",
@@ -19,7 +19,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                 oldType: "integer",
                 oldNullable: true);
 
-            migrationBuilder.AlterColumn<decimal>(
+            migrationBuilder.AlterColumn<double>(
                 name: "Quantity",
                 table: "ProjectMaterialParts",
                 type: "numeric",
@@ -37,7 +37,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                 table: "ProjectTaskLaborParts",
                 type: "integer",
                 nullable: true,
-                oldClrType: typeof(decimal),
+                oldClrType: typeof(double),
                 oldType: "numeric",
                 oldNullable: true);
 
@@ -46,7 +46,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                 table: "ProjectMaterialParts",
                 type: "integer",
                 nullable: true,
-                oldClrType: typeof(decimal),
+                oldClrType: typeof(double),
                 oldType: "numeric",
                 oldNullable: true);
         }

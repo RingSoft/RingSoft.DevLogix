@@ -4,8 +4,8 @@
     {
         public string Description { get; set; }
 
-        public decimal Revenue { get; set; }
+        public double Revenue { get; set; }
 
-        public decimal Cost { get; set; }
+        public double Cost { get; set; }
     }
 }

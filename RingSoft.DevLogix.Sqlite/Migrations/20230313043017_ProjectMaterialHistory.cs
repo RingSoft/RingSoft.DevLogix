@@ -19,8 +19,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     ProjectMaterialId = table.Column<int>(type: "integer", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime", nullable: false),
-                    Quantity = table.Column<decimal>(type: "numeric", nullable: false),
-                    Cost = table.Column<decimal>(type: "numeric", nullable: false),
+                    Quantity = table.Column<double>(type: "numeric", nullable: false),
+                    Cost = table.Column<double>(type: "numeric", nullable: false),
                     UserId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>

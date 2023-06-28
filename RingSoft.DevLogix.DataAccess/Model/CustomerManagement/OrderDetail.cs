@@ -19,14 +19,14 @@ namespace RingSoft.DevLogix.DataAccess.Model.CustomerManagement
         public virtual Product Product { get; set; }
 
         [Required]
-        public decimal Quantity { get; set; }
+        public double Quantity { get; set; }
 
         [Required]
-        public decimal UnitPrice { get; set; }
+        public double UnitPrice { get; set; }
 
         [Required]
-        public decimal ExtendedPrice { get; set; }
+        public double ExtendedPrice { get; set; }
 
-        public decimal? Discount { get; set; }
+        public double? Discount { get; set; }
     }
 }

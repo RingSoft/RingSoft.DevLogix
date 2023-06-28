@@ -363,7 +363,7 @@ namespace RingSoft.DevLogix.Library
                     throw new ArgumentOutOfRangeException();
             }
         }
-        public static string MakeTimeSpent(decimal minutesSpent)
+        public static string MakeTimeSpent(double minutesSpent)
         {
             var negative = false;
             if (minutesSpent < 0)
@@ -373,8 +373,8 @@ namespace RingSoft.DevLogix.Library
             }
 
             var timeSpent = "0 Minutes";
-            var hoursSpent = (decimal)0;
-            var daysSpent = (decimal)0;
+            var hoursSpent = (double)0;
+            var daysSpent = (double)0;
             var numFormatString = GblMethods.GetNumFormat(2, false);
 
             if (minutesSpent >= 0)
@@ -403,7 +403,7 @@ namespace RingSoft.DevLogix.Library
             return timeSpent;
         }
 
-        public static string MakeSpeed(decimal megaHertz)
+        public static string MakeSpeed(double megaHertz)
         {
             var negative = false;
             if (megaHertz < 0)
@@ -413,9 +413,9 @@ namespace RingSoft.DevLogix.Library
             }
 
             var speed = "0 MHz";
-            var gigaHertz = (decimal)0;
-            var teraHertz = (decimal)0;
-            var petaHertz = (decimal)0;
+            var gigaHertz = (double)0;
+            var teraHertz = (double)0;
+            var petaHertz = (double)0;
             var numFormatString = GblMethods.GetNumFormat(2, false);
 
             if (megaHertz >= 0)
@@ -451,7 +451,7 @@ namespace RingSoft.DevLogix.Library
             return speed;
         }
 
-        public static string MakeSpace(decimal megaBytes)
+        public static string MakeSpace(double megaBytes)
         {
             var negative = false;
             if (megaBytes < 0)
@@ -461,9 +461,9 @@ namespace RingSoft.DevLogix.Library
             }
 
             var space = "0 Megabytes";
-            var gigaBytes = (decimal)0;
-            var teraBytes = (decimal)0;
-            var petaBytes = (decimal)0;
+            var gigaBytes = (double)0;
+            var teraBytes = (double)0;
+            var petaBytes = (double)0;
             var numFormatString = GblMethods.GetNumFormat(2, false);
 
             if (megaBytes >= 0)
@@ -499,7 +499,7 @@ namespace RingSoft.DevLogix.Library
         }
 
 
-        private static string FormatValue(decimal value, DecimalFieldTypes decimalFieldType)
+        private static string FormatValue(double value, DecimalFieldTypes decimalFieldType)
         {
             var result = string.Empty;
             var numFormat = GblMethods.GetNumFormat(2, false);
@@ -538,9 +538,9 @@ namespace RingSoft.DevLogix.Library
             }
         }
 
-        public static decimal CalcPercentComplete(IEnumerable<TestingOutlineDetails> details)
+        public static double CalcPercentComplete(IEnumerable<TestingOutlineDetails> details)
         {
-            var result = (decimal)0;
+            var result = (double)0;
             var completeDetails = details
                 .Where(p => p.IsComplete);
 
@@ -548,7 +548,7 @@ namespace RingSoft.DevLogix.Library
             var detailsCount = details.Count();
             if (detailsCount > 0)
             {
-                result = (decimal)completedCount / detailsCount;
+                result = (double)completedCount / detailsCount;
             }
 
             return result;

@@ -17,28 +17,28 @@ namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
 
         [Required]
         [DefaultValue(0)]
-        public decimal MinutesSpent { get; set; }
+        public double MinutesSpent { get; set; }
 
         [Required]
         [DefaultValue(0)]
-        public decimal Cost { get; set; }
+        public double Cost { get; set; }
 
         [Required]
         [DefaultValue(true)]
         public bool IsStandard { get; set; }
 
-        public decimal? SundayMinutes { get; set; }
+        public double? SundayMinutes { get; set; }
 
-        public decimal? MondayMinutes { get; set; }
+        public double? MondayMinutes { get; set; }
 
-        public decimal? TuesdayMinutes { get; set; }
+        public double? TuesdayMinutes { get; set; }
 
-        public decimal? WednesdayMinutes { get; set; }
+        public double? WednesdayMinutes { get; set; }
 
-        public decimal? ThursdayMinutes { get; set; }
+        public double? ThursdayMinutes { get; set; }
 
-        public decimal? FridayMinutes { get; set; }
+        public double? FridayMinutes { get; set; }
 
-        public decimal? SaturdayMinutes { get; set; }
+        public double? SaturdayMinutes { get; set; }
     }
 }

@@ -124,9 +124,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
-        private decimal _quantity;
+        private double _quantity;
 
-        public decimal Quantity
+        public double Quantity
         {
             get => _quantity;
             set
@@ -141,9 +141,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
-        private decimal _cost;
+        private double _cost;
 
-        public decimal Cost
+        public double Cost
         {
             get => _cost;
             set
@@ -158,9 +158,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
-        private decimal _extendedCost;
+        private double _extendedCost;
 
-        public decimal ExtendedCost
+        public double ExtendedCost
         {
             get => _extendedCost;
             set

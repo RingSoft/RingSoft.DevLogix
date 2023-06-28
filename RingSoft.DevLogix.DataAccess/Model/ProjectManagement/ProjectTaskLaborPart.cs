@@ -32,10 +32,10 @@ namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
         [MaxLength(50)]
         public string? Description { get; set; }
 
-        public decimal? Quantity { get; set; }
+        public double? Quantity { get; set; }
 
         [Required]
-        public decimal MinutesCost { get; set; }
+        public double MinutesCost { get; set; }
 
         [Required]
         [DefaultValue(false)]
@@ -43,6 +43,6 @@ namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
 
         [Required]
         [DefaultValue(0)]
-        public decimal PercentComplete { get; set; }
+        public double PercentComplete { get; set; }
     }
 }

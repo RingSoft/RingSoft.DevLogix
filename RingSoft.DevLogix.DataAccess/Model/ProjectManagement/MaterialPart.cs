@@ -14,7 +14,7 @@ namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
         public string Name { get; set; }
 
         [Required]
-        public decimal Cost { get; set; }
+        public double Cost { get; set; }
 
         public string? Comment { get; set; }
 

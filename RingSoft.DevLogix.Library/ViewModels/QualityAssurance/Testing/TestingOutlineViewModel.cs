@@ -155,9 +155,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             }
         }
 
-        private decimal _percentComplete;
+        private double _percentComplete;
 
-        public decimal PercentComplete
+        public double PercentComplete
         {
             get => _percentComplete;
             set
@@ -215,9 +215,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             }
         }
 
-        private decimal _totalCost;
+        private double _totalCost;
 
-        public decimal TotalCost
+        public double TotalCost
         {
             get => _totalCost;
             set
@@ -333,7 +333,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
         public RelayCommand ErrorAddModifyCommand { get; private set; }
 
-        public decimal MinutesSpent { get; private set; }
+        public double MinutesSpent { get; private set; }
 
         public AutoFillValue DefaultProductAutoFillValue { get; private set; }
 

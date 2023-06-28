@@ -56,7 +56,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             return new ProjectUsersGridRow(this);
         }
 
-        public void SetUserMinutes(decimal minutes, DayType dayType)
+        public void SetUserMinutes(double minutes, DayType dayType)
         {
             var users = GetStandardUsers();
             foreach (var projectUsersGridRow in users)

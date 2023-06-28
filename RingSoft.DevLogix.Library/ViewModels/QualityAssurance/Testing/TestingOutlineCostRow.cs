@@ -18,11 +18,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
         public int UserId { get; private set; }
 
-        public decimal MinutesSpent { get; private set; }
+        public double MinutesSpent { get; private set; }
 
         public string TimeSpent { get; private set; }
 
-        public decimal Cost { get; private set; }
+        public double Cost { get; private set; }
 
         public TestingOutlineCostRow(TestingOutlineCostManager manager) : base(manager)
         {
@@ -45,7 +45,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
                     {
                         FormatType = DecimalEditFormatTypes.Currency,
                         Precision = 2,
-                    }, Cost);
+                    }, (decimal)Cost);
                 default:
                     throw new ArgumentOutOfRangeException();
             }

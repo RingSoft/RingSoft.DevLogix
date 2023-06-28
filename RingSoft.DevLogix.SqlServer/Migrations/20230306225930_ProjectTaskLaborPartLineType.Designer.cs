@@ -98,7 +98,7 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar");
 
-                    b.Property<decimal>("PercentWidth")
+                    b.Property<double>("PercentWidth")
                         .HasColumnType("numeric");
 
                     b.Property<string>("PrimaryFieldName")
@@ -323,7 +323,7 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<int?>("AssignedTesterId")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("Cost")
+                    b.Property<double>("Cost")
                         .HasColumnType("numeric");
 
                     b.Property<string>("Description")
@@ -353,7 +353,7 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<int>("FoundVersionId")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("MinutesSpent")
+                    b.Property<double>("MinutesSpent")
                         .HasColumnType("numeric");
 
                     b.Property<int>("ProductId")
@@ -599,7 +599,7 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("MinutesCost")
+                    b.Property<double>("MinutesCost")
                         .HasColumnType("numeric");
 
                     b.Property<string>("Name")
@@ -620,22 +620,22 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("Cost")
+                    b.Property<double>("Cost")
                         .HasColumnType("numeric");
 
                     b.Property<DateTime>("Deadline")
                         .HasColumnType("datetime");
 
-                    b.Property<decimal?>("FridayHours")
+                    b.Property<double?>("FridayHours")
                         .HasColumnType("numeric");
 
                     b.Property<bool>("IsBillable")
                         .HasColumnType("bit");
 
-                    b.Property<decimal>("MinutesSpent")
+                    b.Property<double>("MinutesSpent")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal?>("MondayHours")
+                    b.Property<double?>("MondayHours")
                         .HasColumnType("numeric");
 
                     b.Property<string>("Name")
@@ -652,19 +652,19 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<int?>("ProductId")
                         .HasColumnType("integer");
 
-                    b.Property<decimal?>("SaturdayHours")
+                    b.Property<double?>("SaturdayHours")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal?>("SundayHours")
+                    b.Property<double?>("SundayHours")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal?>("ThursdayHours")
+                    b.Property<double?>("ThursdayHours")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal?>("TuesdayHours")
+                    b.Property<double?>("TuesdayHours")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal?>("WednesdayHours")
+                    b.Property<double?>("WednesdayHours")
                         .HasColumnType("numeric");
 
                     b.HasKey("Id");
@@ -682,7 +682,7 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("MinutesCost")
+                    b.Property<double>("MinutesCost")
                         .HasColumnType("numeric");
 
                     b.Property<string>("Name")
@@ -693,7 +693,7 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<string>("Notes")
                         .HasColumnType("ntext");
 
-                    b.Property<decimal>("PercentComplete")
+                    b.Property<double>("PercentComplete")
                         .HasColumnType("numeric");
 
                     b.Property<int>("ProjectId")
@@ -732,7 +732,7 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<byte>("LineType")
                         .HasColumnType("tinyint");
 
-                    b.Property<decimal>("MinutesCost")
+                    b.Property<double>("MinutesCost")
                         .HasColumnType("numeric");
 
                     b.Property<string>("ParentRowId")
@@ -762,34 +762,34 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("Cost")
+                    b.Property<double>("Cost")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal?>("FridayHours")
+                    b.Property<double?>("FridayHours")
                         .HasColumnType("numeric");
 
                     b.Property<bool>("IsStandard")
                         .HasColumnType("bit");
 
-                    b.Property<decimal>("MinutesSpent")
+                    b.Property<double>("MinutesSpent")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal?>("MondayHours")
+                    b.Property<double?>("MondayHours")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal?>("SaturdayHours")
+                    b.Property<double?>("SaturdayHours")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal?>("SundayHours")
+                    b.Property<double?>("SundayHours")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal?>("ThursdayHours")
+                    b.Property<double?>("ThursdayHours")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal?>("TuesdayHours")
+                    b.Property<double?>("TuesdayHours")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal?>("WednesdayHours")
+                    b.Property<double?>("WednesdayHours")
                         .HasColumnType("numeric");
 
                     b.HasKey("ProjectId", "UserId");
@@ -807,10 +807,10 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("Cost")
+                    b.Property<double>("Cost")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal>("MinutesSpent")
+                    b.Property<double>("MinutesSpent")
                         .HasColumnType("numeric");
 
                     b.HasKey("ErrorId", "UserId");
@@ -845,7 +845,7 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<int?>("ErrorId")
                         .HasColumnType("integer");
 
-                    b.Property<decimal?>("MinutesSpent")
+                    b.Property<double?>("MinutesSpent")
                         .HasColumnType("numeric");
 
                     b.Property<string>("Notes")
@@ -882,7 +882,7 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("BillableProjectsMinutesSpent")
+                    b.Property<double>("BillableProjectsMinutesSpent")
                         .HasColumnType("numeric");
 
                     b.Property<DateTime?>("ClockDate")
@@ -898,10 +898,10 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar");
 
-                    b.Property<decimal>("ErrorsMinutesSpent")
+                    b.Property<double>("ErrorsMinutesSpent")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal>("HourlyRate")
+                    b.Property<double>("HourlyRate")
                         .HasColumnType("numeric");
 
                     b.Property<string>("Name")
@@ -909,7 +909,7 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
-                    b.Property<decimal>("NonBillableProjectsMinutesSpent")
+                    b.Property<double>("NonBillableProjectsMinutesSpent")
                         .HasColumnType("numeric");
 
                     b.Property<string>("Notes")

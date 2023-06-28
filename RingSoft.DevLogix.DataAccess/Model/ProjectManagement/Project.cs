@@ -19,7 +19,7 @@ namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
 
         public virtual User Manager { get; set; }
 
-        public decimal? ContractCost { get; set; }
+        public double? ContractCost { get; set; }
 
         [Required]
         public DateTime Deadline { get; set; }
@@ -31,19 +31,19 @@ namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
 
         public virtual Product Product { get; set; }
 
-        public decimal? SundayMinutes { get; set; }
+        public double? SundayMinutes { get; set; }
 
-        public decimal? MondayMinutes { get; set; }
+        public double? MondayMinutes { get; set; }
         
-        public decimal? TuesdayMinutes { get; set; }
+        public double? TuesdayMinutes { get; set; }
 
-        public decimal? WednesdayMinutes { get; set; }
+        public double? WednesdayMinutes { get; set; }
 
-        public decimal? ThursdayMinutes { get; set; }
+        public double? ThursdayMinutes { get; set; }
 
-        public decimal? FridayMinutes { get; set; }
+        public double? FridayMinutes { get; set; }
 
-        public decimal? SaturdayMinutes { get; set; }
+        public double? SaturdayMinutes { get; set; }
 
         public string? Notes { get; set; }
 
@@ -51,16 +51,16 @@ namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
         public bool IsBillable { get; set; }
 
         [DefaultValue(0)]
-        public decimal EstimatedMinutes { get; set; }
+        public double EstimatedMinutes { get; set; }
 
         [DefaultValue(0)]
-        public decimal EstimatedCost { get; set; }
+        public double EstimatedCost { get; set; }
 
         [DefaultValue(0)]
-        public decimal MinutesSpent { get; set; }
+        public double MinutesSpent { get; set; }
 
         [DefaultValue(0)]
-        public decimal Cost { get; set; }
+        public double Cost { get; set; }
 
         public DateTime? StartDateTime { get; set; }
 

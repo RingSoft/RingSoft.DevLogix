@@ -25,7 +25,7 @@ namespace RingSoft.DevLogix
         {
             if (hostId == DevLogixLookupContext.TimeSpentHostId)
             {
-                return AppGlobals.MakeTimeSpent(value.ToDecimal());
+                return AppGlobals.MakeTimeSpent(value.ToDecimal().ToDouble());
             }
             return base.FormatValue(hostId, value);
         }

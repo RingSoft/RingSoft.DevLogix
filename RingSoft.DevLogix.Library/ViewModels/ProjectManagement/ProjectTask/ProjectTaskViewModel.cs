@@ -147,9 +147,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
-        private decimal _minutesCost;
+        private double _minutesCost;
 
-        public decimal MinutesCost
+        public double MinutesCost
         {
             get => _minutesCost;
             set
@@ -170,9 +170,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
-        private decimal _totalMinutesCost;
+        private double _totalMinutesCost;
 
-        public decimal TotalMinutesCost
+        public double TotalMinutesCost
         {
             get => _totalMinutesCost;
             set
@@ -216,9 +216,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         }
 
 
-        private decimal _hourlyRate;
+        private double _hourlyRate;
 
-        public decimal HourlyRate
+        public double HourlyRate
         {
             get => _hourlyRate;
             set
@@ -236,9 +236,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
-        private decimal _percentComplete;
+        private double _percentComplete;
 
-        public decimal PercentComplete
+        public double PercentComplete
         {
             get => _percentComplete;
             set
@@ -727,7 +727,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             return context.DeleteEntity(entity, "Deleting Project Task");
         }
 
-        public void SetTotalMinutesCost(decimal total)
+        public void SetTotalMinutesCost(double total)
         {
             _calculating = true;
             TotalMinutesCost = total;

@@ -89,9 +89,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
-        private decimal _cost;
+        private double _cost;
 
-        public decimal Cost
+        public double Cost
         {
             get => _cost;
             set
@@ -124,9 +124,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         }
 
 
-        private decimal _actualCost;
+        private double _actualCost;
 
-        public decimal ActualCost
+        public double ActualCost
         {
             get => _actualCost;
             set
@@ -139,9 +139,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
-        private decimal _totalCost;
+        private double _totalCost;
 
-        public decimal TotalCost
+        public double TotalCost
         {
             get => _totalCost;
             set
@@ -352,7 +352,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             return base.ValidateEntity(entity);
         }
 
-        public void SetTotalCost(decimal total)
+        public void SetTotalCost(double total)
         {
             _calculating = true;
             TotalCost = total;
@@ -491,7 +491,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
-        public void RefreshCost(decimal cost)
+        public void RefreshCost(double cost)
         {
             ActualCost = cost;
             var primaryKey = TableDefinition.GetPrimaryKeyValueFromEntity(Entity);

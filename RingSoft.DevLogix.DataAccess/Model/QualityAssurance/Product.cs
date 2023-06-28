@@ -35,11 +35,11 @@ namespace RingSoft.DevLogix.DataAccess.Model
 
         public string? Notes { get; set; }
 
-        public decimal? Price { get; set; }
+        public double? Price { get; set; }
 
-        public decimal? Revenue { get; set; }
+        public double? Revenue { get; set; }
 
-        public decimal? Cost { get; set; }
+        public double? Cost { get; set; }
 
         public ICollection<ProductVersion> Versions { get; set; }
 

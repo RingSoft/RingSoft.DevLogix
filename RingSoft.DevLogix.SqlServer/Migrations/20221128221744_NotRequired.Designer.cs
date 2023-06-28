@@ -89,7 +89,7 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<string>("Formula")
                         .HasColumnType("ntext");
 
-                    b.Property<decimal>("PercentWidth")
+                    b.Property<double>("PercentWidth")
                         .HasColumnType("numeric(38,17)");
 
                     b.Property<string>("PrimaryFieldName")

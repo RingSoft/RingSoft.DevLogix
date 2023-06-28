@@ -11,12 +11,12 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<decimal>(
+            migrationBuilder.AlterColumn<double>(
                 name: "PercentWidth",
                 table: "AdvancedFindColumns",
                 type: "numeric(38,17)",
                 nullable: false,
-                oldClrType: typeof(decimal),
+                oldClrType: typeof(double),
                 oldType: "numeric(18,0)");
 
             migrationBuilder.CreateTable(
@@ -27,7 +27,7 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PunchInDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     PunchOutDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    MinutesSpent = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    MinutesSpent = table.Column<double>(type: "double(18,2)", nullable: true),
                     UserId = table.Column<int>(type: "integer", nullable: false),
                     ErrorId = table.Column<int>(type: "integer", nullable: true),
                     Notes = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -65,12 +65,12 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
             migrationBuilder.DropTable(
                 name: "TimeClocks");
 
-            migrationBuilder.AlterColumn<decimal>(
+            migrationBuilder.AlterColumn<double>(
                 name: "PercentWidth",
                 table: "AdvancedFindColumns",
                 type: "numeric(18,0)",
                 nullable: false,
-                oldClrType: typeof(decimal),
+                oldClrType: typeof(double),
                 oldType: "numeric(38,17)");
         }
     }

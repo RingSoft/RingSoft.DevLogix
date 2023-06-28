@@ -365,9 +365,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             }
         }
 
-        private decimal _totalCost;
+        private double _totalCost;
 
-        public decimal TotalCost
+        public double TotalCost
         {
             get => _totalCost;
             set
@@ -533,7 +533,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         public new IErrorView View { get; private set; }
 
-        public decimal MinutesSpent { get; private set; }
+        public double MinutesSpent { get; private set; }
 
         public AutoFillValue DefaultTestOutlineAutoFillValue { get; private set; }
 

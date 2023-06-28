@@ -60,10 +60,10 @@ namespace RingSoft.DevLogix.DataAccess.Model
         public string? Resolution { get; set; }
 
         [DefaultValue(0)]
-        public decimal MinutesSpent { get; set; }
+        public double MinutesSpent { get; set; }
 
         [DefaultValue(0)]
-        public decimal Cost { get; set; }
+        public double Cost { get; set; }
 
         public int? TestingOutlineId { get; set; }
 

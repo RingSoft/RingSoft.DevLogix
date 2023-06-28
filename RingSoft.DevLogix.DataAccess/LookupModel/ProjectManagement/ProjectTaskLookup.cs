@@ -8,6 +8,6 @@
 
         public string UserName { get; set; }
 
-        public decimal PercentComplete { get; set; }
+        public double PercentComplete { get; set; }
     }
 }

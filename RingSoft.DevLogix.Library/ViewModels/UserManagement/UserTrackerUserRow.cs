@@ -26,9 +26,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         public string Status { get; private set; }
 
-        public decimal PunchedOutMinutes { get; private set; }
+        public double PunchedOutMinutes { get; private set; }
 
-        public decimal PunchedInMinutes { get; private set; }
+        public double PunchedInMinutes { get; private set; }
 
         public bool DisableBalloon { get; private set; }
 
@@ -270,7 +270,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                                     }
                                 }
                                 var timeSpan = now - punchDate;
-                                PunchedOutMinutes = (decimal)timeSpan.TotalMinutes;
+                                PunchedOutMinutes = (double)timeSpan.TotalMinutes;
                                 if (PunchedOutMinutes > Manager.ViewModel.RedAlertMinutes)
                                 {
                                     DisplayStyleId = UserTrackerUserManager.RedDisplayStyleId;
@@ -289,7 +289,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                             {
                                 Status = string.Empty;
                                 var timeSpan = now - TimeClock.PunchInDate;
-                                PunchedInMinutes = (decimal)timeSpan.TotalMinutes;
+                                PunchedInMinutes = (double)timeSpan.TotalMinutes;
                                 if (PunchedInMinutes > Manager.ViewModel.YellowAlertMinutes)
                                 {
                                     DisplayStyleId = UserTrackerUserManager.YellowDisplayStyleId;

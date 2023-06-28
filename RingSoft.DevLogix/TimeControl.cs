@@ -41,12 +41,12 @@ namespace RingSoft.DevLogix
     public class TimeControl : Control, ITimeControlView
     {
         public static readonly DependencyProperty MinutesProperty =
-            DependencyProperty.Register(nameof(Minutes), typeof(decimal), typeof(TimeControl),
+            DependencyProperty.Register(nameof(Minutes), typeof(double), typeof(TimeControl),
                 new FrameworkPropertyMetadata(MinutesChangedCallback));
 
-        public decimal Minutes
+        public double Minutes
         {
-            get { return (decimal)GetValue(MinutesProperty); }
+            get { return (double)GetValue(MinutesProperty); }
             set { SetValue(MinutesProperty, value); }
         }
 
@@ -129,7 +129,7 @@ namespace RingSoft.DevLogix
         public Button Button { get; private set; }
 
         private bool _setFocus;
-        private decimal? _setMinutes;
+        private double? _setMinutes;
         private Brush _setBrush;
         private Brush _setSelectionBrush;
         private Brush _setForegroundBrush;

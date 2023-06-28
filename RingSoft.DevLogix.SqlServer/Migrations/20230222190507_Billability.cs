@@ -10,35 +10,35 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<decimal>(
+            migrationBuilder.AddColumn<double>(
                 name: "BillableProjectsMinutesSpent",
                 table: "Users",
                 type: "numeric(18,0)",
                 nullable: false,
                 defaultValue: 0m);
 
-            migrationBuilder.AddColumn<decimal>(
+            migrationBuilder.AddColumn<double>(
                 name: "ErrorsMinutesSpent",
                 table: "Users",
                 type: "numeric(18,0)",
                 nullable: false,
                 defaultValue: 0m);
 
-            migrationBuilder.AddColumn<decimal>(
+            migrationBuilder.AddColumn<double>(
                 name: "HourlyRate",
                 table: "Users",
                 type: "numeric(18,0)",
                 nullable: false,
                 defaultValue: 0m);
 
-            migrationBuilder.AddColumn<decimal>(
+            migrationBuilder.AddColumn<double>(
                 name: "NonBillableProjectsMinutesSpent",
                 table: "Users",
                 type: "numeric(18,0)",
                 nullable: false,
                 defaultValue: 0m);
 
-            migrationBuilder.AddColumn<decimal>(
+            migrationBuilder.AddColumn<double>(
                 name: "Cost",
                 table: "Projects",
                 type: "numeric(18,0)",
@@ -52,33 +52,33 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                 nullable: false,
                 defaultValue: false);
 
-            migrationBuilder.AddColumn<decimal>(
+            migrationBuilder.AddColumn<double>(
                 name: "MinutesSpent",
                 table: "Projects",
                 type: "numeric(18,0)",
                 nullable: false,
                 defaultValue: 0m);
 
-            migrationBuilder.AddColumn<decimal>(
+            migrationBuilder.AddColumn<double>(
                 name: "Cost",
                 table: "Errors",
                 type: "numeric(18,0)",
                 nullable: false,
                 defaultValue: 0m);
 
-            migrationBuilder.AddColumn<decimal>(
+            migrationBuilder.AddColumn<double>(
                 name: "MinutesSpent",
                 table: "Errors",
                 type: "numeric(18,0)",
                 nullable: false,
                 defaultValue: 0m);
 
-            migrationBuilder.AlterColumn<decimal>(
+            migrationBuilder.AlterColumn<double>(
                 name: "PercentWidth",
                 table: "AdvancedFindColumns",
                 type: "numeric(38,17)",
                 nullable: false,
-                oldClrType: typeof(decimal),
+                oldClrType: typeof(double),
                 oldType: "numeric(18,0)");
         }
 
@@ -121,12 +121,12 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                 name: "MinutesSpent",
                 table: "Errors");
 
-            migrationBuilder.AlterColumn<decimal>(
+            migrationBuilder.AlterColumn<double>(
                 name: "PercentWidth",
                 table: "AdvancedFindColumns",
                 type: "numeric(18,0)",
                 nullable: false,
-                oldClrType: typeof(decimal),
+                oldClrType: typeof(double),
                 oldType: "numeric(38,17)");
         }
     }

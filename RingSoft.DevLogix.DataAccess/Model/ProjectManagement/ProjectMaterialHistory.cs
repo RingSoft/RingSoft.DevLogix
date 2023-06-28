@@ -18,10 +18,10 @@ namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
         public DateTime Date { get; set; }
 
         [Required]
-        public decimal Quantity { get; set; }
+        public double Quantity { get; set; }
 
         [Required]
-        public decimal Cost { get; set;  }
+        public double Cost { get; set;  }
 
         [Required]
         public int UserId { get; set; }

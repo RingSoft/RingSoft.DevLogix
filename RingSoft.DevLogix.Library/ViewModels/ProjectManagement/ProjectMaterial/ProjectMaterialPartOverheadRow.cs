@@ -11,7 +11,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public string Description { get; private set; }
 
-        public decimal Cost { get; private set; }
+        public double Cost { get; private set; }
 
         public ProjectMaterialPartOverheadRow(ProjectMaterialPartManager manager) : base(manager)
         {
@@ -36,7 +36,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     {
                         FormatType = DecimalEditFormatTypes.Currency,
                         AllowNullValue = false,
-                    }, Cost);
+                    }, (decimal)Cost);
             }
             return base.GetCellProps(columnId);
         }
@@ -75,7 +75,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 case ProjectMaterialPartColumns.Cost:
                     if (value is DataEntryGridDecimalCellProps decimalCellProps)
                     {
-                        Cost = decimalCellProps.Value.Value;
+                        Cost = decimalCellProps.Value.Value.ToDouble();
                         Manager.CalculateTotalCost();
                     }
                     break;
@@ -83,7 +83,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             base.SetCellValue(value);
         }
 
-        public override decimal GetExtendedCost()
+        public override double GetExtendedCost()
         {
             return Cost;
         }

@@ -22,7 +22,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     CreatedByUserId = table.Column<int>(type: "integer", nullable: false),
                     AssignedToUserId = table.Column<int>(type: "integer", nullable: true),
                     DueDate = table.Column<DateTime>(type: "datetime", nullable: true),
-                    PercentComplete = table.Column<decimal>(type: "numeric", nullable: false),
+                    PercentComplete = table.Column<double>(type: "numeric", nullable: false),
                     Notes = table.Column<string>(type: "ntext", nullable: true)
                 },
                 constraints: table =>

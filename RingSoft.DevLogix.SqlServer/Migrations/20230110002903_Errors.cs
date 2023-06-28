@@ -37,12 +37,12 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                 table: "Errors",
                 newName: "IX_Errors_ErrorStatusId");
 
-            migrationBuilder.AlterColumn<decimal>(
+            migrationBuilder.AlterColumn<double>(
                 name: "PercentWidth",
                 table: "AdvancedFindColumns",
                 type: "numeric(38,17)",
                 nullable: false,
-                oldClrType: typeof(decimal),
+                oldClrType: typeof(double),
                 oldType: "numeric(18,0)");
 
             migrationBuilder.AlterColumn<string>(
@@ -313,12 +313,12 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                 table: "Error",
                 newName: "IX_Error_ErrorStatusId");
 
-            migrationBuilder.AlterColumn<decimal>(
+            migrationBuilder.AlterColumn<double>(
                 name: "PercentWidth",
                 table: "AdvancedFindColumns",
                 type: "numeric(18,0)",
                 nullable: false,
-                oldClrType: typeof(decimal),
+                oldClrType: typeof(double),
                 oldType: "numeric(38,17)");
 
             migrationBuilder.AlterColumn<string>(

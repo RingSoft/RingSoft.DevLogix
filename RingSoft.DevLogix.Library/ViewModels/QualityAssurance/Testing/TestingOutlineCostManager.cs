@@ -59,7 +59,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             }
         }
 
-        public void GetTotals(out decimal minutesSpent, out decimal totalCost)
+        public void GetTotals(out double minutesSpent, out double totalCost)
         {
             var rows = Rows.OfType<TestingOutlineCostRow>();
             minutesSpent = rows.Sum(p => p.MinutesSpent);

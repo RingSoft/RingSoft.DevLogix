@@ -17,7 +17,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "nvarchar", maxLength: 50, nullable: false),
-                    MinutesCost = table.Column<decimal>(type: "numeric", nullable: false)
+                    MinutesCost = table.Column<double>(type: "numeric", nullable: false)
                 },
                 constraints: table =>
                 {

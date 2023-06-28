@@ -24,12 +24,12 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                 table: "TimeClocks",
                 newName: "IX_TimeClocks_ProjectTaskId");
 
-            migrationBuilder.AlterColumn<decimal>(
+            migrationBuilder.AlterColumn<double>(
                 name: "PercentWidth",
                 table: "AdvancedFindColumns",
                 type: "numeric(38,17)",
                 nullable: false,
-                oldClrType: typeof(decimal),
+                oldClrType: typeof(double),
                 oldType: "numeric(18,0)");
 
             migrationBuilder.AddForeignKey(
@@ -57,12 +57,12 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                 table: "TimeClocks",
                 newName: "IX_TimeClocks_ProjectId");
 
-            migrationBuilder.AlterColumn<decimal>(
+            migrationBuilder.AlterColumn<double>(
                 name: "PercentWidth",
                 table: "AdvancedFindColumns",
                 type: "numeric(18,0)",
                 nullable: false,
-                oldClrType: typeof(decimal),
+                oldClrType: typeof(double),
                 oldType: "numeric(38,17)");
 
             migrationBuilder.AddForeignKey(

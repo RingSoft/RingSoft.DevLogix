@@ -19,21 +19,21 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                 oldType: "nvarchar",
                 oldNullable: true);
 
-            migrationBuilder.AddColumn<decimal>(
+            migrationBuilder.AddColumn<double>(
                 name: "MinutesCost",
                 table: "Customer",
                 type: "numeric",
                 nullable: false,
                 defaultValue: 0m);
 
-            migrationBuilder.AddColumn<decimal>(
+            migrationBuilder.AddColumn<double>(
                 name: "TotalCost",
                 table: "Customer",
                 type: "numeric",
                 nullable: false,
                 defaultValue: 0m);
 
-            migrationBuilder.AddColumn<decimal>(
+            migrationBuilder.AddColumn<double>(
                 name: "TotalSales",
                 table: "Customer",
                 type: "numeric",
@@ -49,7 +49,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     Name = table.Column<string>(type: "nvarchar", maxLength: 50, nullable: false),
                     CustomerId = table.Column<int>(type: "integer", nullable: false),
                     OperatingSystem = table.Column<string>(type: "nvarchar", maxLength: 50, nullable: true),
-                    Speed = table.Column<decimal>(type: "numeric", nullable: true),
+                    Speed = table.Column<double>(type: "numeric", nullable: true),
                     ScreenResolution = table.Column<string>(type: "nvarchar", maxLength: 50, nullable: true),
                     RamSize = table.Column<int>(type: "integer", nullable: true),
                     HardDriveSize = table.Column<int>(type: "integer", nullable: true),

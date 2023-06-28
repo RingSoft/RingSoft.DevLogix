@@ -56,9 +56,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
         }
 
-        private decimal? _speed;
+        private double? _speed;
 
-        public decimal? Speed
+        public double? Speed
         {
             get => _speed;
             set

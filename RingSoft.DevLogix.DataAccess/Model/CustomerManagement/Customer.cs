@@ -49,11 +49,11 @@ namespace RingSoft.DevLogix.DataAccess.Model.CustomerManagement
 
         public virtual Territory Territory { get; set; }
 
-        public decimal? SupportMinutesPurchased { get; set; }
+        public double? SupportMinutesPurchased { get; set; }
 
-        public decimal? SupportMinutesSpent { get; set; }
+        public double? SupportMinutesSpent { get; set; }
 
-        public decimal? SupportCost { get; set; }
+        public double? SupportCost { get; set; }
 
         public string? Notes { get; set; }
 
@@ -64,13 +64,13 @@ namespace RingSoft.DevLogix.DataAccess.Model.CustomerManagement
         public string? WebAddress { get; set; }
 
         [DefaultValue(0)]
-        public decimal TotalSales { get; set; }
+        public double TotalSales { get; set; }
 
         [DefaultValue(0)]
-        public decimal TotalCost { get; set; }
+        public double TotalCost { get; set; }
 
         [DefaultValue(0)]
-        public decimal MinutesCost { get; set; }
+        public double MinutesCost { get; set; }
 
         public virtual ICollection<TimeClock> TimeClocks { get; set; }
         public virtual ICollection<Order> Orders { get; set; }

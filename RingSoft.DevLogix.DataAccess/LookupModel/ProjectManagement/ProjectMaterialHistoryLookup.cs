@@ -10,8 +10,8 @@ namespace RingSoft.DevLogix.DataAccess.LookupModel.ProjectManagement
 
         public string ProjectMaterial { get; set; }
 
-        public decimal Quantity { get; set; }
+        public double Quantity { get; set; }
 
-        public decimal Cost { get; set; }
+        public double Cost { get; set; }
     }
 }

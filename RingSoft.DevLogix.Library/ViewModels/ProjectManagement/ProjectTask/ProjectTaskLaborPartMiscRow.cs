@@ -8,18 +8,18 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
     public class ProjectTaskLaborPartMiscRow : ProjectTaskLaborPartRow
     {
         public override LaborPartLineTypes LaborPartLineType => LaborPartLineTypes.Miscellaneous;
-        public override decimal GetExtendedMinutesCost()
+        public override double GetExtendedMinutesCost()
         {
             return Minutes * Quantity;
         }
 
         public string Description { get; private set; }
 
-        public decimal Quantity { get; private set; } = 1;
+        public double Quantity { get; private set; } = 1;
 
-        public decimal Minutes { get; private set; }
+        public double Minutes { get; private set; }
 
-        public decimal ExtendedMinutes { get; private set; }
+        public double ExtendedMinutes { get; private set; }
 
         public ProjectTaskLaborPartMiscRow(ProjectTaskLaborPartsManager manager) : base(manager)
         {
@@ -45,7 +45,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     {
                         AllowNullValue = false,
                         FormatType = DecimalEditFormatTypes.Number,
-                    }, Quantity);
+                    }, (decimal)Quantity);
                 case ProjectTaskLaborPartColumns.MinutesCost:
                     return new TimeCostCellProps(this, columnId, Minutes);
                 case ProjectTaskLaborPartColumns.ExtendedMinutes:
@@ -111,7 +111,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 case ProjectTaskLaborPartColumns.Quantity:
                     if (value is DataEntryGridDecimalCellProps decimalCellProps)
                     {
-                        Quantity = decimalCellProps.Value.Value;
+                        Quantity = decimalCellProps.Value.Value.ToDouble();
                         if (Quantity == 0)
                         {
                             Quantity = 1;

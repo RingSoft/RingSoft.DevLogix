@@ -25,7 +25,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
     {
         public ProjectTask ProjectTask { get; set; }
 
-        public decimal RemainingMinutes { get; set; }
+        public double RemainingMinutes { get; set; }
 
         public int Priority { get; set; }
 
@@ -166,7 +166,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             _newRows.Add(row);
         }
         
-        private decimal ProcessProjectUser(DateTime date, ProjectUser projectUser, decimal remainingMinutes)
+        private double ProcessProjectUser(DateTime date, ProjectUser projectUser, double remainingMinutes)
         {
             var dailyRemainingMinutes = ViewModel.GetMinutesForDay(date, projectUser);
 
@@ -253,7 +253,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             return true;
         }
 
-        private decimal ProcessTimeOff(DateTime date, ProjectUser projectUser, decimal dailyRemainingMinutes,
+        private double ProcessTimeOff(DateTime date, ProjectUser projectUser, double dailyRemainingMinutes,
             UserScheduleData userData)
         {
             var endDate = date.AddDays(1).AddSeconds(-1);
@@ -261,12 +261,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 .FirstOrDefault(p => p.StartDate.ToLocalTime().Ticks >= date.Ticks
                                      && p.StartDate.ToLocalTime().Ticks <= endDate.Ticks);
 
-            var minutesOff = (decimal)0;
+            var minutesOff = (double)0;
             if (timeOff != null)
             {
                 var timeOffSpan = timeOff.EndDate - timeOff.StartDate;
 
-                minutesOff = (decimal)timeOffSpan.TotalMinutes;
+                minutesOff = (double)timeOffSpan.TotalMinutes;
 
                 dailyRemainingMinutes -= minutesOff;
 
@@ -315,8 +315,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
                 detail.StringField01 = projectScheduleGridRow.Date.FormatDateValue(DbDateTypes.DateOnly);
                 detail.StringField02 = projectScheduleGridRow.Description;
-                detail.NumberField01 = numberSetup.FormatValue(projectScheduleGridRow.HoursWorked);
-                detail.NumberField02 = numberSetup.FormatValue(projectScheduleGridRow.HoursRemaining);
+                detail.NumberField01 = numberSetup.FormatValue((decimal)projectScheduleGridRow.HoursWorked);
+                detail.NumberField02 = numberSetup.FormatValue((decimal)projectScheduleGridRow.HoursRemaining);
 
                 detailsChunk.Add(detail);
                 counter++;

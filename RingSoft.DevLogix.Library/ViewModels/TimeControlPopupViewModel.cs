@@ -22,9 +22,9 @@ namespace RingSoft.DevLogix.Library.ViewModels
     }
     public class TimeControlPopupViewModel : INotifyPropertyChanged
     {
-        private decimal _timePart;
+        private double _timePart;
 
-        public decimal TimePart
+        public double TimePart
         {
             get => _timePart;
             set
@@ -78,7 +78,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         public bool DialogResult { get; private set; }
 
-        public decimal Minutes { get; private set; }
+        public double Minutes { get; private set; }
 
         public RelayCommand OkCommand { get; private set; }
 
@@ -96,14 +96,14 @@ namespace RingSoft.DevLogix.Library.ViewModels
             }));
         }
 
-        public void Initialize(ITimeControlPopupView view, decimal minutes)
+        public void Initialize(ITimeControlPopupView view, double minutes)
         {
             View = view;
             Minutes = minutes;
             SetMinutes(minutes);
         }
 
-        private void SetMinutes(decimal minutes)
+        private void SetMinutes(double minutes)
         {
             if (minutes > 60)
             {
@@ -129,7 +129,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         private void OnOk()
         {
-            var minutes = (decimal)0;
+            var minutes = (double)0;
             switch (Period)
             {
                 case TimeControlPeriods.Minutes:

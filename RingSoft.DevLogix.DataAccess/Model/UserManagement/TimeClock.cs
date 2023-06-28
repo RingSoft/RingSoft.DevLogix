@@ -20,7 +20,7 @@ namespace RingSoft.DevLogix.DataAccess.Model
 
         public DateTime? PunchOutDate { get; set; }
 
-        public decimal? MinutesSpent { get; set; }
+        public double? MinutesSpent { get; set; }
 
         [Required]
         public int UserId { get; set; }

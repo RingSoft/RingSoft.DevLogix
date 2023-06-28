@@ -16,8 +16,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                 {
                     ErrorId = table.Column<int>(type: "integer", nullable: false),
                     UserId = table.Column<int>(type: "integer", nullable: false),
-                    MinutesSpent = table.Column<decimal>(type: "numeric", nullable: false),
-                    Cost = table.Column<decimal>(type: "numeric", nullable: false)
+                    MinutesSpent = table.Column<double>(type: "numeric", nullable: false),
+                    Cost = table.Column<double>(type: "numeric", nullable: false)
                 },
                 constraints: table =>
                 {

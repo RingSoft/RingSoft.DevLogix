@@ -329,9 +329,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         public new ITimeClockView View { get; private set; }
 
-        public decimal MinutesSpent { get; private set; }
+        public double MinutesSpent { get; private set; }
 
-        public decimal OriginalMinutesSpent { get; private set; }
+        public double OriginalMinutesSpent { get; private set; }
 
         public DialogInput DialogInput { get; private set; }
 
@@ -578,7 +578,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             if (PunchOutDate != null)
             {
                 var duration = PunchOutDate.Value.Subtract(PunchInDate);
-                MinutesSpent = (decimal)duration.TotalMinutes;
+                MinutesSpent = (double)duration.TotalMinutes;
             }
 
             var timeClock = new TimeClock
@@ -1044,7 +1044,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             View.SetElapsedTime();
         }
 
-        public decimal GetNewMinutesSpent()
+        public double GetNewMinutesSpent()
         {
             var result = MinutesSpent - OriginalMinutesSpent;
             return result;

@@ -41,13 +41,13 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                 oldType: "nvarchar(max)",
                 oldNullable: true);
 
-            migrationBuilder.AlterColumn<decimal>(
+            migrationBuilder.AlterColumn<double>(
                 name: "MinutesSpent",
                 table: "TimeClocks",
                 type: "numeric(18,0)",
                 nullable: true,
-                oldClrType: typeof(decimal),
-                oldType: "decimal(18,2)",
+                oldClrType: typeof(double),
+                oldType: "double(18,2)",
                 oldNullable: true);
 
             migrationBuilder.AlterColumn<int>(
@@ -60,12 +60,12 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                 .Annotation("SqlServer:Identity", "1, 1")
                 .OldAnnotation("SqlServer:Identity", "1, 1");
 
-            migrationBuilder.AlterColumn<decimal>(
+            migrationBuilder.AlterColumn<double>(
                 name: "PercentWidth",
                 table: "AdvancedFindColumns",
                 type: "numeric(38,17)",
                 nullable: false,
-                oldClrType: typeof(decimal),
+                oldClrType: typeof(double),
                 oldType: "numeric(18,0)");
 
             migrationBuilder.AddForeignKey(
@@ -109,12 +109,12 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                 oldType: "ntext",
                 oldNullable: true);
 
-            migrationBuilder.AlterColumn<decimal>(
+            migrationBuilder.AlterColumn<double>(
                 name: "MinutesSpent",
                 table: "TimeClocks",
-                type: "decimal(18,2)",
+                type: "double(18,2)",
                 nullable: true,
-                oldClrType: typeof(decimal),
+                oldClrType: typeof(double),
                 oldType: "numeric(18,0)",
                 oldNullable: true);
 
@@ -128,12 +128,12 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                 .Annotation("SqlServer:Identity", "1, 1")
                 .OldAnnotation("SqlServer:Identity", "1, 1");
 
-            migrationBuilder.AlterColumn<decimal>(
+            migrationBuilder.AlterColumn<double>(
                 name: "PercentWidth",
                 table: "AdvancedFindColumns",
                 type: "numeric(18,0)",
                 nullable: false,
-                oldClrType: typeof(decimal),
+                oldClrType: typeof(double),
                 oldType: "numeric(38,17)");
 
             migrationBuilder.AddForeignKey(

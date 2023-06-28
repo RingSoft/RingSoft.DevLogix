@@ -98,7 +98,7 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar");
 
-                    b.Property<decimal>("PercentWidth")
+                    b.Property<double>("PercentWidth")
                         .HasColumnType("numeric");
 
                     b.Property<string>("PrimaryFieldName")
@@ -565,8 +565,8 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<int?>("ErrorId")
                         .HasColumnType("integer");
 
-                    b.Property<decimal?>("MinutesSpent")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<double?>("MinutesSpent")
+                        .HasColumnType("double(18,2)");
 
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)");

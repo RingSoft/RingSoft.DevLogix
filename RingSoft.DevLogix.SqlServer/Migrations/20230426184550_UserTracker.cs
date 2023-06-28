@@ -10,12 +10,12 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<decimal>(
+            migrationBuilder.AlterColumn<double>(
                 name: "PercentWidth",
                 table: "AdvancedFindColumns",
                 type: "numeric(38,17)",
                 nullable: false,
-                oldClrType: typeof(decimal),
+                oldClrType: typeof(double),
                 oldType: "numeric(18,0)");
 
             migrationBuilder.CreateTable(
@@ -27,8 +27,8 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     RefreshInterval = table.Column<int>(type: "integer", nullable: false),
                     RefreshType = table.Column<byte>(type: "tinyint", nullable: false),
-                    RedMinutes = table.Column<decimal>(type: "numeric(18,0)", nullable: true),
-                    YellowMinutes = table.Column<decimal>(type: "numeric(18,0)", nullable: true)
+                    RedMinutes = table.Column<double>(type: "numeric(18,0)", nullable: true),
+                    YellowMinutes = table.Column<double>(type: "numeric(18,0)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -42,12 +42,12 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
             migrationBuilder.DropTable(
                 name: "UserTracker");
 
-            migrationBuilder.AlterColumn<decimal>(
+            migrationBuilder.AlterColumn<double>(
                 name: "PercentWidth",
                 table: "AdvancedFindColumns",
                 type: "numeric(18,0)",
                 nullable: false,
-                oldClrType: typeof(decimal),
+                oldClrType: typeof(double),
                 oldType: "numeric(38,17)");
         }
     }

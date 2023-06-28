@@ -19,9 +19,9 @@ namespace RingSoft.DevLogix.DataAccess.Model.UserManagement
         [Required]
         public byte RefreshType { get; set; }
 
-        public decimal? RedMinutes { get; set; }
+        public double? RedMinutes { get; set; }
 
-        public decimal? YellowMinutes { get; set; }
+        public double? YellowMinutes { get; set; }
 
         public ICollection<UserTrackerUser> Users { get; set; }
 

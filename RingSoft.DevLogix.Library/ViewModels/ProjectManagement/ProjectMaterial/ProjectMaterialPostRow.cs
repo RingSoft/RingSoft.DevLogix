@@ -19,9 +19,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public AutoFillValue MaterialAutoFillValue { get; private set; }
 
-        public decimal Quantity { get; private set; } = 1;
+        public double Quantity { get; private set; } = 1;
 
-        public decimal Cost { get; private set; }
+        public double Cost { get; private set; }
 
         public ProjectMaterialPostRow(ProjectMaterialPostManager manager) : base(manager)
         {
@@ -52,20 +52,20 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     {
                         AllowNullValue = false,
                         FormatType = DecimalEditFormatTypes.Number,
-                    }, Quantity);
+                    }, (decimal)Quantity);
                 case ProjectMaterialPostColumns.Cost:
                     return new DataEntryGridDecimalCellProps(this, columnId, new DecimalEditControlSetup
                     {
                         AllowNullValue = false,
                         FormatType = DecimalEditFormatTypes.Currency,
-                    }, Cost);
+                    }, (decimal)Cost);
 
                 case ProjectMaterialPostColumns.Extended:
                     return new DataEntryGridDecimalCellProps(this, columnId, new DecimalEditControlSetup
                     {
                         AllowNullValue = false,
                         FormatType = DecimalEditFormatTypes.Currency,
-                    }, Quantity * Cost);
+                    }, (decimal)(Quantity * Cost));
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -118,13 +118,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 case ProjectMaterialPostColumns.Quantity:
                     if (value is DataEntryGridDecimalCellProps decimalCellProps)
                     {
-                        Quantity = decimalCellProps.Value.Value;
+                        Quantity = decimalCellProps.Value.Value.ToDouble();
                     }
                     break;
                 case ProjectMaterialPostColumns.Cost:
                     if (value is DataEntryGridDecimalCellProps costDecimalCellProps)
                     {
-                        Cost = costDecimalCellProps.Value.Value;
+                        Cost = costDecimalCellProps.Value.Value.ToDouble();
                     }
 
                     break;

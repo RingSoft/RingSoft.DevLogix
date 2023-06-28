@@ -41,11 +41,11 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     Phone = table.Column<string>(type: "nvarchar", maxLength: 50, nullable: false),
                     TimeZoneId = table.Column<int>(type: "integer", nullable: false),
                     AssignedUserId = table.Column<int>(type: "integer", nullable: false),
-                    SupportMinutesPurchased = table.Column<decimal>(type: "numeric", nullable: true),
-                    SupportMinutesSpent = table.Column<decimal>(type: "numeric", nullable: true),
-                    SupportCost = table.Column<decimal>(type: "numeric", nullable: true),
-                    SalesMinutesSpent = table.Column<decimal>(type: "numeric", nullable: true),
-                    SalesCost = table.Column<decimal>(type: "numeric", nullable: true),
+                    SupportMinutesPurchased = table.Column<double>(type: "numeric", nullable: true),
+                    SupportMinutesSpent = table.Column<double>(type: "numeric", nullable: true),
+                    SupportCost = table.Column<double>(type: "numeric", nullable: true),
+                    SalesMinutesSpent = table.Column<double>(type: "numeric", nullable: true),
+                    SalesCost = table.Column<double>(type: "numeric", nullable: true),
                     Notes = table.Column<string>(type: "nvarchar", nullable: true)
                 },
                 constraints: table =>

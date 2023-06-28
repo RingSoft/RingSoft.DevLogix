@@ -49,13 +49,13 @@ namespace RingSoft.DevLogix.DataAccess.Model.CustomerManagement
         [MaxLength(50)]
         public string? Country { get; set; }
 
-        public decimal? SubTotal { get; set; }
+        public double? SubTotal { get; set; }
 
-        public decimal? TotalDiscount { get; set; }
+        public double? TotalDiscount { get; set; }
 
-        public decimal? Freight { get; set; }
+        public double? Freight { get; set; }
 
-        public decimal? Total { get; set; }
+        public double? Total { get; set; }
 
         public virtual ICollection<OrderDetail> Details { get; set; }
 

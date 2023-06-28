@@ -19,7 +19,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     LaborPartId = table.Column<int>(type: "integer", nullable: true),
                     Description = table.Column<string>(type: "nvarchar", maxLength: 50, nullable: true),
                     Quantity = table.Column<int>(type: "integer", nullable: true),
-                    MinutesCost = table.Column<decimal>(type: "numeric", nullable: false)
+                    MinutesCost = table.Column<double>(type: "numeric", nullable: false)
                 },
                 constraints: table =>
                 {

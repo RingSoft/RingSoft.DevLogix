@@ -38,7 +38,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         public const int MiscRowDisplayStyleId = 100;
         public const int CommentRowDisplayStyleId = 101;
 
-        public decimal TotalMinutes { get; private set; }
+        public double TotalMinutes { get; private set; }
 
         public IEnumerable<ProjectTaskLaborPart> Details { get; private set; }
 
@@ -115,7 +115,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 .ToList();
 
             //var minutesComplete = rows.Sum(p => p.GetExtendedMinutesCost());
-            var minutesComplete = (decimal)0;
+            var minutesComplete = (double)0;
             foreach (var row in rows)
             {
                 if (row.IsComplete)

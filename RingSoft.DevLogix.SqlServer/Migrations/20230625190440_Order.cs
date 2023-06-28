@@ -11,12 +11,12 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<decimal>(
+            migrationBuilder.AlterColumn<double>(
                 name: "PercentWidth",
                 table: "AdvancedFindColumns",
                 type: "numeric(38,17)",
                 nullable: false,
-                oldClrType: typeof(decimal),
+                oldClrType: typeof(double),
                 oldType: "numeric(18,0)");
 
             migrationBuilder.CreateTable(
@@ -37,10 +37,10 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     Region = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     PostalCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     Country = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    SubTotal = table.Column<decimal>(type: "numeric(18,0)", nullable: true),
-                    TotalDiscount = table.Column<decimal>(type: "numeric(18,0)", nullable: true),
-                    Freight = table.Column<decimal>(type: "numeric(18,0)", nullable: true),
-                    Total = table.Column<decimal>(type: "numeric(18,0)", nullable: true)
+                    SubTotal = table.Column<double>(type: "numeric(18,0)", nullable: true),
+                    TotalDiscount = table.Column<double>(type: "numeric(18,0)", nullable: true),
+                    Freight = table.Column<double>(type: "numeric(18,0)", nullable: true),
+                    Total = table.Column<double>(type: "numeric(18,0)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -65,12 +65,12 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
             migrationBuilder.DropTable(
                 name: "Order");
 
-            migrationBuilder.AlterColumn<decimal>(
+            migrationBuilder.AlterColumn<double>(
                 name: "PercentWidth",
                 table: "AdvancedFindColumns",
                 type: "numeric(18,0)",
                 nullable: false,
-                oldClrType: typeof(decimal),
+                oldClrType: typeof(double),
                 oldType: "numeric(38,17)");
         }
     }

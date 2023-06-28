@@ -10,14 +10,14 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<decimal>(
+            migrationBuilder.AddColumn<double>(
                 name: "MinutesSpent",
                 table: "TestingOutlines",
                 type: "numeric",
                 nullable: false,
                 defaultValue: 0m);
 
-            migrationBuilder.AddColumn<decimal>(
+            migrationBuilder.AddColumn<double>(
                 name: "TotalCost",
                 table: "TestingOutlines",
                 type: "numeric",
@@ -30,8 +30,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                 {
                     TestingOutlineId = table.Column<int>(type: "integer", nullable: false),
                     UserId = table.Column<int>(type: "integer", nullable: false),
-                    TimeSpent = table.Column<decimal>(type: "numeric", nullable: false),
-                    Cost = table.Column<decimal>(type: "numeric", nullable: false)
+                    TimeSpent = table.Column<double>(type: "numeric", nullable: false),
+                    Cost = table.Column<double>(type: "numeric", nullable: false)
                 },
                 constraints: table =>
                 {

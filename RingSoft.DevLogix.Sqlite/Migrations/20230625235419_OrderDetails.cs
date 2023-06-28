@@ -17,10 +17,10 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     OrderId = table.Column<int>(type: "integer", nullable: false),
                     DetailId = table.Column<int>(type: "integer", nullable: false),
                     ProductId = table.Column<int>(type: "integer", nullable: false),
-                    Quantity = table.Column<decimal>(type: "numeric", nullable: false),
-                    UnitPrice = table.Column<decimal>(type: "numeric", nullable: false),
-                    ExtendedPrice = table.Column<decimal>(type: "numeric", nullable: false),
-                    Discount = table.Column<decimal>(type: "numeric", nullable: true)
+                    Quantity = table.Column<double>(type: "numeric", nullable: false),
+                    UnitPrice = table.Column<double>(type: "numeric", nullable: false),
+                    ExtendedPrice = table.Column<double>(type: "numeric", nullable: false),
+                    Discount = table.Column<double>(type: "numeric", nullable: true)
                 },
                 constraints: table =>
                 {

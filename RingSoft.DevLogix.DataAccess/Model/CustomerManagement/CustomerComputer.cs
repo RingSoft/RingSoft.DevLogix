@@ -20,7 +20,7 @@ namespace RingSoft.DevLogix.DataAccess.Model.CustomerManagement
         [MaxLength(50)]
         public string? OperatingSystem { get; set; }
 
-        public decimal? Speed { get; set; }
+        public double? Speed { get; set; }
 
         [MaxLength(50)]
         public string? ScreenResolution { get; set; }

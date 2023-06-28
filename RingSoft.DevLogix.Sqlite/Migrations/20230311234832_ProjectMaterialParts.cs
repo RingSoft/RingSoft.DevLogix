@@ -23,7 +23,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     MaterialPartId = table.Column<int>(type: "integer", nullable: true),
                     Description = table.Column<string>(type: "nvarchar", maxLength: 50, nullable: true),
                     Quantity = table.Column<int>(type: "integer", nullable: true),
-                    Cost = table.Column<decimal>(type: "numeric", nullable: true)
+                    Cost = table.Column<double>(type: "numeric", nullable: true)
                 },
                 constraints: table =>
                 {

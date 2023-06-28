@@ -25,9 +25,9 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
     public class SpeedControlPopupViewModel : INotifyPropertyChanged
     {
-        private decimal _speedPart;
+        private double _speedPart;
 
-        public decimal SpeedPart
+        public double SpeedPart
         {
             get => _speedPart;
             set
@@ -81,7 +81,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         public bool DialogResult { get; private set; }
 
-        public decimal Speed { get; private set; }
+        public double Speed { get; private set; }
 
         public RelayCommand OkCommand { get; private set; }
 
@@ -99,14 +99,14 @@ namespace RingSoft.DevLogix.Library.ViewModels
             }));
         }
 
-        public void Initialize(ISpeedControlPopupView view, decimal speed)
+        public void Initialize(ISpeedControlPopupView view, double speed)
         {
             View = view;
             Speed = speed;
             SetSpeed(speed);
         }
 
-        private void SetSpeed(decimal speed)
+        private void SetSpeed(double speed)
         {
             if (speed > 1000)
             {
@@ -139,7 +139,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         private void OnOk()
         {
-            var speed = (decimal)0;
+            var speed = (double)0;
             switch (Type)
             {
                 case SpeedControlTypes.Mhz:

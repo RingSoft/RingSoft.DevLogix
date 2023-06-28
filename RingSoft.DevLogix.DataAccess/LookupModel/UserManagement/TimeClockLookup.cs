@@ -9,7 +9,7 @@ namespace RingSoft.DevLogix.DataAccess.LookupModel
 
         public DateTime PunchInDate { get; set; }
 
-        public decimal MinutesSpent { get; set; }
+        public double MinutesSpent { get; set; }
 
         public string ProjectTask { get; set; }
     }

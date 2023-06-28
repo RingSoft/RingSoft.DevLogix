@@ -98,7 +98,7 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar");
 
-                    b.Property<decimal>("PercentWidth")
+                    b.Property<double>("PercentWidth")
                         .HasColumnType("numeric");
 
                     b.Property<string>("PrimaryFieldName")
@@ -596,10 +596,10 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<DateTime>("Deadline")
                         .HasColumnType("datetime");
 
-                    b.Property<decimal?>("FridayHours")
+                    b.Property<double?>("FridayHours")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal?>("MondayHours")
+                    b.Property<double?>("MondayHours")
                         .HasColumnType("numeric");
 
                     b.Property<string>("Name")
@@ -613,19 +613,19 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<int?>("ProductId")
                         .HasColumnType("integer");
 
-                    b.Property<decimal?>("SaturdayHours")
+                    b.Property<double?>("SaturdayHours")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal?>("SundayHours")
+                    b.Property<double?>("SundayHours")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal?>("ThursdayHours")
+                    b.Property<double?>("ThursdayHours")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal?>("TuesdayHours")
+                    b.Property<double?>("TuesdayHours")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal?>("WednesdayHours")
+                    b.Property<double?>("WednesdayHours")
                         .HasColumnType("numeric");
 
                     b.HasKey("Id");
@@ -660,8 +660,8 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<int?>("ErrorId")
                         .HasColumnType("integer");
 
-                    b.Property<decimal?>("MinutesSpent")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<double?>("MinutesSpent")
+                        .HasColumnType("double(18,2)");
 
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)");

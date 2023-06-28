@@ -19,33 +19,33 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                 oldType: "nvarchar",
                 oldNullable: true);
 
-            migrationBuilder.AddColumn<decimal>(
+            migrationBuilder.AddColumn<double>(
                 name: "MinutesCost",
                 table: "Customer",
                 type: "numeric(18,0)",
                 nullable: false,
                 defaultValue: 0m);
 
-            migrationBuilder.AddColumn<decimal>(
+            migrationBuilder.AddColumn<double>(
                 name: "TotalCost",
                 table: "Customer",
                 type: "numeric(18,0)",
                 nullable: false,
                 defaultValue: 0m);
 
-            migrationBuilder.AddColumn<decimal>(
+            migrationBuilder.AddColumn<double>(
                 name: "TotalSales",
                 table: "Customer",
                 type: "numeric(18,0)",
                 nullable: false,
                 defaultValue: 0m);
 
-            migrationBuilder.AlterColumn<decimal>(
+            migrationBuilder.AlterColumn<double>(
                 name: "PercentWidth",
                 table: "AdvancedFindColumns",
                 type: "numeric(38,17)",
                 nullable: false,
-                oldClrType: typeof(decimal),
+                oldClrType: typeof(double),
                 oldType: "numeric(18,0)");
 
             migrationBuilder.CreateTable(
@@ -57,7 +57,7 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     CustomerId = table.Column<int>(type: "integer", nullable: false),
                     OperatingSystem = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Speed = table.Column<decimal>(type: "numeric(18,0)", nullable: true),
+                    Speed = table.Column<double>(type: "numeric(18,0)", nullable: true),
                     ScreenResolution = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     RamSize = table.Column<int>(type: "integer", nullable: true),
                     HardDriveSize = table.Column<int>(type: "integer", nullable: true),
@@ -111,12 +111,12 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                 oldType: "ntext",
                 oldNullable: true);
 
-            migrationBuilder.AlterColumn<decimal>(
+            migrationBuilder.AlterColumn<double>(
                 name: "PercentWidth",
                 table: "AdvancedFindColumns",
                 type: "numeric(18,0)",
                 nullable: false,
-                oldClrType: typeof(decimal),
+                oldClrType: typeof(double),
                 oldType: "numeric(38,17)");
         }
     }

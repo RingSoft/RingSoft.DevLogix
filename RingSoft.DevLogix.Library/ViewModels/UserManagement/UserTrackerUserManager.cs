@@ -100,7 +100,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     }
                     else
                     {
-                        result = $"{clockText} - {AppGlobals.MakeTimeSpent((decimal)timeSpan.Value.TotalMinutes)}";
+                        result = $"{clockText} - {AppGlobals.MakeTimeSpent((double)timeSpan.Value.TotalMinutes)}";
                     }
                 }
             }

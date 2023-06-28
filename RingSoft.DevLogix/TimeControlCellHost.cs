@@ -10,7 +10,7 @@ namespace RingSoft.DevLogix
 {
     public class TimeControlCellHost : DataEntryGridEditingControlHost<TimeControl>
     {
-        public decimal Minutes { get; set; }
+        public double Minutes { get; set; }
 
         public TimeControlCellHost(DataEntryGrid grid) : base(grid)
         {

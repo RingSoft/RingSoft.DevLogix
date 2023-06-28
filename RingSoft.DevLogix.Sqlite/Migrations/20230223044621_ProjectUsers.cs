@@ -16,16 +16,16 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                 {
                     ProjectId = table.Column<int>(type: "integer", nullable: false),
                     UserId = table.Column<int>(type: "integer", nullable: false),
-                    MinutesSpent = table.Column<decimal>(type: "numeric", nullable: false),
-                    Cost = table.Column<decimal>(type: "numeric", nullable: false),
+                    MinutesSpent = table.Column<double>(type: "numeric", nullable: false),
+                    Cost = table.Column<double>(type: "numeric", nullable: false),
                     IsStandard = table.Column<bool>(type: "bit", nullable: false),
-                    SundayHours = table.Column<decimal>(type: "numeric", nullable: true),
-                    MondayHours = table.Column<decimal>(type: "numeric", nullable: true),
-                    TuesdayHours = table.Column<decimal>(type: "numeric", nullable: true),
-                    WednesdayHours = table.Column<decimal>(type: "numeric", nullable: true),
-                    ThursdayHours = table.Column<decimal>(type: "numeric", nullable: true),
-                    FridayHours = table.Column<decimal>(type: "numeric", nullable: true),
-                    SaturdayHours = table.Column<decimal>(type: "numeric", nullable: true)
+                    SundayHours = table.Column<double>(type: "numeric", nullable: true),
+                    MondayHours = table.Column<double>(type: "numeric", nullable: true),
+                    TuesdayHours = table.Column<double>(type: "numeric", nullable: true),
+                    WednesdayHours = table.Column<double>(type: "numeric", nullable: true),
+                    ThursdayHours = table.Column<double>(type: "numeric", nullable: true),
+                    FridayHours = table.Column<double>(type: "numeric", nullable: true),
+                    SaturdayHours = table.Column<double>(type: "numeric", nullable: true)
                 },
                 constraints: table =>
                 {

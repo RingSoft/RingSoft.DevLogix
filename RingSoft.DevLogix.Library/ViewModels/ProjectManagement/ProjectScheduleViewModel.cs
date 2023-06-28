@@ -53,9 +53,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         }
 
 
-        private decimal _remainingHours;
+        private double _remainingHours;
 
-        public decimal RemainingHours
+        public double RemainingHours
         {
             get => _remainingHours;
             set
@@ -85,7 +85,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         }
 
 
-        public decimal RemainingMinutes
+        public double RemainingMinutes
         {
             get => RemainingHours * 60;
             private set => RemainingHours = value / 60;
@@ -192,9 +192,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             RemainingMinutes = ScheduleManager.ScheduleData.Sum(p => p.RemainingMinutes);
         }
 
-        public decimal GetMinutesForDay(DateTime date, ProjectUser projectUser)
+        public double GetMinutesForDay(DateTime date, ProjectUser projectUser)
         {
-            var result = (decimal)0;
+            var result = (double)0;
 
             switch (date.DayOfWeek)
             {
@@ -256,7 +256,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 StringField01 = ProjectName,
                 StringField02 = StartDate.FormatDateValue(DbDateTypes.DateOnly),
                 StringField03 = CalculatedDeadline.GetValueOrDefault().FormatDateValue(DbDateTypes.DateOnly),
-                NumberField01 = numberSetup.FormatValue(RemainingHours),
+                NumberField01 = numberSetup.FormatValue((decimal)RemainingHours),
             };
             headerChunk.Add(headerRow);
             PrintingInteropGlobals.HeaderProcessor.AddChunk(headerChunk, PrinterSetup.PrintingProperties);

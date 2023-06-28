@@ -17,10 +17,10 @@ namespace RingSoft.DevLogix.DataAccess.Model.QualityAssurance
 
         [Required]
         [DefaultValue(0)]
-        public decimal MinutesSpent { get; set; }
+        public double MinutesSpent { get; set; }
 
         [Required]
         [DefaultValue(0)]
-        public decimal Cost { get; set; }
+        public double Cost { get; set; }
     }
 }

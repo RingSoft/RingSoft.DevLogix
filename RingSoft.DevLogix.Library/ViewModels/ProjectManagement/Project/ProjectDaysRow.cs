@@ -9,7 +9,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public string Day { get; private set; }
 
-        public decimal WorkMinutes { get; private set; }
+        public double WorkMinutes { get; private set; }
 
         public DayType DayType { get; private set; }
 
@@ -40,7 +40,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             WorkMinutes = 0;
         }
 
-        public void SetWorkMinutes(decimal? workMinutes)
+        public void SetWorkMinutes(double? workMinutes)
         {
             if (workMinutes != null)
             {

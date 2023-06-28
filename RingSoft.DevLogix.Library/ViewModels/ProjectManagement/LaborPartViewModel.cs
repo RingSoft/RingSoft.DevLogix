@@ -26,9 +26,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
-        private decimal _minutesCost;
+        private double _minutesCost;
 
-        public decimal MinutesCost
+        public double MinutesCost
         {
             get => _minutesCost;
             set

@@ -32,15 +32,15 @@ namespace RingSoft.DevLogix.DataAccess.Model.QualityAssurance
         public DateTime? DueDate { get; set; }
 
         [Required]
-        public decimal PercentComplete { get; set; }
+        public double PercentComplete { get; set; }
 
         [Required]
         [DefaultValue(0)]
-        public decimal MinutesSpent { get; set; }
+        public double MinutesSpent { get; set; }
 
         [Required]
         [DefaultValue(0)]
-        public decimal TotalCost { get; set; }
+        public double TotalCost { get; set; }
 
         public string? Notes { get; set; }
 
@@ -110,8 +110,8 @@ namespace RingSoft.DevLogix.DataAccess.Model.QualityAssurance
 
         public virtual User User { get; set; }
 
-        public decimal TimeSpent { get; set; }
+        public double TimeSpent { get; set; }
 
-        public decimal Cost { get; set; }
+        public double Cost { get; set; }
     }
 }

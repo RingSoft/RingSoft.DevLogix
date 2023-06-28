@@ -99,7 +99,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             ViewModel.UsersGridManager.SetUserMinutes(row.WorkMinutes, row.DayType);
         }
 
-        public decimal GetStandardMinutes(DayType dayType)
+        public double GetStandardMinutes(DayType dayType)
         {
             var rows = Rows.OfType<ProjectDaysRow>();
             var rowFound = rows.FirstOrDefault(p => p.DayType == dayType);

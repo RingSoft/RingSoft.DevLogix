@@ -43,8 +43,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         public void CalculateTotals()
         {
-            var subTotal = (decimal)0;
-            var totalDiscount = (decimal)0;
+            var subTotal = (double)0;
+            var totalDiscount = (double)0;
             var rows = Rows.OfType<OrderDetailsRow>();
             foreach (var row in rows)
             {

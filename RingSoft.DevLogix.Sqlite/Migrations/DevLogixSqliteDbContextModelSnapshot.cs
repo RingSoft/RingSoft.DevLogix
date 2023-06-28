@@ -56,7 +56,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AdvancedFinds");
+                    b.ToTable("AdvancedFinds", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DbLookup.AdvancedFind.AdvancedFindColumn", b =>
@@ -105,7 +105,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasKey("AdvancedFindId", "ColumnId");
 
-                    b.ToTable("AdvancedFindColumns");
+                    b.ToTable("AdvancedFindColumns", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DbLookup.AdvancedFind.AdvancedFindFilter", b =>
@@ -175,7 +175,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("SearchForAdvancedFindId");
 
-                    b.ToTable("AdvancedFindFilters");
+                    b.ToTable("AdvancedFindFilters", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DbLookup.RecordLocking.RecordLock", b =>
@@ -197,7 +197,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasKey("Table", "PrimaryKey");
 
-                    b.ToTable("RecordLocks");
+                    b.ToTable("RecordLocks", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Customer", b =>
@@ -235,7 +235,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar");
 
-                    b.Property<decimal>("MinutesCost")
+                    b.Property<double>("MinutesCost")
                         .HasColumnType("numeric");
 
                     b.Property<string>("Notes")
@@ -254,13 +254,13 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
-                    b.Property<decimal?>("SupportCost")
+                    b.Property<double?>("SupportCost")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal?>("SupportMinutesPurchased")
+                    b.Property<double?>("SupportMinutesPurchased")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal?>("SupportMinutesSpent")
+                    b.Property<double?>("SupportMinutesSpent")
                         .HasColumnType("numeric");
 
                     b.Property<int>("TerritoryId")
@@ -269,10 +269,10 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<int>("TimeZoneId")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("TotalCost")
+                    b.Property<double>("TotalCost")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal>("TotalSales")
+                    b.Property<double>("TotalSales")
                         .HasColumnType("numeric");
 
                     b.Property<int?>("UserId")
@@ -290,7 +290,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Customer");
+                    b.ToTable("Customer", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.CustomerComputer", b =>
@@ -338,14 +338,14 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
-                    b.Property<decimal?>("Speed")
+                    b.Property<double?>("Speed")
                         .HasColumnType("numeric");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("CustomerComputer");
+                    b.ToTable("CustomerComputer", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.CustomerProduct", b =>
@@ -363,7 +363,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("CustomerProduct");
+                    b.ToTable("CustomerProduct", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Order", b =>
@@ -400,7 +400,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<int>("CustomerId")
                         .HasColumnType("integer");
 
-                    b.Property<decimal?>("Freight")
+                    b.Property<double?>("Freight")
                         .HasColumnType("numeric");
 
                     b.Property<DateTime>("OrderDate")
@@ -422,20 +422,20 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<DateTime?>("ShippedDate")
                         .HasColumnType("datetime");
 
-                    b.Property<decimal?>("SubTotal")
+                    b.Property<double?>("SubTotal")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal?>("Total")
+                    b.Property<double?>("Total")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal?>("TotalDiscount")
+                    b.Property<double?>("TotalDiscount")
                         .HasColumnType("numeric");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Order");
+                    b.ToTable("Order", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.OrderDetail", b =>
@@ -446,26 +446,26 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<int>("DetailId")
                         .HasColumnType("integer");
 
-                    b.Property<decimal?>("Discount")
+                    b.Property<double?>("Discount")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal>("ExtendedPrice")
+                    b.Property<double>("ExtendedPrice")
                         .HasColumnType("numeric");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("Quantity")
+                    b.Property<double>("Quantity")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal>("UnitPrice")
+                    b.Property<double>("UnitPrice")
                         .HasColumnType("numeric");
 
                     b.HasKey("OrderId", "DetailId");
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderDetail");
+                    b.ToTable("OrderDetail", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Territory", b =>
@@ -486,7 +486,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("SalespersonId");
 
-                    b.ToTable("Territory");
+                    b.ToTable("Territory", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.TimeZone", b =>
@@ -505,7 +505,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TimeZone");
+                    b.ToTable("TimeZone", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Department", b =>
@@ -566,7 +566,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("ErrorPassStatusId");
 
-                    b.ToTable("Departments");
+                    b.ToTable("Departments", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.DevLogixChart", b =>
@@ -582,7 +582,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DevLogixCharts");
+                    b.ToTable("DevLogixCharts", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.DevLogixChartBar", b =>
@@ -603,7 +603,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasKey("ChartId", "BarId");
 
-                    b.ToTable("DevLogixChartsBars");
+                    b.ToTable("DevLogixChartsBars", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Error", b =>
@@ -618,7 +618,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<int?>("AssignedTesterId")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("Cost")
+                    b.Property<double>("Cost")
                         .HasColumnType("numeric");
 
                     b.Property<string>("Description")
@@ -648,7 +648,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<int>("FoundVersionId")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("MinutesSpent")
+                    b.Property<double>("MinutesSpent")
                         .HasColumnType("numeric");
 
                     b.Property<int>("ProductId")
@@ -680,7 +680,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("TestingOutlineId");
 
-                    b.ToTable("Errors");
+                    b.ToTable("Errors", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ErrorDeveloper", b =>
@@ -704,7 +704,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("ErrorId");
 
-                    b.ToTable("ErrorDevelopers");
+                    b.ToTable("ErrorDevelopers", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ErrorPriority", b =>
@@ -723,7 +723,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ErrorPriorities");
+                    b.ToTable("ErrorPriorities", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ErrorQa", b =>
@@ -752,7 +752,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("TesterId");
 
-                    b.ToTable("ErrorTesters");
+                    b.ToTable("ErrorTesters", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ErrorStatus", b =>
@@ -768,7 +768,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ErrorStatuses");
+                    b.ToTable("ErrorStatuses", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Group", b =>
@@ -787,7 +787,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Groups");
+                    b.ToTable("Groups", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Product", b =>
@@ -807,7 +807,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
-                    b.Property<decimal?>("Cost")
+                    b.Property<double?>("Cost")
                         .HasColumnType("numeric");
 
                     b.Property<int>("CreateDepartmentId")
@@ -825,10 +825,10 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<string>("Notes")
                         .HasColumnType("ntext");
 
-                    b.Property<decimal?>("Price")
+                    b.Property<double?>("Price")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal?>("Revenue")
+                    b.Property<double?>("Revenue")
                         .HasColumnType("numeric");
 
                     b.HasKey("Id");
@@ -837,7 +837,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("CreateDepartmentId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProductVersion", b =>
@@ -872,7 +872,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductVersions");
+                    b.ToTable("ProductVersions", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProductVersionDepartment", b =>
@@ -890,7 +890,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("DepartmentId");
 
-                    b.ToTable("ProductVersionDepartments");
+                    b.ToTable("ProductVersionDepartments", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.LaborPart", b =>
@@ -902,7 +902,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<string>("Comment")
                         .HasColumnType("ntext");
 
-                    b.Property<decimal>("MinutesCost")
+                    b.Property<double>("MinutesCost")
                         .HasColumnType("numeric");
 
                     b.Property<string>("Name")
@@ -912,7 +912,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("LaborParts");
+                    b.ToTable("LaborParts", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.MaterialPart", b =>
@@ -924,7 +924,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<string>("Comment")
                         .HasColumnType("ntext");
 
-                    b.Property<decimal>("Cost")
+                    b.Property<double>("Cost")
                         .HasColumnType("numeric");
 
                     b.Property<string>("Name")
@@ -934,7 +934,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MaterialParts");
+                    b.ToTable("MaterialParts", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.Project", b =>
@@ -943,22 +943,22 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    b.Property<decimal?>("ContractCost")
+                    b.Property<double?>("ContractCost")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal>("Cost")
+                    b.Property<double>("Cost")
                         .HasColumnType("numeric");
 
                     b.Property<DateTime>("Deadline")
                         .HasColumnType("datetime");
 
-                    b.Property<decimal>("EstimatedCost")
+                    b.Property<double>("EstimatedCost")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal>("EstimatedMinutes")
+                    b.Property<double>("EstimatedMinutes")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal?>("FridayMinutes")
+                    b.Property<double?>("FridayMinutes")
                         .HasColumnType("numeric");
 
                     b.Property<bool>("IsBillable")
@@ -967,10 +967,10 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<int>("ManagerId")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("MinutesSpent")
+                    b.Property<double>("MinutesSpent")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal?>("MondayMinutes")
+                    b.Property<double?>("MondayMinutes")
                         .HasColumnType("numeric");
 
                     b.Property<string>("Name")
@@ -987,22 +987,22 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<int?>("ProductId")
                         .HasColumnType("integer");
 
-                    b.Property<decimal?>("SaturdayMinutes")
+                    b.Property<double?>("SaturdayMinutes")
                         .HasColumnType("numeric");
 
                     b.Property<DateTime?>("StartDateTime")
                         .HasColumnType("datetime");
 
-                    b.Property<decimal?>("SundayMinutes")
+                    b.Property<double?>("SundayMinutes")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal?>("ThursdayMinutes")
+                    b.Property<double?>("ThursdayMinutes")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal?>("TuesdayMinutes")
+                    b.Property<double?>("TuesdayMinutes")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal?>("WednesdayMinutes")
+                    b.Property<double?>("WednesdayMinutes")
                         .HasColumnType("numeric");
 
                     b.HasKey("Id");
@@ -1011,7 +1011,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Projects");
+                    b.ToTable("Projects", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectMaterial", b =>
@@ -1020,10 +1020,10 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("ActualCost")
+                    b.Property<double>("ActualCost")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal>("Cost")
+                    b.Property<double>("Cost")
                         .HasColumnType("numeric");
 
                     b.Property<bool>("IsCostEdited")
@@ -1044,7 +1044,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("ProjectMaterials");
+                    b.ToTable("ProjectMaterials", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectMaterialHistory", b =>
@@ -1053,7 +1053,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("Cost")
+                    b.Property<double>("Cost")
                         .HasColumnType("numeric");
 
                     b.Property<DateTime>("Date")
@@ -1062,7 +1062,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<int>("ProjectMaterialId")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("Quantity")
+                    b.Property<double>("Quantity")
                         .HasColumnType("numeric");
 
                     b.Property<int>("UserId")
@@ -1074,7 +1074,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ProjectMaterialHistory");
+                    b.ToTable("ProjectMaterialHistory", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectMaterialPart", b =>
@@ -1088,7 +1088,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<bool?>("CommentCrLf")
                         .HasColumnType("bit");
 
-                    b.Property<decimal?>("Cost")
+                    b.Property<double?>("Cost")
                         .HasColumnType("numeric");
 
                     b.Property<string>("Description")
@@ -1105,7 +1105,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
-                    b.Property<decimal?>("Quantity")
+                    b.Property<double?>("Quantity")
                         .HasColumnType("numeric");
 
                     b.Property<string>("RowId")
@@ -1117,7 +1117,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("MaterialPartId");
 
-                    b.ToTable("ProjectMaterialParts");
+                    b.ToTable("ProjectMaterialParts", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectTask", b =>
@@ -1126,22 +1126,22 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("Cost")
+                    b.Property<double>("Cost")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal>("EstimatedCost")
+                    b.Property<double>("EstimatedCost")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal>("HourlyRate")
+                    b.Property<double>("HourlyRate")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal>("MinutesCost")
+                    b.Property<double>("MinutesCost")
                         .HasColumnType("numeric");
 
                     b.Property<bool>("MinutesEdited")
                         .HasColumnType("bit");
 
-                    b.Property<decimal>("MinutesSpent")
+                    b.Property<double>("MinutesSpent")
                         .HasColumnType("numeric");
 
                     b.Property<string>("Name")
@@ -1152,7 +1152,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<string>("Notes")
                         .HasColumnType("ntext");
 
-                    b.Property<decimal>("PercentComplete")
+                    b.Property<double>("PercentComplete")
                         .HasColumnType("numeric");
 
                     b.Property<int>("ProjectId")
@@ -1167,7 +1167,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ProjectTasks");
+                    b.ToTable("ProjectTasks", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectTaskDependency", b =>
@@ -1182,7 +1182,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("DependsOnProjectTaskId");
 
-                    b.ToTable("ProjectTaskDependency");
+                    b.ToTable("ProjectTaskDependency", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectTaskLaborPart", b =>
@@ -1209,17 +1209,17 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<byte>("LineType")
                         .HasColumnType("smallint");
 
-                    b.Property<decimal>("MinutesCost")
+                    b.Property<double>("MinutesCost")
                         .HasColumnType("numeric");
 
                     b.Property<string>("ParentRowId")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
-                    b.Property<decimal>("PercentComplete")
+                    b.Property<double>("PercentComplete")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal?>("Quantity")
+                    b.Property<double?>("Quantity")
                         .HasColumnType("numeric");
 
                     b.Property<string>("RowId")
@@ -1231,7 +1231,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("LaborPartId");
 
-                    b.ToTable("ProjectTaskLaborParts");
+                    b.ToTable("ProjectTaskLaborParts", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectUser", b =>
@@ -1242,41 +1242,41 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("Cost")
+                    b.Property<double>("Cost")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal?>("FridayMinutes")
+                    b.Property<double?>("FridayMinutes")
                         .HasColumnType("numeric");
 
                     b.Property<bool>("IsStandard")
                         .HasColumnType("bit");
 
-                    b.Property<decimal>("MinutesSpent")
+                    b.Property<double>("MinutesSpent")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal?>("MondayMinutes")
+                    b.Property<double?>("MondayMinutes")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal?>("SaturdayMinutes")
+                    b.Property<double?>("SaturdayMinutes")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal?>("SundayMinutes")
+                    b.Property<double?>("SundayMinutes")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal?>("ThursdayMinutes")
+                    b.Property<double?>("ThursdayMinutes")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal?>("TuesdayMinutes")
+                    b.Property<double?>("TuesdayMinutes")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal?>("WednesdayMinutes")
+                    b.Property<double?>("WednesdayMinutes")
                         .HasColumnType("numeric");
 
                     b.HasKey("ProjectId", "UserId");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ProjectUsers");
+                    b.ToTable("ProjectUsers", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.ErrorUser", b =>
@@ -1287,17 +1287,17 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("Cost")
+                    b.Property<double>("Cost")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal>("MinutesSpent")
+                    b.Property<double>("MinutesSpent")
                         .HasColumnType("numeric");
 
                     b.HasKey("ErrorId", "UserId");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ErrorUsers");
+                    b.ToTable("ErrorUsers", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingOutline", b =>
@@ -1315,7 +1315,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<DateTime?>("DueDate")
                         .HasColumnType("datetime");
 
-                    b.Property<decimal>("MinutesSpent")
+                    b.Property<double>("MinutesSpent")
                         .HasColumnType("numeric");
 
                     b.Property<string>("Name")
@@ -1326,13 +1326,13 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<string>("Notes")
                         .HasColumnType("ntext");
 
-                    b.Property<decimal>("PercentComplete")
+                    b.Property<double>("PercentComplete")
                         .HasColumnType("numeric");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("TotalCost")
+                    b.Property<double>("TotalCost")
                         .HasColumnType("numeric");
 
                     b.HasKey("Id");
@@ -1343,7 +1343,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("TestingOutlines");
+                    b.ToTable("TestingOutlines", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingOutlineCost", b =>
@@ -1354,17 +1354,17 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("Cost")
+                    b.Property<double>("Cost")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal>("TimeSpent")
+                    b.Property<double>("TimeSpent")
                         .HasColumnType("numeric");
 
                     b.HasKey("TestingOutlineId", "UserId");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("TestingOutlineCosts");
+                    b.ToTable("TestingOutlineCosts", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingOutlineDetails", b =>
@@ -1395,7 +1395,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("TestingTemplateId");
 
-                    b.ToTable("TestingOutlineDetails");
+                    b.ToTable("TestingOutlineDetails", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingOutlineTemplate", b =>
@@ -1410,7 +1410,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("TestingTemplateId");
 
-                    b.ToTable("TestingOutlineTemplates");
+                    b.ToTable("TestingOutlineTemplates", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingTemplate", b =>
@@ -1434,7 +1434,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("BaseTemplateId");
 
-                    b.ToTable("TestingTemplates");
+                    b.ToTable("TestingTemplates", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingTemplateItem", b =>
@@ -1448,7 +1448,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasKey("TestingTemplateId", "Description");
 
-                    b.ToTable("TestingTemplateItems");
+                    b.ToTable("TestingTemplateItems", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.SystemMaster", b =>
@@ -1459,7 +1459,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasKey("OrganizationName");
 
-                    b.ToTable("SystemMaster");
+                    b.ToTable("SystemMaster", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.SystemPreferences", b =>
@@ -1470,7 +1470,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SystemPreferences");
+                    b.ToTable("SystemPreferences", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.SystemPreferencesHolidays", b =>
@@ -1488,7 +1488,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasKey("SystemPreferencesId", "Date");
 
-                    b.ToTable("SystemPreferencesHolidays");
+                    b.ToTable("SystemPreferencesHolidays", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.TimeClock", b =>
@@ -1506,7 +1506,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<int?>("ErrorId")
                         .HasColumnType("integer");
 
-                    b.Property<decimal?>("MinutesSpent")
+                    b.Property<double?>("MinutesSpent")
                         .HasColumnType("numeric");
 
                     b.Property<string>("Name")
@@ -1543,7 +1543,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("TimeClocks");
+                    b.ToTable("TimeClocks", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.User", b =>
@@ -1552,7 +1552,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("BillableProjectsMinutesSpent")
+                    b.Property<double>("BillableProjectsMinutesSpent")
                         .HasColumnType("numeric");
 
                     b.Property<DateTime?>("ClockDate")
@@ -1571,10 +1571,10 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar");
 
-                    b.Property<decimal>("ErrorsMinutesSpent")
+                    b.Property<double>("ErrorsMinutesSpent")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal>("HourlyRate")
+                    b.Property<double>("HourlyRate")
                         .HasColumnType("numeric");
 
                     b.Property<string>("Name")
@@ -1582,7 +1582,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
-                    b.Property<decimal>("NonBillableProjectsMinutesSpent")
+                    b.Property<double>("NonBillableProjectsMinutesSpent")
                         .HasColumnType("numeric");
 
                     b.Property<string>("Notes")
@@ -1606,7 +1606,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<int?>("SupervisorId")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("TestingOutlinesMinutesSpent")
+                    b.Property<double>("TestingOutlinesMinutesSpent")
                         .HasColumnType("numeric");
 
                     b.HasKey("Id");
@@ -1617,7 +1617,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("SupervisorId");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.UserManagement.UserTimeOff", b =>
@@ -1641,7 +1641,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasKey("UserId", "RowId");
 
-                    b.ToTable("UsersTimeOff");
+                    b.ToTable("UsersTimeOff", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.UserManagement.UserTracker", b =>
@@ -1655,7 +1655,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
-                    b.Property<decimal?>("RedMinutes")
+                    b.Property<double?>("RedMinutes")
                         .HasColumnType("numeric");
 
                     b.Property<int>("RefreshInterval")
@@ -1664,12 +1664,12 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<byte>("RefreshType")
                         .HasColumnType("smallint");
 
-                    b.Property<decimal?>("YellowMinutes")
+                    b.Property<double?>("YellowMinutes")
                         .HasColumnType("numeric");
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserTracker");
+                    b.ToTable("UserTracker", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.UserManagement.UserTrackerUser", b =>
@@ -1684,7 +1684,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserTrackerUsers");
+                    b.ToTable("UserTrackerUsers", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.UsersGroup", b =>
@@ -1699,7 +1699,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("UsersGroups");
+                    b.ToTable("UsersGroups", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DbLookup.AdvancedFind.AdvancedFindColumn", b =>

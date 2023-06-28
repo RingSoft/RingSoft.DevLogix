@@ -18,8 +18,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "nvarchar", maxLength: 50, nullable: false),
                     ProjectId = table.Column<int>(type: "integer", nullable: false),
-                    Cost = table.Column<decimal>(type: "numeric", nullable: false),
-                    ActualCost = table.Column<decimal>(type: "numeric", nullable: false),
+                    Cost = table.Column<double>(type: "numeric", nullable: false),
+                    ActualCost = table.Column<double>(type: "numeric", nullable: false),
                     Notes = table.Column<string>(type: "ntext", nullable: true)
                 },
                 constraints: table =>

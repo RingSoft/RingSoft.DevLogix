@@ -15,12 +15,12 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                 table: "AdvancedFindFilters",
                 newName: "DateFilterType");
 
-            migrationBuilder.AlterColumn<decimal>(
+            migrationBuilder.AlterColumn<double>(
                 name: "PercentWidth",
                 table: "AdvancedFindColumns",
                 type: "numeric(38,17)",
                 nullable: false,
-                oldClrType: typeof(decimal),
+                oldClrType: typeof(double),
                 oldType: "numeric(18,0)");
         }
 
@@ -32,12 +32,12 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                 table: "AdvancedFindFilters",
                 newName: "DateValueType");
 
-            migrationBuilder.AlterColumn<decimal>(
+            migrationBuilder.AlterColumn<double>(
                 name: "PercentWidth",
                 table: "AdvancedFindColumns",
                 type: "numeric(18,0)",
                 nullable: false,
-                oldClrType: typeof(decimal),
+                oldClrType: typeof(double),
                 oldType: "numeric(38,17)");
         }
     }

@@ -10,12 +10,12 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<decimal>(
+            migrationBuilder.AlterColumn<double>(
                 name: "PercentWidth",
                 table: "AdvancedFindColumns",
                 type: "numeric(38,17)",
                 nullable: false,
-                oldClrType: typeof(decimal),
+                oldClrType: typeof(double),
                 oldType: "numeric(18,0)");
 
             migrationBuilder.CreateTable(
@@ -27,8 +27,8 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     Name = table.Column<string>(type: "nvarchar", nullable: false),
                     ProjectId = table.Column<int>(type: "integer", nullable: false),
                     UserId = table.Column<int>(type: "integer", nullable: false),
-                    MinutesCost = table.Column<decimal>(type: "numeric(18,0)", nullable: false),
-                    PercentComplete = table.Column<decimal>(type: "numeric(18,0)", nullable: false),
+                    MinutesCost = table.Column<double>(type: "numeric(18,0)", nullable: false),
+                    PercentComplete = table.Column<double>(type: "numeric(18,0)", nullable: false),
                     Notes = table.Column<string>(type: "ntext", nullable: true)
                 },
                 constraints: table =>
@@ -65,12 +65,12 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
             migrationBuilder.DropTable(
                 name: "ProjectTasks");
 
-            migrationBuilder.AlterColumn<decimal>(
+            migrationBuilder.AlterColumn<double>(
                 name: "PercentWidth",
                 table: "AdvancedFindColumns",
                 type: "numeric(18,0)",
                 nullable: false,
-                oldClrType: typeof(decimal),
+                oldClrType: typeof(double),
                 oldType: "numeric(38,17)");
         }
     }

@@ -98,9 +98,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             set => RefreshRateItem = RefreshRateSetup.GetItem((int)value);
         }
 
-        private decimal? _redAlertMinutes;
+        private double? _redAlertMinutes;
 
-        public decimal? RedAlertMinutes
+        public double? RedAlertMinutes
         {
             get => _redAlertMinutes;
             set
@@ -117,9 +117,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
         }
 
-        private decimal? _yellowAlertMinutes;
+        private double? _yellowAlertMinutes;
 
-        public decimal? YellowAlertMinutes
+        public double? YellowAlertMinutes
         {
             get => _yellowAlertMinutes;
             set

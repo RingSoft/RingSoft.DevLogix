@@ -20,7 +20,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             MaterialPartAutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.MaterialPartLookup);
         }
 
-        public override decimal GetExtendedCost()
+        public override double GetExtendedCost()
         {
             return 0;
         }

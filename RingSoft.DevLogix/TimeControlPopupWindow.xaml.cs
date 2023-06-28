@@ -20,7 +20,7 @@ namespace RingSoft.DevLogix
     /// </summary>
     public partial class TimeControlPopupWindow : ITimeControlPopupView
     {
-        public TimeControlPopupWindow(decimal minutes)
+        public TimeControlPopupWindow(double minutes)
         {
             InitializeComponent();
             Loaded += (sender, args) =>

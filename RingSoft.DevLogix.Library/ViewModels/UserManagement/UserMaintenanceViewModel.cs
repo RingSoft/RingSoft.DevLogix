@@ -60,13 +60,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
     {
         public User User { get; private set; }
 
-        public decimal BillableProjects { get; private set; }
+        public double BillableProjects { get; private set; }
 
-        public decimal NonBillableProjects { get; private set; }
+        public double NonBillableProjects { get; private set; }
 
-        public decimal Errors { get; private set; }
+        public double Errors { get; private set; }
 
-        public decimal TestingOutlines { get; private set; }
+        public double TestingOutlines { get; private set; }
         public BillabilityData(User user)
         {
             User = user;
@@ -80,10 +80,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                                + User.ErrorsMinutesSpent
                                + User.TestingOutlinesMinutesSpent;
 
-            var billableProjectsBillability = (decimal)0;
-            var nonBillableProjectsBillability = (decimal)0;
-            var errorsBillability = (decimal)0;
-            var testingBillability = (decimal)0;
+            var billableProjectsBillability = (double)0;
+            var nonBillableProjectsBillability = (double)0;
+            var errorsBillability = (double)0;
+            var testingBillability = (double)0;
 
             if (totalMinutes > 0)
             {
@@ -274,9 +274,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
         }
 
-        private decimal _hourlyRate;
+        private double _hourlyRate;
 
-        public decimal HourlyRate
+        public double HourlyRate
         {
             get => _hourlyRate;
             set
@@ -1075,10 +1075,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     e.HeaderRow.StringField16 = AppGlobals.MakeTimeSpent(user.NonBillableProjectsMinutesSpent);
                     e.HeaderRow.StringField17 = AppGlobals.MakeTimeSpent(user.ErrorsMinutesSpent);
                     e.HeaderRow.StringField18 = AppGlobals.MakeTimeSpent(user.TestingOutlinesMinutesSpent);
-                    e.HeaderRow.NumberField15 = percentSetup.FormatValue(billabilityData.BillableProjects);
-                    e.HeaderRow.NumberField16 = percentSetup.FormatValue(billabilityData.NonBillableProjects);
-                    e.HeaderRow.NumberField17 = percentSetup.FormatValue(billabilityData.Errors);
-                    e.HeaderRow.NumberField18 = percentSetup.FormatValue(billabilityData.TestingOutlines);
+                    e.HeaderRow.NumberField15 = percentSetup.FormatValue((decimal)billabilityData.BillableProjects);
+                    e.HeaderRow.NumberField16 = percentSetup.FormatValue((decimal)billabilityData.NonBillableProjects);
+                    e.HeaderRow.NumberField17 = percentSetup.FormatValue((decimal)billabilityData.Errors);
+                    e.HeaderRow.NumberField18 = percentSetup.FormatValue((decimal)billabilityData.TestingOutlines);
 
                     foreach (var userTimeOff in user.UserTimeOff)
                     {

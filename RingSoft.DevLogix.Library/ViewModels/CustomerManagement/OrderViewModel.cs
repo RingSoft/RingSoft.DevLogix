@@ -231,9 +231,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         }
 
 
-        private decimal _subTotal;
+        private double _subTotal;
 
-        public decimal SubTotal
+        public double SubTotal
         {
             get => _subTotal;
             set
@@ -246,9 +246,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
         }
 
-        private decimal _freight;
+        private double _freight;
 
-        public decimal Freight
+        public double Freight
         {
             get => _freight;
             set
@@ -265,9 +265,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
         }
 
-        private decimal _totalDiscount;
+        private double _totalDiscount;
 
-        public decimal TotalDiscount
+        public double TotalDiscount
         {
             get => _totalDiscount;
             set
@@ -280,9 +280,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
         }
 
-        private decimal _total;
+        private double _total;
 
-        public decimal Total
+        public double Total
         {
             get => _total;
             set
@@ -628,8 +628,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 e.HeaderRow.StringField05 = order.Region;
                 e.HeaderRow.StringField06 = order.PostalCode;
                 e.HeaderRow.StringField07 = order.Country;
-                e.HeaderRow.NumberField01 = currencySetup.FormatValue(order.SubTotal);
-                e.HeaderRow.NumberField02 = currencySetup.FormatValue(order.Total);
+                e.HeaderRow.NumberField01 = currencySetup.FormatValue((decimal)order.SubTotal);
+                e.HeaderRow.NumberField02 = currencySetup.FormatValue((decimal)order.Total);
                 var detailsChunk = new List<PrintingInputDetailsRow>();
                 foreach (var detail in order.Details)
                 {
@@ -637,8 +637,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                     detailRow.HeaderRowKey = e.HeaderRow.RowKey;
                     detailRow.TablelId = 1;
                     detailRow.StringField01 = detail.Product.Description;
-                    detailRow.NumberField01 = qtySetup.FormatValue(detail.Quantity);
-                    detailRow.NumberField02 = currencySetup.FormatValue(detail.ExtendedPrice);
+                    detailRow.NumberField01 = qtySetup.FormatValue((decimal)detail.Quantity);
+                    detailRow.NumberField02 = currencySetup.FormatValue((decimal)detail.ExtendedPrice);
                     detailsChunk.Add(detailRow);
                 }
 

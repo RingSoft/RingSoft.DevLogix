@@ -19,7 +19,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         }
 
         public override LaborPartLineTypes LaborPartLineType => LaborPartLineTypes.NewRow;
-        public override decimal GetExtendedMinutesCost()
+        public override double GetExtendedMinutesCost()
         {
             return 0;
         }

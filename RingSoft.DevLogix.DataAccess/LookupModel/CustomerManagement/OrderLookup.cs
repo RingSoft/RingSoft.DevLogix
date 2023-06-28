@@ -10,7 +10,7 @@ namespace RingSoft.DevLogix.DataAccess.LookupModel.CustomerManagement
 
         public DateTime OrderDate { get; set; }
 
-        public decimal Total { get; set; }
+        public double Total { get; set; }
     }
 
     public class OrderDetailLookup

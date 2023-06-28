@@ -10,12 +10,12 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<decimal>(
+            migrationBuilder.AlterColumn<double>(
                 name: "PercentWidth",
                 table: "AdvancedFindColumns",
                 type: "numeric(38,17)",
                 nullable: false,
-                oldClrType: typeof(decimal),
+                oldClrType: typeof(double),
                 oldType: "numeric(18,0)");
 
             migrationBuilder.CreateTable(
@@ -49,11 +49,11 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     Phone = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     TimeZoneId = table.Column<int>(type: "integer", nullable: false),
                     AssignedUserId = table.Column<int>(type: "integer", nullable: false),
-                    SupportMinutesPurchased = table.Column<decimal>(type: "numeric(18,0)", nullable: true),
-                    SupportMinutesSpent = table.Column<decimal>(type: "numeric(18,0)", nullable: true),
-                    SupportCost = table.Column<decimal>(type: "numeric(18,0)", nullable: true),
-                    SalesMinutesSpent = table.Column<decimal>(type: "numeric(18,0)", nullable: true),
-                    SalesCost = table.Column<decimal>(type: "numeric(18,0)", nullable: true),
+                    SupportMinutesPurchased = table.Column<double>(type: "numeric(18,0)", nullable: true),
+                    SupportMinutesSpent = table.Column<double>(type: "numeric(18,0)", nullable: true),
+                    SupportCost = table.Column<double>(type: "numeric(18,0)", nullable: true),
+                    SalesMinutesSpent = table.Column<double>(type: "numeric(18,0)", nullable: true),
+                    SalesCost = table.Column<double>(type: "numeric(18,0)", nullable: true),
                     Notes = table.Column<string>(type: "nvarchar", nullable: true)
                 },
                 constraints: table =>
@@ -93,12 +93,12 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
             migrationBuilder.DropTable(
                 name: "TimeZone");
 
-            migrationBuilder.AlterColumn<decimal>(
+            migrationBuilder.AlterColumn<double>(
                 name: "PercentWidth",
                 table: "AdvancedFindColumns",
                 type: "numeric(18,0)",
                 nullable: false,
-                oldClrType: typeof(decimal),
+                oldClrType: typeof(double),
                 oldType: "numeric(38,17)");
         }
     }

@@ -20,14 +20,14 @@ namespace RingSoft.DevLogix.DataAccess.Model.ProjectManagement
         public virtual Project Project { get; set; }
 
         [Required]
-        public decimal Cost { get; set; }
+        public double Cost { get; set; }
 
         [Required]
         [DefaultValue(false)]
         public bool IsCostEdited { get; set; }
 
         [Required]
-        public decimal ActualCost { get; set; }
+        public double ActualCost { get; set; }
 
         public string? Notes { get; set; }
 

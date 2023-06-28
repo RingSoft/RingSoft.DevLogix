@@ -88,9 +88,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
-        private decimal _contractCost;
+        private double _contractCost;
 
-        public decimal ContractCost
+        public double ContractCost
         {
             get => _contractCost;
             set
@@ -119,9 +119,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
-        private decimal _totalCost;
+        private double _totalCost;
 
-        public decimal TotalCost
+        public double TotalCost
         {
             get => _totalCost;
             set
@@ -418,7 +418,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public RelayCommand MaterialsAddModifyCommand { get; set; }
 
-        public decimal MinutesSpent { get; set; }
+        public double MinutesSpent { get; set; }
 
         public ProjectTotalsRow ActualRow { get; private set; }
 
@@ -770,7 +770,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                         project.Cost = 0;
                         foreach (var user in project.ProjectUsers)
                         {
-                            decimal? totalMinutesSpent = null;
+                            double? totalMinutesSpent = null;
                             totalMinutesSpent = timeClocksTable
                                 .Include(p => p.ProjectTask)
                                 .ThenInclude(p => p.Project)
@@ -890,10 +890,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             var context = AppGlobals.DataRepository.GetDataContext();
             var table = context.GetTable<ProjectTask>();
             var tasks = table.Where(p => p.ProjectId == Id);
-            var estimatedMinutes = (decimal)0;
-            var estimatedCost = (decimal)0;
-            var remainingMinutes = (decimal)0;
-            var remainingCost = (decimal)0;
+            var estimatedMinutes = (double)0;
+            var estimatedCost = (double)0;
+            var remainingMinutes = (double)0;
+            var remainingCost = (double)0;
             foreach (var task in tasks)
             {
                 estimatedMinutes += task.MinutesCost;

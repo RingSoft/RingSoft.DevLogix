@@ -219,7 +219,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
             base.SaveToEntity(entity, rowIndex);
         }
-        public override decimal GetExtendedCost()
+        public override double GetExtendedCost()
         {
             return 0;
         }

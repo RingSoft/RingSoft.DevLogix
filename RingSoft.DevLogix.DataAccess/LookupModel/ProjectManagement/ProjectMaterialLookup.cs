@@ -4,8 +4,8 @@
     {
         public string Name { get; set; }
 
-        public decimal Cost { get; set; }
+        public double Cost { get; set; }
 
-        public decimal ActualCost { get; set; }
+        public double ActualCost { get; set; }
     }
 }
