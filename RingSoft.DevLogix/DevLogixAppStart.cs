@@ -14,6 +14,7 @@ using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DevLogix.CustomerManagement;
+using RingSoft.DevLogix.DataAccess;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.ProjectManagement;
@@ -123,6 +124,13 @@ namespace RingSoft.DevLogix
             WindowRegistry.RegisterWindow<OrderMaintenanceWindow>(AppGlobals.LookupContext.OrderDetail);
             WindowRegistry.RegisterWindow<CustomerComputerMaintenanceWindow>(AppGlobals.LookupContext.CustomerComputer);
 
+            AppGlobals.LookupContext.FormatSearchForEvent += (sender, args) =>
+            {
+                if (args.SearchForHostId == DevLogixLookupContext.TimeSpentHostId)
+                {
+                    args.Value = AppGlobals.MakeTimeSpent(args.RawValue.ToDecimal());
+                }
+            };
             AppGlobals.LookupContext.CanProcessTableEvent += (sender, args) =>
             {
                 if (!args.TableDefinition.HasRight(RightTypes.AllowView))
