@@ -153,12 +153,13 @@ namespace RingSoft.DevLogix
                             var field = AppGlobals.LookupContext.Users
                                 .GetFieldDefinition(p => p.Id);
                             lookupToCheck.FilterDefinition.AddFixedFilter(field, Conditions.Equals, masterUser.Id);
-                            var lookupUi = new LookupUserInterface()
-                            {
-                                PageSize = 10,
-                            };
-                            var lookupData = new LookupDataBase(lookupToCheck, lookupUi);
-                            var count = lookupData.GetRecordCountWait();
+                            //var lookupUi = new LookupUserInterface()
+                            //{
+                            //    PageSize = 10,
+                            //};
+                            var lookupData =
+                                lookupToCheck.TableDefinition.LookupDefinition.GetLookupDataMaui(lookupToCheck, false);
+                            var count = lookupData.GetRecordCount();
                             if (count > 0)
                             {
                                 args.AllowDelete = false;

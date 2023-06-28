@@ -782,7 +782,7 @@ namespace RingSoft.DevLogix.DataAccess
 
             TestingOutlineDetails.PriorityLevel = 500;
 
-            Errors.PriorityLevel = 400;
+            Errors.PriorityLevel = 450;
             Errors.GetFieldDefinition(p => p.ErrorDate)
                 .HasDateType(DbDateTypes.DateTime)
                 .DoConvertToLocalTime();

@@ -29,7 +29,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         public DevLogixChartBar ChartBar { get; private set; }
 
-        public LookupDataBase LookupData { get; private set; }
+        public LookupDataMauiBase LookupData { get; private set; }
 
         public int Count { get; private set; }
 
@@ -48,7 +48,8 @@ namespace RingSoft.DevLogix.Library.ViewModels
                 PageSize = 10,
                 SearchType = LookupSearchTypes.Equals
             };
-            LookupData = new LookupDataBase(LookupDefinition, lookupControl);
+            //LookupData = new LookupDataBase(LookupDefinition, lookupControl);
+            LookupData = LookupDefinition.TableDefinition.LookupDefinition.GetLookupDataMaui(LookupDefinition, false);
 
             LookupRefresher.SetAlertLevelEvent += (sender, args) =>
             {
@@ -66,7 +67,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         private void GetRecordCount()
         {
-            Count = LookupData.GetRecordCountWait();
+            Count = LookupData.GetRecordCount();
             if (LookupRefresher.RefreshRate != RefreshRate.None)
             {
                 LookupRefresher.UpdateRecordCount(Count);
