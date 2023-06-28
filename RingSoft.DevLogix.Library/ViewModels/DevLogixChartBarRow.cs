@@ -48,6 +48,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         public override void SetCellValue(DataEntryGridEditingCellProps value)
         {
+            var alwaysUpdate = false;
             var column = (ChartBarColumns)value.ColumnId;
 
             switch (column)
@@ -55,6 +56,18 @@ namespace RingSoft.DevLogix.Library.ViewModels
                 case ChartBarColumns.AdvFind:
                     if (value is DataEntryGridAutoFillCellProps autoFillCellProps)
                     {
+                        if (AutoFillValue == null)
+                        {
+                            alwaysUpdate = true;
+                        }
+                        else
+                        {
+                            if (!autoFillCellProps.AutoFillValue.PrimaryKeyValue
+                                    .IsEqualTo(AutoFillValue.PrimaryKeyValue))
+                            {
+                                alwaysUpdate = true;
+                            }
+                        }
                         AutoFillValue = autoFillCellProps.AutoFillValue;
                         if (Name.IsNullOrEmpty() && AutoFillValue.IsValid())
                         {
@@ -72,7 +85,11 @@ namespace RingSoft.DevLogix.Library.ViewModels
                     throw new ArgumentOutOfRangeException();
             }
             IsNew = false;
-            Manager.ViewModel.RefreshChart();
+            if (alwaysUpdate)
+            {
+                Manager.ViewModel.RefreshChart();
+            }
+
             base.SetCellValue(value);
         }
 
