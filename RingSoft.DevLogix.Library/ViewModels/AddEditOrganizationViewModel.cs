@@ -182,16 +182,19 @@ namespace RingSoft.DevLogix.Library.ViewModels
                 case DbPlatforms.Sqlite:
                     if (DbPlatform == DbPlatforms.SqlServer)
                     {
-                        var databaseList = new List<string>();
-                        var getListResults = destinationProcessor.GetListOfDatabases();
-                        if (getListResults.ResultCode == GetDataResultCodes.Success)
-                        {
-                            foreach (DataRow dataRow in getListResults.DataSet.Tables[0].Rows)
-                            {
-                                databaseList.Add(
-                                    dataRow.GetRowValue(getListResults.DataSet.Tables[0].Columns[0].ColumnName));
-                            }
-                        }
+                        var efContext = SystemGlobals.DataRepository.GetDataContext(destinationProcessor);
+                        var sourceList = efContext.GetListOfDatabases(destinationProcessor);
+                        var databaseList = new List<string>(sourceList);
+                        //var getListResults = destinationProcessor.GetListOfDatabases();
+                        
+                        //if (getListResults.ResultCode == GetDataResultCodes.Success)
+                        //{
+                        //    foreach (DataRow dataRow in getListResults.DataSet.Tables[0].Rows)
+                        //    {
+                        //        databaseList.Add(
+                        //            dataRow.GetRowValue(getListResults.DataSet.Tables[0].Columns[0].ColumnName));
+                        //    }
+                        //}
                         //var databaseExists =
                         //    databaseList.Contains(SqlServerLoginViewModel.Database);
 

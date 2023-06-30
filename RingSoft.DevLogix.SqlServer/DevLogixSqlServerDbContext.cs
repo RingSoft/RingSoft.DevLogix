@@ -61,6 +61,21 @@ namespace RingSoft.DevLogix.SqlServer
 
         public bool IsDesignTime { get; set; }
 
+        private static string? _connectionString;
+        public static string? ConnectionString
+        {
+            get
+            {
+                if (_connectionString == null)
+                {
+                    return _lookupContext.SqlServerDataProcessor.ConnectionString;
+                }
+                return _connectionString;
+            }
+            set { _connectionString = value; }
+        }
+
+
         private static DevLogixLookupContext _lookupContext;
 
         public DevLogixSqlServerDbContext()
@@ -88,7 +103,7 @@ namespace RingSoft.DevLogix.SqlServer
                 optionsBuilder.UseSqlServer(sqlProcessor.ConnectionString);
             }
             else
-                optionsBuilder.UseSqlServer(_lookupContext.SqlServerDataProcessor.ConnectionString);
+                optionsBuilder.UseSqlServer(ConnectionString);
 
             base.OnConfiguring(optionsBuilder);
         }
@@ -110,6 +125,11 @@ namespace RingSoft.DevLogix.SqlServer
         public override DbContextEfCore GetNewDbContextEfCore()
         {
             return new DevLogixSqlServerDbContext();
+        }
+
+        protected override void SetConnectionString(string? connectionString)
+        {
+            ConnectionString = connectionString;
         }
     }
 }
