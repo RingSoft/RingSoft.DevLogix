@@ -91,12 +91,7 @@
 
                 <ac:DbMaintenanceButton x:Name="ChartButton" Content="C_hart" ImageSource="{StaticResource ChartImage}" Command="{Binding ChartCommand}"/>
 
-                <ac:DbMaintenanceButton x:Name="UpgradeButton" Content="_Upgrade Version" ImageSource="{StaticResource AfUpImage}" Command="{Binding UpgradeCommand}"/>
-
-                <ac:DbMaintenanceButton x:Name="AboutButton" Content="About DevLogix" ImageSource="{StaticResource GearsImage}" Command="{Binding AboutCommand}"/>
-
-
-			</StackPanel>
+            </StackPanel>
 			<StatusBar DockPanel.Dock="Bottom" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="Transparent">
 
                 <Label Content="Organization"/>

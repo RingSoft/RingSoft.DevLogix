@@ -766,9 +766,8 @@ namespace RingSoft.DevLogix.DataAccess
             ProductVersions.GetFieldDefinition(p => p.ArchiveDateTime)
                 .HasDateType(DbDateTypes.DateTime)
                 .DoConvertToLocalTime();
-
             ProductVersions.GetFieldDefinition(p => p.VersionDate)
-                .HasDateType(DbDateTypes.DateTime)
+                .HasDateType(DbDateTypes.Millisecond)
                 .DoConvertToLocalTime();
 
             ProductVersionDepartments.PriorityLevel = 500;

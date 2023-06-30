@@ -482,14 +482,27 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             Id = newEntity.Id;
             if (timeClock.MinutesSpent != null) 
                 OriginalMinutesSpent = timeClock.MinutesSpent.Value;
-            if (!timeClock.PunchOutDate.HasValue)
+            EnablePunchOut(timeClock);
+            KeyAutoFillValue = timeClock.GetAutoFillValue();
+            return timeClock;
+        }
+
+        private void EnablePunchOut(TimeClock timeClock)
+        {
+            if (timeClock.PunchOutDate.HasValue)
+            {
+                PunchOutCommand.IsEnabled = false;
+            }
+            else
             {
                 if (timeClock.UserId == AppGlobals.LoggedInUser.Id)
                 {
+                    PunchOutCommand.IsEnabled = true;
                     EnablePunchOutDate();
                 }
                 else if (timeClock.User.IsSupervisor())
                 {
+                    PunchOutCommand.IsEnabled = true;
                     EnablePunchOutDate();
                 }
                 else
@@ -497,8 +510,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     PunchOutCommand.IsEnabled = false;
                 }
             }
-            KeyAutoFillValue = timeClock.GetAutoFillValue();
-            return timeClock;
         }
 
         private void EnablePunchOutDate()
@@ -547,6 +558,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             {
                 PunchIn(false);
             }
+
+            EnablePunchOut(entity);
+
 
             Notes = entity.Notes;
             IsEdited = entity.AreDatesEdited;
@@ -884,6 +898,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         protected override bool DeleteEntity()
         {
+            if (Id == AppGlobals.MainViewModel.ActiveTimeClockId)
+            {
+                AppGlobals.MainViewModel.SetupTimer(null);
+                StopTimer();
+            }
+
             var context = AppGlobals.DataRepository.GetDataContext();
             var timeClock = context.GetTable<TimeClock>().FirstOrDefault(p => p.Id == Id);
             var result = context.DeleteEntity(timeClock, "Deleting Time Clock");
@@ -917,6 +937,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 if (SaveEntity(timeClock))
                 {
                     var primaryKey = TableDefinition.GetPrimaryKeyValueFromEntity(timeClock);
+                    SelectPrimaryKey(primaryKey);
                     GblMethods.DoRecordLock(primaryKey);
                     LockDate = DateTime.Now;
                     
@@ -1002,9 +1023,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
 
             var elapsedTime = string.Empty;
+            
             if (PunchOutDate.HasValue)
             {
-                PunchOutCommand.IsEnabled = false;
                 if (!fromPunchIn)
                 {
                     PunchOutSave(false);

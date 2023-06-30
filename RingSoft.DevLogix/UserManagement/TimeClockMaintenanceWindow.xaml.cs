@@ -156,14 +156,6 @@ namespace RingSoft.DevLogix.UserManagement
                 NotesControl.TextBox.Focus();
                 NotesControl.MaxWidth = NotesControl.ActualWidth;
                 NotesControl.MaxHeight = NotesControl.ActualHeight;
-
-                NotesControl.TextBox.KeyDown += (sender, args) =>
-                {
-                    if (NotesControl.TextBox.Text.IsNullOrEmpty())
-                    {
-                        NotesControl.TextBox.SelectionLength = 0;
-                    }
-                };
             };
 
             Closed += (sender, args) => { _isActive = false; };

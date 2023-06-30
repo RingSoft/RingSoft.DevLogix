@@ -194,15 +194,15 @@ namespace RingSoft.DevLogix
                     });
                 }
 
-                if (AppGlobals.LookupContext.CustomerComputer.HasRight(RightTypes.AllowView))
-                {
-                    menuItem.Items.Add(new MenuItem()
-                    {
-                        Header = "Add/Edit C_ustomer Computers...",
-                        Command = ViewModel.ShowMaintenanceWindowCommand,
-                        CommandParameter = AppGlobals.LookupContext.CustomerComputer,
-                    });
-                }
+                //if (AppGlobals.LookupContext.CustomerComputer.HasRight(RightTypes.AllowView))
+                //{
+                //    menuItem.Items.Add(new MenuItem()
+                //    {
+                //        Header = "Add/Edit C_ustomer Computers...",
+                //        Command = ViewModel.ShowMaintenanceWindowCommand,
+                //        CommandParameter = AppGlobals.LookupContext.CustomerComputer,
+                //    });
+                //}
             }
         }
 
@@ -591,6 +591,12 @@ namespace RingSoft.DevLogix
                 Header = "A_bout DevLogix...",
                 Command = ViewModel.AboutCommand,
             });
+
+            MainMenu.Items.Add(new MenuItem()
+            {
+                Header = "Upgrade _Version...",
+                Command = ViewModel.UpgradeCommand,
+            });
         }
 
         private void SetupToolbar()
@@ -602,14 +608,6 @@ namespace RingSoft.DevLogix
             LogoutButton.ToolTip.HeaderText = "Logout Current User (Alt + L)";
             LogoutButton.ToolTip.DescriptionText =
                 "Log out of the current user and log into a different user.";
-
-            UpgradeButton.ToolTip.HeaderText = "Upgrade Version (Alt + U)";
-            UpgradeButton.ToolTip.DescriptionText =
-                "Upgrade to the latest version of DevLogix.";
-
-            AboutButton.ToolTip.HeaderText = "About DevLogix (Alt + B)";
-            AboutButton.ToolTip.DescriptionText =
-                "See information about this application.";
 
             if (AppGlobals.LookupContext == null)
             {

@@ -321,7 +321,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
             Notes = entity.Notes;
             DepartmentsManager.LoadGrid(entity.ProductVersionDepartments);
-            if (entity.ArchiveDateTime != null)
+            if (entity.ArchiveDateTime == null)
+            {
+                ArchiveDateTime = null;
+            }
+            else
             {
                 ArchiveDateTime = entity.ArchiveDateTime.Value.ToLocalTime();
             }
