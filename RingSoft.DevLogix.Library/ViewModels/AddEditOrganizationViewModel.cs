@@ -182,9 +182,9 @@ namespace RingSoft.DevLogix.Library.ViewModels
                 case DbPlatforms.Sqlite:
                     if (DbPlatform == DbPlatforms.SqlServer)
                     {
-                        var efContext = SystemGlobals.DataRepository.GetDataContext(destinationProcessor);
-                        var sourceList = efContext.GetListOfDatabases(destinationProcessor);
-                        var databaseList = new List<string>(sourceList);
+                        //var efContext = SystemGlobals.DataRepository.GetDataContext(destinationProcessor);
+                        //var sourceList = efContext.GetListOfDatabases(destinationProcessor);
+                        //var databaseList = new List<string>(sourceList);
                         //var getListResults = destinationProcessor.GetListOfDatabases();
                         
                         //if (getListResults.ResultCode == GetDataResultCodes.Success)
