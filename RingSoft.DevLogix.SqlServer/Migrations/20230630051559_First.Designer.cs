@@ -12,8 +12,8 @@ using RingSoft.DevLogix.SqlServer;
 namespace RingSoft.DevLogix.SqlServer.Migrations
 {
     [DbContext(typeof(DevLogixSqlServerDbContext))]
-    [Migration("20230316220237_LaborMaterialComment")]
-    partial class LaborMaterialComment
+    [Migration("20230630051559_First")]
+    partial class First
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -98,7 +98,7 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar");
 
-                    b.Property<double>("PercentWidth")
+                    b.Property<decimal>("PercentWidth")
                         .HasColumnType("numeric");
 
                     b.Property<string>("PrimaryFieldName")
@@ -210,6 +210,328 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.ToTable("RecordLocks");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Customer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("City")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("CompanyName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("ContactName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("ContactTitle")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("Country")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("EmailAddress")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<decimal>("MinutesCost")
+                        .HasColumnType("numeric");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("ntext");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("PostalCode")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("Region")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<decimal?>("SupportCost")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal?>("SupportMinutesPurchased")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal?>("SupportMinutesSpent")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("TerritoryId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TimeZoneId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("TotalCost")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("TotalSales")
+                        .HasColumnType("numeric");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("WebAddress")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TerritoryId");
+
+                    b.HasIndex("TimeZoneId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Customer");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.CustomerComputer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Brand")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("DatabasePlatform")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<int?>("HardDriveFree")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("HardDriveSize")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("InternetSpeed")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("ntext");
+
+                    b.Property<string>("OperatingSystem")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("Printer")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<int?>("RamSize")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ScreenResolution")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<decimal?>("Speed")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("CustomerComputer");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.CustomerProduct", b =>
+                {
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("ExpirationDate")
+                        .HasColumnType("datetime");
+
+                    b.HasKey("CustomerId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("CustomerProduct");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Order", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("City")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("CompanyName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("ContactName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("ContactTitle")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("Country")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal?>("Freight")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("OrderId")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("PostalCode")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("Region")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<DateTime?>("ShippedDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<decimal?>("SubTotal")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal?>("Total")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal?>("TotalDiscount")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("Order");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.OrderDetail", b =>
+                {
+                    b.Property<int>("OrderId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("DetailId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal?>("Discount")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("ExtendedPrice")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("OrderId", "DetailId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("OrderDetail");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Territory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<int>("SalespersonId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SalespersonId");
+
+                    b.ToTable("Territory");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.TimeZone", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("HourToGMT")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TimeZone");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Department", b =>
                 {
                     b.Property<int>("Id")
@@ -258,6 +580,9 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<string>("PassText")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
+
+                    b.Property<int>("ReleaseLevel")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -323,7 +648,7 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<int?>("AssignedTesterId")
                         .HasColumnType("integer");
 
-                    b.Property<double>("Cost")
+                    b.Property<decimal>("Cost")
                         .HasColumnType("numeric");
 
                     b.Property<string>("Description")
@@ -353,7 +678,7 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<int>("FoundVersionId")
                         .HasColumnType("integer");
 
-                    b.Property<double>("MinutesSpent")
+                    b.Property<decimal>("MinutesSpent")
                         .HasColumnType("numeric");
 
                     b.Property<int>("ProductId")
@@ -361,6 +686,9 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
                     b.Property<string>("Resolution")
                         .HasColumnType("ntext");
+
+                    b.Property<int?>("TestingOutlineId")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -379,6 +707,8 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.HasIndex("FoundVersionId");
 
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("TestingOutlineId");
 
                     b.ToTable("Errors");
                 });
@@ -519,6 +849,9 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
+                    b.Property<decimal?>("Cost")
+                        .HasColumnType("numeric");
+
                     b.Property<int>("CreateDepartmentId")
                         .HasColumnType("integer");
 
@@ -533,6 +866,12 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
                     b.Property<string>("Notes")
                         .HasColumnType("ntext");
+
+                    b.Property<decimal?>("Price")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal?>("Revenue")
+                        .HasColumnType("numeric");
 
                     b.HasKey("Id");
 
@@ -554,6 +893,9 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<DateTime?>("ArchiveDateTime")
                         .HasColumnType("datetime");
 
+                    b.Property<int?>("DepartmentId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -565,7 +907,12 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("integer");
 
+                    b.Property<DateTime?>("VersionDate")
+                        .HasColumnType("datetime");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("DepartmentId");
 
                     b.HasIndex("ProductId");
 
@@ -601,7 +948,7 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<string>("Comment")
                         .HasColumnType("ntext");
 
-                    b.Property<double>("MinutesCost")
+                    b.Property<decimal>("MinutesCost")
                         .HasColumnType("numeric");
 
                     b.Property<string>("Name")
@@ -625,7 +972,7 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<string>("Comment")
                         .HasColumnType("ntext");
 
-                    b.Property<double>("Cost")
+                    b.Property<decimal>("Cost")
                         .HasColumnType("numeric");
 
                     b.Property<string>("Name")
@@ -646,22 +993,22 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<double?>("ContractCost")
+                    b.Property<decimal?>("ContractCost")
                         .HasColumnType("numeric");
 
-                    b.Property<double>("Cost")
+                    b.Property<decimal>("Cost")
                         .HasColumnType("numeric");
 
                     b.Property<DateTime>("Deadline")
                         .HasColumnType("datetime");
 
-                    b.Property<double>("EstimatedCost")
+                    b.Property<decimal>("EstimatedCost")
                         .HasColumnType("numeric");
 
-                    b.Property<double>("EstimatedMinutes")
+                    b.Property<decimal>("EstimatedMinutes")
                         .HasColumnType("numeric");
 
-                    b.Property<double?>("FridayHours")
+                    b.Property<decimal?>("FridayMinutes")
                         .HasColumnType("numeric");
 
                     b.Property<bool>("IsBillable")
@@ -670,10 +1017,10 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<int>("ManagerId")
                         .HasColumnType("integer");
 
-                    b.Property<double>("MinutesSpent")
+                    b.Property<decimal>("MinutesSpent")
                         .HasColumnType("numeric");
 
-                    b.Property<double?>("MondayHours")
+                    b.Property<decimal?>("MondayMinutes")
                         .HasColumnType("numeric");
 
                     b.Property<string>("Name")
@@ -690,19 +1037,22 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<int?>("ProductId")
                         .HasColumnType("integer");
 
-                    b.Property<double?>("SaturdayHours")
+                    b.Property<decimal?>("SaturdayMinutes")
                         .HasColumnType("numeric");
 
-                    b.Property<double?>("SundayHours")
+                    b.Property<DateTime?>("StartDateTime")
+                        .HasColumnType("datetime");
+
+                    b.Property<decimal?>("SundayMinutes")
                         .HasColumnType("numeric");
 
-                    b.Property<double?>("ThursdayHours")
+                    b.Property<decimal?>("ThursdayMinutes")
                         .HasColumnType("numeric");
 
-                    b.Property<double?>("TuesdayHours")
+                    b.Property<decimal?>("TuesdayMinutes")
                         .HasColumnType("numeric");
 
-                    b.Property<double?>("WednesdayHours")
+                    b.Property<decimal?>("WednesdayMinutes")
                         .HasColumnType("numeric");
 
                     b.HasKey("Id");
@@ -722,10 +1072,10 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<double>("ActualCost")
+                    b.Property<decimal>("ActualCost")
                         .HasColumnType("numeric");
 
-                    b.Property<double>("Cost")
+                    b.Property<decimal>("Cost")
                         .HasColumnType("numeric");
 
                     b.Property<bool>("IsCostEdited")
@@ -757,7 +1107,7 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<double>("Cost")
+                    b.Property<decimal>("Cost")
                         .HasColumnType("numeric");
 
                     b.Property<DateTime>("Date")
@@ -766,7 +1116,7 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<int>("ProjectMaterialId")
                         .HasColumnType("integer");
 
-                    b.Property<double>("Quantity")
+                    b.Property<decimal>("Quantity")
                         .HasColumnType("numeric");
 
                     b.Property<int>("UserId")
@@ -792,7 +1142,7 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<bool?>("CommentCrLf")
                         .HasColumnType("bit");
 
-                    b.Property<double?>("Cost")
+                    b.Property<decimal?>("Cost")
                         .HasColumnType("numeric");
 
                     b.Property<string>("Description")
@@ -809,7 +1159,7 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
-                    b.Property<double?>("Quantity")
+                    b.Property<decimal?>("Quantity")
                         .HasColumnType("numeric");
 
                     b.Property<string>("RowId")
@@ -832,22 +1182,22 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<double>("Cost")
+                    b.Property<decimal>("Cost")
                         .HasColumnType("numeric");
 
-                    b.Property<double>("EstimatedCost")
+                    b.Property<decimal>("EstimatedCost")
                         .HasColumnType("numeric");
 
-                    b.Property<double>("HourlyRate")
+                    b.Property<decimal>("HourlyRate")
                         .HasColumnType("numeric");
 
-                    b.Property<double>("MinutesCost")
+                    b.Property<decimal>("MinutesCost")
                         .HasColumnType("numeric");
 
                     b.Property<bool>("MinutesEdited")
                         .HasColumnType("bit");
 
-                    b.Property<double>("MinutesSpent")
+                    b.Property<decimal>("MinutesSpent")
                         .HasColumnType("numeric");
 
                     b.Property<string>("Name")
@@ -858,7 +1208,7 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<string>("Notes")
                         .HasColumnType("ntext");
 
-                    b.Property<double>("PercentComplete")
+                    b.Property<decimal>("PercentComplete")
                         .HasColumnType("numeric");
 
                     b.Property<int>("ProjectId")
@@ -876,6 +1226,21 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.ToTable("ProjectTasks");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectTaskDependency", b =>
+                {
+                    b.Property<int>("ProjectTaskId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("DependsOnProjectTaskId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("ProjectTaskId", "DependsOnProjectTaskId");
+
+                    b.HasIndex("DependsOnProjectTaskId");
+
+                    b.ToTable("ProjectTaskDependency");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectTaskLaborPart", b =>
                 {
                     b.Property<int>("ProjectTaskId")
@@ -885,6 +1250,9 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .HasColumnType("integer");
 
                     b.Property<bool?>("CommentCrLf")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("Complete")
                         .HasColumnType("bit");
 
                     b.Property<string>("Description")
@@ -897,14 +1265,17 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<byte>("LineType")
                         .HasColumnType("tinyint");
 
-                    b.Property<double>("MinutesCost")
+                    b.Property<decimal>("MinutesCost")
                         .HasColumnType("numeric");
 
                     b.Property<string>("ParentRowId")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
-                    b.Property<double?>("Quantity")
+                    b.Property<decimal>("PercentComplete")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal?>("Quantity")
                         .HasColumnType("numeric");
 
                     b.Property<string>("RowId")
@@ -927,34 +1298,34 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
-                    b.Property<double>("Cost")
+                    b.Property<decimal>("Cost")
                         .HasColumnType("numeric");
 
-                    b.Property<double?>("FridayHours")
+                    b.Property<decimal?>("FridayMinutes")
                         .HasColumnType("numeric");
 
                     b.Property<bool>("IsStandard")
                         .HasColumnType("bit");
 
-                    b.Property<double>("MinutesSpent")
+                    b.Property<decimal>("MinutesSpent")
                         .HasColumnType("numeric");
 
-                    b.Property<double?>("MondayHours")
+                    b.Property<decimal?>("MondayMinutes")
                         .HasColumnType("numeric");
 
-                    b.Property<double?>("SaturdayHours")
+                    b.Property<decimal?>("SaturdayMinutes")
                         .HasColumnType("numeric");
 
-                    b.Property<double?>("SundayHours")
+                    b.Property<decimal?>("SundayMinutes")
                         .HasColumnType("numeric");
 
-                    b.Property<double?>("ThursdayHours")
+                    b.Property<decimal?>("ThursdayMinutes")
                         .HasColumnType("numeric");
 
-                    b.Property<double?>("TuesdayHours")
+                    b.Property<decimal?>("TuesdayMinutes")
                         .HasColumnType("numeric");
 
-                    b.Property<double?>("WednesdayHours")
+                    b.Property<decimal?>("WednesdayMinutes")
                         .HasColumnType("numeric");
 
                     b.HasKey("ProjectId", "UserId");
@@ -972,10 +1343,10 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
-                    b.Property<double>("Cost")
+                    b.Property<decimal>("Cost")
                         .HasColumnType("numeric");
 
-                    b.Property<double>("MinutesSpent")
+                    b.Property<decimal>("MinutesSpent")
                         .HasColumnType("numeric");
 
                     b.HasKey("ErrorId", "UserId");
@@ -983,6 +1354,161 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("ErrorUsers");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingOutline", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("AssignedToUserId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("CreatedByUserId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("DueDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<decimal>("MinutesSpent")
+                        .HasColumnType("numeric");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("ntext");
+
+                    b.Property<decimal>("PercentComplete")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("TotalCost")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AssignedToUserId");
+
+                    b.HasIndex("CreatedByUserId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("TestingOutlines");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingOutlineCost", b =>
+                {
+                    b.Property<int>("TestingOutlineId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("Cost")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("TimeSpent")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("TestingOutlineId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("TestingOutlineCosts");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingOutlineDetails", b =>
+                {
+                    b.Property<int>("TestingOutlineId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("DetailId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("CompletedVersionId")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsComplete")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Step")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<int?>("TestingTemplateId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("TestingOutlineId", "DetailId");
+
+                    b.HasIndex("CompletedVersionId");
+
+                    b.HasIndex("TestingTemplateId");
+
+                    b.ToTable("TestingOutlineDetails");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingOutlineTemplate", b =>
+                {
+                    b.Property<int>("TestingOutlineId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TestingTemplateId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("TestingOutlineId", "TestingTemplateId");
+
+                    b.HasIndex("TestingTemplateId");
+
+                    b.ToTable("TestingOutlineTemplates");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingTemplate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("BaseTemplateId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("ntext");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BaseTemplateId");
+
+                    b.ToTable("TestingTemplates");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingTemplateItem", b =>
+                {
+                    b.Property<int>("TestingTemplateId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.HasKey("TestingTemplateId", "Description");
+
+                    b.ToTable("TestingTemplateItems");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.SystemMaster", b =>
@@ -1038,11 +1564,18 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<bool>("AreDatesEdited")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("CustomerId")
+                        .HasColumnType("integer");
+
                     b.Property<int?>("ErrorId")
                         .HasColumnType("integer");
 
-                    b.Property<double?>("MinutesSpent")
+                    b.Property<decimal?>("MinutesSpent")
                         .HasColumnType("numeric");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
 
                     b.Property<string>("Notes")
                         .HasColumnType("ntext");
@@ -1056,14 +1589,21 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<DateTime?>("PunchOutDate")
                         .HasColumnType("datetime");
 
+                    b.Property<int?>("TestingOutlineId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CustomerId");
+
                     b.HasIndex("ErrorId");
 
                     b.HasIndex("ProjectTaskId");
+
+                    b.HasIndex("TestingOutlineId");
 
                     b.HasIndex("UserId");
 
@@ -1078,11 +1618,14 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<double>("BillableProjectsMinutesSpent")
+                    b.Property<decimal>("BillableProjectsMinutesSpent")
                         .HasColumnType("numeric");
 
                     b.Property<DateTime?>("ClockDate")
                         .HasColumnType("datetime");
+
+                    b.Property<byte>("ClockOutReason")
+                        .HasColumnType("tinyint");
 
                     b.Property<int?>("DefaultChartId")
                         .HasColumnType("integer");
@@ -1094,10 +1637,10 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar");
 
-                    b.Property<double>("ErrorsMinutesSpent")
+                    b.Property<decimal>("ErrorsMinutesSpent")
                         .HasColumnType("numeric");
 
-                    b.Property<double>("HourlyRate")
+                    b.Property<decimal>("HourlyRate")
                         .HasColumnType("numeric");
 
                     b.Property<string>("Name")
@@ -1105,11 +1648,15 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
-                    b.Property<double>("NonBillableProjectsMinutesSpent")
+                    b.Property<decimal>("NonBillableProjectsMinutesSpent")
                         .HasColumnType("numeric");
 
                     b.Property<string>("Notes")
                         .HasColumnType("ntext");
+
+                    b.Property<string>("OtherClockOutReason")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
 
                     b.Property<string>("Password")
                         .HasMaxLength(255)
@@ -1124,6 +1671,9 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
                     b.Property<int?>("SupervisorId")
                         .HasColumnType("integer");
+
+                    b.Property<decimal>("TestingOutlinesMinutesSpent")
+                        .HasColumnType("numeric");
 
                     b.HasKey("Id");
 
@@ -1144,6 +1694,11 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<int>("RowId")
                         .HasColumnType("integer");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime");
 
@@ -1153,6 +1708,51 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.HasKey("UserId", "RowId");
 
                     b.ToTable("UsersTimeOff");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.UserManagement.UserTracker", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<decimal?>("RedMinutes")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("RefreshInterval")
+                        .HasColumnType("integer");
+
+                    b.Property<byte>("RefreshType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<decimal?>("YellowMinutes")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserTracker");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.UserManagement.UserTrackerUser", b =>
+                {
+                    b.Property<int>("UserTrackerId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("UserTrackerId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserTrackerUsers");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.UsersGroup", b =>
@@ -1197,6 +1797,100 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("AdvancedFind");
 
                     b.Navigation("SearchForAdvancedFind");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Customer", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Territory", "Territory")
+                        .WithMany("Customers")
+                        .HasForeignKey("TerritoryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.TimeZone", "TimeZone")
+                        .WithMany("Customers")
+                        .HasForeignKey("TimeZoneId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", null)
+                        .WithMany("Customers")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Territory");
+
+                    b.Navigation("TimeZone");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.CustomerComputer", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Customer", "Customer")
+                        .WithMany("CustomerComputers")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.CustomerProduct", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Customer", "Customer")
+                        .WithMany("CustomerProducts")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.Product", "Product")
+                        .WithMany("CustomerProducts")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Order", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Customer", "Customer")
+                        .WithMany("Orders")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.OrderDetail", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Order", "Order")
+                        .WithMany("Details")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.Product", "Product")
+                        .WithMany("OrderDetailProducts")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Territory", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "Salesperson")
+                        .WithMany("Territories")
+                        .HasForeignKey("SalespersonId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Salesperson");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Department", b =>
@@ -1280,6 +1974,11 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingOutline", "TestingOutline")
+                        .WithMany("Errors")
+                        .HasForeignKey("TestingOutlineId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.Navigation("AssignedDeveloper");
 
                     b.Navigation("AssignedTester");
@@ -1295,6 +1994,8 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("FoundVersion");
 
                     b.Navigation("Product");
+
+                    b.Navigation("TestingOutline");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ErrorDeveloper", b =>
@@ -1363,11 +2064,18 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProductVersion", b =>
                 {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.Department", "Department")
+                        .WithMany("ProductVersions")
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.Product", "Product")
                         .WithMany("Versions")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("Department");
 
                     b.Navigation("Product");
                 });
@@ -1476,6 +2184,25 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectTaskDependency", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectTask", "DependsOnProjectTask")
+                        .WithMany("Dependencies")
+                        .HasForeignKey("DependsOnProjectTaskId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectTask", "ProjectTask")
+                        .WithMany("SourceDependencies")
+                        .HasForeignKey("ProjectTaskId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("DependsOnProjectTask");
+
+                    b.Navigation("ProjectTask");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectTaskLaborPart", b =>
                 {
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.LaborPart", "LaborPart")
@@ -1532,6 +2259,116 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingOutline", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "AssignedToUser")
+                        .WithMany("AssignedTestingOutlines")
+                        .HasForeignKey("AssignedToUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "CreatedByUser")
+                        .WithMany("CreatedTestingOutlines")
+                        .HasForeignKey("CreatedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.Product", "Product")
+                        .WithMany("TestingOutlines")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("AssignedToUser");
+
+                    b.Navigation("CreatedByUser");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingOutlineCost", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingOutline", "TestingOutline")
+                        .WithMany("Costs")
+                        .HasForeignKey("TestingOutlineId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "User")
+                        .WithMany("TestingOutlineCosts")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("TestingOutline");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingOutlineDetails", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.ProductVersion", "CompletedVersion")
+                        .WithMany("TestingOutlineDetails")
+                        .HasForeignKey("CompletedVersionId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingOutline", "TestingOutline")
+                        .WithMany("Details")
+                        .HasForeignKey("TestingOutlineId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingTemplate", "TestingTemplate")
+                        .WithMany("TestingOutlineDetails")
+                        .HasForeignKey("TestingTemplateId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("CompletedVersion");
+
+                    b.Navigation("TestingOutline");
+
+                    b.Navigation("TestingTemplate");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingOutlineTemplate", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingOutline", "TestingOutline")
+                        .WithMany("Templates")
+                        .HasForeignKey("TestingOutlineId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingTemplate", "TestingTemplate")
+                        .WithMany("TestingOutlineTemplates")
+                        .HasForeignKey("TestingTemplateId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("TestingOutline");
+
+                    b.Navigation("TestingTemplate");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingTemplate", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingTemplate", "BaseTemplate")
+                        .WithMany("ChildTemplates")
+                        .HasForeignKey("BaseTemplateId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("BaseTemplate");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingTemplateItem", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingTemplate", "TestingTemplate")
+                        .WithMany("Items")
+                        .HasForeignKey("TestingTemplateId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("TestingTemplate");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.SystemPreferencesHolidays", b =>
                 {
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.SystemPreferences", "SystemPreferences")
@@ -1545,6 +2382,11 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.TimeClock", b =>
                 {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Customer", "Customer")
+                        .WithMany("TimeClocks")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.Error", "Error")
                         .WithMany("TimeClocks")
                         .HasForeignKey("ErrorId")
@@ -1555,15 +2397,24 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .HasForeignKey("ProjectTaskId")
                         .OnDelete(DeleteBehavior.NoAction);
 
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingOutline", "TestingOutline")
+                        .WithMany("TimeClocks")
+                        .HasForeignKey("TestingOutlineId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "User")
                         .WithMany("TimeClocks")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.Navigation("Customer");
+
                     b.Navigation("Error");
 
                     b.Navigation("ProjectTask");
+
+                    b.Navigation("TestingOutline");
 
                     b.Navigation("User");
                 });
@@ -1604,6 +2455,25 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.UserManagement.UserTrackerUser", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "User")
+                        .WithMany("UserTrackerUsers")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.UserManagement.UserTracker", "UserTracker")
+                        .WithMany("Users")
+                        .HasForeignKey("UserTrackerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
+
+                    b.Navigation("UserTracker");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.UsersGroup", b =>
                 {
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.Group", "Group")
@@ -1632,6 +2502,32 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("SearchForAdvancedFindFilters");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Customer", b =>
+                {
+                    b.Navigation("CustomerComputers");
+
+                    b.Navigation("CustomerProducts");
+
+                    b.Navigation("Orders");
+
+                    b.Navigation("TimeClocks");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Order", b =>
+                {
+                    b.Navigation("Details");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Territory", b =>
+                {
+                    b.Navigation("Customers");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.TimeZone", b =>
+                {
+                    b.Navigation("Customers");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Department", b =>
                 {
                     b.Navigation("ArchiveVersionProducts");
@@ -1639,6 +2535,8 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("CreateVersionProducts");
 
                     b.Navigation("ProductVersionDepartments");
+
+                    b.Navigation("ProductVersions");
 
                     b.Navigation("Users");
                 });
@@ -1686,9 +2584,15 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Product", b =>
                 {
+                    b.Navigation("CustomerProducts");
+
                     b.Navigation("Errors");
 
+                    b.Navigation("OrderDetailProducts");
+
                     b.Navigation("Projects");
+
+                    b.Navigation("TestingOutlines");
 
                     b.Navigation("Versions");
                 });
@@ -1700,6 +2604,8 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("FoundErrors");
 
                     b.Navigation("ProductVersionDepartments");
+
+                    b.Navigation("TestingOutlineDetails");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.LaborPart", b =>
@@ -1730,9 +2636,37 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectTask", b =>
                 {
+                    b.Navigation("Dependencies");
+
                     b.Navigation("LaborParts");
 
+                    b.Navigation("SourceDependencies");
+
                     b.Navigation("TimeClocks");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingOutline", b =>
+                {
+                    b.Navigation("Costs");
+
+                    b.Navigation("Details");
+
+                    b.Navigation("Errors");
+
+                    b.Navigation("Templates");
+
+                    b.Navigation("TimeClocks");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingTemplate", b =>
+                {
+                    b.Navigation("ChildTemplates");
+
+                    b.Navigation("Items");
+
+                    b.Navigation("TestingOutlineDetails");
+
+                    b.Navigation("TestingOutlineTemplates");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.SystemPreferences", b =>
@@ -1745,6 +2679,12 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("AssignedDeveloperErrors");
 
                     b.Navigation("AssignedTesterErrors");
+
+                    b.Navigation("AssignedTestingOutlines");
+
+                    b.Navigation("CreatedTestingOutlines");
+
+                    b.Navigation("Customers");
 
                     b.Navigation("ErrorDevelopers");
 
@@ -1762,6 +2702,10 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
                     b.Navigation("Projects");
 
+                    b.Navigation("Territories");
+
+                    b.Navigation("TestingOutlineCosts");
+
                     b.Navigation("TimeClocks");
 
                     b.Navigation("Underlings");
@@ -1769,6 +2713,13 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("UserGroups");
 
                     b.Navigation("UserTimeOff");
+
+                    b.Navigation("UserTrackerUsers");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.UserManagement.UserTracker", b =>
+                {
+                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }

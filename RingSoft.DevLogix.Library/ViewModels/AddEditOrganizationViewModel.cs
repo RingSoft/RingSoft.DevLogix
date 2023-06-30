@@ -136,6 +136,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
             }
 
+            AppGlobals.DbPlatform = OriginalDbPlatform;
             switch (OriginalDbPlatform)
             {
                 case DbPlatforms.Sqlite:

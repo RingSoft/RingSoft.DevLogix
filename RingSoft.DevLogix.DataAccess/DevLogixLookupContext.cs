@@ -88,8 +88,12 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<OrderDetail> OrderDetail { get; set; }
         public TableDefinition<CustomerComputer> CustomerComputer { get; set; }
 
+        public LookupDefinition<DevLogixChartLookup, SystemMaster> SystemMasterLookupDefinition { get; set; }
         public LookupDefinition<DevLogixChartLookup, DevLogixChart> DevLogixChartLookup { get; set; }
+        public LookupDefinition<DevLogixChartLookup, DevLogixChartBar> DevLogixChartBarLookup { get; set; }
         public LookupDefinition<SystemPreferencesLookup, SystemPreferences> SystemPreferencesLookup { get; set; }
+        public LookupDefinition<DevLogixChartLookup, SystemPreferencesHolidays> SystemPreferencesHolidaysLookup { get; set; }
+
         public LookupDefinition<UserLookup, User> UserLookup { get; set; }
         public LookupDefinition<UserTimeOffLookup, UserTimeOff> UserTimeOffLookup { get; set; }
         public LookupDefinition<GroupLookup, Group> GroupLookup { get; set; }
@@ -185,15 +189,35 @@ namespace RingSoft.DevLogix.DataAccess
         }
         protected override void InitializeLookupDefinitions()
         {
+            SystemMasterLookupDefinition = new LookupDefinition<DevLogixChartLookup, SystemMaster>(SystemMaster);
+            SystemMasterLookupDefinition.AddVisibleColumnDefinition(
+                p => p.Name
+                , "Name"
+                , p => p.OrganizationName, 99);
+            SystemMaster.HasLookupDefinition(SystemMasterLookupDefinition);
+
             SystemPreferencesLookup =
                 new LookupDefinition<SystemPreferencesLookup, SystemPreferences>(SystemPreferences);
-            SystemPreferencesLookup.AddVisibleColumnDefinition(p => p.Id,  "Id", p => p.Id, 100);
+            SystemPreferencesLookup.AddVisibleColumnDefinition(p => p.Id
+                ,  "Id", p => p.Id, 99);
             SystemPreferences.HasLookupDefinition(SystemPreferencesLookup);
+
+            SystemPreferencesHolidaysLookup =
+                new LookupDefinition<DevLogixChartLookup, SystemPreferencesHolidays>(SystemPreferencesHolidays);
+            SystemPreferencesHolidaysLookup.AddVisibleColumnDefinition(
+                p => p.Name
+                , "Holiday"
+                , p => p.Name, 99);
+            SystemPreferencesHolidays.HasLookupDefinition(SystemPreferencesHolidaysLookup);
 
             DevLogixChartLookup = new LookupDefinition<DevLogixChartLookup, DevLogixChart>(DevLogixCharts);
             DevLogixChartLookup.AddVisibleColumnDefinition(p => p.Name, "Name", p => p.Name, 50);
             DevLogixCharts.HasLookupDefinition(DevLogixChartLookup);
-            
+
+            DevLogixChartBarLookup = new LookupDefinition<DevLogixChartLookup, DevLogixChartBar>(DevLogixChartBars);
+            DevLogixChartBarLookup.AddVisibleColumnDefinition(p => p.Name, "Name", p => p.Name, 50);
+            DevLogixChartBars.HasLookupDefinition(DevLogixChartBarLookup);
+
             UserLookup = new LookupDefinition<UserLookup, User>(Users);
             UserLookup.AddVisibleColumnDefinition(p => p.UserName, "Name", p => p.Name, 70);
             UserLookup.Include(p => p.Department)
