@@ -56,7 +56,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AdvancedFinds", (string)null);
+                    b.ToTable("AdvancedFinds");
                 });
 
             modelBuilder.Entity("RingSoft.DbLookup.AdvancedFind.AdvancedFindColumn", b =>
@@ -105,7 +105,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasKey("AdvancedFindId", "ColumnId");
 
-                    b.ToTable("AdvancedFindColumns", (string)null);
+                    b.ToTable("AdvancedFindColumns");
                 });
 
             modelBuilder.Entity("RingSoft.DbLookup.AdvancedFind.AdvancedFindFilter", b =>
@@ -175,7 +175,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("SearchForAdvancedFindId");
 
-                    b.ToTable("AdvancedFindFilters", (string)null);
+                    b.ToTable("AdvancedFindFilters");
                 });
 
             modelBuilder.Entity("RingSoft.DbLookup.RecordLocking.RecordLock", b =>
@@ -197,7 +197,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasKey("Table", "PrimaryKey");
 
-                    b.ToTable("RecordLocks", (string)null);
+                    b.ToTable("RecordLocks");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Customer", b =>
@@ -290,7 +290,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Customer", (string)null);
+                    b.ToTable("Customer");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.CustomerComputer", b =>
@@ -298,6 +298,10 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
+
+                    b.Property<string>("Brand")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
 
                     b.Property<int>("CustomerId")
                         .HasColumnType("integer");
@@ -345,7 +349,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("CustomerComputer", (string)null);
+                    b.ToTable("CustomerComputer");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.CustomerProduct", b =>
@@ -363,7 +367,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("CustomerProduct", (string)null);
+                    b.ToTable("CustomerProduct");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Order", b =>
@@ -435,7 +439,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Order", (string)null);
+                    b.ToTable("Order");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.OrderDetail", b =>
@@ -465,7 +469,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderDetail", (string)null);
+                    b.ToTable("OrderDetail");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Territory", b =>
@@ -486,7 +490,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("SalespersonId");
 
-                    b.ToTable("Territory", (string)null);
+                    b.ToTable("Territory");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.TimeZone", b =>
@@ -505,7 +509,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TimeZone", (string)null);
+                    b.ToTable("TimeZone");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Department", b =>
@@ -566,7 +570,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("ErrorPassStatusId");
 
-                    b.ToTable("Departments", (string)null);
+                    b.ToTable("Departments");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.DevLogixChart", b =>
@@ -582,7 +586,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DevLogixCharts", (string)null);
+                    b.ToTable("DevLogixCharts");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.DevLogixChartBar", b =>
@@ -603,7 +607,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasKey("ChartId", "BarId");
 
-                    b.ToTable("DevLogixChartsBars", (string)null);
+                    b.ToTable("DevLogixChartsBars");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Error", b =>
@@ -680,7 +684,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("TestingOutlineId");
 
-                    b.ToTable("Errors", (string)null);
+                    b.ToTable("Errors");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ErrorDeveloper", b =>
@@ -704,7 +708,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("ErrorId");
 
-                    b.ToTable("ErrorDevelopers", (string)null);
+                    b.ToTable("ErrorDevelopers");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ErrorPriority", b =>
@@ -723,7 +727,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ErrorPriorities", (string)null);
+                    b.ToTable("ErrorPriorities");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ErrorQa", b =>
@@ -752,7 +756,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("TesterId");
 
-                    b.ToTable("ErrorTesters", (string)null);
+                    b.ToTable("ErrorTesters");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ErrorStatus", b =>
@@ -768,7 +772,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ErrorStatuses", (string)null);
+                    b.ToTable("ErrorStatuses");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Group", b =>
@@ -787,7 +791,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Groups", (string)null);
+                    b.ToTable("Groups");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Product", b =>
@@ -837,7 +841,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("CreateDepartmentId");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProductVersion", b =>
@@ -872,7 +876,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductVersions", (string)null);
+                    b.ToTable("ProductVersions");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProductVersionDepartment", b =>
@@ -890,7 +894,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("DepartmentId");
 
-                    b.ToTable("ProductVersionDepartments", (string)null);
+                    b.ToTable("ProductVersionDepartments");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.LaborPart", b =>
@@ -912,7 +916,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("LaborParts", (string)null);
+                    b.ToTable("LaborParts");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.MaterialPart", b =>
@@ -934,7 +938,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MaterialParts", (string)null);
+                    b.ToTable("MaterialParts");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.Project", b =>
@@ -1011,7 +1015,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Projects", (string)null);
+                    b.ToTable("Projects");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectMaterial", b =>
@@ -1044,7 +1048,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("ProjectMaterials", (string)null);
+                    b.ToTable("ProjectMaterials");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectMaterialHistory", b =>
@@ -1074,7 +1078,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ProjectMaterialHistory", (string)null);
+                    b.ToTable("ProjectMaterialHistory");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectMaterialPart", b =>
@@ -1117,7 +1121,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("MaterialPartId");
 
-                    b.ToTable("ProjectMaterialParts", (string)null);
+                    b.ToTable("ProjectMaterialParts");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectTask", b =>
@@ -1167,7 +1171,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ProjectTasks", (string)null);
+                    b.ToTable("ProjectTasks");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectTaskDependency", b =>
@@ -1182,7 +1186,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("DependsOnProjectTaskId");
 
-                    b.ToTable("ProjectTaskDependency", (string)null);
+                    b.ToTable("ProjectTaskDependency");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectTaskLaborPart", b =>
@@ -1231,7 +1235,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("LaborPartId");
 
-                    b.ToTable("ProjectTaskLaborParts", (string)null);
+                    b.ToTable("ProjectTaskLaborParts");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.ProjectManagement.ProjectUser", b =>
@@ -1276,7 +1280,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ProjectUsers", (string)null);
+                    b.ToTable("ProjectUsers");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.ErrorUser", b =>
@@ -1297,7 +1301,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ErrorUsers", (string)null);
+                    b.ToTable("ErrorUsers");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingOutline", b =>
@@ -1343,7 +1347,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("TestingOutlines", (string)null);
+                    b.ToTable("TestingOutlines");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingOutlineCost", b =>
@@ -1364,7 +1368,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("TestingOutlineCosts", (string)null);
+                    b.ToTable("TestingOutlineCosts");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingOutlineDetails", b =>
@@ -1395,7 +1399,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("TestingTemplateId");
 
-                    b.ToTable("TestingOutlineDetails", (string)null);
+                    b.ToTable("TestingOutlineDetails");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingOutlineTemplate", b =>
@@ -1410,7 +1414,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("TestingTemplateId");
 
-                    b.ToTable("TestingOutlineTemplates", (string)null);
+                    b.ToTable("TestingOutlineTemplates");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingTemplate", b =>
@@ -1434,7 +1438,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("BaseTemplateId");
 
-                    b.ToTable("TestingTemplates", (string)null);
+                    b.ToTable("TestingTemplates");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingTemplateItem", b =>
@@ -1448,7 +1452,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasKey("TestingTemplateId", "Description");
 
-                    b.ToTable("TestingTemplateItems", (string)null);
+                    b.ToTable("TestingTemplateItems");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.SystemMaster", b =>
@@ -1459,7 +1463,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasKey("OrganizationName");
 
-                    b.ToTable("SystemMaster", (string)null);
+                    b.ToTable("SystemMaster");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.SystemPreferences", b =>
@@ -1470,7 +1474,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SystemPreferences", (string)null);
+                    b.ToTable("SystemPreferences");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.SystemPreferencesHolidays", b =>
@@ -1488,7 +1492,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasKey("SystemPreferencesId", "Date");
 
-                    b.ToTable("SystemPreferencesHolidays", (string)null);
+                    b.ToTable("SystemPreferencesHolidays");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.TimeClock", b =>
@@ -1543,7 +1547,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("TimeClocks", (string)null);
+                    b.ToTable("TimeClocks");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.User", b =>
@@ -1617,7 +1621,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("SupervisorId");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.UserManagement.UserTimeOff", b =>
@@ -1641,7 +1645,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasKey("UserId", "RowId");
 
-                    b.ToTable("UsersTimeOff", (string)null);
+                    b.ToTable("UsersTimeOff");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.UserManagement.UserTracker", b =>
@@ -1669,7 +1673,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserTracker", (string)null);
+                    b.ToTable("UserTracker");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.UserManagement.UserTrackerUser", b =>
@@ -1684,7 +1688,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserTrackerUsers", (string)null);
+                    b.ToTable("UserTrackerUsers");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.UsersGroup", b =>
@@ -1699,7 +1703,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("UsersGroups", (string)null);
+                    b.ToTable("UsersGroups");
                 });
 
             modelBuilder.Entity("RingSoft.DbLookup.AdvancedFind.AdvancedFindColumn", b =>

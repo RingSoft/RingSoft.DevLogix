@@ -12,6 +12,7 @@ namespace RingSoft.DevLogix.DataAccess.Configurations.CustomerManagement
             builder.Property(p => p.Id).HasColumnType(DbConstants.IntegerColumnType);
             builder.Property(p => p.Name).HasColumnType(DbConstants.StringColumnType);
             builder.Property(p => p.CustomerId).HasColumnType(DbConstants.IntegerColumnType);
+            builder.Property(p => p.Brand).HasColumnType(DbConstants.StringColumnType);
             builder.Property(p => p.OperatingSystem).HasColumnType(DbConstants.StringColumnType);
             builder.Property(p => p.Speed).HasColumnType(DbConstants.DecimalColumnType);
             builder.Property(p => p.ScreenResolution).HasColumnType(DbConstants.StringColumnType);

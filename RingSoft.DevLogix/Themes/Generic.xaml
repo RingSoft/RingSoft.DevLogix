@@ -11,9 +11,8 @@
             Source="pack://application:,,,/RingSoft.DevLogix;component/Themes/TimeControlTemplate.xaml"/>
         <ResourceDictionary
             Source="pack://application:,,,/RingSoft.DevLogix;component/Themes/SpeedControlTemplate.xaml"/>
-
-
+        <ResourceDictionary
+            Source="pack://application:,,,/RingSoft.DevLogix;component/Themes/MemoryControlTemplate.xaml"/>
     </ResourceDictionary.MergedDictionaries>
-
 
 </ResourceDictionary>

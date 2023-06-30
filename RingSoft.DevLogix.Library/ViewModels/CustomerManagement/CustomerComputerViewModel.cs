@@ -72,6 +72,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
         }
 
+        private int? _ramSize;
+
+        public int? RamSize
+        {
+            get => _ramSize;
+            set
+            {
+                if (_ramSize == value)
+                    return;
+
+                _ramSize = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         public CustomerComputerViewModel()
         {
             CustomerAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(
@@ -94,6 +110,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         {
             CustomerAutoFillValue = entity.Customer.GetAutoFillValue();
             Speed = entity.Speed;
+            RamSize = entity.RamSize;
         }
 
         protected override CustomerComputer GetEntityData()
@@ -104,6 +121,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 Name = KeyAutoFillValue?.Text,
                 CustomerId = CustomerAutoFillValue.GetEntity<Customer>().Id,
                 Speed = Speed,
+                RamSize = RamSize,
             };
         }
 
@@ -113,6 +131,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             KeyAutoFillValue = null;
             CustomerAutoFillValue = null;
             Speed = null;
+            RamSize = null;
         }
 
         protected override bool SaveEntity(CustomerComputer entity)

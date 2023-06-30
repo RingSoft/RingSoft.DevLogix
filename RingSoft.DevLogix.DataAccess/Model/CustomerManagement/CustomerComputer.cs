@@ -18,6 +18,9 @@ namespace RingSoft.DevLogix.DataAccess.Model.CustomerManagement
         public virtual Customer Customer { get; set; }
 
         [MaxLength(50)]
+        public string? Brand { get; set; }
+
+        [MaxLength(50)]
         public string? OperatingSystem { get; set; }
 
         public double? Speed { get; set; }

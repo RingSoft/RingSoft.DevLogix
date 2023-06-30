@@ -272,7 +272,7 @@ namespace RingSoft.DevLogix.Library
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Orders", AppGlobals.LookupContext.Order));
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Time Zones", AppGlobals.LookupContext.TimeZone));
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Territories", AppGlobals.LookupContext.Territory));
-            //category.Items.Add(new RightCategoryItem(item: "Add/Edit Customer Computers", AppGlobals.LookupContext.CustomerComputer));
+            category.Items.Add(new RightCategoryItem(item: "Add/Edit Customer Computers", AppGlobals.LookupContext.CustomerComputer));
             Categories.Add(category);
 
             category = new RightCategory("Miscellaneous", MenuCategories.Tools);

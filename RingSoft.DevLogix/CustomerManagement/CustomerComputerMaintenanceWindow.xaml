@@ -66,7 +66,11 @@
 
                         <Label Grid.Row="0" Grid.Column="2" Content="Computer Speed"/>
 
-                        <dl:SpeedControl Grid.Row="0" Grid.Column="3" Speed="{Binding Speed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <dl:SpeedControl Grid.Row="0" Grid.Column="3" Speed="{Binding Speed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" HorizontalAlignment="Left"/>
+
+                        <Label Grid.Row="1" Grid.Column="0" Content="RAM Size"/>
+
+                        <dl:MemoryControl Grid.Row="1" Grid.Column="1" Memory="{Binding RamSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" HorizontalAlignment="Left"/>
 
                     </Grid>
                 </TabItem>
