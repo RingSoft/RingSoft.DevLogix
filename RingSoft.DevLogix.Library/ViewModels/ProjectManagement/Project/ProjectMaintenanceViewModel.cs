@@ -741,22 +741,21 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         {
             var result = string.Empty;
             DbDataProcessor.DontDisplayExceptions = true;
-            var lookupData = new LookupDataBase(recalcFilter, new LookupUserInterface()
-            {
-                PageSize = 10
-            });
-            var recordCount = lookupData.GetRecordCountWait();
+            //var lookupData = new LookupDataBase(recalcFilter, new LookupUserInterface()
+            //{
+            //    PageSize = 10
+            //});
+            var lookupData = TableDefinition.LookupDefinition.GetLookupDataMaui(recalcFilter, false);
+            var recordCount = lookupData.GetRecordCount();
             var currentProject = 1;
             var context = AppGlobals.DataRepository.GetDataContext();
             var projectTable = context.GetTable<Project>();
             var timeClocksTable = context.GetTable<TimeClock>();
-            lookupData.PrintDataChanged += (sender, args) =>
+            lookupData.PrintOutput += (sender, args) =>
             {
-                var table = args.OutputTable;
-                foreach (DataRow tableRow in table.Rows)
+                foreach (var primaryKeyValue in args.Result)
                 {
-                    var projectPrimaryKey = new PrimaryKeyValue(TableDefinition);
-                    projectPrimaryKey.PopulateFromDataRow(tableRow);
+                    var projectPrimaryKey = primaryKeyValue;
                     if (projectPrimaryKey.IsValid)
                     {
                         var project = TableDefinition.GetEntityFromPrimaryKeyValue(projectPrimaryKey);
@@ -819,7 +818,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     currentProject++;
                 }
             };
-            lookupData.GetPrintData();
+            lookupData.DoPrintOutput(10);
             if (result.IsNullOrEmpty())
             {
                 if (context.Commit("Saving Projects"))

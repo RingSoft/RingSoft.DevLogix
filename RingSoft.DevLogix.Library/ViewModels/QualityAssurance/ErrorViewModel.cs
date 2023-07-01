@@ -1058,10 +1058,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         private void ErrorViewModel_PrintProcessingHeader(object? sender, PrinterDataProcessedEventArgs e)
         {
-            var errorId =
-                e.OutputRow.GetRowValue(AppGlobals.LookupContext.Errors.GetFieldDefinition(p => p.Id).FieldName)
-                    .ToInt();
-
+            var errorId = TableDefinition.GetEntityFromPrimaryKeyValue(e.PrimaryKey).Id;
             var context = AppGlobals.DataRepository.GetDataContext();
             var errorTableQuery = context.GetTable<Error>();
 

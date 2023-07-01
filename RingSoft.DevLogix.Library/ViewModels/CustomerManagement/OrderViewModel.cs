@@ -614,8 +614,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 FormatType = DecimalEditFormatTypes.Currency,
             };
 
-            var primaryKey = new PrimaryKeyValue(TableDefinition);
-            primaryKey.PopulateFromDataRow(e.OutputRow);
+            var primaryKey = e.PrimaryKey;
 
             var order = TableDefinition.GetEntityFromPrimaryKeyValue(primaryKey);
             order = GetOrder(order.Id);

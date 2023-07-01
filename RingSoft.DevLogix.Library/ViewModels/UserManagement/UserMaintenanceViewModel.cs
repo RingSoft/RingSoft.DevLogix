@@ -1044,10 +1044,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         private void UserMaintenanceViewModel_PrintProcessingHeader(object? sender, PrinterDataProcessedEventArgs e)
         {
-            var primaryKey = new PrimaryKeyValue(TableDefinition);
+            var primaryKey = e.PrimaryKey;
             var context = AppGlobals.DataRepository.GetDataContext();
             var table = context.GetTable<User>();
-            primaryKey.PopulateFromDataRow(e.OutputRow);
             var percentSetup = new DecimalEditControlSetup
             {
                 FormatType = DecimalEditFormatTypes.Percent,

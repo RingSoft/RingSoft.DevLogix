@@ -127,7 +127,12 @@ namespace RingSoft.DevLogix.SqlServer
             return new DevLogixSqlServerDbContext();
         }
 
-        protected override void SetConnectionString(string? connectionString)
+        public override void SetProcessor(DbDataProcessor processor)
+        {
+            
+        }
+
+        public override void SetConnectionString(string? connectionString)
         {
             ConnectionString = connectionString;
         }
