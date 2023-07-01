@@ -915,16 +915,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             var context = AppGlobals.DataRepository.GetDataContext();
             var query = context.GetTable<User>();
             var lookupUi = new LookupUserInterface { PageSize = 10 };
-            var lookupData = SystemGlobals.DataRepository.GetDataContext().GetLookupDataBase<User>(lookupToFilter, lookupUi);
-            var usersToProcess = lookupData.GetRecordCountWait();
+            var lookupData = SystemGlobals.DataRepository.GetDataContext()
+                .GetLookupDataBase<User>(lookupToFilter, TableDefinition);
+            var usersToProcess = lookupData.GetRecordCount();
             var userIndex = 1;
             DbDataProcessor.DontDisplayExceptions = true;
-            lookupData.PrintDataChanged += (sender, args) =>
+            lookupData.PrintOutput += (sender, args) =>
             {
-                foreach (DataRow outputTableRow in args.OutputTable.Rows)
+                foreach (var primaryKeyValue in args.Result)
                 {
-                    var userPrimaryKey = new PrimaryKeyValue(TableDefinition);
-                    userPrimaryKey.PopulateFromDataRow(outputTableRow);
+                    var userPrimaryKey = primaryKeyValue;
                     var user = TableDefinition.GetEntityFromPrimaryKeyValue(userPrimaryKey);
                     if (user != null)
                     {
@@ -982,7 +982,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     userIndex++;
                 }
             };
-            lookupData.GetPrintData();
+            lookupData.DoPrintOutput(10);
             if (result.IsNullOrEmpty())
             {
                 if (!context.Commit("Recalculating"))

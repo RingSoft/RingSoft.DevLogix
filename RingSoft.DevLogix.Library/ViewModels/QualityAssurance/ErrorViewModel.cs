@@ -1167,22 +1167,20 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         {
             var result = string.Empty;
             var lookupUi = new LookupUserInterface { PageSize = 10 };
-            var lookupData = new LookupDataBase(lookupToFilter, lookupUi);
+            var lookupData = TableDefinition.LookupDefinition.GetLookupDataMaui(lookupToFilter, false);
             var context = AppGlobals.DataRepository.GetDataContext();
             var errorsTable = context.GetTable<Error>();
             var usersTable = context.GetTable<User>();
             var timeClocksTable = context.GetTable<TimeClock>();
             DbDataProcessor.DontDisplayExceptions = true;
 
-            var totalErrors = lookupData.GetRecordCountWait();
+            var totalErrors = lookupData.GetRecordCount();
             var currentError = 1;
-            lookupData.PrintDataChanged += (sender, e) =>
+            lookupData.PrintOutput += (sender, e) =>
             {
-                foreach (DataRow outputTableRow in e.OutputTable.Rows)
+                foreach (var primaryKeyValue in e.Result)
                 {
-                    var primaryKey = new PrimaryKeyValue(TableDefinition);
-                    primaryKey.PopulateFromDataRow(outputTableRow);
-                    var error = TableDefinition.GetEntityFromPrimaryKeyValue(primaryKey);
+                    var error = TableDefinition.GetEntityFromPrimaryKeyValue(primaryKeyValue);
                     if (error != null)
                     {
                         error = errorsTable
@@ -1248,7 +1246,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                     currentError++;
                 }
             };
-            lookupData.GetPrintData();
+            lookupData.DoPrintOutput(10);
             if (result.IsNullOrEmpty())
             {
                 if (!context.Commit("Recalculating Finished"))

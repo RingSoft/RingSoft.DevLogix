@@ -427,25 +427,20 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         {
             var result = string.Empty;
             DbDataProcessor.DontDisplayExceptions = true;
-            var lookupData = new LookupDataBase(recalcFilter, new LookupUserInterface()
-            {
-                PageSize = 10
-            });
-            var recordCount = lookupData.GetRecordCountWait();
+            var lookupData = TableDefinition.LookupDefinition.GetLookupDataMaui(recalcFilter, false);
+            var recordCount = lookupData.GetRecordCount();
             var currentProjectMaterial = 1;
             var context = AppGlobals.DataRepository.GetDataContext();
             var projectMaterialTable = context.GetTable<ProjectMaterial>();
             
-            lookupData.PrintDataChanged += (sender, args) =>
+            lookupData.PrintOutput += (sender, args) =>
             {
-                var table = args.OutputTable;
-                foreach (DataRow tableRow in table.Rows)
+                foreach (var primaryKeyValue in args.Result)
                 {
-                    var projectMaterialPrimaryKey = new PrimaryKeyValue(TableDefinition);
-                    projectMaterialPrimaryKey.PopulateFromDataRow(tableRow);
-                    if (projectMaterialPrimaryKey.IsValid)
+                    //projectMaterialPrimaryKey.PopulateFromDataRow(tableRow);
+                    if (primaryKeyValue.IsValid)
                     {
-                        var projectMaterial = TableDefinition.GetEntityFromPrimaryKeyValue(projectMaterialPrimaryKey);
+                        var projectMaterial = TableDefinition.GetEntityFromPrimaryKeyValue(primaryKeyValue);
                         projectMaterial = projectMaterialTable
                             .Include(p => p.History)
                             .FirstOrDefault(p => p.Id == projectMaterial.Id);
@@ -468,7 +463,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     }
                 }
             };
-            lookupData.GetPrintData();
+            lookupData.DoPrintOutput(10);
             if (result.IsNullOrEmpty())
             {
                 if (!context.Commit("Saving Project Materials"))
