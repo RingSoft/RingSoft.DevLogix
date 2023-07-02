@@ -221,6 +221,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
                 return false;
             }
 
+            procedure.SetCursor(WindowCursorTypes.Wait);
             sourceDbContext = AppGlobals.GetNewDbContext();
             sourceDbContext.SetLookupContext(AppGlobals.LookupContext);
             AppGlobals.LookupContext.Initialize(sourceDbContext, OriginalDbPlatform);
@@ -229,6 +230,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
             var result = AppGlobals.MigrateContext(AppGlobals.GetNewDbContext().DbContext);
             if (!result.IsNullOrEmpty())
             {
+                procedure.SetCursor(WindowCursorTypes.Default);
                 procedure.ShowError(result, "File Access Error");
                 return false;
             }
@@ -236,6 +238,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
             result = AppGlobals.MigrateContext(destinationDbContext);
             if (!result.IsNullOrEmpty())
             {
+                procedure.SetCursor(WindowCursorTypes.Default);
                 procedure.ShowError(result, "File Access Error");
                 return false;
             }

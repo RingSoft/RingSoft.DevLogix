@@ -129,6 +129,8 @@ namespace RingSoft.DevLogix.Library.ViewModels
         public RelayCommand LoginCommand { get; }
         public RelayCommand CancelCommand { get; }
 
+        public bool CancelClose { get; private set; }
+
         private readonly bool _initialized;
         private bool _selectingOrganization;
 
@@ -335,6 +337,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         public bool DoCancelClose()
         {
+            CancelClose = false;
             if (AppGlobals.LoggedInOrganization == null && !DialogResult)
             {
                 var message = "Application will shut down if you do not login.  Do you wish to continue?";
@@ -345,6 +348,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
                 }
                 else
                 {
+                    CancelClose = true;
                     return true;
                 }
             }

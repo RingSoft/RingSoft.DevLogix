@@ -61,6 +61,10 @@ namespace RingSoft.DevLogix
                 if (addEditOrganizationWindow.ViewModel.Object != null)
                     organization = addEditOrganizationWindow.ViewModel.Object;
             }
+            else
+            {
+                return false;
+            }
 
             return organization != null;
         }
@@ -95,7 +99,10 @@ namespace RingSoft.DevLogix
         public void CloseWindow()
         {
             DialogResult = ViewModel.DialogResult;
-            Close();
+            if (!ViewModel.CancelClose)
+            {
+                Close();
+            }
         }
 
         public void ShutDownApplication()
@@ -107,6 +114,10 @@ namespace RingSoft.DevLogix
         protected override void OnClosing(CancelEventArgs e)
         {
             e.Cancel = ViewModel.DoCancelClose();
+            if (e.Cancel)
+            {
+                return;
+            }
             base.OnClosing(e);
         }
     }
