@@ -1,6 +1,5 @@
-﻿using System.Linq;
-using MySqlX.XDevAPI.Relational;
-using RingSoft.DataEntryControls.Engine.DataEntryGrid;
+﻿using RingSoft.DataEntryControls.Engine.DataEntryGrid;
+using System.Linq;
 
 namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 {

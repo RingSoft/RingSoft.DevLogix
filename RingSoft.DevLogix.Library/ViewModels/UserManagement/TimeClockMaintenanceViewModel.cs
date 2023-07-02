@@ -1,20 +1,18 @@
-﻿using RingSoft.DbLookup;
+﻿using Microsoft.EntityFrameworkCore;
+using RingSoft.DataEntryControls.Engine;
+using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model;
+using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
+using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
+using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Timers;
-using Microsoft.EntityFrameworkCore;
-using RingSoft.DataEntryControls.Engine;
-using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
-using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 using IDbContext = RingSoft.DevLogix.DataAccess.IDbContext;
-using System.Diagnostics.Metrics;
-using MySqlX.XDevAPI.Common;
-using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
 
 namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 {

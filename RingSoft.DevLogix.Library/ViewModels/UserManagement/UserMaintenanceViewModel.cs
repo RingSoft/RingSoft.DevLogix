@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MySqlX.XDevAPI.Common;
 using RingSoft.App.Interop;
 using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
@@ -19,7 +18,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Linq;
-using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 
 namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 {

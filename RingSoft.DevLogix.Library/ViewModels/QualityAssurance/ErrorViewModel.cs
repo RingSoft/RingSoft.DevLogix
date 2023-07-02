@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics.Metrics;
-using System.Linq;
-using System.Threading;
-using Microsoft.EntityFrameworkCore;
-using Org.BouncyCastle.Bcpg.Sig;
+﻿using Microsoft.EntityFrameworkCore;
 using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
@@ -20,7 +12,11 @@ using RingSoft.DevLogix.DataAccess.LookupModel;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 using RingSoft.Printing.Interop;
-using static System.Net.Mime.MediaTypeNames;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Linq;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 {

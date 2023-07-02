@@ -1,13 +1,8 @@
-﻿using Org.BouncyCastle.Asn1.Esf;
-using RingSoft.App.Library;
-using RingSoft.DbLookup;
-using RingSoft.DbMaintenance;
+﻿using RingSoft.DbLookup;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
-using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels.UserManagement;
-using RingSoft.DevLogix.Sqlite;
 
 namespace RingSoft.DevLogix.Tests.UserManagement
 {

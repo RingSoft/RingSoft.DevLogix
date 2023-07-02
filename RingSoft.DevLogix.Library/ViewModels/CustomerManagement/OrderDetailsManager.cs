@@ -1,9 +1,7 @@
-﻿using System.Linq;
-using MySqlX.XDevAPI.Relational;
-using RingSoft.DataEntryControls.Engine.DataEntryGrid;
+﻿using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
-using RingSoft.DevLogix.Library.ViewModels.UserManagement;
+using System.Linq;
 
 namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 {

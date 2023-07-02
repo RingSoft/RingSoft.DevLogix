@@ -1,24 +1,23 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using RingSoft.App.Interop;
+using RingSoft.DataEntryControls.Engine;
+using RingSoft.DbLookup;
+using RingSoft.DbLookup.AutoFill;
+using RingSoft.DbLookup.DataProcessor;
+using RingSoft.DbLookup.Lookup;
+using RingSoft.DbLookup.ModelDefinition;
+using RingSoft.DbLookup.QueryBuilder;
+using RingSoft.DbMaintenance;
+using RingSoft.DevLogix.DataAccess.Model;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using RingSoft.DbLookup;
-using RingSoft.DbLookup.AutoFill;
-using RingSoft.DbLookup.ModelDefinition;
-using RingSoft.DevLogix.DataAccess.Model;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using RingSoft.DataEntryControls.Engine;
-using RingSoft.DbLookup.QueryBuilder;
 using System.Net;
-using Newtonsoft.Json;
-using RingSoft.App.Interop;
-using RingSoft.DbLookup.DataProcessor;
-using RingSoft.DbLookup.Lookup;
-using RingSoft.DbMaintenance;
 using IDbContext = RingSoft.DevLogix.DataAccess.IDbContext;
-using MySqlX.XDevAPI.Common;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 {

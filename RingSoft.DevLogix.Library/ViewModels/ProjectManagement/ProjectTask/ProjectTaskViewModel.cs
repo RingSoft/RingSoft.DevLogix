@@ -1,23 +1,20 @@
-﻿using System.ComponentModel;
-using Microsoft.EntityFrameworkCore;
-using RingSoft.App.Library;
+﻿using Microsoft.EntityFrameworkCore;
+using RingSoft.DataEntryControls.Engine;
+using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
+using RingSoft.DbLookup.DataProcessor;
+using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition;
-using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
-using System.Linq;
-using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbMaintenance;
-using RingSoft.DevLogix.DataAccess.Model;
-using RingSoft.DataEntryControls.Engine.DataEntryGrid;
-using MySqlX.XDevAPI.Common;
-using RingSoft.DbLookup.Lookup;
-using RingSoft.DbLookup.DataProcessor;
-using System.Data;
-using RingSoft.DevLogix.DataAccess.LookupModel;
 using RingSoft.DevLogix.DataAccess;
-using RingSoft.DevLogix.Library.ViewModels.UserManagement;
+using RingSoft.DevLogix.DataAccess.LookupModel;
+using RingSoft.DevLogix.DataAccess.Model;
+using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
+using System.ComponentModel;
+using System.Data;
+using System.Linq;
 
 namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 {

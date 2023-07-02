@@ -1,12 +1,7 @@
-﻿using System;
-using System.Linq;
-using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore;
-using RingSoft.DbLookup;
-using RingSoft.DbLookup.AutoFill;
-using RingSoft.DbLookup.ModelDefinition;
+﻿using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DevLogix.DataAccess.Model;
-using Ubiety.Dns.Core.Records;
+using System;
+using System.Linq;
 
 namespace RingSoft.DevLogix.Library
 {

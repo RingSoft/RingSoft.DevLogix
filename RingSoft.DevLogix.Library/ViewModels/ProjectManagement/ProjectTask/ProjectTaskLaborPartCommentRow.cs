@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using MySqlX.XDevAPI.Common;
-using RingSoft.DataEntryControls.Engine;
+﻿using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
+using System.Collections.Generic;
 
 namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 {

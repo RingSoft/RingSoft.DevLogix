@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Timers;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Org.BouncyCastle.Security.Certificates;
-using RingSoft.App.Library;
+﻿using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup.AutoFill;
-using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.ModelDefinition;
-using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DevLogix.DataAccess;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
@@ -21,6 +11,12 @@ using RingSoft.DevLogix.Library.ViewModels.ProjectManagement;
 using RingSoft.DevLogix.Library.ViewModels.QualityAssurance;
 using RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing;
 using RingSoft.DevLogix.Library.ViewModels.UserManagement;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Timers;
 
 namespace RingSoft.DevLogix.Library.ViewModels
 {
