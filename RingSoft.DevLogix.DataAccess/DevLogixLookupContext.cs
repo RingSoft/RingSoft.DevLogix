@@ -814,6 +814,7 @@ namespace RingSoft.DevLogix.DataAccess
             Errors.GetFieldDefinition(p => p.Resolution)
                 .IsMemo();
             Errors.GetFieldDefinition(p => p.FoundByUserId).CanSetNull(false);
+            Errors.GetFieldDefinition(p => p.ErrorId).IsGeneratedKey();
 
             ErrorDevelopers.PriorityLevel = 500;
             ErrorDevelopers.GetFieldDefinition(p => p.DateFixed)
@@ -828,11 +829,13 @@ namespace RingSoft.DevLogix.DataAccess
             TestingOutlineTemplates.PriorityLevel = 600;
 
             TimeClocks.PriorityLevel = 600;
+            TimeClocks.GetFieldDefinition(p => p.Name).IsGeneratedKey();
             TimeClocks.GetFieldDefinition(p => p.Notes).IsMemo();
             TimeClocks.GetFieldDefinition(p => p.PunchInDate).HasDateType(DbDateTypes.DateTime)
                 .DoConvertToLocalTime();
             TimeClocks.GetFieldDefinition(p => p.PunchOutDate).HasDateType(DbDateTypes.DateTime).DoConvertToLocalTime();
-            TimeClocks.GetFieldDefinition(p => p.ErrorId).CanSetNull(false);
+            TimeClocks.GetFieldDefinition(p => p.ErrorId)
+                .CanSetNull(false);
             TimeClocks.GetFieldDefinition(p => p.MinutesSpent).HasSearchForHostId(TimeSpentHostId);
 
             Projects.PriorityLevel = 400;
@@ -889,6 +892,7 @@ namespace RingSoft.DevLogix.DataAccess
                 .DoConvertToLocalTime(false);
 
             Order.PriorityLevel = 700;
+            Order.GetFieldDefinition(p => p.OrderId).IsGeneratedKey();
             Order.GetFieldDefinition(p => p.OrderDate).HasDateType(DbDateTypes.DateTime);
             Order.GetFieldDefinition(p => p.ShippedDate).HasDateType(DbDateTypes.DateTime);
             Order.GetFieldDefinition(p => p.SubTotal).HasDecimalFieldType(DecimalFieldTypes.Currency);

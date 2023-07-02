@@ -574,10 +574,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         protected override void Initialize()
         {
             AppGlobals.MainViewModel.ErrorViewModels.Add(this);
+            
             if (base.View is IErrorView errorView)
             {
                 View = errorView;
             }
+
+            ViewLookupDefinition.InitialOrderByField = TableDefinition.GetFieldDefinition(p => p.Id);
             StatusAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ErrorStatusId));
             ProductAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ProductId));
             PriorityAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ErrorPriorityId));
@@ -772,6 +775,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 TestingOutlineId = TestingOutlineAutoFillValue.GetEntity<TestingOutline>().Id,
             };
 
+            if (KeyAutoFillValue != null)
+            {
+                result.ErrorId = KeyAutoFillValue.Text;
+            }
             if (Id > 0)
             {
                 var context = AppGlobals.DataRepository.GetDataContext();
@@ -783,17 +790,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                     result.Cost = error.Cost;
                 }
 
-            }
-
-            if (MaintenanceMode == DbMaintenanceModes.AddMode && KeyAutoFillValue.Text.IsNullOrEmpty())
-            {
-                result.ErrorId = Guid.NewGuid().ToString();
-                KeyAutoFillValue = new AutoFillValue(new PrimaryKeyValue(TableDefinition), result.ErrorId);
-                _makeErrorId = true;
-            }
-            else
-            {
-                result.ErrorId = KeyAutoFillValue.Text;
             }
 
             if (result.FoundByUserId == 0)
@@ -875,11 +871,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         protected override bool SaveEntity(Error entity)
         {
-            var makeErrorId = entity.Id == 0;
+            var makeErrorId = entity.Id == 0 && entity.ErrorId.IsNullOrEmpty();
             var result = false;
             var context = AppGlobals.DataRepository.GetDataContext();
             if (context != null)
             {
+                if (makeErrorId)
+                {
+                    entity.ErrorId = Guid.NewGuid().ToString();
+                }
                 result = context.SaveEntity(entity, "Saving Error");
 
                 if (result && makeErrorId)

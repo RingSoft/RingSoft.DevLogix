@@ -607,19 +607,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 Notes = Notes,
                 AreDatesEdited = IsEdited
             };
-            var name = string.Empty;
-            if (KeyAutoFillValue != null)
-            {
-                name = KeyAutoFillValue.Text;
-            }
-
-            if (name.IsNullOrEmpty())
-            {
-                name = Guid.NewGuid().ToString();
-                KeyAutoFillValue = new AutoFillValue(new PrimaryKeyValue(TableDefinition), name);
-            }
-            timeClock.Name = name;
-
             if (timeClock.PunchOutDate.HasValue)
             {
                 timeClock.PunchOutDate = timeClock.PunchOutDate.Value.ToUniversalTime();
@@ -659,12 +646,18 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 AppGlobals.MainViewModel.SetupTimer(null);
             }
 
+            var makeName = Id == 0;
             var saveChildren = entity.Id != 0;
             var context = AppGlobals.DataRepository.GetDataContext();
             var user = context.GetTable<User>().FirstOrDefault(p => p.Id == entity.UserId);
             ProjectTask projectTask = null;
+            if (makeName)
+            {
+                entity.Name = Guid.NewGuid().ToString();
+            }
+
             var result = context.SaveEntity(entity, "Saving Time Clock");
-            if (result)
+            if (result && makeName)
             {
                 entity.Name = $"T-{entity.Id}";
                 result = context.SaveEntity(entity, "Updating Name");
