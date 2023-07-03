@@ -69,4 +69,38 @@ namespace RingSoft.DevLogix
 
         }
     }
+
+    public class MemoryLookupSearchForHost : LookupSearchForHost<MemoryControl>
+    {
+        public override string SearchText
+        {
+            get => Control.Memory.ToString();
+            set => Control.Memory = value.ToDecimal().ToDouble();
+        }
+
+
+        public override void SelectAll()
+        {
+        }
+
+        protected virtual double? DefaultWidth { get; set; } = 100;
+
+        protected override MemoryControl ConstructControl()
+        {
+            return new MemoryControl();
+        }
+
+        protected override void Initialize(MemoryControl control, LookupColumnDefinitionBase columnDefinition)
+        {
+            control.Width = DefaultWidth.Value;
+            control.HorizontalAlignment = HorizontalAlignment.Left;
+            control.ControlDirty += (sender, args) => OnTextChanged();
+        }
+
+        protected override void Initialize(MemoryControl control)
+        {
+
+        }
+    }
+
 }

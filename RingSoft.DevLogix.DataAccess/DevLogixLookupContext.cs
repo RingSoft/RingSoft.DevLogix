@@ -35,6 +35,7 @@ namespace RingSoft.DevLogix.DataAccess
     {
         public const int TimeSpentHostId = 100;
         public const int SpeedHostId = 200;
+        public const int MemoryHostId = 300;
         public override DbDataProcessor DataProcessor => _dbDataProcessor;
         protected override DbContext DbContext => _dbContext;
 
@@ -914,6 +915,15 @@ namespace RingSoft.DevLogix.DataAccess
             CustomerComputer.GetFieldDefinition(p => p.Notes).IsMemo();
             CustomerComputer.GetFieldDefinition(p => p.Speed)
                 .HasSearchForHostId(SpeedHostId);
+
+            CustomerComputer.GetFieldDefinition(p => p.HardDriveFree)
+                .HasSearchForHostId(MemoryHostId);
+
+            CustomerComputer.GetFieldDefinition(p => p.HardDriveSize)
+                .HasSearchForHostId(MemoryHostId);
+
+            CustomerComputer.GetFieldDefinition(p => p.RamSize)
+                .HasSearchForHostId(MemoryHostId);
         }
 
         public override UserAutoFill GetUserAutoFill(string userName)

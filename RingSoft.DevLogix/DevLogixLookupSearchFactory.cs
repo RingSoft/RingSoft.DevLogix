@@ -17,6 +17,10 @@ namespace RingSoft.DevLogix
             {
                 return new SpeedLookupSearchForHost();
             }
+            if (hostId == DevLogixLookupContext.MemoryHostId)
+            {
+                return new MemoryLookupSearchForHost();
+            }
 
             return base.CreateSearchForHost(hostId);
         }
@@ -27,6 +31,16 @@ namespace RingSoft.DevLogix
             {
                 return AppGlobals.MakeTimeSpent(value.ToDecimal().ToDouble());
             }
+
+            if (hostId == DevLogixLookupContext.SpeedHostId)
+            {
+                return AppGlobals.MakeSpeed(value.ToDecimal().ToDouble());
+            }
+            if (hostId == DevLogixLookupContext.MemoryHostId)
+            {
+                return AppGlobals.MakeSpace(value.ToDecimal().ToDouble());
+            }
+
             return base.FormatValue(hostId, value);
         }
     }

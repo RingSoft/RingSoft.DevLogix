@@ -130,6 +130,17 @@ namespace RingSoft.DevLogix
                 {
                     args.Value = AppGlobals.MakeTimeSpent(args.RawValue.ToDecimal().ToDouble());
                 }
+
+                if (args.SearchForHostId == DevLogixLookupContext.SpeedHostId)
+                {
+                    args.Value = AppGlobals.MakeSpeed(args.RawValue.ToDecimal().ToDouble());
+                }
+
+                if (args.SearchForHostId == DevLogixLookupContext.MemoryHostId)
+                {
+                    args.Value = AppGlobals.MakeSpace(args.RawValue.ToDecimal().ToDouble());
+                }
+
             };
             AppGlobals.LookupContext.CanProcessTableEvent += (sender, args) =>
             {
