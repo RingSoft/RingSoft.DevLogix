@@ -377,6 +377,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         protected override void Initialize()
         {
             _loading = true;
+            ViewLookupDefinition.InitialOrderByField = TableDefinition.GetFieldDefinition(p => p.Id);
 
             NewButtonEnabled = false;
             var punchIn = false;
@@ -607,6 +608,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 Notes = Notes,
                 AreDatesEdited = IsEdited
             };
+            if (KeyAutoFillValue != null)
+            {
+                timeClock.Name = KeyAutoFillValue.Text;
+            }
+
             if (timeClock.PunchOutDate.HasValue)
             {
                 timeClock.PunchOutDate = timeClock.PunchOutDate.Value.ToUniversalTime();
@@ -646,7 +652,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 AppGlobals.MainViewModel.SetupTimer(null);
             }
 
-            var makeName = Id == 0;
+            var makeName = Id == 0 && entity.Name.IsNullOrEmpty();
             var saveChildren = entity.Id != 0;
             var context = AppGlobals.DataRepository.GetDataContext();
             var user = context.GetTable<User>().FirstOrDefault(p => p.Id == entity.UserId);

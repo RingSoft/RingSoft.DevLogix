@@ -311,6 +311,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         protected override void Initialize()
         {
+            ViewLookupDefinition.InitialOrderByField = TableDefinition.GetFieldDefinition(p => p.Id);
             if (LookupAddViewArgs != null && LookupAddViewArgs.ParentWindowPrimaryKeyValue != null)
             {
                 if (LookupAddViewArgs.ParentWindowPrimaryKeyValue.TableDefinition ==
@@ -409,15 +410,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 result.ShippedDate = null;
             }
 
-            if (KeyAutoFillValue == null || !KeyAutoFillValue.IsValid())
-            {
-                if (result.Id == 0)
-                {
-                    result.OrderId = Guid.NewGuid().ToString();
-                    KeyAutoFillValue = new AutoFillValue(new PrimaryKeyValue(TableDefinition), result.OrderId);
-                }
-            }
-            else
+            if (KeyAutoFillValue != null)
             {
                 result.OrderId = KeyAutoFillValue.Text;
             }
@@ -460,12 +453,21 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             Total = 0;
             DetailsManager.SetupForNewRecord();
             CustomerAutoFillValue = DefaultCustomerAutoFillValue;
+            if (CustomerAutoFillValue != null)
+            {
+                LoadCustomer();
+            }
         }
 
         protected override bool SaveEntity(Order entity)
         {
-            var makeOrderId = entity.Id == 0;
+            var makeOrderId = entity.Id == 0 && entity.OrderId.IsNullOrEmpty();
             var context = AppGlobals.DataRepository.GetDataContext();
+            if (makeOrderId)
+            {
+                entity.OrderId = Guid.NewGuid().ToString();
+            }
+
             var result = context.SaveEntity(entity, "Saving Order");
             if (result && makeOrderId)
             {
@@ -566,6 +568,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
             customProperties.Add(new PrintingCustomProperty
             {
+                Name = "lblOrderId",
+                Value = "Order ID"
+            });
+            customProperties.Add(new PrintingCustomProperty
+            {
                 Name = "lblInvoiceDate",
                 Value = "Invoice Date",
             });
@@ -627,6 +634,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 e.HeaderRow.StringField05 = order.Region;
                 e.HeaderRow.StringField06 = order.PostalCode;
                 e.HeaderRow.StringField07 = order.Country;
+                e.HeaderRow.StringField08 = order.OrderId;
                 e.HeaderRow.NumberField01 = currencySetup.FormatValue((decimal)order.SubTotal);
                 e.HeaderRow.NumberField02 = currencySetup.FormatValue((decimal)order.Total);
                 var detailsChunk = new List<PrintingInputDetailsRow>();

@@ -354,6 +354,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             TablesToDelete.Add(AppGlobals.LookupContext.CustomerProduct);
 
             OrderLookupDefinition = AppGlobals.LookupContext.OrderLookup.Clone();
+            OrderLookupDefinition.InitialOrderByField = AppGlobals.LookupContext
+                .Order.GetFieldDefinition(p => p.Id);
 
             AddModifyOrderLookupCommand = new RelayCommand(AddModifyOrder);
 
@@ -457,6 +459,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         {
             Id = 0;
             KeyAutoFillValue = null;
+            
             ContactName = null;
             ContactTitle = null;
             Address = null;

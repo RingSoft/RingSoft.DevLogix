@@ -246,6 +246,7 @@ namespace RingSoft.DevLogix.DataAccess
             UsersGroups.HasLookupDefinition(UsersGroupsLookup);
 
             TimeClockLookup = new LookupDefinition<TimeClockLookup, TimeClock>(TimeClocks);
+            TimeClockLookup.InitialOrderByField = TimeClocks.GetFieldDefinition(p => p.Id);
             TimeClockLookup.AddVisibleColumnDefinition(
                 p => p.Name
                 , "Time Clock ID"
@@ -326,6 +327,7 @@ namespace RingSoft.DevLogix.DataAccess
             ProductVersionDepartments.HasLookupDefinition(ProductVersionDepartmentLookup);
 
             ErrorLookup = new LookupDefinition<ErrorLookup, Error>(Errors);
+            ErrorLookup.InitialOrderByField = Errors.GetFieldDefinition(p => p.Id);
             ErrorLookup.AddVisibleColumnDefinition(p => p.ErrorId, "Error ID", p => p.ErrorId, 20);
             ErrorLookup.Include(p => p.ErrorStatus)
                 .AddVisibleColumnDefinition(p => p.Status, "Status", p => p.Description, 30);
@@ -564,6 +566,7 @@ namespace RingSoft.DevLogix.DataAccess
             CustomerProduct.HasLookupDefinition(CustomerProductsLookup);
 
             OrderLookup = new LookupDefinition<OrderLookup, Order>(Order);
+            OrderLookup.InitialOrderByField = Order.GetFieldDefinition(p => p.Id);
             OrderLookup.AddVisibleColumnDefinition(
                 p => p.OrderId
                 , "Order ID"
