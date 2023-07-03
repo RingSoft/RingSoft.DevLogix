@@ -768,6 +768,8 @@ namespace RingSoft.DevLogix.DataAccess
             Users.GetFieldDefinition(p => p.ClockOutReason).IsEnum<ClockOutReasons>();
 
             UserTracker.PriorityLevel = 300;
+            UserTracker.GetFieldDefinition(p => p.RefreshType).IsEnum<RefreshRate>();
+
             UserTrackerUsers.PriorityLevel = 400;
 
             UsersTimeOff.PriorityLevel = 400;
