@@ -86,7 +86,7 @@
 
             <Label Grid.Row="0" Grid.Column="2" Content="Time Clock ID"/>
 
-            <lc:AutoFillControl Grid.Row="0" Grid.Column="3" x:Name="NameControl" Width="100" HorizontalAlignment="Left"/>
+            <lc:AutoFillControl Grid.Row="0" Grid.Column="3" x:Name="NameControl" Width="100" HorizontalAlignment="Left" IsTabStop="False"/>
 
 
             <Label Grid.Row="1" Grid.Column="0" Content="User"/>

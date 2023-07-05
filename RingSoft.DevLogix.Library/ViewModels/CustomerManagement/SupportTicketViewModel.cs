@@ -122,6 +122,95 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
         }
 
+        private AutoFillSetup _productAutoFillSetup;
+
+        public AutoFillSetup ProductAutoFillSetup
+        {
+            get => _productAutoFillSetup;
+            set
+            {
+                if (_productAutoFillSetup == value)
+                    return;
+
+                _productAutoFillSetup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private AutoFillValue _productAutoFillValue;
+
+        public AutoFillValue ProductAutoFillValue
+        {
+            get => _productAutoFillValue;
+            set
+            {
+                if (_productAutoFillValue == value)
+                    return;
+
+                _productAutoFillValue = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private AutoFillSetup _assignedUserAutoFillSetup;
+
+        public AutoFillSetup AssignedUserAutoFillSetup
+        {
+            get => _assignedUserAutoFillSetup;
+            set
+            {
+                if (_assignedUserAutoFillSetup == value)
+                    return;
+
+                _assignedUserAutoFillSetup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private AutoFillValue _assignedUserAutoFillValue;
+
+        public AutoFillValue AssignedUserAutoFillValue
+        {
+            get => _assignedUserAutoFillValue;
+            set
+            {
+                if (_assignedUserAutoFillValue == value)
+                    return;
+
+                _assignedUserAutoFillValue = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private DateTime? _closedDateTime;
+
+        public DateTime? ClosedDate
+        {
+            get => _closedDateTime;
+            set
+            {
+                if (_closedDateTime == value)
+                    return;
+
+                _closedDateTime = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string? _notes;
+
+        public string? Notes
+        {
+            get => _notes;
+            set
+            {
+                if (_notes == value)
+                    return;
+
+                _notes = value;
+                OnPropertyChanged();
+            }
+        }
 
         public RelayCommand PunchInCommand { get; set; }
 
@@ -135,10 +224,21 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 TableDefinition.GetFieldDefinition(p => p.CustomerId));
             CreateUserAutoFillSetup = new AutoFillSetup(
                 TableDefinition.GetFieldDefinition(p => p.CreateUserId));
+            ProductAutoFillSetup = new AutoFillSetup(
+                TableDefinition.GetFieldDefinition(p => p.ProductId));
+            AssignedUserAutoFillSetup = new AutoFillSetup(
+                TableDefinition.GetFieldDefinition(p => p.AssignedToUserId));
 
             PunchInCommand = new RelayCommand(PunchIn);
             RecalcCommand = new RelayCommand(Recalc);
         }
+
+        protected override void Initialize()
+        {
+            ViewLookupDefinition.InitialOrderByField = TableDefinition.GetFieldDefinition(p => p.Id);
+            base.Initialize();
+        }
+
         protected override SupportTicket PopulatePrimaryKeyControls(SupportTicket newEntity, PrimaryKeyValue primaryKeyValue)
         {
             var result = GetTicket(newEntity.Id);
@@ -166,6 +266,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             CustomerAutoFillValue = entity.Customer.GetAutoFillValue();
             CreateDate = entity.CreateDate.ToLocalTime();
             CreateUserAutoFillValue = entity.CreateUser.GetAutoFillValue();
+            ProductAutoFillValue = entity.Product.GetAutoFillValue();
+            AssignedUserAutoFillValue = entity.AssignedToUser.GetAutoFillValue();
+            PhoneNumber = entity.PhoneNumber;
+            ClosedDate = entity.CloseDate;
+            Notes = entity.Notes;
             _loading = false;
         }
 
@@ -189,10 +294,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         {
             var result = new SupportTicket
             {
+                Id = Id,
                 CustomerId = CustomerAutoFillValue.GetEntity<Customer>().Id,
                 CreateDate = CreateDate.ToUniversalTime(),
                 PhoneNumber = PhoneNumber,
-                CreateUserId = CustomerAutoFillValue.GetEntity<User>().Id,
+                CreateUserId = CreateUserAutoFillValue.GetEntity<User>().Id,
+                ProductId = ProductAutoFillValue.GetEntity<Product>().Id,
+                AssignedToUserId = AssignedUserAutoFillValue.GetEntity<User>().Id,
+                CloseDate = ClosedDate,
+                Notes = Notes,
             };
 
             if (KeyAutoFillValue != null)
@@ -200,6 +310,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 result.TicketId = KeyAutoFillValue.Text;
             }
 
+            if (result.AssignedToUserId == 0)
+            {
+                result.AssignedToUserId = null;
+            }
 
             return result;
         }
@@ -213,6 +327,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             CreateDate = DateTime.Now;
             PhoneNumber = string.Empty;
             CreateUserAutoFillValue = AppGlobals.LoggedInUser.GetAutoFillValue();
+            ProductAutoFillValue = null;
+            AssignedUserAutoFillValue = null;
+            ClosedDate = null;
+            Notes = null;
             LoadCustomer();
             _loading = false;
         }

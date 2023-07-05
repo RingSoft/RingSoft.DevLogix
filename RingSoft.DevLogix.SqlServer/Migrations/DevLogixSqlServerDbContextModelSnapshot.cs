@@ -1620,6 +1620,7 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("ClockOutReason")
+                        .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
                     b.Property<int?>("CustomerId")

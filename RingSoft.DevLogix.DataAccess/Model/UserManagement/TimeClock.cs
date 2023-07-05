@@ -47,6 +47,7 @@ namespace RingSoft.DevLogix.DataAccess.Model
 
         public bool AreDatesEdited { get; set; }
 
+        [MaxLength(50)]
         public string? ClockOutReason { get; set; }
 
         public override string ToString()
