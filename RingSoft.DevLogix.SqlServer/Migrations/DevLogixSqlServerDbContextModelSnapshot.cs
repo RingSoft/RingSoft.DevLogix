@@ -1561,6 +1561,9 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<bool>("AreDatesEdited")
                         .HasColumnType("bit");
 
+                    b.Property<string>("ClockOutReason")
+                        .HasColumnType("nvarchar");
+
                     b.Property<int?>("CustomerId")
                         .HasColumnType("integer");
 

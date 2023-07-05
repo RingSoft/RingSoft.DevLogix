@@ -1004,6 +1004,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             {
                 DoSave();
             }
+            PunchOutCommand.IsEnabled = false;
         }
         private void StopTimer()
         {

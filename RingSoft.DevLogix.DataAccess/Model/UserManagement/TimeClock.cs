@@ -47,6 +47,8 @@ namespace RingSoft.DevLogix.DataAccess.Model
 
         public bool AreDatesEdited { get; set; }
 
+        public string? ClockOutReason { get; set; }
+
         public override string ToString()
         {
             return Name;

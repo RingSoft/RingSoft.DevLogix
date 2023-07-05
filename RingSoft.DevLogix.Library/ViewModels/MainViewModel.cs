@@ -630,6 +630,31 @@ namespace RingSoft.DevLogix.Library.ViewModels
                     user.OtherClockOutReason = null;
                 }
                 result = context.SaveEntity(user, "Saving Clock Reason");
+                if (result)
+                {
+                    var timeClockContext = AppGlobals.DataRepository.GetDataContext();
+                    var timeClockQuery = timeClockContext.GetTable<TimeClock>();
+                    activeTimeCard = timeClockQuery
+                        .OrderBy(p => p.Id)
+                        .Where(p => p.PunchOutDate != null)
+                        .LastOrDefault(p => p.UserId == user.Id);
+
+                    if (activeTimeCard != null)
+                    {
+                        var enumTrans = new EnumFieldTranslation();
+                        enumTrans.LoadFromEnum<ClockOutReasons>();
+                        var reasonItem = enumTrans.TypeTranslations
+                            .FirstOrDefault(p => p.NumericValue == (int)user.ClockOutReason);
+                        activeTimeCard.ClockOutReason = reasonItem.TextValue;
+                        if (user.OtherClockOutReason != null)
+                        {
+                            activeTimeCard.ClockOutReason = user.OtherClockOutReason;
+                        }
+
+                        result = timeClockContext.SaveEntity(activeTimeCard, "Saving Time Card");
+                    }
+                }
+
                 return result;
             }
 
