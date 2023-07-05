@@ -221,10 +221,32 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
         }
 
+        public AutoFillValue DefaultCustomerAutoFillValue { get; private set; }
         public CustomerComputerViewModel()
         {
             CustomerAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(
                 p => p.CustomerId));
+        }
+
+        protected override void Initialize()
+        {
+            if (LookupAddViewArgs != null && LookupAddViewArgs.ParentWindowPrimaryKeyValue != null)
+            {
+                if (LookupAddViewArgs.ParentWindowPrimaryKeyValue.TableDefinition ==
+                    AppGlobals.LookupContext.Customer)
+                {
+                    var customer =
+                        AppGlobals.LookupContext.Customer.GetEntityFromPrimaryKeyValue(LookupAddViewArgs
+                            .ParentWindowPrimaryKeyValue);
+
+                    var context = AppGlobals.DataRepository.GetDataContext();
+                    var table = context.GetTable<Customer>();
+                    customer = table.FirstOrDefault(p => p.Id == customer.Id);
+                    DefaultCustomerAutoFillValue = customer.GetAutoFillValue();
+                }
+            }
+
+            base.Initialize();
         }
 
         protected override CustomerComputer PopulatePrimaryKeyControls(CustomerComputer newEntity, PrimaryKeyValue primaryKeyValue)
@@ -280,7 +302,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         {
             Id = 0;
             KeyAutoFillValue = null;
-            CustomerAutoFillValue = null;
+            CustomerAutoFillValue = DefaultCustomerAutoFillValue;
             Brand = null;
             OperatingSystem = null;
             Speed = null;

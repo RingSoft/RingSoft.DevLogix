@@ -318,6 +318,36 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
         }
 
+        private LookupDefinition<CustomerComputerLookup, CustomerComputer> _computerLookup;
+
+        public LookupDefinition<CustomerComputerLookup, CustomerComputer> ComputerLookup
+        {
+            get => _computerLookup;
+            set
+            {
+                if (_computerLookup == value)
+                    return;
+
+                _computerLookup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private LookupCommand _computerLookupCommand;
+
+        public LookupCommand ComputerLookupCommand
+        {
+            get => _computerLookupCommand;
+            set
+            {
+                if (_computerLookupCommand == value)
+                    return;
+
+                _computerLookupCommand = value;
+                OnPropertyChanged(null, false);
+            }
+        }
+
         private string? _notes;
 
         public string? Notes
@@ -340,6 +370,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         public RelayCommand AddModifyOrderLookupCommand { get; set; }
 
+        public RelayCommand AddModifyComputerLookupCommand { get; set; }
+
         public CustomerViewModel()
         {
             TimeZoneAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.TimeZoneId));
@@ -359,6 +391,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
             AddModifyOrderLookupCommand = new RelayCommand(AddModifyOrder);
 
+            AddModifyComputerLookupCommand = new RelayCommand(AddModifyComputer);
+
             var timeClockLookup = new LookupDefinition<TimeClockLookup, TimeClock>(AppGlobals.LookupContext.TimeClocks);
             timeClockLookup.AddVisibleColumnDefinition(p => p.PunchInDate, p => p.PunchInDate);
             timeClockLookup.Include(p => p.User)
@@ -366,6 +400,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             timeClockLookup.AddVisibleColumnDefinition(p => p.MinutesSpent, p => p.MinutesSpent);
             TimeClockLookup = timeClockLookup;
             TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
+
+            ComputerLookup = AppGlobals.LookupContext.CustomerComputerLookup.Clone();
 
         }
 
@@ -384,6 +420,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             TimeClockLookup.FilterDefinition.AddFixedFilter(p => p.CustomerId, Conditions.Equals, Id);
             TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
 
+            ComputerLookup.FilterDefinition.ClearFixedFilters();
+            ComputerLookup.FilterDefinition.AddFixedFilter(p => p.CustomerId, Conditions.Equals, Id);
+            ComputerLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
             return result;
         }
 
@@ -475,6 +514,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             ProductManager.SetupForNewRecord();
             OrderLookupCommand = GetLookupCommand(LookupCommands.Clear);
             TimeClockLookupCommand = GetLookupCommand(LookupCommands.Clear);
+            ComputerLookupCommand = GetLookupCommand(LookupCommands.Clear);
             Notes = null;
         }
         
@@ -539,6 +579,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         {
             if (ExecuteAddModifyCommand() == DbMaintenanceResults.Success)
                 OrderLookupCommand = GetLookupCommand(LookupCommands.AddModify);
+        }
+
+        private void AddModifyComputer()
+        {
+            if (ExecuteAddModifyCommand() == DbMaintenanceResults.Success)
+                ComputerLookupCommand = GetLookupCommand(LookupCommands.AddModify);
         }
 
         public void RefreshTimeClockLookup()

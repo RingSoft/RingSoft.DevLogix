@@ -116,7 +116,6 @@
                 </DockPanel>
                 </TabItem>
 
-
                 <TabItem Header="Details">
 
                     <Grid>
@@ -198,6 +197,24 @@
 
                             </deg:DataEntryGrid.Columns>
                         </deg:DataEntryGrid>
+                    </DockPanel>
+                </TabItem>
+                <TabItem Header="Computers">
+                    <DockPanel>
+
+                        <Button Content="_Add/Modify" x:Name="AddModifyComputerButton" Command="{Binding AddModifyComputerLookupCommand}" Height="20"  DockPanel.Dock="Left" VerticalAlignment="Top"/>
+
+                        <lc:LookupControl LookupDefinition="{Binding ComputerLookup}" Command="{Binding ComputerLookupCommand}" >
+
+                            <lc:LookupControl.LookupColumns>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf Name, Type={x:Type lm:CustomerComputerLookup}}" Header="Computer Name" Width="300"/>
+
+
+                            </lc:LookupControl.LookupColumns>
+
+                        </lc:LookupControl>
+
                     </DockPanel>
                 </TabItem>
                 <TabItem Header="Time Clocks" x:Name="TimeClockTab" VerticalAlignment="Stretch">

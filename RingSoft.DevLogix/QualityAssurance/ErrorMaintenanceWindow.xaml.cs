@@ -132,7 +132,7 @@ namespace RingSoft.DevLogix.QualityAssurance
 
         public void PunchIn(Error error)
         {
-            AppGlobals.MainViewModel.MainView.PunchIn(error);
+            AppGlobals.MainViewModel.PunchIn(error);
         }
 
         public bool ProcessRecalcLookupFilter(LookupDefinitionBase lookup)
