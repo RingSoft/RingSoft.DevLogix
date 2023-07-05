@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
+using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
 
 namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
@@ -91,6 +92,36 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
         }
 
+        private AutoFillSetup _createUserAutoFillSetup;
+
+        public AutoFillSetup CreateUserAutoFillSetup
+        {
+            get => _createUserAutoFillSetup;
+            set
+            {
+                if (_createUserAutoFillSetup == value)
+                    return;
+
+                _createUserAutoFillSetup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private AutoFillValue _createUserAutoFillValue;
+
+        public AutoFillValue CreateUserAutoFillValue
+        {
+            get => _createUserAutoFillValue;
+            set
+            {
+                if (_createUserAutoFillValue == value)
+                    return;
+
+                _createUserAutoFillValue = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         public RelayCommand PunchInCommand { get; set; }
 
@@ -102,6 +133,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         {
             CustomerAutoFillSetup = new AutoFillSetup(
                 TableDefinition.GetFieldDefinition(p => p.CustomerId));
+            CreateUserAutoFillSetup = new AutoFillSetup(
+                TableDefinition.GetFieldDefinition(p => p.CreateUserId));
 
             PunchInCommand = new RelayCommand(PunchIn);
             RecalcCommand = new RelayCommand(Recalc);
@@ -132,6 +165,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             _loading = true;
             CustomerAutoFillValue = entity.Customer.GetAutoFillValue();
             CreateDate = entity.CreateDate.ToLocalTime();
+            CreateUserAutoFillValue = entity.CreateUser.GetAutoFillValue();
             _loading = false;
         }
 
@@ -157,6 +191,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             {
                 CustomerId = CustomerAutoFillValue.GetEntity<Customer>().Id,
                 CreateDate = CreateDate.ToUniversalTime(),
+                PhoneNumber = PhoneNumber,
+                CreateUserId = CustomerAutoFillValue.GetEntity<User>().Id,
             };
 
             if (KeyAutoFillValue != null)
@@ -175,6 +211,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             Id = 0;
             CustomerAutoFillValue = null;
             CreateDate = DateTime.Now;
+            PhoneNumber = string.Empty;
+            CreateUserAutoFillValue = AppGlobals.LoggedInUser.GetAutoFillValue();
             LoadCustomer();
             _loading = false;
         }

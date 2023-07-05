@@ -123,6 +123,10 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
+                        <Label Grid.Row="0" Grid.Column="0" Content="Created By"/>
+
+                        <lc:AutoFillControl Grid.Row="0" Grid.Column="1" Width="200" HorizontalAlignment="Left" Setup="{Binding CreateUserAutoFillSetup}" Value="{Binding CreateUserAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
                     </Grid>
                 </TabItem>
             </TabControl>
