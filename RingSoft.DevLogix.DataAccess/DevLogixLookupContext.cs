@@ -88,6 +88,7 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<Order> Order { get; set; }
         public TableDefinition<OrderDetail> OrderDetail { get; set; }
         public TableDefinition<CustomerComputer> CustomerComputer { get; set; }
+        public TableDefinition<SupportTicket> SupportTicket { get; set; }
 
         public LookupDefinition<DevLogixChartLookup, SystemMaster> SystemMasterLookupDefinition { get; set; }
         public LookupDefinition<DevLogixChartLookup, DevLogixChart> DevLogixChartLookup { get; set; }
@@ -138,6 +139,7 @@ namespace RingSoft.DevLogix.DataAccess
         public LookupDefinition<OrderLookup, Order> OrderLookup { get; set; }
         public LookupDefinition<OrderDetailLookup, OrderDetail> OrderDetailLookup { get; set; }
         public LookupDefinition<CustomerComputerLookup, CustomerComputer> CustomerComputerLookup { get; set; }
+        public LookupDefinition<SupportTicketLookup, SupportTicket> SupportTicketLookup { get; set; }
 
         public SqliteDataProcessor SqliteDataProcessor { get; }
         public SqlServerDataProcessor SqlServerDataProcessor { get; }
@@ -618,6 +620,34 @@ namespace RingSoft.DevLogix.DataAccess
                 , "Name"
                 , p => p.Name, 99);
             CustomerComputer.HasLookupDefinition(CustomerComputerLookup);
+
+            SupportTicketLookup = new LookupDefinition<SupportTicketLookup, SupportTicket>(SupportTicket);
+            SupportTicketLookup
+                .AddVisibleColumnDefinition(
+                    p => p.TicketId
+                    , "Ticket ID"
+                    , p => p.TicketId, 20);
+
+            SupportTicketLookup
+                .AddVisibleColumnDefinition(
+                    p => p.CreateDate
+                    , "Date"
+                    , p => p.CreateDate, 25);
+
+            SupportTicketLookup
+                .Include(p => p.Customer)
+                .AddVisibleColumnDefinition(
+                    p => p.Customer
+                    , "Customer"
+                    , p => p.CompanyName, 25);
+
+            SupportTicketLookup
+                .Include(p => p.Product)
+                .AddVisibleColumnDefinition(
+                    p => p.Product
+                    , "Product"
+                    , p => p.Description, 30);
+            SupportTicket.HasLookupDefinition(SupportTicketLookup);
         }
 
         public LookupDefinition<ProductVersionLookup, ProductVersion> MakeProductVersionLookupDefinition()
@@ -834,7 +864,7 @@ namespace RingSoft.DevLogix.DataAccess
 
             TestingOutlineTemplates.PriorityLevel = 600;
 
-            TimeClocks.PriorityLevel = 600;
+            TimeClocks.PriorityLevel = 20000;
             TimeClocks.GetFieldDefinition(p => p.Name).IsGeneratedKey();
             TimeClocks.GetFieldDefinition(p => p.Notes).IsMemo();
             TimeClocks.GetFieldDefinition(p => p.PunchInDate).HasDateType(DbDateTypes.DateTime)
@@ -927,6 +957,20 @@ namespace RingSoft.DevLogix.DataAccess
 
             CustomerComputer.GetFieldDefinition(p => p.RamSize)
                 .HasSearchForHostId(MemoryHostId);
+
+            SupportTicket.PriorityLevel = 800;
+            SupportTicket.GetFieldDefinition(p => p.TicketId)
+                .IsGeneratedKey();
+            SupportTicket.GetFieldDefinition(p => p.CreateDate)
+                .HasDateType(DbDateTypes.DateTime)
+                .DoConvertToLocalTime();
+            SupportTicket.GetFieldDefinition(p => p.CloseDate)
+                .HasDateType(DbDateTypes.DateTime)
+                .DoConvertToLocalTime();
+            SupportTicket.GetFieldDefinition(p => p.Notes)
+                .IsMemo();
+            SupportTicket.GetFieldDefinition(p => p.Cost)
+                .HasDecimalFieldType(DecimalFieldTypes.Currency);
         }
 
         public override UserAutoFill GetUserAutoFill(string userName)

@@ -57,6 +57,7 @@ namespace RingSoft.DevLogix.SqlServer
         public DbSet<Order> Order { get; set; }
         public DbSet<OrderDetail> OrderDetail { get; set; }
         public DbSet<CustomerComputer> CustomerComputer { get; set; }
+        public DbSet<SupportTicket> SupportTicket { get; set; }
         public DbSet<TestingTemplate> TestingTemplates { get; set; }
 
         public bool IsDesignTime { get; set; }

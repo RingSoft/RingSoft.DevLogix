@@ -76,6 +76,7 @@ namespace RingSoft.DevLogix.DataAccess.Model.CustomerManagement
         public virtual ICollection<Order> Orders { get; set; }
         public virtual ICollection<CustomerProduct> CustomerProducts { get; set; }
         public virtual ICollection<CustomerComputer> CustomerComputers { get; set; }
+        public virtual ICollection<SupportTicket> Tickets { get; set; }
 
         public Customer()
         {
@@ -83,6 +84,7 @@ namespace RingSoft.DevLogix.DataAccess.Model.CustomerManagement
             Orders = new HashSet<Order>();
             CustomerProducts = new HashSet<CustomerProduct>();
             CustomerComputers = new HashSet<CustomerComputer>();
+            Tickets = new HashSet<SupportTicket>();
         }
     }
 }

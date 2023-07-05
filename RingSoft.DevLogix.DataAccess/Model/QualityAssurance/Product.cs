@@ -53,6 +53,8 @@ namespace RingSoft.DevLogix.DataAccess.Model
 
         public ICollection<OrderDetail> OrderDetailProducts { get; set; }
 
+        public ICollection<SupportTicket> Tickets { get; set; }
+
         public Product()
         {
             Versions = new HashSet<ProductVersion>();
@@ -61,6 +63,7 @@ namespace RingSoft.DevLogix.DataAccess.Model
             TestingOutlines = new HashSet<TestingOutline>();
             CustomerProducts = new HashSet<CustomerProduct>();
             OrderDetailProducts = new HashSet<OrderDetail>();
+            Tickets = new HashSet<SupportTicket>();
         }
     }
 }

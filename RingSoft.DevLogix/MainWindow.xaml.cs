@@ -1,15 +1,16 @@
 ﻿using RingSoft.App.Controls;
-using RingSoft.DataEntryControls.Engine;
+using RingSoft.App.Library;
 using RingSoft.DataEntryControls.WPF;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Controls.WPF.AdvancedFind;
-using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.ModelDefinition;
-using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DevLogix.DataAccess.Model;
+using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
+using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels;
+using RingSoft.DevLogix.Library.ViewModels.UserManagement;
 using RingSoft.DevLogix.UserManagement;
 using ScottPlot.Plottable;
 using System;
@@ -18,20 +19,10 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Forms;
 using System.Windows.Input;
-using RingSoft.DevLogix.DataAccess;
-using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
-using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
-using RingSoft.DevLogix.Library.ViewModels.UserManagement;
 using Error = RingSoft.DevLogix.DataAccess.Model.Error;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
-using MessageBox = System.Windows.Forms.MessageBox;
 using Window = System.Windows.Window;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using ExtensionMethods = RingSoft.DbLookup.ExtensionMethods;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using RingSoft.App.Library;
 
 namespace RingSoft.DevLogix
 {
@@ -203,6 +194,17 @@ namespace RingSoft.DevLogix
                         CommandParameter = AppGlobals.LookupContext.CustomerComputer,
                     });
                 }
+
+                if (AppGlobals.LookupContext.SupportTicket.HasRight(RightTypes.AllowView))
+                {
+                    menuItem.Items.Add(new MenuItem()
+                    {
+                        Header = "Add/Edit _Support Tickets...",
+                        Command = ViewModel.ShowMaintenanceWindowCommand,
+                        CommandParameter = AppGlobals.LookupContext.SupportTicket,
+                    });
+                }
+
             }
         }
 
