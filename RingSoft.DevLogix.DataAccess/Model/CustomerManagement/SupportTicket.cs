@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.Extensions.Configuration;
 
 namespace RingSoft.DevLogix.DataAccess.Model.CustomerManagement
 {
@@ -46,5 +48,12 @@ namespace RingSoft.DevLogix.DataAccess.Model.CustomerManagement
         public double? MinutesSpent { get; set; }
 
         public double? Cost { get; set; }
+
+        public ICollection<TimeClock> TimeClocks { get; set; }
+
+        public SupportTicket()
+        {
+            TimeClocks = new HashSet<TimeClock>();
+        }
     }
 }

@@ -245,7 +245,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
             Id = result.Id;
             KeyAutoFillValue = result.GetAutoFillValue();
-
+            PunchInCommand.IsEnabled = true;
             return result;
         }
 
@@ -331,6 +331,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             AssignedUserAutoFillValue = null;
             ClosedDate = null;
             Notes = null;
+            PunchInCommand.IsEnabled = false;
             LoadCustomer();
             _loading = false;
         }
@@ -369,7 +370,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         private void PunchIn()
         {
-
+            var ticket = GetTicket(Id);
+            AppGlobals.MainViewModel.PunchIn(ticket);
         }
 
         public void Recalc()

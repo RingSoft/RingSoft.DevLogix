@@ -21,6 +21,7 @@ namespace RingSoft.DevLogix.DataAccess.Configurations
             builder.Property(p => p.AreDatesEdited).HasColumnType(DbConstants.BoolColumnType);
             builder.Property(p => p.CustomerId).HasColumnType(DbConstants.IntegerColumnType);
             builder.Property(p => p.ClockOutReason).HasColumnType(DbConstants.StringColumnType);
+            builder.Property(p => p.SupportTicketId).HasColumnType(DbConstants.IntegerColumnType);
 
             builder.HasOne(p => p.Error)
                 .WithMany(p => p.TimeClocks)
@@ -48,6 +49,12 @@ namespace RingSoft.DevLogix.DataAccess.Configurations
             builder.HasOne(p => p.Customer)
                 .WithMany(p => p.TimeClocks)
                 .HasForeignKey(p => p.CustomerId)
+                .OnDelete(DeleteBehavior.NoAction)
+                .IsRequired(false);
+
+            builder.HasOne(p => p.SupportTicket)
+                .WithMany(p => p.TimeClocks)
+                .HasForeignKey(p => p.SupportTicketId)
                 .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired(false);
         }

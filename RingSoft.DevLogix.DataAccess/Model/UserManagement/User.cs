@@ -77,6 +77,12 @@ namespace RingSoft.DevLogix.DataAccess.Model
         [DefaultValue(0)]
         public double TestingOutlinesMinutesSpent { get; set; }
 
+        [DefaultValue(0)]
+        public double CustomerMinutesSpent { get; set; }
+
+        [DefaultValue(0)]
+        public double SupportTicketsMinutesSpent { get; set; }
+
         [Required]
         [DefaultValue(0)]
         public byte ClockOutReason { get; set; }

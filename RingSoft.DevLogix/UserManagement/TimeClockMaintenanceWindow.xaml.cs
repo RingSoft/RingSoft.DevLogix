@@ -24,6 +24,9 @@ using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels.UserManagement;
 using RingSoft.DevLogix.QualityAssurance;
+using RingSoft.DevLogix.Sqlite.Migrations;
+using Customer = RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Customer;
+using SupportTicket = RingSoft.DevLogix.DataAccess.Model.CustomerManagement.SupportTicket;
 
 namespace RingSoft.DevLogix.UserManagement
 {
@@ -95,6 +98,16 @@ namespace RingSoft.DevLogix.UserManagement
                 LocalViewModel.PunchIn(customer);
             };
         }
+        
+        public TimeClockMaintenanceWindow(SupportTicket ticket)
+        {
+            InitializeComponent();
+            SetupControl();
+            Loaded += (sender, args) =>
+            {
+                LocalViewModel.PunchIn(ticket);
+            };
+        }
 
         public TimeClockMaintenanceWindow()
         {
@@ -127,6 +140,11 @@ namespace RingSoft.DevLogix.UserManagement
                         {
                             CustomerControl.ShowLookupWindow();
                         }
+                        if (SupportTicketControl.Visibility == Visibility.Visible)
+                        {
+                            SupportTicketControl.ShowLookupWindow();
+                        }
+
                     }
                 }
             };
@@ -184,10 +202,15 @@ namespace RingSoft.DevLogix.UserManagement
 
         public void SetTimeClockMode(TimeClockModes timeClockMode)
         {
+            KeyLabel.Visibility = Visibility.Visible;
             ErrorControl.Visibility = Visibility.Collapsed;
             ProjectTaskControl.Visibility = Visibility.Collapsed;
             TestingOutlineControl.Visibility = Visibility.Collapsed;
             CustomerControl.Visibility = Visibility.Collapsed;
+            SupportTicketLabel.Visibility = Visibility.Collapsed;
+            SupportTicketControl.Visibility = Visibility.Collapsed;
+            CustomerTimeRemLabel.Visibility = Visibility.Collapsed;
+            CustomerTimeRemControl.Visibility = Visibility.Collapsed;
 
             switch (timeClockMode)
             {
@@ -207,7 +230,13 @@ namespace RingSoft.DevLogix.UserManagement
                     KeyLabel.Content = "Customer";
                     CustomerControl.Visibility = Visibility.Visible;
                     break;
-
+                case TimeClockModes.SupportTicket:
+                    KeyLabel.Visibility = Visibility.Collapsed;
+                    SupportTicketLabel.Visibility = Visibility.Visible;
+                    SupportTicketControl.Visibility = Visibility.Visible;
+                    CustomerTimeRemLabel.Visibility = Visibility.Visible;
+                    CustomerTimeRemControl.Visibility = Visibility.Visible;
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(timeClockMode), timeClockMode, null);
             }

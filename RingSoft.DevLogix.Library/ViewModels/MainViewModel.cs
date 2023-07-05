@@ -44,6 +44,8 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         void PunchIn(Customer customer);
 
+        void PunchIn(SupportTicket ticket);
+
         void ShowMainChart(bool show = true);
 
         object GetOwnerWindow();
@@ -573,6 +575,13 @@ namespace RingSoft.DevLogix.Library.ViewModels
             }
         }
 
+        public void PunchIn(SupportTicket ticket)
+        {
+            if (ValidateNewTimeClock())
+            {
+                MainView.PunchIn(ticket);
+            }
+        }
         public bool PunchOut(bool clockOut, User user, IDbContext context = null)
         {
             if (context == null)

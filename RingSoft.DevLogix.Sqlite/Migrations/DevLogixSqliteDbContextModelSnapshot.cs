@@ -1589,6 +1589,9 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<DateTime?>("PunchOutDate")
                         .HasColumnType("datetime");
 
+                    b.Property<int?>("SupportTicketId")
+                        .HasColumnType("integer");
+
                     b.Property<int?>("TestingOutlineId")
                         .HasColumnType("integer");
 
@@ -1602,6 +1605,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.HasIndex("ErrorId");
 
                     b.HasIndex("ProjectTaskId");
+
+                    b.HasIndex("SupportTicketId");
 
                     b.HasIndex("TestingOutlineId");
 
@@ -1624,6 +1629,9 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.Property<byte>("ClockOutReason")
                         .HasColumnType("smallint");
+
+                    b.Property<double>("CustomerMinutesSpent")
+                        .HasColumnType("numeric");
 
                     b.Property<int?>("DefaultChartId")
                         .HasColumnType("integer");
@@ -1669,6 +1677,9 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.Property<int?>("SupervisorId")
                         .HasColumnType("integer");
+
+                    b.Property<double>("SupportTicketsMinutesSpent")
+                        .HasColumnType("numeric");
 
                     b.Property<double>("TestingOutlinesMinutesSpent")
                         .HasColumnType("numeric");
@@ -2427,6 +2438,11 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .HasForeignKey("ProjectTaskId")
                         .OnDelete(DeleteBehavior.NoAction);
 
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.SupportTicket", "SupportTicket")
+                        .WithMany("TimeClocks")
+                        .HasForeignKey("SupportTicketId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingOutline", "TestingOutline")
                         .WithMany("TimeClocks")
                         .HasForeignKey("TestingOutlineId")
@@ -2443,6 +2459,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("Error");
 
                     b.Navigation("ProjectTask");
+
+                    b.Navigation("SupportTicket");
 
                     b.Navigation("TestingOutline");
 
@@ -2548,6 +2566,11 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Order", b =>
                 {
                     b.Navigation("Details");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.SupportTicket", b =>
+                {
+                    b.Navigation("TimeClocks");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Territory", b =>

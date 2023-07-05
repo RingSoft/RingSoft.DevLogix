@@ -43,6 +43,10 @@ namespace RingSoft.DevLogix.DataAccess.Model
 
         public virtual Customer Customer { get; set; }
 
+        public int? SupportTicketId { get; set; }
+
+        public virtual SupportTicket SupportTicket { get; set; }
+
         public string? Notes { get; set; }
 
         public bool AreDatesEdited { get; set; }

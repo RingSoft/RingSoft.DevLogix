@@ -11,6 +11,7 @@ using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 using System;
 using System.ComponentModel;
 using System.Linq;
+using System.Net.Sockets;
 using System.Timers;
 using IDbContext = RingSoft.DevLogix.DataAccess.IDbContext;
 
@@ -22,6 +23,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         ProjectTask = 2,
         TestingOutline = 3,
         Customer = 4,
+        SupportTicket = 5,
     }
     public interface ITimeClockView : IDbMaintenanceView
     {
@@ -242,6 +244,40 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
         }
 
+        private AutoFillSetup _supportTicketAutoFillSetup;
+
+        public AutoFillSetup SupportTicketAutoFillSetup
+        {
+            get => _supportTicketAutoFillSetup;
+            set
+            {
+                if (_supportTicketAutoFillSetup == value)
+                {
+                    return;
+                }
+
+                _supportTicketAutoFillSetup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private AutoFillValue _supportTicketAutoFillValue;
+
+        public AutoFillValue SupportTicketAutoFillValue
+        {
+            get => _supportTicketAutoFillValue;
+            set
+            {
+                if (_supportTicketAutoFillValue == value)
+                {
+                    return;
+                }
+
+                _supportTicketAutoFillValue = value;
+                OnPropertyChanged(null, false);
+            }
+        }
+
         private DateTime _punchInDate;
 
         public DateTime PunchInDate
@@ -373,7 +409,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             CustomerAutoFillValue = customer.GetAutoFillValue();
         }
 
+        private void SetTicket(SupportTicket ticket)
+        {
+            SupportTicketAutoFillValue = ticket.GetAutoFillValue();
+        }
 
+
+        //SetTicket(ticket);
         protected override void Initialize()
         {
             _loading = true;
@@ -396,6 +438,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.TestingOutlineId));
             CustomerAutoFillSetup =
                 new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.CustomerId));
+            SupportTicketAutoFillSetup =
+                new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.SupportTicketId));
 
             if (base.View is ITimeClockView timeClockView)
             {
@@ -468,6 +512,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             View.SetTimeClockMode(TimeClockModes.Customer);
         }
 
+        public void PunchIn(SupportTicket ticket)
+        {
+            SetTicket(ticket);
+            PunchIn(true);
+            DoPostPunchIn();
+            View.SetTimeClockMode(TimeClockModes.SupportTicket);
+        }
+
         protected override TimeClock PopulatePrimaryKeyControls(TimeClock newEntity, PrimaryKeyValue primaryKeyValue)
         {
             var context = AppGlobals.DataRepository.GetDataContext();
@@ -477,6 +529,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 .Include(p => p.Error)
                 .Include(p => p.TestingOutline)
                 .Include(p => p.Customer)
+                .Include(p => p.SupportTicket)
+                .ThenInclude(p => p.Customer)
                 .FirstOrDefault(p => p.Id == newEntity.Id);
             Id = newEntity.Id;
             if (timeClock.MinutesSpent != null) 
@@ -524,6 +578,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             ProjectTaskAutoFillValue = entity.ProjectTask.GetAutoFillValue();
             TestingOutlineAutoFillValue = entity.TestingOutline.GetAutoFillValue();
             CustomerAutoFillValue = entity.Customer.GetAutoFillValue();
+            SupportTicketAutoFillValue = entity.SupportTicket.GetAutoFillValue();
 
             var timeClockMode = TimeClockModes.Error;
 
@@ -543,6 +598,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             {
                 timeClockMode = TimeClockModes.Customer;
             }
+            else if (SupportTicketAutoFillValue.IsValid())
+            {
+                timeClockMode = TimeClockModes.SupportTicket;
+            }
+
             View.SetTimeClockMode(timeClockMode);
             
 
@@ -602,6 +662,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 ProjectTaskId = ProjectTaskAutoFillValue.GetEntity(AppGlobals.LookupContext.ProjectTasks).Id,
                 TestingOutlineId = TestingOutlineAutoFillValue.GetEntity<TestingOutline>().Id,
                 CustomerId = CustomerAutoFillValue.GetEntity<Customer>().Id,
+                SupportTicketId = SupportTicketAutoFillValue.GetEntity<SupportTicket>().Id,
                 PunchInDate = PunchInDate.ToUniversalTime(),
                 PunchOutDate = PunchOutDate,
                 MinutesSpent = MinutesSpent,
@@ -636,6 +697,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             if (timeClock.CustomerId == 0)
             {
                 timeClock.CustomerId = null;
+            }
+
+            if (timeClock.SupportTicketId == 0)
+            {
+                timeClock.SupportTicketId = null;
             }
 
             return timeClock;

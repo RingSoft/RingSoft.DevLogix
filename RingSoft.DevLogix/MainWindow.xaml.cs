@@ -11,6 +11,7 @@ using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels;
 using RingSoft.DevLogix.Library.ViewModels.UserManagement;
+using RingSoft.DevLogix.Sqlite.Migrations;
 using RingSoft.DevLogix.UserManagement;
 using ScottPlot.Plottable;
 using System;
@@ -20,8 +21,12 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Customer = RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Customer;
 using Error = RingSoft.DevLogix.DataAccess.Model.Error;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
+using SupportTicket = RingSoft.DevLogix.DataAccess.Model.CustomerManagement.SupportTicket;
+using TimeClock = RingSoft.DevLogix.DataAccess.Model.TimeClock;
+using User = RingSoft.DevLogix.DataAccess.Model.User;
 using Window = System.Windows.Window;
 
 namespace RingSoft.DevLogix
@@ -712,6 +717,12 @@ namespace RingSoft.DevLogix
             ShowTimeClockWindow(timeClockWindow);
         }
 
+        public void PunchIn(SupportTicket ticket)
+        {
+            var timeClockWindow = new TimeClockMaintenanceWindow(ticket);
+            ShowTimeClockWindow(timeClockWindow);
+        }
+
         public void ShowMainChart(bool show = true)
         {
             ChartGrid.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
@@ -750,7 +761,6 @@ namespace RingSoft.DevLogix
                 TimeClockPanel.Visibility = Visibility.Collapsed;
             }
         }
-
 
         public void LaunchTimeClock(TimeClock activeTimeCard)
         {
