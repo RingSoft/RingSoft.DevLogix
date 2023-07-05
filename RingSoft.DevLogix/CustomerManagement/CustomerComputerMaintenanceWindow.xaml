@@ -52,6 +52,9 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -64,16 +67,55 @@
 
                         <lc:AutoFillControl Grid.Row="0" Grid.Column="1" x:Name="CustomerControl" Width="200" HorizontalAlignment="Left" Setup="{Binding CustomerAutoFillSetup}" Value="{Binding CustomerAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-                        <Label Grid.Row="0" Grid.Column="2" Content="Computer Speed"/>
+                        <Label Grid.Row="1" Grid.Column="0" Content="Brand"/>
 
-                        <dl:SpeedControl Grid.Row="0" Grid.Column="3" Speed="{Binding Speed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" HorizontalAlignment="Left"/>
+                        <dec:StringEditControl Grid.Row="1" Grid.Column="1" Width="200" HorizontalAlignment="Left" Text="{Binding Brand, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="50"/>
 
-                        <Label Grid.Row="1" Grid.Column="0" Content="RAM Size"/>
+                        <Label Grid.Row="1" Grid.Column="2" Content="Operating System"/>
 
-                        <dl:MemoryControl Grid.Row="1" Grid.Column="1" Memory="{Binding RamSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" HorizontalAlignment="Left"/>
+                        <dec:StringEditControl Grid.Row="1" Grid.Column="3" Width="200" HorizontalAlignment="Left" Text="{Binding OperatingSystem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="50"/>
+
+                        <Label Grid.Row="2" Grid.Column="0" Content="Computer Speed"/>
+
+                        <dl:SpeedControl Grid.Row="2" Grid.Column="1" Speed="{Binding Speed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" HorizontalAlignment="Left"/>
+
+                        <Label Grid.Row="2" Grid.Column="2" Content="RAM Size"/>
+
+                        <dl:MemoryControl Grid.Row="2" Grid.Column="3" Memory="{Binding RamSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" HorizontalAlignment="Left"/>
+
+                        <Label Grid.Row="3" Grid.Column="0" Content="Hard Drive Size"/>
+
+                        <dl:MemoryControl Grid.Row="3" Grid.Column="1" Memory="{Binding HardDriveSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" HorizontalAlignment="Left"/>
+
+                        <Label Grid.Row="3" Grid.Column="2" Content="Hard Drive Free"/>
+
+                        <dl:MemoryControl Grid.Row="3" Grid.Column="3" Memory="{Binding HardDriveFree, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" HorizontalAlignment="Left"/>
+
+                        <Label Grid.Row="4" Grid.Column="0" Content="Screen Resolution"/>
+
+                        <dec:StringEditControl Grid.Row="4" Grid.Column="1" Width="200" HorizontalAlignment="Left" Text="{Binding ScreenResolution, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="50"/>
+
+                        <Label Grid.Row="4" Grid.Column="2" Content="Internet Speed"/>
+
+                        <dec:IntegerEditControl Grid.Row="4" Grid.Column="3" Width="100" HorizontalAlignment="Left" Value="{Binding InternetSpeed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        <Label Grid.Row="5" Grid.Column="0" Content="Database Platform"/>
+
+                        <dec:StringEditControl Grid.Row="5" Grid.Column="1" Width="200" HorizontalAlignment="Left" Text="{Binding DatabasePlatform, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="50"/>
+
+                        <Label Grid.Row="5" Grid.Column="2" Content="Printer"/>
+
+                        <dec:StringEditControl Grid.Row="5" Grid.Column="3" Width="200" HorizontalAlignment="Left" Text="{Binding Printer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="50"/>
 
                     </Grid>
                 </TabItem>
+                <dec:DataEntryMemoTabItem Header="Notes" VerticalAlignment="Stretch">
+                    <DockPanel>
+
+                        <dec:DataEntryMemoEditor x:Name="NotesControl" Text="{Binding Path=Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    </DockPanel>
+                </dec:DataEntryMemoTabItem>
             </TabControl>
 
         </Grid>
