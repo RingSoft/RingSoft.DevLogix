@@ -773,9 +773,9 @@ namespace RingSoft.DevLogix.DataAccess
 
         protected override void SetupModel()
         {
-            var advancedField = AdvancedFinds.GetFieldDefinition(p => p.Id);
-            var chartAdvFindField = DevLogixChartBars.GetFieldDefinition(p => p.AdvancedFindId);
-            chartAdvFindField.SetParentField(advancedField, advancedField.PropertyName);
+            //var advancedField = AdvancedFinds.GetFieldDefinition(p => p.Id);
+            //var chartAdvFindField = DevLogixChartBars.GetFieldDefinition(p => p.AdvancedFindId);
+            //chartAdvFindField.SetParentField(advancedField, advancedField.PropertyName);
 
             Groups.PriorityLevel = 100;
             Groups.GetFieldDefinition(p => p.Rights).DoSkipPrint().IsMemo();
