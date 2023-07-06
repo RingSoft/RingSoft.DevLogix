@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
+using RingSoft.DbLookup.Lookup;
+using RingSoft.DbLookup.QueryBuilder;
+using RingSoft.DevLogix.DataAccess.LookupModel;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
@@ -245,6 +248,37 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
         }
 
+        private LookupDefinition<TimeClockLookup, TimeClock> _timeClockLookup;
+
+        public LookupDefinition<TimeClockLookup, TimeClock> TimeClockLookup
+        {
+            get => _timeClockLookup;
+            set
+            {
+                if (_timeClockLookup == value)
+                    return;
+
+                _timeClockLookup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private LookupCommand _timeClockLookupCommand;
+
+        public LookupCommand TimeClockLookupCommand
+        {
+            get => _timeClockLookupCommand;
+            set
+            {
+                if (_timeClockLookupCommand == value)
+                    return;
+
+                _timeClockLookupCommand = value;
+                OnPropertyChanged(null, false);
+            }
+        }
+
+
         private SupportTicketCostManager _ticketUserGridManager;
 
         public SupportTicketCostManager TicketUserGridManager
@@ -281,6 +315,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             AssignedUserAutoFillSetup = new AutoFillSetup(
                 TableDefinition.GetFieldDefinition(p => p.AssignedToUserId));
 
+            var timeClockLookup = new LookupDefinition<TimeClockLookup, TimeClock>(AppGlobals.LookupContext.TimeClocks);
+            timeClockLookup.AddVisibleColumnDefinition(p => p.PunchInDate, p => p.PunchInDate);
+            timeClockLookup.Include(p => p.User)
+                .AddVisibleColumnDefinition(p => p.UserName, p => p.Name);
+            timeClockLookup.AddVisibleColumnDefinition(p => p.MinutesSpent, p => p.MinutesSpent);
+            TimeClockLookup = timeClockLookup;
+            TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
+
             PunchInCommand = new RelayCommand(PunchIn);
             RecalcCommand = new RelayCommand(Recalc);
         }
@@ -315,6 +357,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             Id = result.Id;
             KeyAutoFillValue = result.GetAutoFillValue();
             PunchInCommand.IsEnabled = true;
+
+            TimeClockLookup.FilterDefinition.ClearFixedFilters();
+            TimeClockLookup.FilterDefinition.AddFixedFilter(p => p.SupportTicketId, Conditions.Equals, Id);
+            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
+
             return result;
         }
 
@@ -407,8 +454,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             PunchInCommand.IsEnabled = false;
             LoadCustomer();
             TicketUserGridManager.SetupForNewRecord();
+            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Clear);
             MinutesSpent = 0;
             _loading = false;
+        }
+
+        public void RefreshTimeClockLookup()
+        {
+            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh);
         }
 
         protected override bool SaveEntity(SupportTicket entity)

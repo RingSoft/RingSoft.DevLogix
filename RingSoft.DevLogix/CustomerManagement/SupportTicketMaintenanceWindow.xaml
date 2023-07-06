@@ -146,6 +146,28 @@
 
                     </Grid>
                 </TabItem>
+                <TabItem Header="Time Clocks" x:Name="TimeClockTab" VerticalAlignment="Stretch">
+
+                    <DockPanel>
+
+                        <lc:LookupControl LookupDefinition="{Binding TimeClockLookup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Command="{Binding TimeClockLookupCommand, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+
+                            <lc:LookupControl.LookupColumns>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf PunchInDate, Type={x:Type lookupModel:TimeClockLookup}}" Header="Punch In Date" Width="200"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf UserName, Type={x:Type lookupModel:TimeClockLookup}}" Header="User" Width="200"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf MinutesSpent, Type={x:Type lookupModel:TimeClockLookup}}" Header="Time Spent" Width="100"/>
+
+                            </lc:LookupControl.LookupColumns>
+
+                        </lc:LookupControl>
+
+                    </DockPanel>
+
+                </TabItem>
+
                 <TabItem Header="Cost">
 
                     <Grid>
