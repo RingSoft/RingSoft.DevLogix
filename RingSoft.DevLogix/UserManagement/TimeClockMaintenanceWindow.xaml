@@ -8,6 +8,7 @@
                         xmlns:lc="clr-namespace:RingSoft.DbLookup.Controls.WPF;assembly=RingSoft.DbLookup.Controls.WPF"
                         xmlns:ac="clr-namespace:RingSoft.App.Controls;assembly=RingSoft.App.Controls"
                         xmlns:vm="clr-namespace:RingSoft.DevLogix.Library.ViewModels.UserManagement;assembly=RingSoft.DevLogix.Library"
+                        xmlns:dl="clr-namespace:RingSoft.DevLogix"
                         mc:Ignorable="d"
                         Style="{StaticResource BaseWindowStyle}"
                         Title="Time Clock" SizeToContent="WidthAndHeight" MinHeight="500" ResizeMode="NoResize"
@@ -109,7 +110,7 @@
 
             <Label Grid.Row="3" Grid.Column="0" x:Name="CustomerTimeRemLabel" Content="Customer Time Remaining"/>
 
-            <dec:StringReadOnlyBox Grid.Row="3" Grid.Column="1" x:Name="CustomerTimeRemControl"/>
+            <dl:SupportTimePurchasedControl Grid.Row="3" Grid.Column="1" x:Name="CustomerTimeRemControl"/>
 
             <lc:AutoFillReadOnlyControl Grid.Row="1" Grid.Column="3" x:Name="CustomerControl" Setup="{Binding CustomerAutoFillSetup}" Value="{Binding CustomerAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
 
