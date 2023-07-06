@@ -134,6 +134,7 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -185,6 +186,11 @@
                         <Label Grid.Row="7" Grid.Column="0" Content="Web Address"/>
 
                         <dec:StringEditControl Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="3" Width="300" HorizontalAlignment="Left" Text="{Binding WebAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="100"/>
+
+                        <Label Grid.Row="8" Grid.Column="0" Content="Support Time Left"/>
+
+                        <dl:TimeControl Grid.Row="8" Grid.Column="1" Width="100" HorizontalAlignment="Left" Minutes="{Binding SupportMinutesLeft, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
                     </Grid>
                 </TabItem>
                 <TabItem Header="Products">

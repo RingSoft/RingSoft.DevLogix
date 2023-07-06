@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Net.NetworkInformation;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
@@ -238,6 +239,21 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                     return;
 
                 _webAddress = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private double? _supportMinutesLeft;
+
+        public double? SupportMinutesLeft
+        {
+            get => _supportMinutesLeft;
+            set
+            {
+                if (_supportMinutesLeft == value)
+                    return;
+
+                _supportMinutesLeft = value;
                 OnPropertyChanged();
             }
         }
@@ -497,11 +513,26 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             EmailAddress = entity.EmailAddress;
             WebAddress = entity.WebAddress;
             ProductManager.LoadGrid(entity.CustomerProducts);
+            SupportMinutesLeft = entity.SupportMinutesPurchased;
+
             Notes = entity.Notes;
         }
 
         protected override Customer GetEntityData()
         {
+            double? supportMinutesSpent = null;
+            if (Id > 0)
+            {
+                var context = AppGlobals.DataRepository.GetDataContext();
+                var table = context.GetTable<Customer>();
+                var oldCustomer = table
+                    .FirstOrDefault(p => p.Id == Id);
+                if (oldCustomer != null)
+                {
+                    supportMinutesSpent = oldCustomer.SupportMinutesSpent;
+                }
+            }
+
             var result = new Customer
             {
                 Id = Id,
@@ -519,6 +550,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 EmailAddress = EmailAddress,
                 WebAddress = WebAddress,
                 Notes = Notes,
+                SupportMinutesPurchased = SupportMinutesLeft,
+                SupportMinutesSpent = supportMinutesSpent,
             };
             return result;
         }
@@ -559,6 +592,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             TimeClockLookupCommand = GetLookupCommand(LookupCommands.Clear);
             ComputerLookupCommand = GetLookupCommand(LookupCommands.Clear);
             SupportTicketLookupCommand = GetLookupCommand(LookupCommands.Clear);
+            SupportMinutesLeft = null;
             Notes = null;
         }
         
