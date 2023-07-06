@@ -146,6 +146,47 @@
 
                     </Grid>
                 </TabItem>
+                <TabItem Header="Cost">
+
+                    <Grid>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Grid.Row="0" Grid.Column="0" Content="Total Time Spent"/>
+
+                        <dec:StringReadOnlyBox Grid.Row="0" Grid.Column="1" Width="100" Text="{Binding TotalTimeSpent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        <Label Grid.Row="0" Grid.Column="2" Content="Total Cost"/>
+
+                        <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="3" Width="100" Value="{Binding TotalCost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency"/>
+
+                        <deg:DataEntryGrid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" DataEntryCanUserAddRows="False" CanUserDeleteRows="False" Manager="{Binding TicketUserGridManager}">
+
+                            <deg:DataEntryGrid.Columns>
+
+                                <deg:DataEntryGridTextColumn Header="User" Width="200" ColumnId="{x:Static vm:SupportTicketCostManager.UserColumnId}"/>
+
+                                <deg:DataEntryGridTextColumn Header="Time Spent" Width="100" ColumnId="{x:Static vm:SupportTicketCostManager.TimeSpentColumnId}"/>
+
+                                <deg:DataEntryGridTextColumn Header="Cost" Width="100" Alignment="Right" ColumnId="{x:Static vm:SupportTicketCostManager.CostColumnId}"/>
+
+                            </deg:DataEntryGrid.Columns>
+
+                        </deg:DataEntryGrid>
+                    </Grid>
+                </TabItem>
+
             </TabControl>
         </Grid>
 

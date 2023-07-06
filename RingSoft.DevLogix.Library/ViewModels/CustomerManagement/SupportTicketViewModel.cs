@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.DataEntryControls.Engine;
@@ -6,6 +7,8 @@ using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
+using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
+using RingSoft.DevLogix.Library.ViewModels.QualityAssurance;
 
 namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 {
@@ -212,11 +215,58 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
         }
 
+        private string _totalTimeSpent;
+
+        public string TotalTimeSpent
+        {
+            get => _totalTimeSpent;
+            set
+            {
+                if (_totalTimeSpent == value)
+                    return;
+
+                _totalTimeSpent = value;
+                OnPropertyChanged(null, false);
+            }
+        }
+
+        private double _totalCost;
+
+        public double TotalCost
+        {
+            get => _totalCost;
+            set
+            {
+                if (_totalCost == value)
+                    return;
+
+                _totalCost = value;
+                OnPropertyChanged(null, false);
+            }
+        }
+
+        private SupportTicketCostManager _ticketUserGridManager;
+
+        public SupportTicketCostManager TicketUserGridManager
+        {
+            get => _ticketUserGridManager;
+            set
+            {
+                if (_ticketUserGridManager == value)
+                    return;
+
+                _ticketUserGridManager = value;
+                OnPropertyChanged();
+            }
+        }
+
         public RelayCommand PunchInCommand { get; set; }
 
         public RelayCommand RecalcCommand { get; set; }
 
         public AutoFillValue DefaultCustomerAutoFillValue { get; private set; }
+
+        public double MinutesSpent { get; private set; }
 
         private bool _loading;
 
@@ -254,7 +304,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 }
             }
 
-
+            TicketUserGridManager = new SupportTicketCostManager(this);
             base.Initialize();
         }
 
@@ -277,6 +327,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 .Include(p => p.CreateUser)
                 .Include(p => p.Product)
                 .Include(p => p.AssignedToUser)
+                .Include(p => p.SupportTicketUsers)
+                .ThenInclude(p => p.User)
                 .FirstOrDefault(p => p.Id == ticketId);
         }
         protected override void LoadFromEntity(SupportTicket entity)
@@ -290,6 +342,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             PhoneNumber = entity.PhoneNumber;
             ClosedDate = entity.CloseDate;
             Notes = entity.Notes;
+            TicketUserGridManager.LoadGrid(entity.SupportTicketUsers);
+            //MinutesSpent = entity.MinutesSpent;
             _loading = false;
         }
 
@@ -352,6 +406,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             Notes = null;
             PunchInCommand.IsEnabled = false;
             LoadCustomer();
+            TicketUserGridManager.SetupForNewRecord();
+            MinutesSpent = 0;
             _loading = false;
         }
 
@@ -389,8 +445,49 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         private void PunchIn()
         {
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var table = context.GetTable<SupportTicketUser>();
+            var user = table.FirstOrDefault(p => p.SupportTicketId == Id
+                                                 && p.UserId == AppGlobals.LoggedInUser.Id);
+            if (user == null)
+            {
+                user = new SupportTicketUser()
+                {
+                    SupportTicketId = Id,
+                    UserId = AppGlobals.LoggedInUser.Id,
+                };
+                context.AddRange(new List<SupportTicketUser>
+                {
+                    user
+                });
+                if (!context.Commit("Adding Ticket User"))
+                {
+                    return;
+                }
+                user.User = AppGlobals.LoggedInUser;
+                TicketUserGridManager.AddUserRow(user);
+            }
+
             var ticket = GetTicket(Id);
             AppGlobals.MainViewModel.PunchIn(ticket);
+        }
+        public void RefreshCost(List<SupportTicketUser> users)
+        {
+            TicketUserGridManager.RefreshCost(users);
+            GetTotals();
+        }
+        public void RefreshCost(SupportTicketUser ticketUser)
+        {
+            TicketUserGridManager.RefreshCost(ticketUser);
+            GetTotals();
+        }
+
+        private void GetTotals()
+        {
+            TicketUserGridManager.GetTotals(out var minutesSpent, out var total);
+            MinutesSpent = minutesSpent;
+            TotalCost = total;
+            TotalTimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
         }
 
         public void Recalc()
