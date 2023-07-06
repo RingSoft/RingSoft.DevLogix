@@ -12,4 +12,11 @@ namespace RingSoft.DevLogix.DataAccess.LookupModel.CustomerManagement
 
         public string Product { get; set; }
     }
+
+    public class SupportTicketUserLookup
+    {
+        public string TicketId { get; set; }
+
+        public string UserName { get; set; }
+    }
 }

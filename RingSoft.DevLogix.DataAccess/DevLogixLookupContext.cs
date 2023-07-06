@@ -89,6 +89,7 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<OrderDetail> OrderDetail { get; set; }
         public TableDefinition<CustomerComputer> CustomerComputer { get; set; }
         public TableDefinition<SupportTicket> SupportTicket { get; set; }
+        public TableDefinition<SupportTicketUser> SupportTicketUser { get; set; }
 
         public LookupDefinition<DevLogixChartLookup, SystemMaster> SystemMasterLookupDefinition { get; set; }
         public LookupDefinition<DevLogixChartLookup, DevLogixChart> DevLogixChartLookup { get; set; }
@@ -140,6 +141,7 @@ namespace RingSoft.DevLogix.DataAccess
         public LookupDefinition<OrderDetailLookup, OrderDetail> OrderDetailLookup { get; set; }
         public LookupDefinition<CustomerComputerLookup, CustomerComputer> CustomerComputerLookup { get; set; }
         public LookupDefinition<SupportTicketLookup, SupportTicket> SupportTicketLookup { get; set; }
+        public LookupDefinition<SupportTicketUserLookup, SupportTicketUser> SupportTicketUserLookup { get; set; }
 
         public SqliteDataProcessor SqliteDataProcessor { get; }
         public SqlServerDataProcessor SqlServerDataProcessor { get; }
@@ -648,6 +650,25 @@ namespace RingSoft.DevLogix.DataAccess
                     , "Product"
                     , p => p.Description, 30);
             SupportTicket.HasLookupDefinition(SupportTicketLookup);
+
+            SupportTicketUserLookup =
+                new LookupDefinition<SupportTicketUserLookup, SupportTicketUser>(SupportTicketUser);
+
+            SupportTicketUserLookup
+                .Include(p => p.SupportTicket)
+                .AddVisibleColumnDefinition(
+                    p => p.TicketId
+                    , "Ticket ID"
+                    , p => p.TicketId, 50);
+
+            SupportTicketUserLookup
+                .Include(p => p.User)
+                .AddVisibleColumnDefinition(
+                    p => p.UserName
+                    , "User"
+                    , p => p.Name, 50);
+
+            SupportTicketUser.HasLookupDefinition(SupportTicketUserLookup);
         }
 
         public LookupDefinition<ProductVersionLookup, ProductVersion> MakeProductVersionLookupDefinition()
@@ -970,6 +991,10 @@ namespace RingSoft.DevLogix.DataAccess
             SupportTicket.GetFieldDefinition(p => p.Notes)
                 .IsMemo();
             SupportTicket.GetFieldDefinition(p => p.Cost)
+                .HasDecimalFieldType(DecimalFieldTypes.Currency);
+
+            SupportTicketUser.PriorityLevel = 900;
+            SupportTicketUser.GetFieldDefinition(p => p.Cost)
                 .HasDecimalFieldType(DecimalFieldTypes.Currency);
         }
 

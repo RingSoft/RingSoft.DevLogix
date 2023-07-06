@@ -112,6 +112,7 @@ namespace RingSoft.DevLogix.DataAccess.Model
         public virtual ICollection<Territory> Territories { get; set; }
         public virtual ICollection<SupportTicket> CreateTickets { get; set; }
         public virtual ICollection<SupportTicket> AssignedTickets { get; set; }
+        public virtual ICollection<SupportTicketUser> SupportTicketUsers { get; set; }
 
         public User()
         {
@@ -136,6 +137,7 @@ namespace RingSoft.DevLogix.DataAccess.Model
             Territories = new HashSet<Territory>();
             CreateTickets = new HashSet<SupportTicket>();
             AssignedTickets = new HashSet<SupportTicket>();
+            SupportTicketUsers = new HashSet<SupportTicketUser>();
         }
     }
 }

@@ -528,6 +528,27 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.ToTable("SupportTicket");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.SupportTicketUser", b =>
+                {
+                    b.Property<int>("SupportTicketId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<double>("Cost")
+                        .HasColumnType("numeric");
+
+                    b.Property<double>("MinutesSpent")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("SupportTicketId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("SupportTicketUser");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Territory", b =>
                 {
                     b.Property<int>("Id")
@@ -1923,6 +1944,25 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.SupportTicketUser", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.SupportTicket", "SupportTicket")
+                        .WithMany("SupportTicketUsers")
+                        .HasForeignKey("SupportTicketId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "User")
+                        .WithMany("SupportTicketUsers")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("SupportTicket");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Territory", b =>
                 {
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "Salesperson")
@@ -2570,6 +2610,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.SupportTicket", b =>
                 {
+                    b.Navigation("SupportTicketUsers");
+
                     b.Navigation("TimeClocks");
                 });
 
@@ -2762,6 +2804,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("ProjectUsers");
 
                     b.Navigation("Projects");
+
+                    b.Navigation("SupportTicketUsers");
 
                     b.Navigation("Territories");
 
