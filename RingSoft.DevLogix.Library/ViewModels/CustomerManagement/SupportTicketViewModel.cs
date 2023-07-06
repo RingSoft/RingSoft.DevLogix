@@ -216,6 +216,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         public RelayCommand RecalcCommand { get; set; }
 
+        public AutoFillValue DefaultCustomerAutoFillValue { get; private set; }
+
         private bool _loading;
 
         public SupportTicketViewModel()
@@ -236,6 +238,23 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         protected override void Initialize()
         {
             ViewLookupDefinition.InitialOrderByField = TableDefinition.GetFieldDefinition(p => p.Id);
+            if (LookupAddViewArgs != null && LookupAddViewArgs.ParentWindowPrimaryKeyValue != null)
+            {
+                if (LookupAddViewArgs.ParentWindowPrimaryKeyValue.TableDefinition ==
+                    AppGlobals.LookupContext.Customer)
+                {
+                    var customer =
+                        AppGlobals.LookupContext.Customer.GetEntityFromPrimaryKeyValue(LookupAddViewArgs
+                            .ParentWindowPrimaryKeyValue);
+
+                    var context = AppGlobals.DataRepository.GetDataContext();
+                    var table = context.GetTable<Customer>();
+                    customer = table.FirstOrDefault(p => p.Id == customer.Id);
+                    DefaultCustomerAutoFillValue = customer.GetAutoFillValue();
+                }
+            }
+
+
             base.Initialize();
         }
 
@@ -323,7 +342,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             _loading = true;
             KeyAutoFillValue = null;
             Id = 0;
-            CustomerAutoFillValue = null;
+            CustomerAutoFillValue = DefaultCustomerAutoFillValue;
             CreateDate = DateTime.Now;
             PhoneNumber = string.Empty;
             CreateUserAutoFillValue = AppGlobals.LoggedInUser.GetAutoFillValue();

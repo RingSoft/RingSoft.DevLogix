@@ -348,6 +348,36 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
         }
 
+        private LookupDefinition<SupportTicketLookup, SupportTicket> _supportTicketLookup;
+
+        public LookupDefinition<SupportTicketLookup, SupportTicket> SupportTicketLookup
+        {
+            get => _supportTicketLookup;
+            set
+            {
+                if (_supportTicketLookup == value)
+                    return;
+
+                _supportTicketLookup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private LookupCommand _supportTicketLookupCommand;
+
+        public LookupCommand SupportTicketLookupCommand
+        {
+            get => _supportTicketLookupCommand;
+            set
+            {
+                if (_supportTicketLookupCommand == value)
+                    return;
+
+                _supportTicketLookupCommand = value;
+                OnPropertyChanged(null, false);
+            }
+        }
+
         private string? _notes;
 
         public string? Notes
@@ -372,6 +402,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         public RelayCommand AddModifyComputerLookupCommand { get; set; }
 
+        public RelayCommand AddModifySupportTicketCommand { get; set; }
+
         public CustomerViewModel()
         {
             TimeZoneAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.TimeZoneId));
@@ -393,6 +425,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
             AddModifyComputerLookupCommand = new RelayCommand(AddModifyComputer);
 
+            AddModifySupportTicketCommand = new RelayCommand(AddModifySupportTicket);
+
             var timeClockLookup = new LookupDefinition<TimeClockLookup, TimeClock>(AppGlobals.LookupContext.TimeClocks);
             timeClockLookup.AddVisibleColumnDefinition(p => p.PunchInDate, p => p.PunchInDate);
             timeClockLookup.Include(p => p.User)
@@ -402,6 +436,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
 
             ComputerLookup = AppGlobals.LookupContext.CustomerComputerLookup.Clone();
+
+            SupportTicketLookup = AppGlobals.LookupContext.SupportTicketLookup.Clone();
+            SupportTicketLookup.InitialOrderByField = AppGlobals.LookupContext
+                .SupportTicket.GetFieldDefinition(p => p.Id);
 
         }
 
@@ -423,6 +461,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             ComputerLookup.FilterDefinition.ClearFixedFilters();
             ComputerLookup.FilterDefinition.AddFixedFilter(p => p.CustomerId, Conditions.Equals, Id);
             ComputerLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
+
+            SupportTicketLookup.FilterDefinition.ClearFixedFilters();
+            SupportTicketLookup.FilterDefinition.AddFixedFilter(p => p.CustomerId, Conditions.Equals, Id);
+            SupportTicketLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
+
             return result;
         }
 
@@ -515,6 +558,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             OrderLookupCommand = GetLookupCommand(LookupCommands.Clear);
             TimeClockLookupCommand = GetLookupCommand(LookupCommands.Clear);
             ComputerLookupCommand = GetLookupCommand(LookupCommands.Clear);
+            SupportTicketLookupCommand = GetLookupCommand(LookupCommands.Clear);
             Notes = null;
         }
         
@@ -587,9 +631,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 ComputerLookupCommand = GetLookupCommand(LookupCommands.AddModify);
         }
 
-        public void RefreshTimeClockLookup()
+        private void AddModifySupportTicket()
         {
-            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh);
+            if (ExecuteAddModifyCommand() == DbMaintenanceResults.Success)
+                SupportTicketLookupCommand = GetLookupCommand(LookupCommands.AddModify);
         }
     }
 }

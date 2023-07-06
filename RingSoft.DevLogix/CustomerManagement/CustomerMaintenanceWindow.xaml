@@ -201,6 +201,28 @@
                         </deg:DataEntryGrid>
                     </DockPanel>
                 </TabItem>
+                <TabItem Header="Support Tickets">
+                    <DockPanel>
+
+                        <Button Content="_Add/Modify" x:Name="AddModifyTicketsButton" Command="{Binding AddModifySupportTicketCommand}" Height="20"  DockPanel.Dock="Left" VerticalAlignment="Top"/>
+
+                        <lc:LookupControl LookupDefinition="{Binding SupportTicketLookup}" Command="{Binding SupportTicketLookupCommand}" >
+
+                            <lc:LookupControl.LookupColumns>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf TicketId, Type={x:Type lm:SupportTicketLookup}}" Header="Ticket ID" Width="100"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf CreateDate, Type={x:Type lm:SupportTicketLookup}}" Header="Date" Width="150"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf Product, Type={x:Type lm:SupportTicketLookup}}" Header="Product" Width="200"/>
+
+                            </lc:LookupControl.LookupColumns>
+
+                        </lc:LookupControl>
+
+                    </DockPanel>
+                </TabItem>
+
                 <TabItem Header="Computers">
                     <DockPanel>
 
