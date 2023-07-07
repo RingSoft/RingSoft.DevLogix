@@ -53,6 +53,8 @@ namespace RingSoft.DevLogix.Library.ViewModels
                 LookupRefresher.SetAlertLevelEvent -= LookupRefresher_SetAlertLevelEvent;
 
                 LookupRefresher.RefreshRecordCountEvent -= LookupRefresher_RefreshRecordCountEvent;
+
+                LookupRefresher.Dispose();
             }
             LookupRefresher = new LookupRefresher();
             LookupDefinition = new LookupDefinitionBase(ChartBar.AdvancedFindId, LookupRefresher);
