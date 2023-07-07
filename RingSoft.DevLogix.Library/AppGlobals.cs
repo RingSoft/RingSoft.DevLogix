@@ -585,5 +585,22 @@ namespace RingSoft.DevLogix.Library
             }
             return result;
         }
+
+        public static string GetSupportTimeLeftTextFromDate(
+            DateTime startDate
+            , double? supportMinutesPurchased
+            , out double? supportMinutesLeft)
+        {
+            if (supportMinutesPurchased != null)
+            {
+                var endDate = startDate.AddMinutes(supportMinutesPurchased.Value);
+                var duration = endDate.Subtract(DateTime.Now);
+                supportMinutesLeft = duration.TotalMinutes;
+                return $"{duration.Days.ToString("00")} {duration.ToString("hh\\:mm\\:ss")}";
+            }
+            supportMinutesLeft = null;
+            return null;
+        }
+
     }
 }

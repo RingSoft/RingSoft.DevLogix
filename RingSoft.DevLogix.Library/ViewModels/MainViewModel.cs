@@ -198,7 +198,11 @@ namespace RingSoft.DevLogix.Library.ViewModels
             {
                 if (_startDate != null)
                 {
-                    AppGlobals.MainViewModel.SetSupportTimeLeftTextFromDate(_startDate.Value.ToLocalTime());
+                    SupportTimeLeft = AppGlobals.GetSupportTimeLeftTextFromDate
+                        (_startDate.Value.ToLocalTime()
+                        , SupportMinutesPurchased
+                        , out var supportMinutesLeft);
+                    SupportMinutesLeft = supportMinutesLeft;
                     SetElapsedTime(GetElapsedTime());
                 }
             };
@@ -517,7 +521,13 @@ namespace RingSoft.DevLogix.Library.ViewModels
         public void SetupTimer(TimeClock timeClock)
         {
             int userId = 0;
-            if (timeClock != null)
+            if (timeClock == null)
+            {
+                SupportMinutesLeft = null;
+                SupportMinutesPurchased = null;
+                SupportTimeLeft = null;
+            }
+            else
             {
                 userId = timeClock.UserId;
                 ActiveTimeClockId = timeClock.Id;
@@ -742,19 +752,6 @@ namespace RingSoft.DevLogix.Library.ViewModels
             }
 
             return true;
-        }
-        
-        public void SetSupportTimeLeftTextFromDate(DateTime startDate)
-        {
-            SupportTimeLeft = null;
-            SupportMinutesLeft = null;
-
-            if (SupportMinutesPurchased != null)
-            {
-                var endDate = startDate.AddMinutes(SupportMinutesPurchased.Value);
-                var duration = endDate.Subtract(DateTime.Now);
-                SupportTimeLeft = $"{duration.Days.ToString("00")} {duration.ToString("hh\\:mm\\:ss")}";
-            }
         }
     }
 }

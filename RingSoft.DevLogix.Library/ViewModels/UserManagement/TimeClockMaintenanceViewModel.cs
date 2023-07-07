@@ -371,6 +371,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         public RelayCommand PunchOutCommand { get; private set; }
 
+        public double? SupportMinutesPurchased { get; private set; }
+
+        public string? SupportTimeLeft { get; private set; }
+
         private DateTime _endDate;
         private Timer _timer = new Timer();
         private bool _loading;
@@ -608,13 +612,21 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
             PunchInDate = entity.PunchInDate.ToLocalTime();
             PunchOutDate = entity.PunchOutDate;
-            if (timeClockMode == TimeClockModes.SupportTicket
-                && entity.Id == AppGlobals.MainViewModel.ActiveTimeClockId)
+            if (timeClockMode == TimeClockModes.SupportTicket)
             {
-                if (!PunchOutDate.HasValue)
+                SupportMinutesPurchased = entity
+                    .SupportTicket
+                    .Customer
+                    .SupportMinutesPurchased;
+
+                if (entity.Id == AppGlobals.MainViewModel.ActiveTimeClockId 
+                    || AppGlobals.MainViewModel.ActiveTimeClockId == 0)
                 {
-                    AppGlobals.MainViewModel.SupportMinutesPurchased =
-                        entity.SupportTicket.Customer.SupportMinutesPurchased;
+                    if (!PunchOutDate.HasValue)
+                    {
+                        AppGlobals.MainViewModel.SupportMinutesPurchased =
+                            entity.SupportTicket.Customer.SupportMinutesPurchased;
+                    }
                 }
             }
             if (PunchOutDate.HasValue)
@@ -1153,7 +1165,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         private void SetElapsedTime(string elapsedTime)
         {
-            AppGlobals.MainViewModel.SetSupportTimeLeftTextFromDate(PunchInDate);
+            SupportTimeLeft = AppGlobals.GetSupportTimeLeftTextFromDate(
+                PunchInDate
+                , SupportMinutesPurchased
+                , out var supportMinutesLeft);
             ElapsedTime = elapsedTime;
             View.SetElapsedTime();
         }

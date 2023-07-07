@@ -499,6 +499,23 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         private void PunchIn()
         {
             var context = AppGlobals.DataRepository.GetDataContext();
+            var timeClocksTable = context.GetTable<TimeClock>();
+            var timeClock = timeClocksTable
+                .Include(p => p.User)
+                .FirstOrDefault(p => p.SupportTicketId == Id
+                                     && p.PunchOutDate == null
+                                     && p.UserId != AppGlobals.LoggedInUser.Id);
+
+            if (timeClock != null)
+            {
+                var message =
+                    $"The User {timeClock.User.Name} is already punched in to this Support Ticket.  Punch Denied.";
+                var caption = "Punch Denied";
+                ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
+                return;
+            }
+
+
             var table = context.GetTable<SupportTicketUser>();
             var user = table.FirstOrDefault(p => p.SupportTicketId == Id
                                                  && p.UserId == AppGlobals.LoggedInUser.Id);
