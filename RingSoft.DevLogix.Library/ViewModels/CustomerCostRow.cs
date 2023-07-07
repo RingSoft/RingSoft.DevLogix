@@ -4,15 +4,14 @@ using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
-using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
-using RingSoft.DevLogix.Library.ViewModels.QualityAssurance;
+using RingSoft.DevLogix.Library.ViewModels.CustomerManagement;
 using System;
 
-namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
+namespace RingSoft.DevLogix.Library.ViewModels
 {
-    public class SupportTicketCostRow : DbMaintenanceDataEntryGridRow<SupportTicketUser>
+    public class CustomerCostRow : DbMaintenanceDataEntryGridRow<CustomerUser>
     {
-        public new SupportTicketCostManager Manager { get; }
+        public new CustomerCostManager Manager { get; }
 
         public AutoFillSetup UserAutoFillSetup { get; private set; }
 
@@ -25,24 +24,26 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         public string TimeSpent { get; private set; }
 
         public double Cost { get; private set; }
-        
-        public SupportTicketCostRow(SupportTicketCostManager manager) : base(manager)
+
+        public CustomerCostRow(CustomerCostManager manager) : base(manager)
         {
             Manager = manager;
             UserAutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.UserLookup);
             TimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
+
         }
 
         public override DataEntryGridCellProps GetCellProps(int columnId)
         {
-            var column = (SupportTicketUserColumns)columnId;
+            var column = (CustomerUserColumns)columnId;
+
             switch (column)
             {
-                case SupportTicketUserColumns.User:
+                case CustomerUserColumns.User:
                     return new DataEntryGridAutoFillCellProps(this, columnId, UserAutoFillSetup, UserAutoFillValue);
-                case SupportTicketUserColumns.TimeSpent:
+                case CustomerUserColumns.TimeSpent:
                     return new DataEntryGridTextCellProps(this, columnId, TimeSpent);
-                case SupportTicketUserColumns.Cost:
+                case CustomerUserColumns.Cost:
                     return new DataEntryGridDecimalCellProps(this, columnId, new DecimalEditControlSetup
                     {
                         FormatType = DecimalEditFormatTypes.Currency,
@@ -62,7 +63,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             };
         }
 
-        public override void LoadFromEntity(SupportTicketUser entity)
+        public override void LoadFromEntity(CustomerUser entity)
         {
             UserId = entity.UserId;
             UserAutoFillValue = entity.User.GetAutoFillValue();
@@ -71,7 +72,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             TimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
         }
 
-        public override void SaveToEntity(SupportTicketUser entity, int rowIndex)
+
+        public override void SaveToEntity(CustomerUser entity, int rowIndex)
         {
             throw new System.NotImplementedException();
         }

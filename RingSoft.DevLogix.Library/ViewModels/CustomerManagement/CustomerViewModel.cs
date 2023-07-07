@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net.NetworkInformation;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.DataEntryControls.Engine;
@@ -11,6 +12,7 @@ using RingSoft.DevLogix.DataAccess.LookupModel;
 using RingSoft.DevLogix.DataAccess.LookupModel.CustomerManagement;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 {
@@ -274,6 +276,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
         }
 
+        private CustomerCostManager _customerUserGridManager;
+
+        public CustomerCostManager CustomerUserGridManager
+        {
+            get => _customerUserGridManager;
+            set
+            {
+                if (_customerUserGridManager == value)
+                    return;
+
+                _customerUserGridManager = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         private LookupDefinition<OrderLookup, Order> _orderLookupDefinition;
 
         public LookupDefinition<OrderLookup, Order> OrderLookupDefinition
@@ -409,6 +427,38 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
         }
 
+        private string _totalTimeSpent;
+
+        public string TotalTimeSpent
+        {
+            get => _totalTimeSpent;
+            set
+            {
+                if (_totalTimeSpent == value)
+                    return;
+
+                _totalTimeSpent = value;
+                OnPropertyChanged(null, false);
+            }
+        }
+
+        private double _totalCost;
+
+        public double TotalCost
+        {
+            get => _totalCost;
+            set
+            {
+                if (_totalCost == value)
+                    return;
+
+                _totalCost = value;
+                OnPropertyChanged(null, false);
+            }
+        }
+
+
+        public double MinutesSpent { get; private set; }
 
         public RelayCommand PunchInCommand { get; private set; }
 
@@ -431,7 +481,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
             ProductManager = new CustomerProductManager(this);
 
+            CustomerUserGridManager = new CustomerCostManager(this);
+
             TablesToDelete.Add(AppGlobals.LookupContext.CustomerProduct);
+            TablesToDelete.Add(AppGlobals.LookupContext.CustomerUser);
 
             OrderLookupDefinition = AppGlobals.LookupContext.OrderLookup.Clone();
             OrderLookupDefinition.InitialOrderByField = AppGlobals.LookupContext
@@ -494,6 +547,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 .Include(p => p.Territory)
                 .Include(p => p.CustomerProducts)
                 .ThenInclude(p => p.Product)
+                .Include(p => p.Users)
+                .ThenInclude(p => p.User)
                 .FirstOrDefault(p => p.Id == customerId);
             return result;
         }
@@ -513,7 +568,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             EmailAddress = entity.EmailAddress;
             WebAddress = entity.WebAddress;
             ProductManager.LoadGrid(entity.CustomerProducts);
+            CustomerUserGridManager.LoadGrid(entity.Users);
             SupportMinutesLeft = entity.SupportMinutesPurchased;
+            //MinutesSpent = entity.MinutesSpent;
+            //MinutesSpent = entity.MinutesSpent;
+            //TotalCost = entity.Cost;
+            TotalTimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
+
 
             Notes = entity.Notes;
         }
@@ -530,6 +591,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 if (oldCustomer != null)
                 {
                     supportMinutesSpent = oldCustomer.SupportMinutesSpent;
+                    //result.MinutesSpent = oldCustomer.MinutesSpent;
+                    //result.Cost = oldCustomer.Cost;
+
                 }
             }
 
@@ -588,14 +652,19 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             EmailAddress = null;
             WebAddress = null;
             ProductManager.SetupForNewRecord();
+            CustomerUserGridManager.SetupForNewRecord();
             OrderLookupCommand = GetLookupCommand(LookupCommands.Clear);
             TimeClockLookupCommand = GetLookupCommand(LookupCommands.Clear);
             ComputerLookupCommand = GetLookupCommand(LookupCommands.Clear);
             SupportTicketLookupCommand = GetLookupCommand(LookupCommands.Clear);
             SupportMinutesLeft = null;
             Notes = null;
+            TotalCost = 0;
+            MinutesSpent = 0;
+            TotalTimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
+
         }
-        
+
         protected override bool SaveEntity(Customer entity)
         {
             var customerProducts = ProductManager.GetEntityList();
@@ -644,8 +713,50 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         private void PunchIn()
         {
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var table = context.GetTable<CustomerUser>();
+            var user = table.FirstOrDefault(p => p.CustomerId == Id
+                                                 && p.UserId == AppGlobals.LoggedInUser.Id);
+            if (user == null)
+            {
+                user = new CustomerUser()
+                {
+                    CustomerId = Id,
+                    UserId = AppGlobals.LoggedInUser.Id,
+                };
+                context.AddRange(new List<CustomerUser>
+                {
+                    user
+                });
+                if (!context.Commit("Adding Customer User"))
+                {
+                    return;
+                }
+                user.User = AppGlobals.LoggedInUser;
+                CustomerUserGridManager.AddUserRow(user);
+            }
+
             var customer = GetCustomer(Id);
             AppGlobals.MainViewModel.PunchIn(customer);
+        }
+
+        public void RefreshCost(List<CustomerUser> users)
+        {
+            CustomerUserGridManager.RefreshCost(users);
+            GetTotals();
+        }
+        public void RefreshCost(CustomerUser customerUser)
+        {
+            CustomerUserGridManager.RefreshCost(customerUser);
+            GetTotals();
+        }
+
+        private void GetTotals()
+        {
+            CustomerUserGridManager.GetTotals(out var minutesSpent, out var total);
+            MinutesSpent = minutesSpent;
+            TotalCost = total;
+            TotalTimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
         }
 
         private void Recalc()
