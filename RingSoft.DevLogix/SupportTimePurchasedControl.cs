@@ -18,8 +18,25 @@ namespace RingSoft.DevLogix
             {
                 controlLabel.Visibility = Visibility.Visible;
                 Visibility = Visibility.Visible;
-                Background = new SolidColorBrush(Colors.Red);
-                Foreground = new SolidColorBrush(Colors.White);
+
+                if (supportMinutesLeft.HasValue && supportMinutesLeft <= 10)
+                {
+                    if (supportMinutesLeft <= 0)
+                    {
+                        Background = new SolidColorBrush(Colors.Red);
+                        Foreground = new SolidColorBrush(Colors.White);
+                    }
+                    else
+                    {
+                        Background = new SolidColorBrush(Colors.Yellow);
+                        Foreground = new SolidColorBrush(Colors.Black);
+                    }
+                }
+                else
+                {
+                    Background = new SolidColorBrush(Colors.Transparent);
+                    Foreground = new SolidColorBrush(Colors.Black);
+                }
                 Text = timeRemaining;
             }
         }

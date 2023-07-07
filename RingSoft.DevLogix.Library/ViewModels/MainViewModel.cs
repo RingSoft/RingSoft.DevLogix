@@ -18,6 +18,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Timers;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace RingSoft.DevLogix.Library.ViewModels
 {
@@ -187,22 +188,51 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         public double? SupportMinutesLeft { get; private set; }
 
+        public double SecondsElapsed { get; private set; }
+
+        public string ActiveCustomerName { get; set; }
+
+        public TimeClockModes? TimeClockMode { get; private set; }
 
         private Timer _timer = new Timer();
         private DateTime? _startDate;
-        
+
         public MainViewModel()
         {
             _timer.Interval = 1000;
             _timer.Elapsed += (sender, args) =>
             {
-                if (_startDate != null)
+                if (_startDate == null)
                 {
-                    SupportTimeLeft = AppGlobals.GetSupportTimeLeftTextFromDate
-                        (_startDate.Value.ToLocalTime()
-                        , SupportMinutesPurchased
-                        , out var supportMinutesLeft);
-                    SupportMinutesLeft = supportMinutesLeft;
+                    SecondsElapsed = 0;
+                }
+                else
+                {
+                    SecondsElapsed++;
+                    if (TimeClockMode.HasValue)
+                    {
+                        if (TimeClockMode == TimeClockModes.SupportTicket)
+                        {
+                            SupportTimeLeft = AppGlobals.GetSupportTimeLeftTextFromDate
+                            (_startDate.Value.ToLocalTime()
+                                , SupportMinutesPurchased
+                                , out var supportMinutesLeft);
+                            SupportMinutesLeft = supportMinutesLeft;
+                        }
+                        else
+                        {
+                            SupportMinutesLeft = null;
+                            SupportTimeLeft = null;
+                            SupportMinutesPurchased = null;
+                        }
+                    }
+                    else
+                    {
+                        SupportMinutesLeft = null;
+                        SupportTimeLeft = null;
+                        SupportMinutesPurchased = null;
+                    }
+
                     SetElapsedTime(GetElapsedTime());
                 }
             };
@@ -281,7 +311,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
                 SetChartId(0);
                 AppGlobals.LoggedInOrganization = null;
-                SetupTimer(null);
+                SetupTimer(null, null);
 
                 Initialize(MainView);
             }));
@@ -381,14 +411,16 @@ namespace RingSoft.DevLogix.Library.ViewModels
                 .ThenInclude(p => p.Customer)
                 .FirstOrDefault(p => p.UserId == AppGlobals.LoggedInUser.Id
                                      && p.PunchOutDate == null);
+            TimeClockModes? timeClockMode = null;
             if (timeClock != null)
             {
                 double? supportMinutesPurchased = null;
                 if (timeClock.SupportTicket != null)
                 {
                     SupportMinutesPurchased = timeClock.SupportTicket.Customer.SupportMinutesPurchased;
+                    timeClockMode = TimeClockModes.SupportTicket;
                 }
-                SetupTimer(timeClock);
+                SetupTimer(timeClock, timeClockMode);
             }
         }
 
@@ -435,7 +467,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
             if (cont)
             {
-                SetupTimer(null);
+                SetupTimer(null, null);
 
                 if (MainView.LoginUser())
                 {
@@ -508,18 +540,21 @@ namespace RingSoft.DevLogix.Library.ViewModels
                 .FirstOrDefault(p => p.Id == timeClockId);
 
             double? supportMinutesPurchased = null;
+            TimeClockModes? timeClockMode = null;
             if (timeClock != null)
             {
                 if (timeClock.SupportTicket != null)
                 {
                     supportMinutesPurchased = timeClock.SupportTicket.Customer.SupportMinutesPurchased;
+                    timeClockMode = TimeClockModes.SupportTicket;
                 }
             }
-            SetupTimer(timeClock);
+            SetupTimer(timeClock, timeClockMode);
         }
 
-        public void SetupTimer(TimeClock timeClock)
+        public void SetupTimer(TimeClock timeClock, TimeClockModes? timeClockMode)
         {
+            TimeClockMode = timeClockMode;
             int userId = 0;
             if (timeClock == null)
             {

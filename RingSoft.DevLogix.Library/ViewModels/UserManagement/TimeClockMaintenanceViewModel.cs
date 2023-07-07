@@ -375,6 +375,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         public string? SupportTimeLeft { get; private set; }
 
+        public double? SupportMinutesLeft { get; private set; }
+
+        public TimeClockModes TimeClockMode { get; private set; }
+
         private DateTime _endDate;
         private Timer _timer = new Timer();
         private bool _loading;
@@ -486,14 +490,17 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         public void PunchIn(Error error)
         {
+            TimeClockMode = TimeClockModes.Error;
             SetError(error);
             PunchIn(true);
             DoPostPunchIn();
             View.SetTimeClockMode(TimeClockModes.Error);
+
         }
 
         public void PunchIn(ProjectTask task)
         {
+            TimeClockMode = TimeClockModes.ProjectTask;
             SetProjectTask(task);
             PunchIn(true);
             DoPostPunchIn();
@@ -502,6 +509,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         public void PunchIn(TestingOutline outline)
         {
+            TimeClockMode = TimeClockModes.TestingOutline;
             SetTestingOutline(outline);
             PunchIn(true);
             DoPostPunchIn();
@@ -510,6 +518,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         public void PunchIn(Customer customer)
         {
+            TimeClockMode = TimeClockModes.Customer;
             SetCustomer(customer);
             PunchIn(true);
             DoPostPunchIn();
@@ -518,6 +527,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         public void PunchIn(SupportTicket ticket)
         {
+
+            TimeClockMode = TimeClockModes.SupportTicket;
             SetTicket(ticket);
             PunchIn(true);
             DoPostPunchIn();
@@ -626,6 +637,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     {
                         AppGlobals.MainViewModel.SupportMinutesPurchased =
                             entity.SupportTicket.Customer.SupportMinutesPurchased;
+                        AppGlobals.MainViewModel.ActiveCustomerName = entity.SupportTicket.Customer.CompanyName;
                     }
                 }
             }
@@ -736,7 +748,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         {
             if (Id == AppGlobals.MainViewModel.ActiveTimeClockId && PunchOutDate != null)
             {
-                AppGlobals.MainViewModel.SetupTimer(null);
+                AppGlobals.MainViewModel.SetupTimer(null, null);
             }
 
             var makeName = Id == 0 && entity.Name.IsNullOrEmpty();
@@ -984,7 +996,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         {
             if (Id == AppGlobals.MainViewModel.ActiveTimeClockId)
             {
-                AppGlobals.MainViewModel.SetupTimer(null);
+                AppGlobals.MainViewModel.SetupTimer(null, null);
                 StopTimer();
             }
 
@@ -1047,7 +1059,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     
                     KeyAutoFillValue = timeClock.GetAutoFillValue();
                     Id = timeClock.Id;
-                    AppGlobals.MainViewModel.SetupTimer(timeClock);
+                    AppGlobals.MainViewModel.SetupTimer(timeClock, TimeClockMode);
                     RecordDirty = false;
                 }
                 var context = AppGlobals.DataRepository.GetDataContext();
@@ -1170,6 +1182,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 , SupportMinutesPurchased
                 , out var supportMinutesLeft);
             ElapsedTime = elapsedTime;
+            SupportMinutesLeft = supportMinutesLeft;
             View.SetElapsedTime();
         }
 

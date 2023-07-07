@@ -595,8 +595,14 @@ namespace RingSoft.DevLogix.Library
             {
                 var endDate = startDate.AddMinutes(supportMinutesPurchased.Value);
                 var duration = endDate.Subtract(DateTime.Now);
-                supportMinutesLeft = duration.TotalMinutes;
-                return $"{duration.Days.ToString("00")} {duration.ToString("hh\\:mm\\:ss")}";
+                supportMinutesLeft = Math.Round(duration.TotalMinutes, 2);
+                var result = $"{duration.Days.ToString("00")} {duration.ToString("hh\\:mm\\:ss")}";
+                if (supportMinutesLeft < 0)
+                {
+                    result = $"- {result}";
+                }
+
+                return result;
             }
             supportMinutesLeft = null;
             return null;

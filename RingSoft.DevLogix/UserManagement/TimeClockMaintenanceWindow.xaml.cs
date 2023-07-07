@@ -250,7 +250,10 @@ namespace RingSoft.DevLogix.UserManagement
                     if (SupportTicketControl.Visibility == Visibility.Visible
                         && LocalViewModel.PunchOutDate == null)
                     {
-                        CustomerTimeRemControl.SetTimeRemaining(CustomerTimeRemLabel, LocalViewModel.SupportTimeLeft);
+                        CustomerTimeRemControl.SetTimeRemaining(
+                            CustomerTimeRemLabel
+                            , LocalViewModel.SupportTimeLeft
+                            , LocalViewModel.SupportMinutesLeft);
                     }
                 });
             }

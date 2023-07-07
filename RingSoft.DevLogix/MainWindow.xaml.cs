@@ -21,6 +21,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using RingSoft.DbLookup;
 using Customer = RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Customer;
 using Error = RingSoft.DevLogix.DataAccess.Model.Error;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
@@ -752,9 +753,30 @@ namespace RingSoft.DevLogix
                     SupportTimePurchasedControl.SetTimeRemaining(SupportTimeLeftLabel, AppGlobals.MainViewModel.SupportTimeLeft
                         , AppGlobals.MainViewModel.SupportMinutesLeft);
 
+
+                    if (AppGlobals.MainViewModel.SupportMinutesLeft <= 10)
+                    {
+                        var timeLeft = AppGlobals.MakeTimeSpent(
+                            ViewModel
+                                .SupportMinutesLeft
+                                .GetValueOrDefault());
+
+                        var message = $"{ViewModel.ActiveCustomerName} has {timeLeft} of support time left.";
+                        var alertLevel = AlertLevels.Yellow;
+                        if (ViewModel.SecondsElapsed % 60 == 0)
+                        {
+                            if (ViewModel.SupportMinutesLeft <= 0)
+                            {
+                                alertLevel = AlertLevels.Red;
+                            }
+                            LookupControlsGlobals.LookupWindowFactory.SetAlertLevel(alertLevel, false
+                                , this, message);
+                        }
+                    }
                 });
             }
         }
+
 
         public void ShowTimeClock(bool show = true)
         {
