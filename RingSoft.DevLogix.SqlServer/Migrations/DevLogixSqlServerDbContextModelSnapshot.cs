@@ -381,6 +381,27 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.ToTable("CustomerProduct");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.CustomerUser", b =>
+                {
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("Cost")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("MinutesSpent")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("CustomerId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("CustomerUser");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Order", b =>
                 {
                     b.Property<int>("Id")
@@ -1943,6 +1964,25 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.CustomerUser", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Customer", "Customer")
+                        .WithMany("Users")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "User")
+                        .WithMany("CustomerUsers")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Order", b =>
                 {
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Customer", "Customer")
@@ -2664,6 +2704,8 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("Tickets");
 
                     b.Navigation("TimeClocks");
+
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Order", b =>
@@ -2849,6 +2891,8 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("CreateTickets");
 
                     b.Navigation("CreatedTestingOutlines");
+
+                    b.Navigation("CustomerUsers");
 
                     b.Navigation("Customers");
 

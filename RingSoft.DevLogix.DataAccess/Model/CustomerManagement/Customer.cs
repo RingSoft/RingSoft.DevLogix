@@ -77,6 +77,7 @@ namespace RingSoft.DevLogix.DataAccess.Model.CustomerManagement
         public virtual ICollection<CustomerProduct> CustomerProducts { get; set; }
         public virtual ICollection<CustomerComputer> CustomerComputers { get; set; }
         public virtual ICollection<SupportTicket> Tickets { get; set; }
+        public virtual ICollection<CustomerUser> Users { get; set; }
 
         public Customer()
         {

@@ -113,6 +113,7 @@ namespace RingSoft.DevLogix.DataAccess.Model
         public virtual ICollection<SupportTicket> CreateTickets { get; set; }
         public virtual ICollection<SupportTicket> AssignedTickets { get; set; }
         public virtual ICollection<SupportTicketUser> SupportTicketUsers { get; set; }
+        public virtual ICollection<CustomerUser> CustomerUsers { get; set; }
 
         public User()
         {
@@ -138,6 +139,7 @@ namespace RingSoft.DevLogix.DataAccess.Model
             CreateTickets = new HashSet<SupportTicket>();
             AssignedTickets = new HashSet<SupportTicket>();
             SupportTicketUsers = new HashSet<SupportTicketUser>();
+            CustomerUsers = new HashSet<CustomerUser>();
         }
     }
 }
