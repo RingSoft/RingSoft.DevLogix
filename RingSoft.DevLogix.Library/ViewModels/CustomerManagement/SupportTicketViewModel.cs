@@ -306,6 +306,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         public SupportTicketViewModel()
         {
+            TablesToDelete.Add(AppGlobals.LookupContext.SupportTicketUser);
             CustomerAutoFillSetup = new AutoFillSetup(
                 TableDefinition.GetFieldDefinition(p => p.CustomerId));
             CreateUserAutoFillSetup = new AutoFillSetup(
@@ -491,6 +492,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             var entity = table.FirstOrDefault(p => p.Id == Id);
             if (entity != null)
             {
+                var usersQuery = context.GetTable<SupportTicketUser>();
+                var users = usersQuery.Where(p => p.SupportTicketId == Id);
+                context.RemoveRange(users);
+
                 result = context.DeleteEntity(entity, "Deleting Ticket");
             }
             return result;
