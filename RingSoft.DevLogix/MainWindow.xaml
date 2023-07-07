@@ -114,6 +114,10 @@
 
                     <dec:StringReadOnlyBox x:Name="ElapsedTimeBox" Width="100" Text="00 00:00:00"/>
 
+                    <Label x:Name="SupportTimeLeftLabel" Content="Support Time Left"/>
+
+                    <local:SupportTimePurchasedControl x:Name="SupportTimePurchasedControl" Height="20" Width="100"/>
+
 				</StackPanel>
 
             </StatusBar>

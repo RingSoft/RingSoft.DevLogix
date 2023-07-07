@@ -371,8 +371,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         public RelayCommand PunchOutCommand { get; private set; }
 
-        public double? SupportMinutesPurchased { get; private set; }
-
         private DateTime _endDate;
         private Timer _timer = new Timer();
         private bool _loading;
@@ -610,12 +608,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
             PunchInDate = entity.PunchInDate.ToLocalTime();
             PunchOutDate = entity.PunchOutDate;
-            if (timeClockMode == TimeClockModes.SupportTicket)
+            if (timeClockMode == TimeClockModes.SupportTicket
+                && entity.Id == AppGlobals.MainViewModel.ActiveTimeClockId)
             {
-                SupportMinutesPurchased = null;
                 if (!PunchOutDate.HasValue)
                 {
-                    SupportMinutesPurchased =
+                    AppGlobals.MainViewModel.SupportMinutesPurchased =
                         entity.SupportTicket.Customer.SupportMinutesPurchased;
                 }
             }
@@ -1010,6 +1008,26 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 var timeClock = GetEntityData();
                 if (SaveEntity(timeClock))
                 {
+                    double? supportMinutesPurchased =null;
+                    
+                    if (timeClock.SupportTicketId != null)
+                    {
+                        var context1 = AppGlobals.DataRepository.GetDataContext();
+                        var ticketsTable = context1.GetTable<SupportTicket>();
+                        SupportTicket? ticket = null;
+
+                        if (ticketsTable != null && timeClock.SupportTicketId.HasValue)
+                        {
+                            ticket = ticketsTable
+                                .Include(p => p.Customer)
+                                .FirstOrDefault(p => p.Id == timeClock.SupportTicketId);
+                        }
+
+                        if (ticket != null)
+                        {
+                            supportMinutesPurchased = ticket.Customer.SupportMinutesPurchased;
+                        }
+                    }
                     var primaryKey = TableDefinition.GetPrimaryKeyValueFromEntity(timeClock);
                     SelectPrimaryKey(primaryKey);
                     GblMethods.DoRecordLock(primaryKey);
@@ -1020,7 +1038,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     AppGlobals.MainViewModel.SetupTimer(timeClock);
                     RecordDirty = false;
                 }
-
                 var context = AppGlobals.DataRepository.GetDataContext();
                 var usersQuery = context.GetTable<User>();
                 if (usersQuery != null)
@@ -1136,7 +1153,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         private void SetElapsedTime(string elapsedTime)
         {
-            AppGlobals.MainViewModel.SetSupportTimeLeftTextFromDate(PunchInDate, SupportMinutesPurchased);
+            AppGlobals.MainViewModel.SetSupportTimeLeftTextFromDate(PunchInDate);
             ElapsedTime = elapsedTime;
             View.SetElapsedTime();
         }

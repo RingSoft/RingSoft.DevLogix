@@ -746,7 +746,13 @@ namespace RingSoft.DevLogix
         {
             if (_isActive)
             {
-                Dispatcher?.Invoke(() => { ElapsedTimeBox.Text = ViewModel.ElapsedTime; });
+                Dispatcher?.Invoke(() =>
+                {
+                    ElapsedTimeBox.Text = ViewModel.ElapsedTime;
+                    SupportTimePurchasedControl.SetTimeRemaining(SupportTimeLeftLabel, AppGlobals.MainViewModel.SupportTimeLeft
+                        , AppGlobals.MainViewModel.SupportMinutesLeft);
+
+                });
             }
         }
 

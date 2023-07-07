@@ -17,6 +17,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Timers;
+using Microsoft.EntityFrameworkCore;
 
 namespace RingSoft.DevLogix.Library.ViewModels
 {
@@ -149,6 +150,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
                 _elapsedTime = value;
             }
         }
+        
 
         public IMainView MainView { get; set; }
         public int ActiveTimeClockId { get; set; }
@@ -160,6 +162,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
         public List<ErrorViewModel> ErrorViewModels { get; } = new List<ErrorViewModel>();
         public List<TestingOutlineViewModel> TestingOutlineViewModels { get; } = new List<TestingOutlineViewModel>();
         public TimeClockMaintenanceViewModel TimeClockMaintenanceViewModel { get; set; }
+        public double? SupportMinutesPurchased { get; set; }
 
         public RelayCommand LogoutCommand { get; set; }
         public RelayCommand<TableDefinitionBase> ShowMaintenanceWindowCommand { get; }
@@ -187,7 +190,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         private Timer _timer = new Timer();
         private DateTime? _startDate;
-
+        
         public MainViewModel()
         {
             _timer.Interval = 1000;
@@ -195,6 +198,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
             {
                 if (_startDate != null)
                 {
+                    AppGlobals.MainViewModel.SetSupportTimeLeftTextFromDate(_startDate.Value.ToLocalTime());
                     SetElapsedTime(GetElapsedTime());
                 }
             };
@@ -369,10 +373,17 @@ namespace RingSoft.DevLogix.Library.ViewModels
             var context = AppGlobals.DataRepository.GetDataContext();
             var table = context.GetTable<TimeClock>();
             var timeClock = table
+                .Include(p => p.SupportTicket)
+                .ThenInclude(p => p.Customer)
                 .FirstOrDefault(p => p.UserId == AppGlobals.LoggedInUser.Id
                                      && p.PunchOutDate == null);
             if (timeClock != null)
             {
+                double? supportMinutesPurchased = null;
+                if (timeClock.SupportTicket != null)
+                {
+                    SupportMinutesPurchased = timeClock.SupportTicket.Customer.SupportMinutesPurchased;
+                }
                 SetupTimer(timeClock);
             }
         }
@@ -487,7 +498,19 @@ namespace RingSoft.DevLogix.Library.ViewModels
         {
             var context = AppGlobals.DataRepository.GetDataContext();
             var table = context.GetTable<TimeClock>();
-            var timeClock = table.FirstOrDefault(p => p.Id == timeClockId);
+            var timeClock = table
+                .Include(p => p.SupportTicket)
+                .ThenInclude(p => p.Customer)
+                .FirstOrDefault(p => p.Id == timeClockId);
+
+            double? supportMinutesPurchased = null;
+            if (timeClock != null)
+            {
+                if (timeClock.SupportTicket != null)
+                {
+                    supportMinutesPurchased = timeClock.SupportTicket.Customer.SupportMinutesPurchased;
+                }
+            }
             SetupTimer(timeClock);
         }
 
@@ -721,18 +744,17 @@ namespace RingSoft.DevLogix.Library.ViewModels
             return true;
         }
         
-        public void SetSupportTimeLeftTextFromDate(DateTime startDate, double? supportTimePurchased)
+        public void SetSupportTimeLeftTextFromDate(DateTime startDate)
         {
             SupportTimeLeft = null;
             SupportMinutesLeft = null;
 
-            if (supportTimePurchased != null)
+            if (SupportMinutesPurchased != null)
             {
-                var endDate = startDate.AddMinutes(supportTimePurchased.Value);
+                var endDate = startDate.AddMinutes(SupportMinutesPurchased.Value);
                 var duration = endDate.Subtract(DateTime.Now);
                 SupportTimeLeft = $"{duration.Days.ToString("00")} {duration.ToString("hh\\:mm\\:ss")}";
             }
         }
-
     }
 }

@@ -247,7 +247,8 @@ namespace RingSoft.DevLogix.UserManagement
                 Dispatcher?.Invoke(() =>
                 {
                     ElapsedTimeBox.Text = LocalViewModel.ElapsedTime;
-                    if (SupportTicketControl.Visibility == Visibility.Visible)
+                    if (SupportTicketControl.Visibility == Visibility.Visible
+                        && LocalViewModel.PunchOutDate == null)
                     {
                         CustomerTimeRemControl.SetTimeRemaining(CustomerTimeRemLabel, AppGlobals.MainViewModel.SupportTimeLeft
                         , AppGlobals.MainViewModel.SupportMinutesLeft);
