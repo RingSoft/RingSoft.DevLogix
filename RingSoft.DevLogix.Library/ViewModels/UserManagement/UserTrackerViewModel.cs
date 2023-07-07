@@ -354,9 +354,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 case RefreshRate.Minutes:
                     nextRefresh = LastRefresh.Value.AddMinutes(RefreshValue);
                     break;
-                case RefreshRate.Seconds:
-                    nextRefresh = LastRefresh.Value.AddSeconds(RefreshValue);
-                    break;
+                //case RefreshRate.Seconds:
+                //    nextRefresh = LastRefresh.Value.AddSeconds(RefreshValue);
+                //    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }

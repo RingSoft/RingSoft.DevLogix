@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -35,47 +36,64 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         public bool OrigDisableBalloon { get; private set; }
 
+        public bool DoGetRecordCount { get; private set; }
+
         public ChartBarViewModel(ChartBarsViewModel mainViewModel, DevLogixChartBar chartBar)
         {
             MainViewModel = mainViewModel;
             ChartBar = chartBar;
+            DoGetRecordCount = true;
+            Initialize();
+        }
+
+        private void Initialize()
+        {
+            if (LookupRefresher != null)
+            {
+                LookupRefresher.SetAlertLevelEvent -= LookupRefresher_SetAlertLevelEvent;
+
+                LookupRefresher.RefreshRecordCountEvent -= LookupRefresher_RefreshRecordCountEvent;
+            }
             LookupRefresher = new LookupRefresher();
-            LookupDefinition = new LookupDefinitionBase(chartBar.AdvancedFindId, LookupRefresher);
+            LookupDefinition = new LookupDefinitionBase(ChartBar.AdvancedFindId, LookupRefresher);
             OrigDisableBalloon = LookupRefresher.Disabled;
 
-            var lookupControl = new LookupUserInterface()
-            {
-                PageSize = 10,
-                SearchType = LookupSearchTypes.Equals
-            };
-            //LookupData = new LookupDataBase(LookupDefinition, lookupControl);
             LookupData = LookupDefinition.TableDefinition.LookupDefinition.GetLookupDataMaui(LookupDefinition, false);
 
-            LookupRefresher.SetAlertLevelEvent += (sender, args) =>
-            {
-                MainViewModel.View.SetAlertLevel(args.AlertLevel, this);
-            };
+            LookupRefresher.SetAlertLevelEvent += LookupRefresher_SetAlertLevelEvent;
 
-            LookupRefresher.RefreshRecordCountEvent += (sender, args) =>
-            {
-                GetRecordCount();
-                MainViewModel.View.UpdateBar(this);
-            };
+            LookupRefresher.RefreshRecordCountEvent += LookupRefresher_RefreshRecordCountEvent;
             GetRecordCount();
             LookupRefresher.StartRefresh();
+        }
+
+        private void LookupRefresher_RefreshRecordCountEvent(object? sender, EventArgs e)
+        {
+            GetRecordCount();
+            MainViewModel.View.UpdateBar(this);
+        }
+
+        private void LookupRefresher_SetAlertLevelEvent(object? sender, RefreshAlertLevelArgs e)
+        {
+            MainViewModel.View.SetAlertLevel(e.AlertLevel, this);
         }
 
         private void GetRecordCount()
         {
             Count = LookupData.GetRecordCount();
-            if (LookupRefresher.RefreshRate != RefreshRate.None)
+
+            if (DoGetRecordCount)
             {
-                LookupRefresher.UpdateRecordCount(Count);
+                if (LookupRefresher.RefreshRate != RefreshRate.None)
+                {
+                    LookupRefresher.UpdateRecordCount(Count);
+                }
             }
-            if (LookupRefresher.RefreshRate != RefreshRate.None)
-            {
-                LookupRefresher.UpdateRecordCount(Count);
-            }
+
+            //if (LookupRefresher.RefreshRate != RefreshRate.None)
+            //{
+            //    LookupRefresher.UpdateRecordCount(Count);
+            //}
         }
 
         public void ShowAddOnFly(object ownerWindow)
@@ -89,9 +107,12 @@ namespace RingSoft.DevLogix.Library.ViewModels
             var advFindLookup = AppGlobals.LookupContext.AdvancedFindLookup.Clone();
             advFindLookup.WindowClosed += (sender, args) =>
             {
-                GetRecordCount();
+                //GetRecordCount();
+                Initialize();
                 MainViewModel.View.RefreshChart();
+                DoGetRecordCount = true;
             };
+            DoGetRecordCount = false;
             advFindLookup.ShowAddOnTheFlyWindow(primaryKey, null, ownerWindow);
         }
 
