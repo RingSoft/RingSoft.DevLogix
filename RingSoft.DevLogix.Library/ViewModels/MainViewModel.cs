@@ -180,6 +180,11 @@ namespace RingSoft.DevLogix.Library.ViewModels
         public RelayCommand AboutCommand { get; }
         public ChartBarsViewModel ChartViewModel { get; private set; }
 
+        public string? SupportTimeLeft { get; private set; }
+
+        public double? SupportMinutesLeft { get; private set; }
+
+
         private Timer _timer = new Timer();
         private DateTime? _startDate;
 
@@ -714,6 +719,19 @@ namespace RingSoft.DevLogix.Library.ViewModels
             }
 
             return true;
+        }
+        
+        public void SetSupportTimeLeftTextFromDate(DateTime startDate, double? supportTimePurchased)
+        {
+            SupportTimeLeft = null;
+            SupportMinutesLeft = null;
+
+            if (supportTimePurchased != null)
+            {
+                var endDate = startDate.AddMinutes(supportTimePurchased.Value);
+                var duration = endDate.Subtract(DateTime.Now);
+                SupportTimeLeft = $"{duration.Days.ToString("00")} {duration.ToString("hh\\:mm\\:ss")}";
+            }
         }
 
     }

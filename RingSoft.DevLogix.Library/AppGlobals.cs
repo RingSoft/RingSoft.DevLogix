@@ -585,6 +585,5 @@ namespace RingSoft.DevLogix.Library
             }
             return result;
         }
-
     }
 }

@@ -7,7 +7,7 @@ namespace RingSoft.DevLogix
 {
     public class SupportTimePurchasedControl : StringReadOnlyBox
     {
-        public void SetTimeRemaining(Label controlLabel, string? timeRemaining)
+        public void SetTimeRemaining(Label controlLabel, string? timeRemaining, double? supportMinutesLeft = null)
         {
             if (timeRemaining == null)
             {

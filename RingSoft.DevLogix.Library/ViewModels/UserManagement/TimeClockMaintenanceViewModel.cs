@@ -371,6 +371,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         public RelayCommand PunchOutCommand { get; private set; }
 
+        public double? SupportMinutesPurchased { get; private set; }
+
         private DateTime _endDate;
         private Timer _timer = new Timer();
         private bool _loading;
@@ -608,6 +610,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
             PunchInDate = entity.PunchInDate.ToLocalTime();
             PunchOutDate = entity.PunchOutDate;
+            if (timeClockMode == TimeClockModes.SupportTicket)
+            {
+                SupportMinutesPurchased = null;
+                if (!PunchOutDate.HasValue)
+                {
+                    SupportMinutesPurchased =
+                        entity.SupportTicket.Customer.SupportMinutesPurchased;
+                }
+            }
             if (PunchOutDate.HasValue)
             {
                 PunchOutDate = PunchOutDate.Value.ToLocalTime();
@@ -1125,6 +1136,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         private void SetElapsedTime(string elapsedTime)
         {
+            AppGlobals.MainViewModel.SetSupportTimeLeftTextFromDate(PunchInDate, SupportMinutesPurchased);
             ElapsedTime = elapsedTime;
             View.SetElapsedTime();
         }

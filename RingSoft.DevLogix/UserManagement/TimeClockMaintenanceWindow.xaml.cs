@@ -234,8 +234,6 @@ namespace RingSoft.DevLogix.UserManagement
                     KeyLabel.Visibility = Visibility.Collapsed;
                     SupportTicketLabel.Visibility = Visibility.Visible;
                     SupportTicketControl.Visibility = Visibility.Visible;
-                    CustomerTimeRemLabel.Visibility = Visibility.Visible;
-                    CustomerTimeRemControl.Visibility = Visibility.Visible;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(timeClockMode), timeClockMode, null);
@@ -246,7 +244,15 @@ namespace RingSoft.DevLogix.UserManagement
         {
             if (_isActive)
             {
-                Dispatcher?.Invoke(() => { ElapsedTimeBox.Text = LocalViewModel.ElapsedTime; });
+                Dispatcher?.Invoke(() =>
+                {
+                    ElapsedTimeBox.Text = LocalViewModel.ElapsedTime;
+                    if (SupportTicketControl.Visibility == Visibility.Visible)
+                    {
+                        CustomerTimeRemControl.SetTimeRemaining(CustomerTimeRemLabel, AppGlobals.MainViewModel.SupportTimeLeft
+                        , AppGlobals.MainViewModel.SupportMinutesLeft);
+                    }
+                });
             }
         }
 
