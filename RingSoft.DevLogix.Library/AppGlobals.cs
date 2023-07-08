@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.WebSockets;
-using System.Threading;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using RingSoft.App.Interop;
 using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
@@ -14,7 +7,6 @@ using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.EfCore;
 using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
-using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DevLogix.DataAccess;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
@@ -23,6 +15,10 @@ using RingSoft.DevLogix.Library.ViewModels;
 using RingSoft.DevLogix.MasterData;
 using RingSoft.DevLogix.Sqlite;
 using RingSoft.DevLogix.SqlServer;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using DbPlatforms = RingSoft.App.Library.DbPlatforms;
 
 namespace RingSoft.DevLogix.Library
@@ -69,7 +65,7 @@ namespace RingSoft.DevLogix.Library
             RingSoftAppGlobals.AppCopyright = "©2023 by Peter Ringering";
             RingSoftAppGlobals.PathToDownloadUpgrade = MasterDbContext.ProgramDataFolder;
             RingSoftAppGlobals.AppGuid = "96ac9aa5-65af-43ca-8cb8-6e35a2f12570";
-            RingSoftAppGlobals.AppVersion = 161;
+            RingSoftAppGlobals.AppVersion = 162;
             SystemGlobals.ProgramDataFolder = MasterDbContext.ProgramDataFolder;
         }
 
