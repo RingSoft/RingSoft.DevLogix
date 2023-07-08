@@ -75,6 +75,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
@@ -97,8 +98,16 @@
 
             <dec:StringEditControl Grid.Row="1" Grid.Column="1" Width="200" HorizontalAlignment="Left" Text="{Binding PhoneNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="50"/>
 
+            <Label Grid.Row="2" Grid.Column="0" Content="Time Zone"/>
 
-            <TabControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="5">
+            <lc:AutoFillControl Grid.Row="2" Grid.Column="1" Width="200" HorizontalAlignment="Left" Setup="{Binding TimeZoneAutoFillSetup}" Value="{Binding TimeZoneAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <Label Grid.Row="2" Grid.Column="2" Content="Territory"/>
+
+            <lc:AutoFillControl Grid.Row="2" Grid.Column="3" Width="200" HorizontalAlignment="Left" Setup="{Binding TerritoryAutoFillSetup}" Value="{Binding TerritoryAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+
+            <TabControl Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="5">
 
                 <TabItem Header="Orders">
                     <DockPanel>
@@ -126,8 +135,6 @@
 
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
@@ -171,25 +178,18 @@
 
                         <dec:StringEditControl Grid.Row="3" Grid.Column="3" Width="200" HorizontalAlignment="Left" Text="{Binding Country, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="50"/>
 
-                        <Label Grid.Row="4" Grid.Column="0" Content="Time Zone"/>
 
-                        <lc:AutoFillControl Grid.Row="4" Grid.Column="1" Width="200" HorizontalAlignment="Left" Setup="{Binding TimeZoneAutoFillSetup}" Value="{Binding TimeZoneAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Label Grid.Row="4" Grid.Column="0" Content="Email Address"/>
 
-                        <Label Grid.Row="5" Grid.Column="0" Content="Territory"/>
+                        <dec:StringEditControl Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3" Width="300" HorizontalAlignment="Left" Text="{Binding EmailAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="100"/>
 
-                        <lc:AutoFillControl Grid.Row="5" Grid.Column="1" Width="200" HorizontalAlignment="Left" Setup="{Binding TerritoryAutoFillSetup}" Value="{Binding TerritoryAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Label Grid.Row="5" Grid.Column="0" Content="Web Address"/>
 
-                        <Label Grid.Row="6" Grid.Column="0" Content="Email Address"/>
+                        <dec:StringEditControl Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="3" Width="300" HorizontalAlignment="Left" Text="{Binding WebAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="100"/>
 
-                        <dec:StringEditControl Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="3" Width="300" HorizontalAlignment="Left" Text="{Binding EmailAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="100"/>
+                        <Label Grid.Row="6" Grid.Column="0" Content="Support Time Left"/>
 
-                        <Label Grid.Row="7" Grid.Column="0" Content="Web Address"/>
-
-                        <dec:StringEditControl Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="3" Width="300" HorizontalAlignment="Left" Text="{Binding WebAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="100"/>
-
-                        <Label Grid.Row="8" Grid.Column="0" Content="Support Time Left"/>
-
-                        <dl:TimeControl Grid.Row="8" Grid.Column="1" Width="100" HorizontalAlignment="Left" Minutes="{Binding SupportMinutesLeft, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <dl:TimeControl Grid.Row="6" Grid.Column="1" Width="100" HorizontalAlignment="Left" Minutes="{Binding SupportMinutesLeft, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                     </Grid>
                 </TabItem>
