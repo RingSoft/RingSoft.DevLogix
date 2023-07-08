@@ -122,29 +122,33 @@ namespace RingSoft.DevLogix.UserManagement
                 var ctrlKeyDown = Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl);
                 if (ctrlKeyDown)
                 {
-                    if (args.Key == Key.C)
+                    switch (args.Key)
                     {
-                        if (ErrorControl.Visibility == Visibility.Visible)
-                        {
-                            ErrorControl.ShowLookupWindow();
-                        }
-                        if (TestingOutlineControl.Visibility == Visibility.Visible)
-                        {
-                            TestingOutlineControl.ShowLookupWindow();
-                        }
-                        if (ProjectTaskControl.Visibility == Visibility.Visible)
-                        {
-                            ProjectTaskControl.ShowLookupWindow();
-                        }
-                        if (CustomerControl.Visibility == Visibility.Visible)
-                        {
-                            CustomerControl.ShowLookupWindow();
-                        }
-                        if (SupportTicketControl.Visibility == Visibility.Visible)
-                        {
-                            SupportTicketControl.ShowLookupWindow();
-                        }
-
+                        case Key.L:
+                            if (ErrorControl.Visibility == Visibility.Visible)
+                            {
+                                ErrorControl.ShowLookupWindow();
+                            }
+                            if (TestingOutlineControl.Visibility == Visibility.Visible)
+                            {
+                                TestingOutlineControl.ShowLookupWindow();
+                            }
+                            if (ProjectTaskControl.Visibility == Visibility.Visible)
+                            {
+                                ProjectTaskControl.ShowLookupWindow();
+                            }
+                            if (CustomerControl.Visibility == Visibility.Visible)
+                            {
+                                CustomerControl.ShowLookupWindow();
+                            }
+                            if (SupportTicketControl.Visibility == Visibility.Visible)
+                            {
+                                SupportTicketControl.ShowLookupWindow();
+                            }
+                            break;
+                        case Key.U:
+                            UserControl.ShowLookupWindow();
+                            break;
                     }
                 }
             };
@@ -212,6 +216,7 @@ namespace RingSoft.DevLogix.UserManagement
             CustomerTimeRemLabel.Visibility = Visibility.Collapsed;
             CustomerTimeRemControl.Visibility = Visibility.Collapsed;
 
+            var keyText = string.Empty;
             switch (timeClockMode)
             {
                 case TimeClockModes.Error:
@@ -234,10 +239,19 @@ namespace RingSoft.DevLogix.UserManagement
                     KeyLabel.Visibility = Visibility.Collapsed;
                     SupportTicketLabel.Visibility = Visibility.Visible;
                     SupportTicketControl.Visibility = Visibility.Visible;
+                    keyText = "Support Ticket";
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(timeClockMode), timeClockMode, null);
             }
+
+            if (keyText.IsNullOrEmpty())
+            {
+                keyText = KeyLabel.Content.ToString();
+            }
+            var message = $"(Ctrl + L to Launch the {keyText} Lookup)\r\n";
+            message += "(Ctrl + U to Launch the User Lookup)";
+            KeyShortcutLabel.Content = message;
         }
 
         public void SetElapsedTime()

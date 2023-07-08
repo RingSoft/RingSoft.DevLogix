@@ -73,6 +73,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
@@ -83,54 +84,55 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <Label Grid.Row="0" Grid.Column="0" Content="Time Clock Database ID"/>
+            <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" x:Name="KeyShortcutLabel" HorizontalAlignment="Left" Content="KeyDesc" Margin="0, 5"/>
+            <Label Grid.Row="1" Grid.Column="0" Content="Time Clock Database ID"/>
 
-            <dec:StringReadOnlyBox Grid.Row="0" Grid.Column="1" Text="{Binding Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="75" HorizontalAlignment="Left"/>
+            <dec:StringReadOnlyBox Grid.Row="1" Grid.Column="1" Text="{Binding Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="75" HorizontalAlignment="Left"/>
 
-            <Label Grid.Row="0" Grid.Column="2" Content="Time Clock ID"/>
+            <Label Grid.Row="1" Grid.Column="2" Content="Time Clock ID"/>
 
-            <lc:AutoFillControl Grid.Row="0" Grid.Column="3" x:Name="NameControl" Width="100" HorizontalAlignment="Left" IsTabStop="False"/>
+            <lc:AutoFillControl Grid.Row="1" Grid.Column="3" x:Name="NameControl" Width="100" HorizontalAlignment="Left" IsTabStop="False"/>
 
 
-            <Label Grid.Row="1" Grid.Column="0" Content="User"/>
+            <Label Grid.Row="2" Grid.Column="0" Content="User"/>
 
-            <lc:AutoFillReadOnlyControl Grid.Row="1" Grid.Column="1" Width="200" Setup="{Binding UserAutoFillSetup}" Value="{Binding UserAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <lc:AutoFillReadOnlyControl Grid.Row="2" Grid.Column="1" x:Name="UserControl" Width="200" Setup="{Binding UserAutoFillSetup}" Value="{Binding UserAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-            <Label Grid.Row="1" Grid.Column="2" x:Name="KeyLabel" Content="Key Text"/>
+            <Label Grid.Row="2" Grid.Column="2" x:Name="KeyLabel" Content="Key Text"/>
 
-            <lc:AutoFillReadOnlyControl Grid.Row="1" Grid.Column="3" x:Name="ErrorControl" Setup="{Binding ErrorAutoFillSetup}" Value="{Binding ErrorAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
+            <lc:AutoFillReadOnlyControl Grid.Row="2" Grid.Column="3" x:Name="ErrorControl" Setup="{Binding ErrorAutoFillSetup}" Value="{Binding ErrorAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
 
-            <lc:AutoFillReadOnlyControl Grid.Row="1" Grid.Column="3" x:Name="ProjectTaskControl" Setup="{Binding ProjectTaskAutoFillSetup}" Value="{Binding ProjectTaskAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
+            <lc:AutoFillReadOnlyControl Grid.Row="2" Grid.Column="3" x:Name="ProjectTaskControl" Setup="{Binding ProjectTaskAutoFillSetup}" Value="{Binding ProjectTaskAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
 
-            <lc:AutoFillReadOnlyControl Grid.Row="1" Grid.Column="3" x:Name="TestingOutlineControl" Setup="{Binding TestingOutlineAutoFillSetup}" Value="{Binding TestingOutlineAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
+            <lc:AutoFillReadOnlyControl Grid.Row="2" Grid.Column="3" x:Name="TestingOutlineControl" Setup="{Binding TestingOutlineAutoFillSetup}" Value="{Binding TestingOutlineAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
 
-            <Label Grid.Row="2" Grid.Column="0" x:Name="SupportTicketLabel" Content="Support Ticket"/>
+            <Label Grid.Row="3" Grid.Column="0" x:Name="SupportTicketLabel" Content="Support Ticket"/>
 
-            <lc:AutoFillReadOnlyControl Grid.Row="2" Grid.Column="1" x:Name="SupportTicketControl" Setup="{Binding SupportTicketAutoFillSetup}" Value="{Binding SupportTicketAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
+            <lc:AutoFillReadOnlyControl Grid.Row="3" Grid.Column="1" x:Name="SupportTicketControl" Setup="{Binding SupportTicketAutoFillSetup}" Value="{Binding SupportTicketAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
 
-            <Label Grid.Row="3" Grid.Column="0" x:Name="CustomerTimeRemLabel" Content="Customer Time Remaining"/>
+            <Label Grid.Row="4" Grid.Column="0" x:Name="CustomerTimeRemLabel" Content="Customer Time Remaining"/>
 
-            <dl:SupportTimePurchasedControl Grid.Row="3" Grid.Column="1" x:Name="CustomerTimeRemControl" Height="20"/>
+            <dl:SupportTimePurchasedControl Grid.Row="4" Grid.Column="1" x:Name="CustomerTimeRemControl" Height="20"/>
 
-            <lc:AutoFillReadOnlyControl Grid.Row="1" Grid.Column="3" x:Name="CustomerControl" Setup="{Binding CustomerAutoFillSetup}" Value="{Binding CustomerAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
+            <lc:AutoFillReadOnlyControl Grid.Row="2" Grid.Column="3" x:Name="CustomerControl" Setup="{Binding CustomerAutoFillSetup}" Value="{Binding CustomerAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
 
-            <Label Grid.Row="4" Grid.Column="0" Content="Punch In Date"/>
+            <Label Grid.Row="5" Grid.Column="0" Content="Punch In Date"/>
 
-            <dec:DateEditControl Grid.Row="4" Grid.Column="1" x:Name="PunchInBox" Value="{Binding PunchInDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DateFormatType="DateTime" HorizontalAlignment="Left" Width="200"/>
+            <dec:DateEditControl Grid.Row="5" Grid.Column="1" x:Name="PunchInBox" Value="{Binding PunchInDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DateFormatType="DateTime" HorizontalAlignment="Left" Width="200"/>
 
-            <Label Grid.Row="4" Grid.Column="2" Content="Punch Out Date"/>
+            <Label Grid.Row="5" Grid.Column="2" Content="Punch Out Date"/>
 
-            <dec:DateEditControl Grid.Row="4" Grid.Column="3" x:Name="PunchOutControl" Value="{Binding PunchOutDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DateFormatType="DateTime" HorizontalAlignment="Left" Width="200"/>
+            <dec:DateEditControl Grid.Row="5" Grid.Column="3" x:Name="PunchOutControl" Value="{Binding PunchOutDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DateFormatType="DateTime" HorizontalAlignment="Left" Width="200"/>
 
-            <Label Grid.Row="5" Grid.Column="0" Content="Elapsed Time"/>
+            <Label Grid.Row="6" Grid.Column="0" Content="Elapsed Time"/>
 
-            <dec:StringReadOnlyBox Grid.Row="5" Grid.Column="1" x:Name="ElapsedTimeBox" />
+            <dec:StringReadOnlyBox Grid.Row="6" Grid.Column="1" x:Name="ElapsedTimeBox" />
 
-            <CheckBox Grid.Row="5" Grid.Column="2" Content="Dates Edited" IsEnabled="False" IsChecked="{Binding IsEdited, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <CheckBox Grid.Row="6" Grid.Column="2" Content="Dates Edited" IsEnabled="False" IsChecked="{Binding IsEdited, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-            <Label Grid.Row="6" Grid.Column="0" Content="Notes" VerticalAlignment="Top"/>
+            <Label Grid.Row="7" Grid.Column="0" Content="Notes" VerticalAlignment="Top"/>
 
-            <dec:DataEntryMemoEditor Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="3" x:Name="NotesControl" Text="{Binding Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <dec:DataEntryMemoEditor Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="3" x:Name="NotesControl" Text="{Binding Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         </Grid>
     </DockPanel>
 
