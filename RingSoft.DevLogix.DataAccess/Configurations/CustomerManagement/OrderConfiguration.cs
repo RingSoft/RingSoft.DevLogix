@@ -26,12 +26,18 @@ namespace RingSoft.DevLogix.DataAccess.Configurations.CustomerManagement
             builder.Property(p => p.TotalDiscount).HasColumnType(DbConstants.DecimalColumnType);
             builder.Property(p => p.Freight).HasColumnType(DbConstants.DecimalColumnType);
             builder.Property(p => p.Total).HasColumnType(DbConstants.DecimalColumnType);
+            builder.Property(p => p.SalespersonId).HasColumnType(DbConstants.IntegerColumnType);
 
             builder.HasOne(p => p.Customer)
                 .WithMany(p => p.Orders)
                 .HasForeignKey(p => p.CustomerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            builder.HasOne(p => p.Salesperson)
+                .WithMany(p => p.OrderUsers)
+                .HasForeignKey(p => p.SalespersonId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .IsRequired(false);
         }
     }
 }

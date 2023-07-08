@@ -19,6 +19,10 @@ namespace RingSoft.DevLogix.DataAccess.Model.CustomerManagement
 
         public virtual Customer Customer { get; set; }
 
+        public int? SalespersonId { get; set; }
+
+        public virtual User Salesperson { get; set; }
+
         [Required]
         public DateTime OrderDate { get; set; }
         

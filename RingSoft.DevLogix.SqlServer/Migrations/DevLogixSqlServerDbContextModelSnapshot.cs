@@ -457,6 +457,9 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
+                    b.Property<int?>("SalespersonId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime?>("ShippedDate")
                         .HasColumnType("datetime");
 
@@ -472,6 +475,8 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
+
+                    b.HasIndex("SalespersonId");
 
                     b.ToTable("Order");
                 });
@@ -1991,7 +1996,14 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "Salesperson")
+                        .WithMany("OrderUsers")
+                        .HasForeignKey("SalespersonId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.Navigation("Customer");
+
+                    b.Navigation("Salesperson");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.OrderDetail", b =>
@@ -2903,6 +2915,8 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("ErrorUsers");
 
                     b.Navigation("FoundByUserErrors");
+
+                    b.Navigation("OrderUsers");
 
                     b.Navigation("ProjectMaterialHistory");
 

@@ -8,6 +8,7 @@ using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbMaintenance;
+using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
 using RingSoft.Printing.Interop;
 
@@ -58,6 +59,36 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
                 _customerAutoFillValue = value;
                 LoadCustomer();
+                OnPropertyChanged();
+            }
+        }
+
+        private AutoFillSetup _salespersonAutoFillSetup;
+
+        public AutoFillSetup SalespersonAutoFillSetup
+        {
+            get => _salespersonAutoFillSetup;
+            set
+            {
+                if (_salespersonAutoFillSetup == value)
+                    return;
+
+                _salespersonAutoFillSetup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private AutoFillValue _salespersonAutoFillValue;
+
+        public AutoFillValue SalespersonAutoFillValue
+        {
+            get => _salespersonAutoFillValue;
+            set
+            {
+                if (_salespersonAutoFillValue == value)
+                    return;
+
+                _salespersonAutoFillValue = value;
                 OnPropertyChanged();
             }
         }
@@ -304,6 +335,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             CustomerAutoFillSetup = new AutoFillSetup(
                 TableDefinition.GetFieldDefinition(p => p.CustomerId));
 
+            SalespersonAutoFillSetup = new AutoFillSetup(
+                TableDefinition.GetFieldDefinition(p => p.SalespersonId));
+
             TablesToDelete.Add(AppGlobals.LookupContext.OrderDetail);
             DetailsManager = new OrderDetailsManager(this);
             PrintProcessingHeader += OrderViewModel_PrintProcessingHeader;
@@ -350,6 +384,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 .Include(p => p.Customer)
                 .Include(p => p.Details)
                 .ThenInclude(p => p.Product)
+                .Include(p => p.Salesperson)
                 .FirstOrDefault(p => p.Id == orderId);
             return order;
         }
@@ -371,6 +406,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             CompanyName = entity.CompanyName;
             ContactName = entity.ContactName;
             ContactTitle = entity.ContactTitle;
+            SalespersonAutoFillValue = entity.Salesperson.GetAutoFillValue();
             Address = entity.Address;
             City = entity.City;
             Region = entity.Region;
@@ -390,6 +426,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             {
                 Id = Id,
                 CustomerId = CustomerAutoFillValue.GetEntity<Customer>().Id,
+                SalespersonId = SalespersonAutoFillValue.GetEntity<User>().Id,
                 OrderDate = OrderDate.ToUniversalTime(),
                 ShippedDate = ShippedDate.GetValueOrDefault().ToUniversalTime(),
                 CompanyName = CompanyName,
@@ -453,6 +490,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             Total = 0;
             DetailsManager.SetupForNewRecord();
             CustomerAutoFillValue = DefaultCustomerAutoFillValue;
+            SalespersonAutoFillValue = AppGlobals.LoggedInUser.GetAutoFillValue();
             if (CustomerAutoFillValue != null)
             {
                 LoadCustomer();

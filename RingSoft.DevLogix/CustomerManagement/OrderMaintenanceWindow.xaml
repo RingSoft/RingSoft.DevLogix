@@ -29,6 +29,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
@@ -52,11 +53,16 @@
 
             <lc:AutoFillControl Grid.Row="1" Grid.Column="1" x:Name="CustomerControl" Width="200" HorizontalAlignment="Left" Setup="{Binding CustomerAutoFillSetup}" Value="{Binding CustomerAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-            <Label Grid.Row="1" Grid.Column="2" Content="Order Date"/>
 
-            <dec:DateEditControl Grid.Row="1" Grid.Column="3" DateFormatType="DateTime" Width="200" HorizontalAlignment="Left" Value="{Binding OrderDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <Label Grid.Row="1" Grid.Column="2" Content="Salesperson"/>
 
-            <TabControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="5">
+            <lc:AutoFillControl Grid.Row="1" Grid.Column="3" x:Name="SalespersonControl" Width="200" HorizontalAlignment="Left" Setup="{Binding SalespersonAutoFillSetup}" Value="{Binding SalespersonAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <Label Grid.Row="2" Grid.Column="0" Content="Order Date"/>
+
+            <dec:DateEditControl Grid.Row="2" Grid.Column="1" DateFormatType="DateTime" Width="200" HorizontalAlignment="Left" Value="{Binding OrderDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <TabControl Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="5">
 
                 <TabItem Header="Products">
 
@@ -138,7 +144,7 @@
                 </TabItem>
             </TabControl>
 
-            <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="5" HorizontalAlignment="Right">
+            <StackPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="5" HorizontalAlignment="Right">
 
                 <Grid>
                     <Grid.RowDefinitions>
