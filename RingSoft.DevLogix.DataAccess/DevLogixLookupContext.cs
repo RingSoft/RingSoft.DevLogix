@@ -92,6 +92,7 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<SupportTicket> SupportTicket { get; set; }
         public TableDefinition<SupportTicketUser> SupportTicketUser { get; set; }
         public TableDefinition<CustomerUser> CustomerUser { get; set; }
+        public TableDefinition<SupportTicketError> SupportTicketError { get; set; }
 
         public LookupDefinition<DevLogixChartLookup, SystemMaster> SystemMasterLookupDefinition { get; set; }
         public LookupDefinition<DevLogixChartLookup, DevLogixChart> DevLogixChartLookup { get; set; }
@@ -146,6 +147,7 @@ namespace RingSoft.DevLogix.DataAccess
         public LookupDefinition<SupportTicketLookup, SupportTicket> SupportTicketLookup { get; set; }
         public LookupDefinition<SupportTicketUserLookup, SupportTicketUser> SupportTicketUserLookup { get; set; }
         public LookupDefinition<CustomerUserLookup, CustomerUser> CustomerUserLookup { get; set; }
+        public LookupDefinition<SupportTicketErrorLookup, SupportTicketError> SupportTicketErrorLookup { get; set; }
 
         public SqliteDataProcessor SqliteDataProcessor { get; }
         public SqlServerDataProcessor SqlServerDataProcessor { get; }
@@ -713,6 +715,17 @@ namespace RingSoft.DevLogix.DataAccess
 
             CustomerUser.HasLookupDefinition(CustomerUserLookup);
 
+            SupportTicketErrorLookup = new LookupDefinition<SupportTicketErrorLookup, SupportTicketError>(
+                SupportTicketError);
+            SupportTicketErrorLookup.Include(p => p.SupportTicket)
+                .AddVisibleColumnDefinition(p => p.TicketId
+                    , "Support Ticket"
+                    , p => p.TicketId, 50);
+            SupportTicketErrorLookup.Include(p => p.Error)
+                .AddVisibleColumnDefinition(p => p.ErrorId
+                    , "Error"
+                    , p => p.ErrorId, 50);
+            SupportTicketError.HasLookupDefinition(SupportTicketErrorLookup);
         }
 
         public LookupDefinition<ProductVersionLookup, ProductVersion> MakeProductVersionLookupDefinition()
@@ -1073,10 +1086,11 @@ namespace RingSoft.DevLogix.DataAccess
             SupportTicket.GetFieldDefinition(p => p.MinutesSpent)
                 .HasSearchForHostId(TimeSpentHostId);
 
-
             SupportTicketUser.PriorityLevel = 900;
             SupportTicketUser.GetFieldDefinition(p => p.Cost)
                 .HasDecimalFieldType(DecimalFieldTypes.Currency);
+
+            SupportTicketError.PriorityLevel = 900;
         }
 
         public override UserAutoFill GetUserAutoFill(string userName)

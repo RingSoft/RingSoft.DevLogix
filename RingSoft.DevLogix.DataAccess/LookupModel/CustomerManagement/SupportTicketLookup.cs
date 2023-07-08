@@ -19,4 +19,11 @@ namespace RingSoft.DevLogix.DataAccess.LookupModel.CustomerManagement
 
         public string UserName { get; set; }
     }
+
+    public class SupportTicketErrorLookup
+    {
+        public string TicketId { get; set; }
+
+        public string ErrorId { get; set; }
+    }
 }

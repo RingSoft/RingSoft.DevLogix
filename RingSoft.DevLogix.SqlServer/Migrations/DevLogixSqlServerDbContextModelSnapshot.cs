@@ -569,6 +569,21 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.ToTable("SupportTicket");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.SupportTicketError", b =>
+                {
+                    b.Property<int>("SupportTicketId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ErrorId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("SupportTicketId", "ErrorId");
+
+                    b.HasIndex("ErrorId");
+
+                    b.ToTable("SupportTicketError");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.SupportTicketUser", b =>
                 {
                     b.Property<int>("SupportTicketId")
@@ -2085,6 +2100,25 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.SupportTicketError", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.Error", "Error")
+                        .WithMany("SupportTickets")
+                        .HasForeignKey("ErrorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.SupportTicket", "SupportTicket")
+                        .WithMany("Errors")
+                        .HasForeignKey("SupportTicketId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Error");
+
+                    b.Navigation("SupportTicket");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.SupportTicketUser", b =>
                 {
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.SupportTicket", "SupportTicket")
@@ -2764,6 +2798,8 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.SupportTicket", b =>
                 {
+                    b.Navigation("Errors");
+
                     b.Navigation("SupportTicketUsers");
 
                     b.Navigation("TimeClocks");
@@ -2802,6 +2838,8 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.Error", b =>
                 {
                     b.Navigation("Developers");
+
+                    b.Navigation("SupportTickets");
 
                     b.Navigation("Testers");
 

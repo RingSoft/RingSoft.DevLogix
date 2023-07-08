@@ -52,11 +52,13 @@ namespace RingSoft.DevLogix.DataAccess.Model.CustomerManagement
         public ICollection<TimeClock> TimeClocks { get; set; }
 
         public ICollection<SupportTicketUser> SupportTicketUsers { get; set; }
+        public ICollection<SupportTicketError> Errors { get; set; }
 
         public SupportTicket()
         {
             TimeClocks = new HashSet<TimeClock>();
             SupportTicketUsers = new HashSet<SupportTicketUser>();
+            Errors = new HashSet<SupportTicketError>();
         }
     }
 }

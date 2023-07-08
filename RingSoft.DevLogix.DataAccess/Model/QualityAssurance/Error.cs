@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 
 namespace RingSoft.DevLogix.DataAccess.Model
@@ -77,12 +78,15 @@ namespace RingSoft.DevLogix.DataAccess.Model
 
         public virtual ICollection<ErrorUser> Users { get; set; }
 
+        public virtual ICollection<SupportTicketError> SupportTickets { get; set; }
+
         public Error()
         {
             Developers = new HashSet<ErrorDeveloper>();
             Testers = new HashSet<ErrorQa>();
             TimeClocks = new HashSet<TimeClock>();
             Users = new HashSet<ErrorUser>();
+            SupportTickets = new HashSet<SupportTicketError>();
         }
     }
 }
