@@ -29,6 +29,8 @@ namespace RingSoft.DevLogix.DataAccess.Configurations
             builder.Property(p => p.TestingOutlinesMinutesSpent).HasColumnType(DbConstants.DecimalColumnType);
             builder.Property(p => p.CustomerMinutesSpent).HasColumnType(DbConstants.DecimalColumnType);
             builder.Property(p => p.SupportTicketsMinutesSpent).HasColumnType(DbConstants.DecimalColumnType);
+            builder.Property(p => p.MonthlySalesQuota).HasColumnType(DbConstants.DecimalColumnType);
+            builder.Property(p => p.TotalSales).HasColumnType(DbConstants.DecimalColumnType);
 
             builder.HasKey(p => p.Id);
 

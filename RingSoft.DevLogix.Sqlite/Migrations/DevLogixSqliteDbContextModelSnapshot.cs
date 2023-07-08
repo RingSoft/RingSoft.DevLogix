@@ -238,6 +238,9 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<double>("MinutesCost")
                         .HasColumnType("numeric");
 
+                    b.Property<double>("MinutesSpent")
+                        .HasColumnType("numeric");
+
                     b.Property<string>("Notes")
                         .HasColumnType("ntext");
 
@@ -268,9 +271,6 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
                     b.Property<int>("TimeZoneId")
                         .HasColumnType("integer");
-
-                    b.Property<double>("TotalCost")
-                        .HasColumnType("numeric");
 
                     b.Property<double>("TotalSales")
                         .HasColumnType("numeric");
@@ -444,7 +444,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
-                    b.Property<int?>("SalespersonId")
+                    b.Property<int>("SalespersonId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime?>("ShippedDate")
@@ -1696,6 +1696,9 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<double>("HourlyRate")
                         .HasColumnType("numeric");
 
+                    b.Property<double>("MonthlySalesQuota")
+                        .HasColumnType("numeric");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -1731,6 +1734,9 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<double>("TestingOutlinesMinutesSpent")
                         .HasColumnType("numeric");
 
+                    b.Property<double>("TotalSales")
+                        .HasColumnType("numeric");
+
                     b.HasKey("Id");
 
                     b.HasIndex("DefaultChartId");
@@ -1740,6 +1746,25 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.HasIndex("SupervisorId");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.UserManagement.UserMonthlySales", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("MonthEnding")
+                        .HasColumnType("datetime");
+
+                    b.Property<double>("Quota")
+                        .HasColumnType("numeric");
+
+                    b.Property<double>("TotalSales")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("UserId", "MonthEnding");
+
+                    b.ToTable("UserMonthlySales");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.UserManagement.UserTimeOff", b =>
@@ -1936,7 +1961,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "Salesperson")
                         .WithMany("OrderUsers")
                         .HasForeignKey("SalespersonId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Customer");
 
@@ -2584,6 +2610,17 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("Supervisor");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.UserManagement.UserMonthlySales", b =>
+                {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "User")
+                        .WithMany("UserMonthlySales")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.UserManagement.UserTimeOff", b =>
                 {
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "User")
@@ -2874,6 +2911,8 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("Underlings");
 
                     b.Navigation("UserGroups");
+
+                    b.Navigation("UserMonthlySales");
 
                     b.Navigation("UserTimeOff");
 

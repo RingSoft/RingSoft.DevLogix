@@ -25,6 +25,7 @@ namespace RingSoft.DevLogix.SqlServer
         public DbSet<TimeClock> TimeClocks { get; set; }
         public DbSet<UserTracker> UserTracker { get; set; }
         public DbSet<UserTrackerUser> UserTrackerUsers { get; set; }
+        public DbSet<UserMonthlySales> UserMonthlySales { get; set; }
         public DbSet<ErrorStatus> ErrorStatuses { get; set; }
         public DbSet<ErrorPriority> ErrorPriorities { get; set; }
         public DbSet<Department> Departments { get; set; }

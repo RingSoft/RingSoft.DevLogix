@@ -66,6 +66,7 @@ namespace RingSoft.DevLogix.DataAccess
             modelBuilder.ApplyConfiguration(new SupportTicketConfiguration());
             modelBuilder.ApplyConfiguration(new SupportTicketUserConfiguration());
             modelBuilder.ApplyConfiguration(new CustomerUserConfiguration());
+            modelBuilder.ApplyConfiguration(new UserMonthlySalesConfiguration());
 
             AdvancedFindDataProcessorEfCore.ConfigureAdvancedFind(modelBuilder);
         }

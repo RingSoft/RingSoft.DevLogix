@@ -67,10 +67,11 @@ namespace RingSoft.DevLogix.DataAccess.Model.CustomerManagement
         public double TotalSales { get; set; }
 
         [DefaultValue(0)]
-        public double TotalCost { get; set; }
+        public double MinutesCost { get; set; }
 
         [DefaultValue(0)]
-        public double MinutesCost { get; set; }
+        public double MinutesSpent { get; set; }
+
 
         public virtual ICollection<TimeClock> TimeClocks { get; set; }
         public virtual ICollection<Order> Orders { get; set; }

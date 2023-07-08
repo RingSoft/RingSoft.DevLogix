@@ -53,6 +53,7 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<TimeClock> TimeClocks { get; set; }
         public TableDefinition<UserTracker> UserTracker { get; set; }
         public TableDefinition<UserTrackerUser> UserTrackerUsers { get; set; }
+        public TableDefinition<UserMonthlySales> UseerMonthlySales { get; set; }
 
         public TableDefinition<ErrorStatus> ErrorStatuses { get; set; }
         public TableDefinition<ErrorPriority> ErrorPriorities { get; set; }
@@ -106,6 +107,7 @@ namespace RingSoft.DevLogix.DataAccess
         public LookupDefinition<TimeClockLookup, TimeClock> TimeClockLookup { get; set; }
         public LookupDefinition<UserTrackerLookup, UserTracker> UserTrackerLookup { get; set; }
         public LookupDefinition<UserTrackerUserLookup, UserTrackerUser> UserTrackerUserLookup { get; set; }
+        public LookupDefinition<UserMonthlySalesLookup, UserMonthlySales> UserMonthlySalesLookup { get; set; }
 
         public LookupDefinition<ErrorStatusLookup, ErrorStatus> ErrorStatusLookup { get; set; }
         public LookupDefinition<ErrorPriorityLookup, ErrorPriority> ErrorPriorityLookup { get; set; }
@@ -239,6 +241,26 @@ namespace RingSoft.DevLogix.DataAccess
             UserTimeOffLookup.AddVisibleColumnDefinition(p => p.StartDate, "Start Date", p => p.StartDate, 30);
             UserTimeOffLookup.AddVisibleColumnDefinition(p => p.EndDate, "End Date", p => p.EndDate, 30);
             UsersTimeOff.HasLookupDefinition(UserTimeOffLookup);
+
+            UserMonthlySalesLookup = new LookupDefinition<UserMonthlySalesLookup, UserMonthlySales>(UseerMonthlySales);
+            UserMonthlySalesLookup.Include(
+                    p => p.User)
+                .AddVisibleColumnDefinition(
+                    p => p.UserName
+                    , "User"
+                    , p => p.Name, 34);
+
+            UserMonthlySalesLookup.AddVisibleColumnDefinition(
+                p => p.MonthEnding
+                , "Month Ending"
+                , p => p.MonthEnding, 33);
+
+            UserMonthlySalesLookup.AddVisibleColumnDefinition(
+                p => p.TotalSales
+                , "Total Sales"
+                , p => p.TotalSales, 33);
+
+            UseerMonthlySales.HasLookupDefinition(UserMonthlySalesLookup);
 
             GroupLookup = new LookupDefinition<GroupLookup, Group>(Groups);
             GroupLookup.AddVisibleColumnDefinition(p => p.Group, "Name", p => p.Name, 100);
@@ -843,6 +865,28 @@ namespace RingSoft.DevLogix.DataAccess
             Users.GetFieldDefinition(p => p.ClockDate).DoConvertToLocalTime().HasDateType(DbDateTypes.DateTime);
             Users.GetFieldDefinition(p => p.HourlyRate).HasDecimalFieldType(DecimalFieldTypes.Currency);
             Users.GetFieldDefinition(p => p.ClockOutReason).IsEnum<ClockOutReasons>();
+            Users.GetFieldDefinition(p => p.TotalSales)
+                .HasDecimalFieldType(DecimalFieldTypes.Currency);
+            Users.GetFieldDefinition(p => p.CustomerMinutesSpent)
+                .HasSearchForHostId(TimeSpentHostId);
+            Users.GetFieldDefinition(p => p.BillableProjectsMinutesSpent)
+                .HasSearchForHostId(TimeSpentHostId);
+            Users.GetFieldDefinition(p => p.NonBillableProjectsMinutesSpent)
+                .HasSearchForHostId(TimeSpentHostId);
+            Users.GetFieldDefinition(p => p.TestingOutlinesMinutesSpent)
+                .HasSearchForHostId(TimeSpentHostId);
+            Users.GetFieldDefinition(p => p.SupportTicketsMinutesSpent)
+                .HasSearchForHostId(TimeSpentHostId);
+            Users.GetFieldDefinition(p => p.MonthlySalesQuota)
+                .HasDecimalFieldType(DecimalFieldTypes.Currency);
+
+            UseerMonthlySales.PriorityLevel = 400;
+            UseerMonthlySales.GetFieldDefinition(p => p.MonthEnding)
+                .HasDateType(DbDateTypes.DateOnly);
+            UseerMonthlySales.GetFieldDefinition(p => p.TotalSales)
+                .HasDecimalFieldType(DecimalFieldTypes.Currency);
+            UseerMonthlySales.GetFieldDefinition(p => p.Quota)
+                .HasDecimalFieldType(DecimalFieldTypes.Currency);
 
             UserTracker.PriorityLevel = 300;
             UserTracker.GetFieldDefinition(p => p.RefreshType).IsEnum<RefreshRate>();
@@ -964,6 +1008,16 @@ namespace RingSoft.DevLogix.DataAccess
 
             Customer.PriorityLevel = 500;
             Customer.GetFieldDefinition(p => p.Notes).IsMemo();
+            Customer.GetFieldDefinition(p => p.SupportMinutesPurchased)
+                .HasSearchForHostId(TimeSpentHostId);
+            Customer.GetFieldDefinition(p => p.SupportMinutesSpent)
+                .HasSearchForHostId(TimeSpentHostId);
+            Customer.GetFieldDefinition(p => p.SupportCost)
+                .HasDecimalFieldType(DecimalFieldTypes.Currency);
+            Customer.GetFieldDefinition(p => p.MinutesSpent)
+                .HasSearchForHostId(TimeSpentHostId);
+            Customer.GetFieldDefinition(p => p.MinutesCost)
+                .HasDecimalFieldType(DecimalFieldTypes.Currency);
 
             CustomerProduct.PriorityLevel = 600;
             CustomerProduct.GetFieldDefinition(
@@ -1016,6 +1070,9 @@ namespace RingSoft.DevLogix.DataAccess
                 .IsMemo();
             SupportTicket.GetFieldDefinition(p => p.Cost)
                 .HasDecimalFieldType(DecimalFieldTypes.Currency);
+            SupportTicket.GetFieldDefinition(p => p.MinutesSpent)
+                .HasSearchForHostId(TimeSpentHostId);
+
 
             SupportTicketUser.PriorityLevel = 900;
             SupportTicketUser.GetFieldDefinition(p => p.Cost)

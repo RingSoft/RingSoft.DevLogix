@@ -28,7 +28,7 @@ namespace RingSoft.DevLogix.DataAccess.Configurations.CustomerManagement
             builder.Property(p => p.EmailAddress).HasColumnType(DbConstants.StringColumnType);
             builder.Property(p => p.WebAddress).HasColumnType(DbConstants.StringColumnType);
             builder.Property(p => p.TotalSales).HasColumnType(DbConstants.DecimalColumnType);
-            builder.Property(p => p.TotalCost).HasColumnType(DbConstants.DecimalColumnType);
+            builder.Property(p => p.MinutesSpent).HasColumnType(DbConstants.DecimalColumnType);
             builder.Property(p => p.MinutesCost).HasColumnType(DbConstants.DecimalColumnType);
 
             builder .HasOne(p => p.TimeZone)

@@ -83,6 +83,12 @@ namespace RingSoft.DevLogix.DataAccess.Model
         [DefaultValue(0)]
         public double SupportTicketsMinutesSpent { get; set; }
 
+        [DefaultValue(0)]
+        public double MonthlySalesQuota { get; set; }
+
+        [DefaultValue(0)]
+        public double TotalSales { get; set; }
+
         [Required]
         [DefaultValue(0)]
         public byte ClockOutReason { get; set; }
@@ -115,6 +121,7 @@ namespace RingSoft.DevLogix.DataAccess.Model
         public virtual ICollection<SupportTicketUser> SupportTicketUsers { get; set; }
         public virtual ICollection<CustomerUser> CustomerUsers { get; set; }
         public virtual ICollection<Order> OrderUsers { get; set; }
+        public virtual ICollection<UserMonthlySales> UserMonthlySales { get; set; }
 
         public User()
         {
@@ -142,6 +149,7 @@ namespace RingSoft.DevLogix.DataAccess.Model
             SupportTicketUsers = new HashSet<SupportTicketUser>();
             CustomerUsers = new HashSet<CustomerUser>();
             OrderUsers = new HashSet<Order>();
+            UserMonthlySales = new HashSet<UserMonthlySales>();
         }
     }
 }
