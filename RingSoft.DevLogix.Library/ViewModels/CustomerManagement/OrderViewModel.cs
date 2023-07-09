@@ -528,6 +528,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 context.AddRange(newDetails);
                 result = context.Commit("Updating Details");
             }
+
+            if (result)
+            {
+                
+            }
             return result;
         }
 

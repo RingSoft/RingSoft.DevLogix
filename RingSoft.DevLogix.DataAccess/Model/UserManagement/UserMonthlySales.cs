@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace RingSoft.DevLogix.DataAccess.Model.UserManagement
@@ -19,5 +20,7 @@ namespace RingSoft.DevLogix.DataAccess.Model.UserManagement
         [Required]
         public double TotalSales { get; set; }
 
+        [DefaultValue(0)]
+        public double Difference { get; set; }
     }
 }

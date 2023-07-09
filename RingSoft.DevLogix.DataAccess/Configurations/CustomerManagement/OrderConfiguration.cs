@@ -34,7 +34,7 @@ namespace RingSoft.DevLogix.DataAccess.Configurations.CustomerManagement
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(p => p.Salesperson)
-                .WithMany(p => p.OrderUsers)
+                .WithMany(p => p.Orders)
                 .HasForeignKey(p => p.SalespersonId)
                 .OnDelete(DeleteBehavior.Restrict);
         }

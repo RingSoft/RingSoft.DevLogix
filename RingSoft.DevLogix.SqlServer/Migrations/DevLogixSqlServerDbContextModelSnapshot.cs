@@ -1836,6 +1836,9 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<DateTime>("MonthEnding")
                         .HasColumnType("datetime");
 
+                    b.Property<decimal>("Difference")
+                        .HasColumnType("numeric");
+
                     b.Property<decimal>("Quota")
                         .HasColumnType("numeric");
 
@@ -2041,7 +2044,7 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .IsRequired();
 
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", "Salesperson")
-                        .WithMany("OrderUsers")
+                        .WithMany("Orders")
                         .HasForeignKey("SalespersonId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -2995,7 +2998,7 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
                     b.Navigation("FoundByUserErrors");
 
-                    b.Navigation("OrderUsers");
+                    b.Navigation("Orders");
 
                     b.Navigation("ProjectMaterialHistory");
 

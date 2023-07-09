@@ -66,9 +66,9 @@ namespace RingSoft.DevLogix.UserManagement
                     userHeaderControl.ClockOutButton.Command = UserMaintenanceViewModel.ClockOutCommand;
 
                     userHeaderControl.RecalcButton.Command = UserMaintenanceViewModel.RecalcCommand;
-                    userHeaderControl.RecalcButton.ToolTip.HeaderText = "Recalculate Billability";
+                    userHeaderControl.RecalcButton.ToolTip.HeaderText = "Recalculate";
                     userHeaderControl.RecalcButton.ToolTip.DescriptionText =
-                        "Recalculate the billability values for a range of users.";
+                        "Recalculate the billability and sales values for a range of users.";
 
                     if (!UserMaintenanceViewModel.TableDefinition.HasRight(RightTypes.AllowEdit))
                     {

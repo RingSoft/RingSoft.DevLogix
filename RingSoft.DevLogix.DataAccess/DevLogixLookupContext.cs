@@ -900,6 +900,9 @@ namespace RingSoft.DevLogix.DataAccess
                 .HasDecimalFieldType(DecimalFieldTypes.Currency);
             UseerMonthlySales.GetFieldDefinition(p => p.Quota)
                 .HasDecimalFieldType(DecimalFieldTypes.Currency);
+            UseerMonthlySales.GetFieldDefinition(p => p.Difference)
+                .HasDecimalFieldType(DecimalFieldTypes.Currency);
+
 
             UserTracker.PriorityLevel = 300;
             UserTracker.GetFieldDefinition(p => p.RefreshType).IsEnum<RefreshRate>();

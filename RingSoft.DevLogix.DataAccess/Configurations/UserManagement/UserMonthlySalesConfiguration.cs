@@ -13,6 +13,7 @@ namespace RingSoft.DevLogix.DataAccess.Configurations.UserManagement
             builder.Property(p => p.MonthEnding).HasColumnType(DbConstants.DateColumnType);
             builder.Property(p => p.Quota).HasColumnType(DbConstants.DecimalColumnType);
             builder.Property(p => p.TotalSales).HasColumnType(DbConstants.DecimalColumnType);
+            builder.Property(p => p.Difference).HasColumnType(DbConstants.DecimalColumnType);
 
             builder.HasKey(p => new { p.UserId, p.MonthEnding });
 

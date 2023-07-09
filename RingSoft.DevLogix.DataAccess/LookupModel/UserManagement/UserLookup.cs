@@ -16,6 +16,10 @@ namespace RingSoft.DevLogix.DataAccess.LookupModel
 
         public DateTime MonthEnding { get; set; }
 
+        public double SalesQuota { get; set; }
+
         public double TotalSales { get; set; }
+
+        public double Difference { get; set; }
     }
 }

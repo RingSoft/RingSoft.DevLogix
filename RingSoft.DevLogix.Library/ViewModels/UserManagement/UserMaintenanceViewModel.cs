@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Linq;
+using IDbContext = RingSoft.DevLogix.DataAccess.IDbContext;
 
 namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 {
@@ -347,6 +348,36 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
         }
 
+        private LookupDefinition<UserMonthlySalesLookup, UserMonthlySales> _userMonthlySalesLookup;
+
+        public LookupDefinition<UserMonthlySalesLookup, UserMonthlySales> UserMonthlySalesLookup
+        {
+            get => _userMonthlySalesLookup;
+            set
+            {
+                if (_userMonthlySalesLookup == value)
+                    return;
+
+                _userMonthlySalesLookup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private LookupCommand _userMonthlySalesLookupCommand;
+
+        public LookupCommand UserMonthlySalesLookupCommand
+        {
+            get => _userMonthlySalesLookupCommand;
+            set
+            {
+                if (_userMonthlySalesLookupCommand == value)
+                    return;
+
+                _userMonthlySalesLookupCommand = value;
+                OnPropertyChanged(null, false);
+            }
+        }
+
 
         private UsersGroupsManager _groupsManager;
 
@@ -379,6 +410,35 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
         }
 
+        private double _monthlySalesQuota;
+
+        public double MonthlySalesQuota
+        {
+            get => _monthlySalesQuota;
+            set
+            {
+                if (_monthlySalesQuota == value)
+                    return;
+
+                _monthlySalesQuota = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private double _totalSales;
+
+        public double TotalSales
+        {
+            get => _totalSales;
+            set
+            {
+                if (_totalSales == value)
+                    return;
+
+                _totalSales = value;
+                OnPropertyChanged();
+            }
+        }
 
         private string? _notes;
 
@@ -416,6 +476,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         public UserMaintenanceViewModel()
         {
+            TablesToDelete.Add(AppGlobals.LookupContext.UseerMonthlySales);
+            TablesToDelete.Add(AppGlobals.LookupContext.UsersGroups);
+            TablesToDelete.Add(AppGlobals.LookupContext.UsersTimeOff);
+            
             SetMasterUserId();
             ClockReasonFieldTranslation = new EnumFieldTranslation();
             ClockReasonFieldTranslation.LoadFromEnum<ClockOutReasons>();
@@ -490,6 +554,17 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
             TimeClockLookup = timeClockLookup;
             TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
+
+            var salesLookup = AppGlobals.LookupContext.UserMonthlySalesLookup.Clone();
+            salesLookup.AddVisibleColumnDefinition(
+                p => p.SalesQuota, p => p.Quota);
+
+            salesLookup.AddVisibleColumnDefinition(
+                p => p.Difference
+                , p => p.Difference)
+                .DoShowNegativeValuesInRed()
+                .DoShowPositiveValuesInGreen();
+            UserMonthlySalesLookup = salesLookup;
 
             PrintProcessingHeader += UserMaintenanceViewModel_PrintProcessingHeader;
         }
@@ -577,6 +652,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             TimeClockLookup.FilterDefinition.AddFixedFilter(p => p.UserId, Conditions.Equals, Id);
             TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
 
+            UserMonthlySalesLookup.FilterDefinition.ClearFixedFilters();
+            UserMonthlySalesLookup.FilterDefinition.AddFixedFilter(
+                p => p.UserId
+                , Conditions.Equals
+                , result.Id);
+            UserMonthlySalesLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
+
             if (!TableDefinition.HasRight(RightTypes.AllowEdit))
             {
                 var readOnlyMode = AppGlobals.LoggedInUser.Id != Id;
@@ -634,6 +716,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             EmailAddress = entity.Email;
             PhoneNumber = entity.PhoneNumber;
             GroupsManager.LoadGrid(entity.UserGroups);
+            
             Notes = entity.Notes;
             DefaultChartAutoFillValue = DefaultChartAutoFillSetup.GetAutoFillValueForIdValue(entity.DefaultChartId);
             SupervisorAutoFillValue = SupervisorAutoFillSetup.GetAutoFillValueForIdValue(entity.SupervisorId);
@@ -661,7 +744,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             {
                 View.SetPassword(_dummyPassword);
             }
-
+            MonthlySalesQuota = entity.MonthlySalesQuota;
+            TotalSales = entity.TotalSales;
         }
 
         private void SetBillability(User entity)
@@ -695,6 +779,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 Notes = Notes,
                 SupervisorId = SupervisorAutoFillValue.GetEntity(AppGlobals.LookupContext.Users).Id,
                 HourlyRate = HourlyRate,
+                MonthlySalesQuota = MonthlySalesQuota
             };
             if (View.GetPassword().IsNullOrEmpty())
             {
@@ -734,6 +819,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     user.ClockDate = existUser.ClockDate;
                     user.ClockOutReason = existUser.ClockOutReason;
                     user.OtherClockOutReason = existUser.OtherClockOutReason;
+                    user.TotalSales = existUser.TotalSales;
                 }
             }
             if (DepartmentAutoFillValue.IsValid())
@@ -769,6 +855,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             ClockOutCommand.IsEnabled = false;
             ChangeChartCommand.IsEnabled = false;
             TimeClockLookupCommand = GetLookupCommand(LookupCommands.Clear);
+            UserMonthlySalesLookupCommand = GetLookupCommand(LookupCommands.Clear);
             Notes = null;
             HourlyRate = 0;
             ClockDateTime = null;
@@ -780,6 +867,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             SetBillability(new User());
             View.SetPassword(string.Empty);
             _oldPassword = string.Empty;
+            MonthlySalesQuota = 0;
+            TotalSales = 0;
         }
 
         protected override bool ValidateEntity(User entity)
@@ -809,6 +898,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             {
                 return false;
             }
+
             return base.ValidateEntity(entity);
         }
 
@@ -898,6 +988,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 var ugQuery = context.GetTable<UsersGroup>();
                 var userGroups = ugQuery.Where(p => p.UserId == Id).ToList();
                 context.RemoveRange(userGroups);
+
+                var userTimeOffQuery = context.GetTable<UserTimeOff>();
+                var userTimeOffs = userTimeOffQuery.Where(p => p.UserId == Id).ToList();
+                context.RemoveRange(userTimeOffs);
+
+                var userSalesQuery = context.GetTable<UserMonthlySales>();
+                var userMonthlySales = userSalesQuery.Where(p => p.UserId == Id).ToList();
+                context.RemoveRange(userMonthlySales);
+
                 if (context.DeleteNoCommitEntity(user, $"Deleting User '{user.Name}'"))
                 {
                     return context.Commit($"Deleting User '{user.Name}'");
@@ -931,6 +1030,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                             .ThenInclude(p => p.ProjectTask)
                             .ThenInclude(p => p.Project)
                             .Include(p => p.TimeClocks)
+                            .Include(p => p.Orders)
+                            .Include(p => p.UserMonthlySales)
                             .FirstOrDefault(p => p.Id == user.Id);
                     }
 
@@ -972,6 +1073,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                             return;
                         }
 
+                        result = CalcUserMonthlySalesFromOrders(user);
+                        if (!result.IsNullOrEmpty())
+                        {
+                            args.Abort = true;
+                            return;
+                        }
+
                         if (Id == user.Id)
                         {
                             SetBillability(user);
@@ -991,6 +1099,61 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             DbDataProcessor.DontDisplayExceptions = false;
             return result;
         }
+
+        private string CalcUserMonthlySalesFromOrders(User user)
+        {
+            var result = string.Empty;
+            var context = AppGlobals.DataRepository.GetDataContext();
+
+            var userMonthlySales = user.UserMonthlySales;
+
+            var listSales = new List<UserMonthlySales>();
+            listSales.AddRange(userMonthlySales);
+            foreach (var item in listSales)
+            {
+                item.TotalSales = 0;
+            }
+            context.RemoveRange(userMonthlySales);
+            if (!context.Commit("Removing Old Sales", true))
+            {
+                result = GblMethods.LastError;
+                return result;
+            }
+
+            foreach (var order in user.Orders)
+            {
+                var monthEndDate = new DateTime(order.OrderDate.Year, order.OrderDate.Month,
+                    DateTime.DaysInMonth(order.OrderDate.Year, order.OrderDate.Month));
+
+                var monthEndSales = listSales.FirstOrDefault(
+                    p => p.MonthEnding == monthEndDate );
+
+                if (monthEndSales == null)
+                {
+                    monthEndSales = new UserMonthlySales()
+                    {
+                        UserId = user.Id,
+                        MonthEnding = monthEndDate,
+                        Quota = user.MonthlySalesQuota,
+                    };
+                    listSales.Add(monthEndSales);
+                }
+                monthEndSales.TotalSales += order.Total.GetValueOrDefault();
+                monthEndSales.Difference = monthEndSales.TotalSales - monthEndSales.Quota;
+            }
+            user.TotalSales = listSales.Sum( p => p.TotalSales );
+            if (user.Id == Id)
+            {
+                TotalSales = user.TotalSales;
+            }
+            context.AddRange(listSales);
+            if (!context.Commit("Committing User Sales", true))
+            {
+                result = GblMethods.LastError;
+            }
+            return result;
+        }
+
         private void Recalculate()
         {
             var lookupToFilter = ViewLookupDefinition.Clone();
@@ -1002,7 +1165,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             var result = View.StartRecalcProcedure(lookupToFilter);
             if (result.IsNullOrEmpty())
             {
-                ControlsGlobals.UserInterface.ShowMessageBox("Billability recalculation complete.", "Recalculation Complete", RsMessageBoxIcons.Information);
+                ControlsGlobals.UserInterface.ShowMessageBox("Recalculation Complete.", "Recalculation Complete", RsMessageBoxIcons.Information);
+                UserMonthlySalesLookupCommand = GetLookupCommand(LookupCommands.Refresh);
+            }
+            else
+            {
+                ControlsGlobals.UserInterface.ShowMessageBox(result, "Recalculation Failed", RsMessageBoxIcons.Error);
             }
         }
 
