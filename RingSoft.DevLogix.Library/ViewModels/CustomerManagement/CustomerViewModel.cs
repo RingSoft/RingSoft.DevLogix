@@ -989,6 +989,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 {
                     return updateResult;
                 }
+
+                if (!context.SaveNoCommitEntity(currentCustomer, "Saving Customer"))
+                {
+                    return DbDataProcessor.LastException;
+                }
+
             }
             return string.Empty;
         }
@@ -1027,6 +1033,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                     return result;
                 }
             }
+            currentCustomer.MinutesSpent += customerUser.MinutesSpent;
+            currentCustomer.MinutesCost += customerUser.Cost;
 
             return result;
         }
