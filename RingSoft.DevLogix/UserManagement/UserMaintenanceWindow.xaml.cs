@@ -197,7 +197,7 @@ namespace RingSoft.DevLogix.UserManagement
             RecalcProcedure = new RecalcProcedure();
             RecalcProcedure.StartRecalculate += (sender, args) =>
             {
-                result = UserMaintenanceViewModel.StartRecalculateProcedure(lookupDefinition);
+                result = UserMaintenanceViewModel.StartRecalculateProcedure(lookupDefinition, RecalcProcedure);
             };
             RecalcProcedure.Start();
             return result;

@@ -49,6 +49,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 case UserBillabilityRows.TestingOutlines:
                     Name = "Testing Outlines";
                     break;
+                case UserBillabilityRows.Customers:
+                    Name = "Customers";
+                    break;
+
+                case UserBillabilityRows.Support:
+                    Name = "Support Tickets";
+                    break;
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(rowType), rowType, null);
             }

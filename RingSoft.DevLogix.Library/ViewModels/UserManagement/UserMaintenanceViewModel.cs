@@ -66,6 +66,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         public double Errors { get; private set; }
 
         public double TestingOutlines { get; private set; }
+
+        public double Customers { get; private set; }
+
+        public double Support { get; private set; }
         public BillabilityData(User user)
         {
             User = user;
@@ -77,7 +81,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             var totalMinutes = User.BillableProjectsMinutesSpent
                                + User.NonBillableProjectsMinutesSpent
                                + User.ErrorsMinutesSpent
-                               + User.TestingOutlinesMinutesSpent;
+                               + User.TestingOutlinesMinutesSpent
+                               + User.CustomerMinutesSpent
+                               + User.SupportTicketsMinutesSpent;
 
             var billableProjectsBillability = (double)0;
             var nonBillableProjectsBillability = (double)0;
@@ -90,6 +96,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 NonBillableProjects = User.NonBillableProjectsMinutesSpent / totalMinutes;
                 Errors = User.ErrorsMinutesSpent / totalMinutes;
                 TestingOutlines = User.TestingOutlinesMinutesSpent / totalMinutes;
+                Customers = User.CustomerMinutesSpent / totalMinutes;
+                Support = User.SupportTicketsMinutesSpent / totalMinutes;
             }
 
         }
@@ -763,6 +771,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
             BillabilityGridManager.SetRowValues(UserBillabilityRows.TestingOutlines,
                 entity.TestingOutlinesMinutesSpent, billabilityData.TestingOutlines);
+
+            BillabilityGridManager.SetRowValues(UserBillabilityRows.Customers,
+                entity.CustomerMinutesSpent, billabilityData.Customers);
+
+            BillabilityGridManager.SetRowValues(UserBillabilityRows.Support,
+                entity.SupportTicketsMinutesSpent, billabilityData.Support);
+
         }
 
         protected override User GetEntityData()
@@ -1006,7 +1021,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         }
 
-        public string StartRecalculateProcedure(LookupDefinitionBase lookupToFilter)
+        public string StartRecalculateProcedure(
+            LookupDefinitionBase lookupToFilter
+            , AppProcedure procedure)
         {
             var result = string.Empty;
             var context = AppGlobals.DataRepository.GetDataContext();
@@ -1073,7 +1090,31 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                             return;
                         }
 
-                        result = CalcUserMonthlySalesFromOrders(user);
+                        var customers = user.TimeClocks.Where(p =>
+                            p.CustomerId.HasValue
+                            && p.MinutesSpent.HasValue);
+
+                        user.CustomerMinutesSpent = customers.Sum(p => p.MinutesSpent.Value);
+                        if (!context.SaveNoCommitEntity(user, "Saving User"))
+                        {
+                            result = DbDataProcessor.LastException;
+                            args.Abort = true;
+                            return;
+                        }
+
+                        var support = user.TimeClocks.Where(p =>
+                            p.SupportTicketId.HasValue
+                            && p.MinutesSpent.HasValue);
+
+                        user.SupportTicketsMinutesSpent = support.Sum(p => p.MinutesSpent.Value);
+                        if (!context.SaveNoCommitEntity(user, "Saving User"))
+                        {
+                            result = DbDataProcessor.LastException;
+                            args.Abort = true;
+                            return;
+                        }
+
+                        result = CalcUserMonthlySalesFromOrders(user, procedure);
                         if (!result.IsNullOrEmpty())
                         {
                             args.Abort = true;
@@ -1100,7 +1141,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             return result;
         }
 
-        private string CalcUserMonthlySalesFromOrders(User user)
+        private string CalcUserMonthlySalesFromOrders(User user, AppProcedure procedure)
         {
             var result = string.Empty;
             var context = AppGlobals.DataRepository.GetDataContext();
@@ -1120,8 +1161,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 return result;
             }
 
+            var index = 1;
+            var total = user.Orders.Count;
+            var intFormatter = new IntegerEditControlSetup();
+            var totalFormat = intFormatter.FormatValue(total);
             foreach (var order in user.Orders)
             {
+                procedure.SplashWindow.SetProgress(
+                    $"Recalculating Orders {intFormatter.FormatValue(index)}/{totalFormat}");
                 var monthEndDate = new DateTime(order.OrderDate.Year, order.OrderDate.Month,
                     DateTime.DaysInMonth(order.OrderDate.Year, order.OrderDate.Month));
 
@@ -1140,6 +1187,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 }
                 monthEndSales.TotalSales += order.Total.GetValueOrDefault();
                 monthEndSales.Difference = monthEndSales.TotalSales - monthEndSales.Quota;
+                index++;
             }
             user.TotalSales = listSales.Sum( p => p.TotalSales );
             if (user.Id == Id)

@@ -1,4 +1,5 @@
-﻿using RingSoft.DataEntryControls.Engine.DataEntryGrid;
+﻿using RingSoft.App.Library;
+using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using RingSoft.DbMaintenance;
@@ -71,7 +72,12 @@ namespace RingSoft.DevLogix.Tests.UserManagement
 
         public string StartRecalcProcedure(LookupDefinitionBase lookupDefinition)
         {
-            return LocalViewModel.StartRecalculateProcedure(lookupDefinition);
+            return string.Empty;
+        }
+
+        public string StartRecalcProcedure(LookupDefinitionBase lookupDefinition, AppProcedure procedure)
+        {
+            return LocalViewModel.StartRecalculateProcedure(lookupDefinition, procedure);
         }
 
         public void UpdateRecalcProcedure(int currentProject, int totalProjects, string currentProjectText)
