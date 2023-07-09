@@ -897,7 +897,17 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             {
                 foreach (var primaryKeyValue in e.Result)
                 {
-                    ProcessCurrentCustomer(primaryKeyValue, context, totalCustomers, currentCustomer);
+                    var processResult = ProcessCurrentCustomer(
+                        primaryKeyValue
+                        , context
+                        , totalCustomers
+                        , currentCustomer);
+
+                    if (!processResult.IsNullOrEmpty())
+                    {
+                        result = processResult;
+                        return;
+                    }
                 }
             };
             lookupData.DoPrintOutput(10);
@@ -913,7 +923,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             return result;
         }
 
-        private void ProcessCurrentCustomer(
+        private string ProcessCurrentCustomer(
             PrimaryKeyValue primaryKeyValue
             , DataAccess.IDbContext context, int totalCustomers
             , int currentCustomerIndex)
@@ -932,18 +942,24 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
                 if (currentCustomer != null)
                 {
-                    UpdateCustomerValues(
+                    var updateResult = UpdateCustomerValues(
                         totalCustomers
                         , currentCustomerIndex
                         , currentCustomer
                         , timeClocksTable
                         , usersTable
                         , context);
+
+                    if (!updateResult.IsNullOrEmpty())
+                    {
+                        return updateResult;
+                    }
                 }
             }
+            return string.Empty;
         }
 
-        private void UpdateCustomerValues(
+        private string UpdateCustomerValues(
             int totalCustomers
             , int currentCustomerIndex
             , Customer currentCustomer
@@ -961,17 +977,23 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
             foreach (var timeClockUser in timeClockUsers)
             {
-                UpdateCustomerTimeClockValues(
+                var updateResult = UpdateCustomerTimeClockValues(
                     currentCustomer
                     , timeClocksTable
                     , usersTable
                     , context
                     , timeClockUser
                     , customerUsers);
+
+                if (!updateResult.IsNullOrEmpty())
+                {
+                    return updateResult;
+                }
             }
+            return string.Empty;
         }
 
-        private static void UpdateCustomerTimeClockValues(
+        private static string UpdateCustomerTimeClockValues(
             Customer currentCustomer
             , IQueryable<TimeClock> timeClocksTable
             , IQueryable<User> usersTable
@@ -979,6 +1001,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             , int timeClockUser
             , List<CustomerUser> customerUsers)
         {
+            var result = string.Empty;
             var customerUser = currentCustomer.Users.FirstOrDefault(p => p.UserId == timeClockUser);
             if (customerUser == null)
             {
@@ -994,6 +1017,18 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 });
                 customerUsers.Add(customerUser);
             }
+            else
+            {
+                UpdateCustomerUserCost(usersTable, customerUser, timeClocksTable, currentCustomer);
+
+                if (!context.SaveNoCommitEntity(currentCustomer, "Saving Customer User"))
+                {
+                    result = DbDataProcessor.LastException;
+                    return result;
+                }
+            }
+
+            return result;
         }
 
 
