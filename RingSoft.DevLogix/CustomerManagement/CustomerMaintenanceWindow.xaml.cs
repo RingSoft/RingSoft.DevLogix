@@ -5,7 +5,9 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using RingSoft.App.Controls;
 using RingSoft.DataEntryControls.Engine;
+using RingSoft.DbLookup;
 using RingSoft.DbLookup.Controls.WPF;
+using RingSoft.DbLookup.Lookup;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels.CustomerManagement;
@@ -44,6 +46,8 @@ namespace RingSoft.DevLogix.CustomerManagement
     /// </summary>
     public partial class CustomerMaintenanceWindow : ICustomerView
     {
+        public RecalcProcedure RecalcProcedure { get; set; }
+
         public CustomerMaintenanceWindow()
         {
             InitializeComponent();
@@ -122,6 +126,40 @@ namespace RingSoft.DevLogix.CustomerManagement
                 var url = $"{prefix}{LocalViewModel.WebAddress}";
                 SetupUrl(textBlock, url, "Goto Web Site");
             }
+        }
+
+        public bool SetupRecalcFilter(LookupDefinitionBase lookupDefinition)
+        {
+            var genericInput = new GenericReportLookupFilterInput
+            {
+                LookupDefinitionToFilter = lookupDefinition,
+                CodeNameToFilter = "Customer",
+                KeyAutoFillValue = LocalViewModel.KeyAutoFillValue,
+                ProcessText = "Recalculate"
+            };
+            var genericWindow = new GenericReportFilterWindow(genericInput);
+            genericWindow.Owner = this;
+            genericWindow.ShowInTaskbar = false;
+            genericWindow.ShowDialog();
+            return genericWindow.ViewModel.DialogReesult;
+        }
+
+        public string StartRecalcProcedure(LookupDefinitionBase lookupDefinition)
+        {
+            var result = string.Empty;
+            RecalcProcedure = new RecalcProcedure();
+            RecalcProcedure.StartRecalculate += (sender, args) =>
+            {
+                result = LocalViewModel.StartRecalcProcedure(lookupDefinition);
+            };
+            RecalcProcedure.Start();
+            return result;
+        }
+
+        public void UpdateRecalcProcedure(int currentCustomer, int totalCustomers, string currentCustomerText)
+        {
+            var progress = $"Recalculating Customer {currentCustomerText} {currentCustomer} / {totalCustomers}";
+            RecalcProcedure.SplashWindow.SetProgress(progress);
         }
 
         private void SetupUrl(TextBlock textBlock, string url, string text)

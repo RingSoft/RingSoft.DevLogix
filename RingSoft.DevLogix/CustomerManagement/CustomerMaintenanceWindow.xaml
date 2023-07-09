@@ -15,7 +15,7 @@
                         xmlns:lookupModel="clr-namespace:RingSoft.DevLogix.DataAccess.LookupModel;assembly=RingSoft.DevLogix.DataAccess"
                         mc:Ignorable="d"
                         Style="{StaticResource BaseWindowStyle}"
-                        Title="Customer Maintenance Window" Height="500" Width="650">
+                        Title="Customer Maintenance Window" Height="600" Width="650">
 
     <Window.Resources>
         <Style TargetType="{x:Type local:CustomerHeaderControl}">
@@ -194,7 +194,15 @@
 
                         <Label Grid.Row="6" Grid.Column="0" Content="Support Time Left"/>
 
-                        <dl:TimeControl Grid.Row="6" Grid.Column="1" Width="100" HorizontalAlignment="Left" Minutes="{Binding SupportMinutesLeft, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <StackPanel Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="3" Orientation="Horizontal">
+
+                            <dl:TimeControl Width="100" HorizontalAlignment="Left" Minutes="{Binding SupportMinutesLeft, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                            <Button Content="&lt;&lt;_Add Support Time" Command="{Binding AddSupportCommand}"/>
+
+                            <dl:TimeControl Minutes="{Binding NewSupportTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        </StackPanel>
 
                     </Grid>
                 </TabItem>
@@ -213,11 +221,33 @@
                     </DockPanel>
                 </TabItem>
                 <TabItem Header="Support Tickets">
-                    <DockPanel>
+                    <Grid>
+                        
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
-                        <Button Content="_Add/Modify" x:Name="AddModifyTicketsButton" Command="{Binding AddModifySupportTicketCommand}" Height="20"  DockPanel.Dock="Left" VerticalAlignment="Top"/>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
-                        <lc:LookupControl LookupDefinition="{Binding SupportTicketLookup}" Command="{Binding SupportTicketLookupCommand}" >
+                        <Label Grid.Row="0" Grid.Column="0" Content="Support Time Spent"/>
+
+                        <dec:StringReadOnlyBox Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" Width="100" Text="{Binding SupportTimeSpentText}"/>
+
+                        <Label Grid.Row="0" Grid.Column="2" Content="Support Cost"/>
+
+                        <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="3" HorizontalAlignment="Left" Width="150" FormatType="Currency" TextAlignment="Left" Value="{Binding SupportCost}"/>
+
+                        <Button Grid.Row="1" Grid.Column="0"  Content="_Add/Modify" x:Name="AddModifyTicketsButton" Command="{Binding AddModifySupportTicketCommand}" Height="20"  DockPanel.Dock="Left" VerticalAlignment="Top"/>
+
+                        <lc:LookupControl Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4" Grid.RowSpan="2" LookupDefinition="{Binding SupportTicketLookup}" Command="{Binding SupportTicketLookupCommand}" >
 
                             <lc:LookupControl.LookupColumns>
 
@@ -231,7 +261,7 @@
 
                         </lc:LookupControl>
 
-                    </DockPanel>
+                    </Grid>
                 </TabItem>
 
                 <TabItem Header="Computers">

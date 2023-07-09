@@ -158,7 +158,7 @@ namespace RingSoft.DevLogix.QualityAssurance
             RecalcProcedure = new RecalcProcedure();
             RecalcProcedure.StartRecalculate += (sender, args) =>
             {
-                result = LocalViewModel.StartRecalcProcedure(lookup);
+                result = LocalViewModel.StartRecalculateProcedure(lookup);
             };
             RecalcProcedure.Start();
             return result;

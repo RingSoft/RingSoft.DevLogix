@@ -19,6 +19,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
     public interface ICustomerView : IDbMaintenanceView
     {
         void RefreshView();
+
+        bool SetupRecalcFilter(LookupDefinitionBase lookup);
+
+        string StartRecalcProcedure(LookupDefinitionBase lookup);
+
+        void UpdateRecalcProcedure(int currentCustomer, int totalCustomers, string currentCustomerText);
+
     }
     public class CustomerViewModel : DevLogixDbMaintenanceViewModel<Customer>
     {
@@ -266,6 +273,21 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
         }
 
+        private string _supportTimeSpentText;
+
+        public string SupportTimeSpentText
+        {
+            get => _supportTimeSpentText;
+            set
+            {
+                if (_supportTimeSpentText == value)
+                    return;
+
+                _supportTimeSpentText = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         private CustomerProductManager _productManager;
 
@@ -463,8 +485,64 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
         }
 
+        private double _supportCost;
+
+        public double SupportCost
+        {
+            get => _supportCost;
+            set
+            {
+                if (_supportCost == value)
+                    return;
+
+                _supportCost = value;
+                OnPropertyChanged(null, false);
+            }
+        }
+
+        private double _totalSales;
+        private double _supportMinutesSpent;
+
+        public double TotalSales
+        {
+            get => _totalSales;
+            set
+            {
+                if (_totalSales == value)
+                    return;
+                
+                _totalSales = value;
+                OnPropertyChanged(null, false);
+            }
+        }
+
+        private double _newSupportTime;
+
+        public double NewSupportTime
+        {
+            get => _newSupportTime;
+            set
+            {
+                if (_newSupportTime == value)
+                    return;
+
+                _newSupportTime = value;
+                OnPropertyChanged(null, false);
+            }
+        }
+
 
         public double MinutesSpent { get; private set; }
+
+        public double SupportMinutesSpent
+        {
+            get => _supportMinutesSpent;
+            private set
+            {
+                _supportMinutesSpent = value;
+                SupportTimeSpentText = AppGlobals.MakeTimeSpent(SupportMinutesSpent);
+            }
+        }
 
         public RelayCommand PunchInCommand { get; private set; }
 
@@ -475,6 +553,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         public RelayCommand AddModifyComputerLookupCommand { get; set; }
 
         public RelayCommand AddModifySupportTicketCommand { get; set; }
+
+        public RelayCommand AddSupportCommand { get; set; }
 
         public new ICustomerView View { get; private set; }
 
@@ -503,6 +583,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             AddModifyComputerLookupCommand = new RelayCommand(AddModifyComputer);
 
             AddModifySupportTicketCommand = new RelayCommand(AddModifySupportTicket);
+
+            AddSupportCommand = new RelayCommand((() =>
+            {
+                SupportMinutesLeft += NewSupportTime;
+            }));
 
             var timeClockLookup = new LookupDefinition<TimeClockLookup, TimeClock>(AppGlobals.LookupContext.TimeClocks);
             timeClockLookup.AddVisibleColumnDefinition(p => p.PunchInDate, p => p.PunchInDate);
@@ -587,12 +672,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             ProductManager.LoadGrid(entity.CustomerProducts);
             CustomerUserGridManager.LoadGrid(entity.Users);
             SupportMinutesLeft = entity.SupportMinutesPurchased;
-            //MinutesSpent = entity.MinutesSpent;
-            //MinutesSpent = entity.MinutesSpent;
-            //TotalCost = entity.Cost;
+            MinutesSpent = entity.MinutesSpent;
+            MinutesSpent = entity.MinutesSpent;
+            TotalCost = entity.MinutesCost;
             TotalTimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
-
-
+            SupportMinutesSpent = entity.SupportMinutesSpent.GetValueOrDefault();
+            SupportCost = entity.SupportCost.GetValueOrDefault();
+            TotalSales = entity.TotalSales;
             Notes = entity.Notes;
         }
 
@@ -633,6 +719,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 Notes = Notes,
                 SupportMinutesPurchased = SupportMinutesLeft,
                 SupportMinutesSpent = supportMinutesSpent,
+                SupportCost = SupportCost,
+                TotalSales = TotalSales,
             };
             return result;
         }
@@ -679,6 +767,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             TotalCost = 0;
             MinutesSpent = 0;
             TotalTimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
+            SupportMinutesSpent = 0;
+            SupportCost = 0;
+            TotalSales = 0;
             View.RefreshView();
         }
 
@@ -779,6 +870,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         private void Recalc()
         {
 
+        }
+
+        public string StartRecalcProcedure(LookupDefinitionBase lookupToFilter)
+        {
+            var result = string.Empty;
+            return result;
         }
 
         private void AddModifyOrder()

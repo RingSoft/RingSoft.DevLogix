@@ -1197,10 +1197,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             }
         }
 
-        public string StartRecalcProcedure(LookupDefinitionBase lookupToFilter)
+        public string StartRecalculateProcedure(LookupDefinitionBase lookupToFilter)
         {
             var result = string.Empty;
-            var lookupUi = new LookupUserInterface { PageSize = 10 };
             var lookupData = TableDefinition.LookupDefinition.GetLookupDataMaui(lookupToFilter, false);
             var context = AppGlobals.DataRepository.GetDataContext();
             var errorsTable = context.GetTable<Error>();
