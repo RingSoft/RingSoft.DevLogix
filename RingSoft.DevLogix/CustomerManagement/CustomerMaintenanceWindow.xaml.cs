@@ -150,7 +150,7 @@ namespace RingSoft.DevLogix.CustomerManagement
             RecalcProcedure = new RecalcProcedure();
             RecalcProcedure.StartRecalculate += (sender, args) =>
             {
-                result = LocalViewModel.StartRecalcProcedure(lookupDefinition);
+                result = LocalViewModel.StartRecalcProcedure(lookupDefinition, RecalcProcedure);
             };
             RecalcProcedure.Start();
             return result;

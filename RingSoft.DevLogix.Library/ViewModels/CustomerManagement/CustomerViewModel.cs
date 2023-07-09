@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
 using Microsoft.EntityFrameworkCore;
+using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
@@ -878,13 +879,23 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             if (!View.SetupRecalcFilter(lookupFilter))
                 return;
             var result = View.StartRecalcProcedure(lookupFilter);
-            if (!result.IsNullOrEmpty())
+            if (result.IsNullOrEmpty())
             {
-                ControlsGlobals.UserInterface.ShowMessageBox(result, "Customer Recalculating", RsMessageBoxIcons.Error);
+                ControlsGlobals.UserInterface.ShowMessageBox(
+                    "Recalculation Complete"
+                    , "Recalculation Complete"
+                    , RsMessageBoxIcons.Information);
+            }
+            else
+            {
+                ControlsGlobals.UserInterface.ShowMessageBox(
+                    result
+                    , "Customer Recalculating"
+                    , RsMessageBoxIcons.Error);
             }
         }
 
-        public string StartRecalcProcedure(LookupDefinitionBase lookupToFilter)
+        public string StartRecalcProcedure(LookupDefinitionBase lookupToFilter, AppProcedure appProcedure)
         {
             var result = string.Empty;
             var lookupData = TableDefinition.LookupDefinition.GetLookupDataMaui(lookupToFilter, false);
@@ -901,7 +912,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                         primaryKeyValue
                         , context
                         , totalCustomers
-                        , currentCustomer);
+                        , currentCustomer
+                        , appProcedure);
 
                     if (!processResult.IsNullOrEmpty())
                     {
@@ -913,12 +925,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             lookupData.DoPrintOutput(10);
             if (result.IsNullOrEmpty())
             {
-                if (!context.Commit("Recalculating Finished"))
+                if (!context.Commit("Recalculating Finished", true))
                 {
-                    result = DbDataProcessor.LastException;
+                    result = GblMethods.LastError;
                 }
             }
-
             DbDataProcessor.DontDisplayExceptions = false;
             return result;
         }
@@ -926,7 +937,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         private string ProcessCurrentCustomer(
             PrimaryKeyValue primaryKeyValue
             , DataAccess.IDbContext context, int totalCustomers
-            , int currentCustomerIndex)
+            , int currentCustomerIndex
+            , AppProcedure procedure)
         {
             var customersTable = context.GetTable<Customer>();
             var usersTable = context.GetTable<User>();
@@ -948,7 +960,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                         , currentCustomer
                         , timeClocksTable
                         , usersTable
-                        , context);
+                        , context
+                        , procedure);
 
                     if (!updateResult.IsNullOrEmpty())
                     {
@@ -965,7 +978,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             , Customer currentCustomer
             , IQueryable<TimeClock> timeClocksTable
             , IQueryable<User> usersTable
-            , DataAccess.IDbContext context)
+            , DataAccess.IDbContext context
+            , AppProcedure procedure)
         {
             View.UpdateRecalcProcedure(currentCustomerIndex, totalCustomers, currentCustomer.CompanyName);
             var customerUsers = new List<CustomerUser>(currentCustomer.Users);
@@ -983,16 +997,20 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                     , usersTable
                     , context
                     , timeClockUser
-                    , customerUsers);
+                    , customerUsers
+                    , procedure);
 
                 if (!updateResult.IsNullOrEmpty())
                 {
                     return updateResult;
                 }
             }
-            if (!context.SaveNoCommitEntity(currentCustomer, "Saving Customer"))
+
+            UpdateCustomerSupportValues(currentCustomer, timeClocksTable, procedure);
+
+            if (!context.SaveNoCommitEntity(currentCustomer, "Saving Customer", true))
             {
-                return DbDataProcessor.LastException;
+                return GblMethods.LastError;
             }
 
             if (currentCustomer.Id == Id)
@@ -1010,7 +1028,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             , IQueryable<User> usersTable
             , IDbContext context
             , int timeClockUser
-            , List<CustomerUser> customerUsers)
+            , List<CustomerUser> customerUsers
+            , AppProcedure procedure)
         {
             var result = string.Empty;
             var customerUser = currentCustomer.Users.FirstOrDefault(p => p.UserId == timeClockUser);
@@ -1032,14 +1051,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             {
                 UpdateCustomerUserCost(usersTable, customerUser, timeClocksTable, currentCustomer);
 
-                if (!context.SaveNoCommitEntity(currentCustomer, "Saving Customer User"))
+                if (!context.SaveNoCommitEntity(currentCustomer, "Saving Customer User", true))
                 {
-                    result = DbDataProcessor.LastException;
+                    result = GblMethods.LastError;
                     return result;
                 }
             }
 
-            UpdateCustomerSupportValues(currentCustomer, timeClocksTable);
             currentCustomer.MinutesSpent += customerUser.MinutesSpent;
             currentCustomer.MinutesCost += customerUser.Cost;
 
@@ -1048,7 +1066,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         private static void UpdateCustomerSupportValues(
             Customer currentCustomer
-            , IQueryable<TimeClock> timeClocksTable)
+            , IQueryable<TimeClock> timeClocksTable
+            , AppProcedure procedure)
         {
             currentCustomer.SupportMinutesSpent = 0;
             currentCustomer.SupportCost = 0;
@@ -1057,13 +1076,21 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 .Include(p => p.SupportTicket)
                 .ThenInclude(p => p.Customer)
                 .Where(p => p.SupportTicketId != null
-                            && p.SupportTicket.CustomerId == currentCustomer.Id).ToList();
+                            && p.SupportTicket.CustomerId == currentCustomer.Id);
 
+            var total = supportTimeClocks.Count();
+            var index = 1;
+            var intControlSetup = new IntegerEditControlSetup();
+            var formattedTotal = intControlSetup.FormatValue(total);
             foreach (var supportTimeClock in supportTimeClocks)
             {
+                procedure.SplashWindow.SetProgress
+                    ($"Processing Time Clock {intControlSetup.FormatValue(index)}/{formattedTotal}");
+                
                 currentCustomer.SupportMinutesSpent += supportTimeClock.MinutesSpent;
                 var hours = supportTimeClock.MinutesSpent / 60;
-                currentCustomer.SupportCost += hours * supportTimeClock.User.HourlyRate;
+                currentCustomer.SupportCost += Math.Round((double)hours * supportTimeClock.User.HourlyRate, 2);
+                index++;
             }
         }
 
