@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
+using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbMaintenance;
@@ -12,7 +14,10 @@ using RingSoft.DevLogix.DataAccess.LookupModel;
 using RingSoft.DevLogix.DataAccess.LookupModel.CustomerManagement;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
+using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using IDbContext = RingSoft.DevLogix.DataAccess.IDbContext;
+using TimeZone = RingSoft.DevLogix.DataAccess.Model.CustomerManagement.TimeZone;
 
 namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 {
@@ -869,13 +874,144 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         private void Recalc()
         {
-
+            var lookupFilter = ViewLookupDefinition.Clone();
+            if (!View.SetupRecalcFilter(lookupFilter))
+                return;
+            var result = View.StartRecalcProcedure(lookupFilter);
+            if (!result.IsNullOrEmpty())
+            {
+                ControlsGlobals.UserInterface.ShowMessageBox(result, "Customer Recalculating", RsMessageBoxIcons.Error);
+            }
         }
 
         public string StartRecalcProcedure(LookupDefinitionBase lookupToFilter)
         {
             var result = string.Empty;
+            var lookupData = TableDefinition.LookupDefinition.GetLookupDataMaui(lookupToFilter, false);
+            var context = AppGlobals.DataRepository.GetDataContext();
+            DbDataProcessor.DontDisplayExceptions = true;
+
+            var totalCustomers = lookupData.GetRecordCount();
+            var currentCustomer = 1;
+            lookupData.PrintOutput += (sender, e) =>
+            {
+                foreach (var primaryKeyValue in e.Result)
+                {
+                    ProcessCurrentCustomer(primaryKeyValue, context, totalCustomers, currentCustomer);
+                }
+            };
+            lookupData.DoPrintOutput(10);
+            if (result.IsNullOrEmpty())
+            {
+                if (!context.Commit("Recalculating Finished"))
+                {
+                    result = DbDataProcessor.LastException;
+                }
+            }
+
+            DbDataProcessor.DontDisplayExceptions = false;
             return result;
+        }
+
+        private void ProcessCurrentCustomer(
+            PrimaryKeyValue primaryKeyValue
+            , DataAccess.IDbContext context, int totalCustomers
+            , int currentCustomerIndex)
+        {
+            var customersTable = context.GetTable<Customer>();
+            var usersTable = context.GetTable<User>();
+            var timeClocksTable = context.GetTable<TimeClock>();
+
+            var currentCustomer = TableDefinition.GetEntityFromPrimaryKeyValue(primaryKeyValue);
+            if (currentCustomer != null)
+            {
+                currentCustomer = customersTable
+                    .Include(p => p.Users)
+                    .ThenInclude(p => p.User)
+                    .FirstOrDefault(p => p.Id == currentCustomer.Id);
+
+                if (currentCustomer != null)
+                {
+                    UpdateCustomerValues(
+                        totalCustomers
+                        , currentCustomerIndex
+                        , currentCustomer
+                        , timeClocksTable
+                        , usersTable
+                        , context);
+                }
+            }
+        }
+
+        private void UpdateCustomerValues(
+            int totalCustomers
+            , int currentCustomerIndex
+            , Customer currentCustomer
+            , IQueryable<TimeClock> timeClocksTable
+            , IQueryable<User> usersTable
+            , DataAccess.IDbContext context)
+        {
+            View.UpdateRecalcProcedure(currentCustomerIndex, totalCustomers, currentCustomer.CompanyName);
+            var customerUsers = new List<CustomerUser>(currentCustomer.Users);
+            currentCustomer.MinutesSpent = currentCustomer.MinutesCost = 0;
+            var timeClockUsers = timeClocksTable
+                .Where(p => p.CustomerId == currentCustomer.Id)
+                .Select(p => p.UserId)
+                .Distinct();
+
+            foreach (var timeClockUser in timeClockUsers)
+            {
+                UpdateCustomerTimeClockValues(
+                    currentCustomer
+                    , timeClocksTable
+                    , usersTable
+                    , context
+                    , timeClockUser
+                    , customerUsers);
+            }
+        }
+
+        private static void UpdateCustomerTimeClockValues(
+            Customer currentCustomer
+            , IQueryable<TimeClock> timeClocksTable
+            , IQueryable<User> usersTable
+            , IDbContext context
+            , int timeClockUser
+            , List<CustomerUser> customerUsers)
+        {
+            var customerUser = currentCustomer.Users.FirstOrDefault(p => p.UserId == timeClockUser);
+            if (customerUser == null)
+            {
+                customerUser = new CustomerUser()
+                {
+                    CustomerId = currentCustomer.Id,
+                    UserId = timeClockUser
+                };
+                UpdateCustomerUserCost(usersTable, customerUser, timeClocksTable, currentCustomer);
+                context.AddRange(new List<CustomerUser>()
+                {
+                    customerUser
+                });
+                customerUsers.Add(customerUser);
+            }
+        }
+
+
+        private static void UpdateCustomerUserCost(IQueryable<User> usersTable, CustomerUser customerUser
+            , IQueryable<TimeClock> timeClocksTable
+            , Customer customer)
+        {
+            var user = usersTable.FirstOrDefault(p => p.Id == customerUser.UserId);
+            var customerUserMinutes = timeClocksTable
+                .Where(p => p.ErrorId == customer.Id
+                            && p.UserId == customerUser.UserId)
+                .ToList()
+                .Sum(p => p.MinutesSpent);
+            if (customerUserMinutes != null)
+            {
+                customerUser.MinutesSpent = customerUserMinutes.Value;
+                customerUser.Cost = Math.Round((customerUser.MinutesSpent / 60) * user.HourlyRate, 2);
+            }
         }
 
         private void AddModifyOrder()
