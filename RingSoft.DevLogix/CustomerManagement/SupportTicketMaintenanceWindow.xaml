@@ -197,7 +197,7 @@
 
                         <Label Grid.Row="0" Grid.Column="2" Content="Total Cost"/>
 
-                        <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="3" Width="100" Value="{Binding TotalCost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency"/>
+                        <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="3" Width="100" Value="{Binding TotalCost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency" TextAlignment="Left"/>
 
                         <deg:DataEntryGrid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" DataEntryCanUserAddRows="False" CanUserDeleteRows="False" Manager="{Binding TicketUserGridManager}">
 

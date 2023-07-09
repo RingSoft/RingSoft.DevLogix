@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
+using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.QueryBuilder;
+using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.LookupModel;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
@@ -15,6 +18,16 @@ using RingSoft.DevLogix.Library.ViewModels.QualityAssurance;
 
 namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 {
+    public interface ISupportTicketView : IDbMaintenanceView
+    {
+        bool SetupRecalcFilter(LookupDefinitionBase lookup);
+
+        string StartRecalcProcedure(LookupDefinitionBase lookup);
+
+        void UpdateRecalcProcedure(int currentCustomer, int totalCustomers, string currentCustomerText);
+
+    }
+
     public class SupportTicketViewModel : DevLogixDbMaintenanceViewModel<SupportTicket>
     {
         private int _id;
@@ -28,6 +41,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 {
                     return;
                 }
+
                 _id = value;
                 OnPropertyChanged();
             }
@@ -78,6 +92,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 {
                     return;
                 }
+
                 _createDate = value;
                 OnPropertyChanged();
             }
@@ -309,7 +324,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
         }
 
-        private SupportTicketErrorManager  _ticketErrorGridManager;
+        private SupportTicketErrorManager _ticketErrorGridManager;
 
         public SupportTicketErrorManager TicketErrorGridManager
         {
@@ -331,6 +346,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         public AutoFillValue DefaultCustomerAutoFillValue { get; private set; }
 
         public double MinutesSpent { get; private set; }
+
+        public new ISupportTicketView View { get; private set; }
 
         private bool _loading;
 
@@ -362,6 +379,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         protected override void Initialize()
         {
+            if (base.View is ISupportTicketView supportTicketView)
+            {
+                View = supportTicketView;
+            }
+
             ViewLookupDefinition.InitialOrderByField = TableDefinition.GetFieldDefinition(p => p.Id);
             if (LookupAddViewArgs != null && LookupAddViewArgs.ParentWindowPrimaryKeyValue != null)
             {
@@ -384,7 +406,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             base.Initialize();
         }
 
-        protected override SupportTicket PopulatePrimaryKeyControls(SupportTicket newEntity, PrimaryKeyValue primaryKeyValue)
+        protected override SupportTicket PopulatePrimaryKeyControls(SupportTicket newEntity,
+            PrimaryKeyValue primaryKeyValue)
         {
             var result = GetTicket(newEntity.Id);
 
@@ -414,6 +437,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 .ThenInclude(p => p.Error)
                 .FirstOrDefault(p => p.Id == ticketId);
         }
+
         protected override void LoadFromEntity(SupportTicket entity)
         {
             _loading = true;
@@ -429,7 +453,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             TicketErrorGridManager.LoadGrid(entity.Errors);
             MinutesSpent = entity.MinutesSpent;
             ContactName = entity.ContactName;
+
             _loading = false;
+            GetTotals();
         }
 
         private void LoadCustomer()
@@ -484,6 +510,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             {
                 return false;
             }
+
             return base.ValidateEntity(entity);
         }
 
@@ -508,6 +535,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             TimeClockLookupCommand = GetLookupCommand(LookupCommands.Clear);
             MinutesSpent = 0;
             _loading = false;
+            GetTotals();
         }
 
         public void RefreshTimeClockLookup()
@@ -547,6 +575,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 {
                     supportTicketError.SupportTicketId = entity.Id;
                 }
+
                 context.AddRange(list);
                 result = context.Commit("Saving Errors");
             }
@@ -577,6 +606,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
                 result = context.DeleteEntity(entity, "Deleting Ticket");
             }
+
             return result;
         }
 
@@ -618,6 +648,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 {
                     return;
                 }
+
                 user.User = AppGlobals.LoggedInUser;
                 TicketUserGridManager.AddUserRow(user);
             }
@@ -625,11 +656,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             var ticket = GetTicket(Id);
             AppGlobals.MainViewModel.PunchIn(ticket);
         }
+
         public void RefreshCost(List<SupportTicketUser> users)
         {
             TicketUserGridManager.RefreshCost(users);
             GetTotals();
         }
+
         public void RefreshCost(SupportTicketUser ticketUser)
         {
             TicketUserGridManager.RefreshCost(ticketUser);
@@ -646,7 +679,154 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         public void Recalc()
         {
+            var lookupFilter = ViewLookupDefinition.Clone();
+            if (!View.SetupRecalcFilter(lookupFilter))
+                return;
+            var result = View.StartRecalcProcedure(lookupFilter);
+            if (result.IsNullOrEmpty())
+            {
+                ControlsGlobals.UserInterface.ShowMessageBox(
+                    "Recalculation Complete"
+                    , "Recalculation Complete"
+                    , RsMessageBoxIcons.Information);
+            }
+            else
+            {
+                ControlsGlobals.UserInterface.ShowMessageBox(
+                    result
+                    , "Support Ticket Recalculating"
+                    , RsMessageBoxIcons.Error);
+            }
+        }
+
+        public string StartRecalcProcedure(LookupDefinitionBase lookupToFilter, AppProcedure appProcedure)
+        {
+            var result = string.Empty;
+            var lookupData = TableDefinition.LookupDefinition.GetLookupDataMaui(lookupToFilter, false);
+            var context = AppGlobals.DataRepository.GetDataContext();
+            DbDataProcessor.DontDisplayExceptions = true;
+
+            var totalTickets = lookupData.GetRecordCount();
+            var currentTicket = 1;
+
+            lookupData.PrintOutput += (sender, e) =>
+            {
+                foreach (var primaryKeyValue in e.Result)
+                {
+                    var processResult = ProcessCurrentTicket(
+                        primaryKeyValue
+                        , context
+                        , totalTickets
+                        , currentTicket
+                        , appProcedure);
+
+                    if (!processResult.IsNullOrEmpty())
+                    {
+                        result = processResult;
+                        return;
+                    }
+                }
+            };
+
+            lookupData.DoPrintOutput(10);
+            if (result.IsNullOrEmpty())
+            {
+                if (!context.Commit("Recalculating Finished", true))
+                {
+                    result = GblMethods.LastError;
+                }
+            }
+            DbDataProcessor.DontDisplayExceptions = false;
+            return result;
 
         }
+
+        private string ProcessCurrentTicket(
+            PrimaryKeyValue primaryKeyValue
+            , DataAccess.IDbContext context, int totalCustomers
+            , int currentTicketIndex
+            , AppProcedure procedure)
+        {
+            var ticketsTable = context.GetTable<SupportTicket>();
+            var usersTable = context.GetTable<User>();
+            var timeClocksTable = context.GetTable<TimeClock>();
+
+            var currentTicket = TableDefinition.GetEntityFromPrimaryKeyValue(primaryKeyValue);
+            if (currentTicket != null)
+            {
+                currentTicket = ticketsTable
+                    .Include(p => p.SupportTicketUsers)
+                    .ThenInclude(p => p.User)
+                    .FirstOrDefault(p => p.Id == currentTicket.Id);
+
+                //if (currentCustomer != null)
+                //{
+                //    var updateResult = UpdateCustomerValues(
+                //        totalCustomers
+                //        , currentCustomerIndex
+                //        , currentCustomer
+                //        , timeClocksTable
+                //        , usersTable
+                //        , context
+                //        , procedure);
+
+                //    if (!updateResult.IsNullOrEmpty())
+                //    {
+                //        return updateResult;
+                //    }
+                //}
+            }
+            return string.Empty;
+        }
+
+        private string UpdateTicketValues(
+      int totalTickets
+    , int currentTicketIndex
+    , SupportTicket currentTicket
+    , IQueryable<TimeClock> timeClocksTable
+    , IQueryable<User> usersTable
+    , DataAccess.IDbContext context
+    , AppProcedure procedure)
+        {
+            View.UpdateRecalcProcedure(currentTicketIndex, totalTickets, currentTicket.TicketId);
+            var ticketUsers = new List<SupportTicketUser>(currentTicket.SupportTicketUsers);
+            currentTicket.MinutesSpent = 0;
+            currentTicket.Cost = 0;
+            var timeClockUsers = timeClocksTable
+                .Where(p => p.SupportTicketId == currentTicket.Id)
+                .Select(p => p.UserId)
+                .Distinct();
+
+            //foreach (var timeClockUser in timeClockUsers)
+            //{
+            //    var updateResult = UpdateCustomerTimeClockValues(
+            //        currentTicket
+            //        , timeClocksTable
+            //        , usersTable
+            //        , context
+            //        , timeClockUser
+            //        , customerUsers
+            //        , procedure);
+
+            //    if (!updateResult.IsNullOrEmpty())
+            //    {
+            //        return updateResult;
+            //    }
+            //}
+
+            if (!context.SaveNoCommitEntity(currentTicket, "Saving Customer", true))
+            {
+                return GblMethods.LastError;
+            }
+
+            if (currentTicket.Id == Id)
+            {
+                RefreshCost(ticketUsers);
+                TotalCost = currentTicket.Cost.GetValueOrDefault();
+                MinutesSpent = currentTicket.MinutesSpent;
+            }
+            return string.Empty;
+        }
+
     }
 }

@@ -304,11 +304,12 @@
 
                 </TabItem>
 
-                <TabItem Header="Cost">
+                <TabItem Header="Sales">
 
                     <Grid>
 
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
@@ -321,15 +322,22 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
-                        <Label Grid.Row="0" Grid.Column="0" Content="Total Time Spent"/>
+                        <Label Grid.Row="0" Grid.Column="0" Content="Total Sales"/>
 
-                        <dec:StringReadOnlyBox Grid.Row="0" Grid.Column="1" Width="100" Text="{Binding TotalTimeSpent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="1" Width="100" Value="{Binding TotalSales, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency"/>
 
-                        <Label Grid.Row="0" Grid.Column="2" Content="Total Cost"/>
+                        <Label Grid.Row="0" Grid.Column="2" Content="Total Time Spent"/>
 
-                        <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="3" Width="100" Value="{Binding TotalCost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency"/>
+                        <dec:StringReadOnlyBox Grid.Row="0" Grid.Column="3" Width="100" Text="{Binding TotalTimeSpent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-                        <deg:DataEntryGrid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" DataEntryCanUserAddRows="False" CanUserDeleteRows="False" Manager="{Binding CustomerUserGridManager}">
+                        <Label Grid.Row="1" Grid.Column="0" Content="Total Cost"/>
+
+                        <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="1" Width="100" Value="{Binding TotalCost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency"/>
+                        <Label Grid.Row="1" Grid.Column="2" Content="Difference"/>
+
+                        <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="3" x:Name="DifferenceControl" Width="100" Value="{Binding SalesDifference, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency"/>
+
+                        <deg:DataEntryGrid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="5" DataEntryCanUserAddRows="False" CanUserDeleteRows="False" Manager="{Binding CustomerUserGridManager}">
 
                             <deg:DataEntryGrid.Columns>
 

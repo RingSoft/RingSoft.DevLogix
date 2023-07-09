@@ -12,9 +12,12 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using RingSoft.App.Controls;
+using RingSoft.DbLookup;
 using RingSoft.DbLookup.Controls.WPF;
+using RingSoft.DbLookup.Lookup;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.Library;
+using RingSoft.DevLogix.Library.ViewModels.CustomerManagement;
 
 namespace RingSoft.DevLogix.CustomerManagement
 {
@@ -47,8 +50,10 @@ namespace RingSoft.DevLogix.CustomerManagement
     /// <summary>
     /// Interaction logic for SupportTicketMaintenanceWindow.xaml
     /// </summary>
-    public partial class SupportTicketMaintenanceWindow
+    public partial class SupportTicketMaintenanceWindow : ISupportTicketView
     {
+        public RecalcProcedure RecalcProcedure { get; set; }
+
         public SupportTicketMaintenanceWindow()
         {
             InitializeComponent();
@@ -93,6 +98,40 @@ namespace RingSoft.DevLogix.CustomerManagement
         {
             CustomerControl.Focus();
             base.ResetViewForNewRecord();
+        }
+
+        public bool SetupRecalcFilter(LookupDefinitionBase lookupDefinition)
+        {
+            var genericInput = new GenericReportLookupFilterInput
+            {
+                LookupDefinitionToFilter = lookupDefinition,
+                CodeNameToFilter = "Support Ticket",
+                KeyAutoFillValue = LocalViewModel.KeyAutoFillValue,
+                ProcessText = "Recalculate"
+            };
+            var genericWindow = new GenericReportFilterWindow(genericInput);
+            genericWindow.Owner = this;
+            genericWindow.ShowInTaskbar = false;
+            genericWindow.ShowDialog();
+            return genericWindow.ViewModel.DialogReesult;
+        }
+
+        public string StartRecalcProcedure(LookupDefinitionBase lookupDefinition)
+        {
+            var result = string.Empty;
+            RecalcProcedure = new RecalcProcedure();
+            RecalcProcedure.StartRecalculate += (sender, args) =>
+            {
+                result = LocalViewModel.StartRecalcProcedure(lookupDefinition, RecalcProcedure);
+            };
+            RecalcProcedure.Start();
+            return result;
+        }
+
+        public void UpdateRecalcProcedure(int currentSupportTicket, int totalSupportTickets, string currentSupportTicketText)
+        {
+            var progress = $"Recalculating Support Ticket {currentSupportTicketText} {currentSupportTicket} / {totalSupportTickets}";
+            RecalcProcedure.SplashWindow.SetProgress(progress);
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Media;
 using RingSoft.App.Controls;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
@@ -106,7 +107,6 @@ namespace RingSoft.DevLogix.CustomerManagement
                 SendEmailControl.Inlines.Clear();
                 var url = $"mailto:{LocalViewModel.EmailAddress}";
                 SetupUrl(textBlock, url, "Send Email");
-
             }
 
             textBlock = ClickWebControl;
@@ -125,6 +125,19 @@ namespace RingSoft.DevLogix.CustomerManagement
                 ClickWebControl.Inlines.Clear();
                 var url = $"{prefix}{LocalViewModel.WebAddress}";
                 SetupUrl(textBlock, url, "Goto Web Site");
+            }
+
+            if (LocalViewModel.SalesDifference < 0)
+            {
+                DifferenceControl.Foreground = new SolidColorBrush(Colors.LightPink);
+            }
+            else if (LocalViewModel.SalesDifference > 0)
+            {
+                DifferenceControl.Foreground = new SolidColorBrush(Colors.LightGreen);
+            }
+            else
+            {
+                DifferenceControl.Foreground = new SolidColorBrush(Colors.Black);
             }
         }
 

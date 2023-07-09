@@ -31,7 +31,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         string StartRecalcProcedure(LookupDefinitionBase lookup);
 
         void UpdateRecalcProcedure(int currentCustomer, int totalCustomers, string currentCustomerText);
-
     }
     public class CustomerViewModel : DevLogixDbMaintenanceViewModel<Customer>
     {
@@ -290,7 +289,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                     return;
 
                 _supportTimeSpentText = value;
-                OnPropertyChanged();
+                OnPropertyChanged(null, false);
             }
         }
 
@@ -537,6 +536,21 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
         }
 
+        private double _salesDifference;
+
+        public double SalesDifference
+        {
+            get => _salesDifference;
+            set
+            {
+                if (_salesDifference == value)
+                    return;
+
+                _salesDifference = value;
+                OnPropertyChanged(null, false);
+            }
+        }
+
 
         public double MinutesSpent { get; private set; }
 
@@ -563,6 +577,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         public RelayCommand AddSupportCommand { get; set; }
 
         public new ICustomerView View { get; private set; }
+
+        private bool _loading;
 
         public CustomerViewModel()
         {
@@ -663,6 +679,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         protected override void LoadFromEntity(Customer entity)
         {
+            _loading = true;
             ContactName = entity.ContactName;
             ContactTitle = entity.ContactTitle;
             Address = entity.Address;
@@ -686,8 +703,19 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             SupportCost = entity.SupportCost.GetValueOrDefault();
             TotalSales = entity.TotalSales;
             Notes = entity.Notes;
+            _loading = false;
+            UpdateTotals();
         }
 
+        public void UpdateTotals()
+        {
+            if (_loading)
+            {
+                return;
+            }
+            SalesDifference = TotalSales - TotalCost;
+            View.RefreshView();
+        }
         protected override Customer GetEntityData()
         {
             double? supportMinutesSpent = null;
@@ -776,6 +804,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             SupportMinutesSpent = 0;
             SupportCost = 0;
             TotalSales = 0;
+            SalesDifference = 0;
             View.RefreshView();
         }
 
@@ -801,7 +830,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
             if (result)
             {
-                result = context.Commit("Finializing Customer Save");
+                result = context.Commit("Finalizing Customer Save");
             }
             return result;
         }
@@ -1008,6 +1037,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
             UpdateCustomerSupportValues(currentCustomer, timeClocksTable, procedure);
 
+            UpdateCustomerSalesValues(currentCustomer, context);
+
             if (!context.SaveNoCommitEntity(currentCustomer, "Saving Customer", true))
             {
                 return GblMethods.LastError;
@@ -1018,8 +1049,23 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 RefreshCost(customerUsers);
                 SupportMinutesSpent = currentCustomer.SupportMinutesSpent.GetValueOrDefault();
                 SupportCost = currentCustomer.SupportCost.GetValueOrDefault();
+                TotalSales = currentCustomer.TotalSales;
+                UpdateTotals();
             }
             return string.Empty;
+        }
+
+        private static void UpdateCustomerSalesValues(
+            Customer currentCustomer
+            , IDbContext context)
+        {
+            var ordersTable = context.GetTable<Order>();
+
+            var orders = ordersTable
+                .Where(p => p.CustomerId == currentCustomer.Id)
+                .ToList();
+
+            currentCustomer.TotalSales = orders.Sum(p => p.Total).GetValueOrDefault();
         }
 
         private static string UpdateCustomerTimeClockValues(
@@ -1101,7 +1147,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         {
             var user = usersTable.FirstOrDefault(p => p.Id == customerUser.UserId);
             var customerUserMinutes = timeClocksTable
-                .Where(p => p.ErrorId == customer.Id
+                .Where(p => p.CustomerId == customer.Id
                             && p.UserId == customerUser.UserId)
                 .ToList()
                 .Sum(p => p.MinutesSpent);
