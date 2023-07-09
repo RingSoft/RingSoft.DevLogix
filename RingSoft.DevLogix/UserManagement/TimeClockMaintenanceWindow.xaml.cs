@@ -32,7 +32,9 @@ namespace RingSoft.DevLogix.UserManagement
 {
     public class TimeClockHeaderControl : DbMaintenanceCustomPanel
     {
-        public DbMaintenanceButton PunchOutButton { get; set; }
+        public DbMaintenanceButton PunchOutButton { get; private set; }
+
+        public DbMaintenanceButton ManualPunchOutButton { get; private set; }
 
         static TimeClockHeaderControl()
         {
@@ -42,6 +44,7 @@ namespace RingSoft.DevLogix.UserManagement
         public override void OnApplyTemplate()
         {
             PunchOutButton = GetTemplateChild(nameof(PunchOutButton)) as DbMaintenanceButton;
+            ManualPunchOutButton = GetTemplateChild(nameof(ManualPunchOutButton)) as DbMaintenanceButton;
 
             base.OnApplyTemplate();
         }
@@ -56,6 +59,8 @@ namespace RingSoft.DevLogix.UserManagement
         public override string ItemText => "Time Clock Entry";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;
         public override DbMaintenanceStatusBar DbStatusBar => StatusBar;
+
+        public TimeClockHeaderControl TimeClockHeaderControl { get; private set; }
 
         private bool _isActive = true;
 
@@ -158,11 +163,22 @@ namespace RingSoft.DevLogix.UserManagement
                 TopHeaderControl.NewButton.Visibility = Visibility.Collapsed;
                 if (TopHeaderControl.CustomPanel is TimeClockHeaderControl timeClockHeaderControl)
                 {
+                    TimeClockHeaderControl = timeClockHeaderControl;
+                    if (LocalViewModel.TimeClockMode == TimeClockModes.SupportTicket)
+                    {
+                        timeClockHeaderControl.ManualPunchOutButton.Visibility = Visibility.Collapsed;
+                    }
                     timeClockHeaderControl.PunchOutButton.Command =
                         LocalViewModel.PunchOutCommand;
                     timeClockHeaderControl.PunchOutButton.ToolTip.HeaderText = "Punch Out (Alt + P)";
                     timeClockHeaderControl.PunchOutButton.ToolTip.DescriptionText =
                         "Punch Out of the current Time Clock record.";
+
+                    timeClockHeaderControl.ManualPunchOutButton.Command =
+                        LocalViewModel.ManualPunchOutCommand;
+                    timeClockHeaderControl.PunchOutButton.ToolTip.HeaderText = "Manual Punch Out (Alt + M)";
+                    timeClockHeaderControl.PunchOutButton.ToolTip.DescriptionText =
+                        "Punch Out via Manual Time Entry.";
                 }
 
                 if (Processor is AppDbMaintenanceWindowProcessor processor)
@@ -215,6 +231,11 @@ namespace RingSoft.DevLogix.UserManagement
             SupportTicketControl.Visibility = Visibility.Collapsed;
             CustomerTimeRemLabel.Visibility = Visibility.Collapsed;
             CustomerTimeRemControl.Visibility = Visibility.Collapsed;
+            if (TimeClockHeaderControl != null && TimeClockHeaderControl.ManualPunchOutButton != null)
+            {
+                TimeClockHeaderControl.ManualPunchOutButton.Visibility = Visibility.Visible;
+            }
+            
 
             var keyText = string.Empty;
             switch (timeClockMode)
@@ -239,6 +260,11 @@ namespace RingSoft.DevLogix.UserManagement
                     KeyLabel.Visibility = Visibility.Collapsed;
                     SupportTicketLabel.Visibility = Visibility.Visible;
                     SupportTicketControl.Visibility = Visibility.Visible;
+                    if (TimeClockHeaderControl != null && TimeClockHeaderControl.ManualPunchOutButton != null)
+                    {
+                        TimeClockHeaderControl.ManualPunchOutButton.Visibility = Visibility.Collapsed;
+                    }
+
                     keyText = "Support Ticket";
                     break;
                 default:
@@ -290,5 +316,16 @@ namespace RingSoft.DevLogix.UserManagement
             TopHeaderControl.NewButton.Visibility = Visibility.Collapsed;
         }
 
+        public bool GetManualPunchOutDate(out DateTime? punchInDate, out DateTime? punchOutDate)
+        {
+            var punchOutDateWindow = new TimeClockManualPunchOutWindow();
+            punchOutDateWindow.Owner = this;
+            punchOutDateWindow.ShowInTaskbar = false;
+            punchOutDateWindow.ShowDialog();
+            var result = punchOutDateWindow.LocalViewModel.DialogResult;
+            punchInDate = punchOutDateWindow.LocalViewModel.PunchInDate;
+            punchOutDate = punchOutDateWindow.LocalViewModel.PunchOutDate;
+            return result;
+        }
     }
 }

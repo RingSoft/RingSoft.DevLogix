@@ -34,6 +34,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         void FocusNotes();
 
         void SetDialogMode();
+
+        bool GetManualPunchOutDate(out DateTime? punchInDate, out DateTime? punchOutDate);
     }
 
     public class TimeClockMaintenanceViewModel : DevLogixDbMaintenanceViewModel<TimeClock>
@@ -371,6 +373,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         public RelayCommand PunchOutCommand { get; private set; }
 
+        public RelayCommand ManualPunchOutCommand { get; private set; }
+
         public double? SupportMinutesPurchased { get; private set; }
 
         public string? SupportTimeLeft { get; private set; }
@@ -394,7 +398,18 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
                 _setDirty = true;
             }));
-            AppGlobals.MainViewModel.TimeClockMaintenanceViewModel = this;
+
+            ManualPunchOutCommand = new RelayCommand((() =>
+            {
+                if (View.GetManualPunchOutDate(out var punchInDate, out var punchOutDate))
+                {
+                    PunchInDate = punchInDate.GetValueOrDefault();
+                    PunchOutDate = punchOutDate;
+                    DoSave();
+                }
+            }));
+
+        AppGlobals.MainViewModel.TimeClockMaintenanceViewModel = this;
         }
 
         private void SetError(Error error)
@@ -559,23 +574,23 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         {
             if (timeClock.PunchOutDate.HasValue)
             {
-                PunchOutCommand.IsEnabled = false;
+                ManualPunchOutCommand.IsEnabled = PunchOutCommand.IsEnabled = false;
             }
             else
             {
                 if (timeClock.UserId == AppGlobals.LoggedInUser.Id)
                 {
-                    PunchOutCommand.IsEnabled = true;
+                    ManualPunchOutCommand.IsEnabled = PunchOutCommand.IsEnabled = true;
                     EnablePunchOutDate();
                 }
                 else if (timeClock.User.IsSupervisor())
                 {
-                    PunchOutCommand.IsEnabled = true;
+                    ManualPunchOutCommand.IsEnabled = PunchOutCommand.IsEnabled = true;
                     EnablePunchOutDate();
                 }
                 else
                 {
-                    PunchOutCommand.IsEnabled = false;
+                    ManualPunchOutCommand.IsEnabled = PunchOutCommand.IsEnabled = false;
                 }
             }
         }
@@ -618,6 +633,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 timeClockMode = TimeClockModes.SupportTicket;
             }
 
+            TimeClockMode = timeClockMode;
             View.SetTimeClockMode(timeClockMode);
             
 
@@ -1122,7 +1138,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             {
                 DoSave();
             }
-            PunchOutCommand.IsEnabled = false;
+            ManualPunchOutCommand.IsEnabled = PunchOutCommand.IsEnabled = false;
         }
         private void StopTimer()
         {
