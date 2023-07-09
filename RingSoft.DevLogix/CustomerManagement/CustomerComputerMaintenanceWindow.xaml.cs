@@ -14,6 +14,8 @@ using System.Windows.Shapes;
 using RingSoft.App.Controls;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbMaintenance;
+using RingSoft.DevLogix.Library.ViewModels.CustomerManagement;
+using RingSoft.DevLogix.Library.ViewModels.UserManagement;
 
 namespace RingSoft.DevLogix.CustomerManagement
 {

@@ -141,7 +141,7 @@
 
                             <Label Grid.Row="3" Grid.Column="0" Content="Email Address"/>
 
-                            <dec:StringEditControl Grid.Row="3" Grid.Column="1" x:Name="EmailAddressControl" HorizontalAlignment="Left" Text="{Binding EmailAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" MaxLength="50"/>
+                            <dec:StringEditControl Grid.Row="3" Grid.Column="1" x:Name="EmailAddressControl" HorizontalAlignment="Left" Text="{Binding EmailAddress, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Width="200" MaxLength="50"/>
 
                             <TextBlock Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" x:Name="SendEmailControl" Text="Send Email" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"/>
 

@@ -856,6 +856,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             return user;
         }
 
+
         protected override void ClearData()
         {
             Id = 0;

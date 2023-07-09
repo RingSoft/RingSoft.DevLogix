@@ -1,8 +1,15 @@
-﻿using System.Windows;
+﻿using System;
+using System.Diagnostics;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Documents;
 using RingSoft.App.Controls;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.Library;
+using RingSoft.DevLogix.Library.ViewModels.CustomerManagement;
+using RingSoft.DevLogix.Library.ViewModels.UserManagement;
 using RingSoft.DevLogix.ProjectManagement;
 
 namespace RingSoft.DevLogix.CustomerManagement
@@ -35,7 +42,7 @@ namespace RingSoft.DevLogix.CustomerManagement
     /// <summary>
     /// Interaction logic for CustomerMaintenanceWindow.xaml
     /// </summary>
-    public partial class CustomerMaintenanceWindow
+    public partial class CustomerMaintenanceWindow : ICustomerView
     {
         public CustomerMaintenanceWindow()
         {
@@ -80,6 +87,68 @@ namespace RingSoft.DevLogix.CustomerManagement
         {
             CompanyControl.Focus();
             base.ResetViewForNewRecord();
+        }
+
+        public void RefreshView()
+        {
+            var textBlock = SendEmailControl;
+            if (LocalViewModel.EmailAddress.IsNullOrEmpty())
+            {
+                SendEmailControl.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                SendEmailControl.Visibility = Visibility.Visible;
+                SendEmailControl.Inlines.Clear();
+                var url = $"mailto:{LocalViewModel.EmailAddress}";
+                SetupUrl(textBlock, url, "Send Email");
+
+            }
+
+            textBlock = ClickWebControl;
+            if (LocalViewModel.WebAddress.IsNullOrEmpty())
+            {
+                ClickWebControl.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                ClickWebControl.Visibility = Visibility.Visible;
+                var prefix = "http://www.";
+                if (LocalViewModel.WebAddress.Contains(prefix))
+                {
+                    prefix = string.Empty;
+                }
+                ClickWebControl.Inlines.Clear();
+                var url = $"{prefix}{LocalViewModel.WebAddress}";
+                SetupUrl(textBlock, url, "Goto Web Site");
+            }
+        }
+
+        private void SetupUrl(TextBlock textBlock, string url, string text)
+        {
+            try
+            {
+                var uri= new Uri(url);
+                var hyperLink = new Hyperlink
+                {
+                    NavigateUri = uri
+                };
+                hyperLink.Inlines.Add(text);
+                hyperLink.RequestNavigate += (sender, args) =>
+                {
+                    Process.Start(new ProcessStartInfo(uri.AbsoluteUri) { UseShellExecute = true });
+                    args.Handled = true;
+                };
+                textBlock.Inlines.Add(hyperLink);
+            }
+            catch (Exception e)
+            {
+                ControlsGlobals.UserInterface.ShowMessageBox(
+                    e.Message
+                    , "Internet Error"
+                    , RsMessageBoxIcons.Error);
+                textBlock.Visibility = Visibility.Collapsed;
+            }
         }
     }
 }

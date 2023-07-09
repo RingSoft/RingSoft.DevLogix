@@ -181,11 +181,16 @@
 
                         <Label Grid.Row="4" Grid.Column="0" Content="Email Address"/>
 
-                        <dec:StringEditControl Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3" Width="300" HorizontalAlignment="Left" Text="{Binding EmailAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="100"/>
+                        <dec:StringEditControl Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Width="300" HorizontalAlignment="Left" Text="{Binding EmailAddress, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" MaxLength="100"/>
+
+                        <TextBlock Grid.Row="4" Grid.Column="3" Grid.ColumnSpan="2" x:Name="SendEmailControl" Text="Send Email" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"/>
 
                         <Label Grid.Row="5" Grid.Column="0" Content="Web Address"/>
 
-                        <dec:StringEditControl Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="3" Width="300" HorizontalAlignment="Left" Text="{Binding WebAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="100"/>
+                        <dec:StringEditControl Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Width="300" HorizontalAlignment="Left" Text="{Binding WebAddress, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" MaxLength="100"/>
+
+                        <TextBlock Grid.Row="5" Grid.Column="3" Grid.ColumnSpan="2" x:Name="ClickWebControl" Text="See Web Page" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"/>
+
 
                         <Label Grid.Row="6" Grid.Column="0" Content="Support Time Left"/>
 

@@ -16,6 +16,10 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 {
+    public interface ICustomerView : IDbMaintenanceView
+    {
+        void RefreshView();
+    }
     public class CustomerViewModel : DevLogixDbMaintenanceViewModel<Customer>
     {
         private int _id;
@@ -227,6 +231,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
                 _emailAddress = value;
                 OnPropertyChanged();
+                View.RefreshView();
             }
         }
 
@@ -242,6 +247,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
                 _webAddress = value;
                 OnPropertyChanged();
+                View.RefreshView();
             }
         }
 
@@ -470,6 +476,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         public RelayCommand AddModifySupportTicketCommand { get; set; }
 
+        public new ICustomerView View { get; private set; }
+
         public CustomerViewModel()
         {
             TimeZoneAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.TimeZoneId));
@@ -510,6 +518,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             SupportTicketLookup.InitialOrderByField = AppGlobals.LookupContext
                 .SupportTicket.GetFieldDefinition(p => p.Id);
 
+        }
+
+        protected override void Initialize()
+        {
+            if (base.View is ICustomerView customerView)
+            {
+                View = customerView;
+            }
+            base.Initialize();
         }
 
         protected override Customer PopulatePrimaryKeyControls(Customer newEntity, PrimaryKeyValue primaryKeyValue)
@@ -662,7 +679,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             TotalCost = 0;
             MinutesSpent = 0;
             TotalTimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
-
+            View.RefreshView();
         }
 
         protected override bool SaveEntity(Customer entity)
