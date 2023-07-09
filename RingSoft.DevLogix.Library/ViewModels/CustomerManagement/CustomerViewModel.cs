@@ -995,6 +995,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 return DbDataProcessor.LastException;
             }
 
+            if (currentCustomer.Id == Id)
+            {
+                RefreshCost(customerUsers);
+            }
             return string.Empty;
         }
 
