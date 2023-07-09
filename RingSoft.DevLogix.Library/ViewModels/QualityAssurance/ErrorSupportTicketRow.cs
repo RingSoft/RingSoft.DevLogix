@@ -2,33 +2,28 @@
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbMaintenance;
-using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
-using System.Text.RegularExpressions;
 
-namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
+namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 {
-    public class SupportTicketErrorRow : DbMaintenanceDataEntryGridRow<SupportTicketError>
+    public class ErrorSupportTicketRow : DbMaintenanceDataEntryGridRow<SupportTicketError>
     {
-        public new SupportTicketErrorManager Manager { get; }
+        public new ErrorSupportTicketManager Manager { get; }
 
         public AutoFillSetup AutoFillSetup { get; set; }
 
         public AutoFillValue AutoFillValue { get; set; }
 
-        public int ErrorId { get; set; }
-
-        public SupportTicketErrorRow(SupportTicketErrorManager manager) : base(manager)
+        public ErrorSupportTicketRow(ErrorSupportTicketManager manager) : base(manager)
         {
             Manager = manager;
-            AutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ErrorId))
+            AutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.SupportTicketId))
             {
-                AllowLookupAdd = AppGlobals.LookupContext.Errors.HasRight(RightTypes.AllowAdd),
-                AllowLookupView = AppGlobals.LookupContext.Errors.HasRight(RightTypes.AllowView)
+                AllowLookupAdd = AppGlobals.LookupContext.SupportTicket.HasRight(RightTypes.AllowAdd),
+                AllowLookupView = AppGlobals.LookupContext.SupportTicket.HasRight(RightTypes.AllowView)
             };
             AutoFillSetup.LookupDefinition.InitialOrderByField
-                = AppGlobals.LookupContext.Errors.GetFieldDefinition(p => p.Id);
-
+                = AppGlobals.LookupContext.SupportTicket.GetFieldDefinition(p => p.Id);
         }
 
         public override DataEntryGridCellProps GetCellProps(int columnId)
@@ -41,20 +36,18 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             if (value is DataEntryGridAutoFillCellProps autoFillCellProps)
             {
                 AutoFillValue = autoFillCellProps.AutoFillValue;
-                ErrorId = AutoFillValue.GetEntity<Error>().Id;
             }
             base.SetCellValue(value);
         }
 
         public override void LoadFromEntity(SupportTicketError entity)
         {
-            ErrorId = entity.ErrorId;
-            AutoFillValue = entity.Error.GetAutoFillValue();
+            AutoFillValue = entity.SupportTicket.GetAutoFillValue();
         }
 
         public override void SaveToEntity(SupportTicketError entity, int rowIndex)
         {
-            entity.ErrorId = AutoFillValue.GetEntity<Error>().Id;
+            entity.SupportTicketId = AutoFillValue.GetEntity<SupportTicket>().Id;
 
         }
     }

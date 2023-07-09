@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Linq;
+using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 {
@@ -469,6 +470,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             }
         }
 
+        private ErrorSupportTicketManager _supportTicketManager;
+
+        public ErrorSupportTicketManager SupportTicketManager
+        {
+            get => _supportTicketManager;
+            set
+            {
+                if (_supportTicketManager == value)
+                {
+                    return;
+                }
+                _supportTicketManager = value;
+                OnPropertyChanged();
+            }
+        }
+
         private AutoFillSetup _testingOutlineAutoFillSetup;
 
         public AutoFillSetup TestingOutlineAutoFillSetup
@@ -598,10 +615,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             ErrorUserGridManager = new ErrorUserGridManager(this);
             DeveloperManager = new ErrorDeveloperManager(this);
             ErrorQaManager = new ErrorQaManager(this);
+            SupportTicketManager = new ErrorSupportTicketManager(this);
 
             TablesToDelete.Add(AppGlobals.LookupContext.ErrorDevelopers);
             TablesToDelete.Add(AppGlobals.LookupContext.ErrorTesters);
             TablesToDelete.Add(AppGlobals.LookupContext.ErrorUsers);
+            TablesToDelete.Add(AppGlobals.LookupContext.SupportTicketError);
 
             if (LookupAddViewArgs != null && LookupAddViewArgs.ParentWindowPrimaryKeyValue != null)
             {
@@ -720,6 +739,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 .Include(p => p.Users)
                 .ThenInclude(p => p.User)
                 .Include(p => p.TestingOutline)
+                .Include(p => p.SupportTickets)
+                .ThenInclude(p => p.SupportTicket)
                 .FirstOrDefault(p => p.Id == errorId);
             return result;
         }
@@ -750,6 +771,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             CurrentTestingOutlineAutoFillValue = TestingOutlineAutoFillValue = entity.TestingOutline.GetAutoFillValue();
             ErrorQaManager.LoadGrid(entity.Testers);
             ErrorUserGridManager.LoadGrid(entity.Users);
+            SupportTicketManager.LoadGrid(entity.SupportTickets);
             MinutesSpent = entity.MinutesSpent;
             TotalCost = entity.Cost;
             TotalTimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
@@ -860,6 +882,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             DeveloperManager.SetupForNewRecord();
             ErrorQaManager.SetupForNewRecord();
             ErrorUserGridManager.SetupForNewRecord();
+            SupportTicketManager.SetupForNewRecord();
 
             WriteOffCommand.IsEnabled = ClipboardCopyCommand.IsEnabled = PassCommand.IsEnabled = FailCommand.IsEnabled = PunchInCommand.IsEnabled = false;
             TimeClockLookupCommand = GetLookupCommand(LookupCommands.Clear);
@@ -887,24 +910,30 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                     var errorId = $"E-{entity.Id}";
                     entity.ErrorId = errorId;
                     result = context.SaveEntity(entity, "Updating Error Id");
-
-                    //var developerQuery = AppGlobals.DataRepository.GetDataContext().GetTable<ErrorDeveloper>();
-                    //var developers = developerQuery.Where(p => p.ErrorId == Id).ToList();
-                    //context.RemoveRange(developers);
-                    //var developers = DeveloperManager.GetEntityList();
-                    //if (developers != null)
-                    //{
-                    //    foreach (var developer in developers)
-                    //    {
-                    //        developer.ErrorId = entity.Id;
-                    //    }
-
-                    //    context.AddRange(developers);
-                    //}
-
-                    //result = context.Commit("Saving ErrorDevelopers");
                 }
 
+                if (result)
+                {
+                    var supportTicketTable = context.GetTable<SupportTicketError>();
+                    if (supportTicketTable != null)
+                    {
+                        var oldTickets = supportTicketTable
+                            .Where(p => p.ErrorId == Id);
+
+                        if (oldTickets.Any())
+                        {
+                            context.RemoveRange(oldTickets);
+                        }
+
+                        var list = SupportTicketManager.GetEntityList();
+                        foreach (var supportTicketError in list)
+                        {
+                            supportTicketError.ErrorId = entity.Id;
+                        }
+                        context.AddRange(list);
+                        result = context.Commit("Saving Support Tickets");
+                    }
+                }
             }
 
             //if (MaintenanceMode == DbMaintenanceModes.AddMode)
@@ -931,6 +960,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 var usersQuery = context.GetTable<ErrorUser>();
                 var users = usersQuery.Where(p => p.ErrorId == Id);
                 context.RemoveRange(users);
+
+                var supportTicketTable = context.GetTable<SupportTicketError>();
+                var oldTickets = supportTicketTable
+                    .Where(p => p.ErrorId == Id);
+
+                if (oldTickets.Any())
+                {
+                    context.RemoveRange(oldTickets);
+                }
 
                 var table = TableDefinition;
                 var entity = context.GetTable<Error>().FirstOrDefault(p => p.Id == Id);

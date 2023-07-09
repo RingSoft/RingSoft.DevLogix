@@ -317,6 +317,20 @@
 
                     </Grid>
                 </TabItem>
+                <TabItem Header="Support Tickets">
+                    <DockPanel>
+                        <deg:DataEntryGrid Manager="{Binding SupportTicketManager}">
+
+                            <deg:DataEntryGrid.Columns>
+
+                                <deg:DataEntryGridTextColumn Header="Support Ticket" Width="200" ColumnId="0"/>
+
+                            </deg:DataEntryGrid.Columns>
+
+                        </deg:DataEntryGrid>
+                    </DockPanel>
+                </TabItem>
+
             </TabControl>
         </Grid>
 
