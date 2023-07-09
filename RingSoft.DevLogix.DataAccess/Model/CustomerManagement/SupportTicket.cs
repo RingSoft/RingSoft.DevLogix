@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.Extensions.Configuration;
 
@@ -29,6 +30,9 @@ namespace RingSoft.DevLogix.DataAccess.Model.CustomerManagement
         [MaxLength(50)]
         public string PhoneNumber { get; set; }
 
+        [MaxLength(50)]
+        public string? ContactName { get; set; }
+
         [Required]
         public int CreateUserId { get; set; }
 
@@ -45,7 +49,8 @@ namespace RingSoft.DevLogix.DataAccess.Model.CustomerManagement
 
         public string? Notes { get; set; }
 
-        public double? MinutesSpent { get; set; }
+        [DefaultValue(0)]
+        public double MinutesSpent { get; set; }
 
         public double? Cost { get; set; }
 

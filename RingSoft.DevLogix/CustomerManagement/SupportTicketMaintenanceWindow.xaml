@@ -75,6 +75,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
@@ -105,11 +106,16 @@
 
             <dec:StringEditControl Grid.Row="2" Grid.Column="1" Width="200" HorizontalAlignment="Left" Text="{Binding PhoneNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-            <Label Grid.Row="2" Grid.Column="2" Content="Product"/>
+            <Label Grid.Row="2" Grid.Column="2" Content="Contact Name"/>
 
-            <lc:AutoFillControl Grid.Row="2" Grid.Column="3" Width="200" HorizontalAlignment="Left" Setup="{Binding ProductAutoFillSetup}" Value="{Binding ProductAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <dec:StringEditControl Grid.Row="2" Grid.Column="3" Width="200" HorizontalAlignment="Left" Text="{Binding ContactName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="50"/>
 
-            <TabControl Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="5">
+
+            <Label Grid.Row="3" Grid.Column="0" Content="Product"/>
+
+            <lc:AutoFillControl Grid.Row="3" Grid.Column="1" Width="200" HorizontalAlignment="Left" Setup="{Binding ProductAutoFillSetup}" Value="{Binding ProductAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <TabControl Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="5">
 
                 <TabItem Header="Details">
 
@@ -207,6 +213,19 @@
 
                         </deg:DataEntryGrid>
                     </Grid>
+                </TabItem>
+                <TabItem Header="Errors">
+                    <DockPanel>
+                        <deg:DataEntryGrid Manager="{Binding TicketErrorGridManager}">
+
+                            <deg:DataEntryGrid.Columns>
+
+                                <deg:DataEntryGridTextColumn Header="Error" Width="200" ColumnId="0"/>
+
+                            </deg:DataEntryGrid.Columns>
+
+                        </deg:DataEntryGrid>
+                    </DockPanel>
                 </TabItem>
 
             </TabControl>

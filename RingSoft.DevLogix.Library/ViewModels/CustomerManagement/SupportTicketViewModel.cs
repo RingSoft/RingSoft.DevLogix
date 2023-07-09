@@ -98,6 +98,21 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
         }
 
+        private string? _contactName;
+
+        public string? ContactName
+        {
+            get => _contactName;
+            set
+            {
+                if (_contactName == value)
+                    return;
+
+                _contactName = value;
+                OnPropertyChanged();
+            }
+        }
+
         private AutoFillSetup _createUserAutoFillSetup;
 
         public AutoFillSetup CreateUserAutoFillSetup
@@ -294,6 +309,21 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
         }
 
+        private SupportTicketErrorManager  _ticketErrorGridManager;
+
+        public SupportTicketErrorManager TicketErrorGridManager
+        {
+            get => _ticketErrorGridManager;
+            set
+            {
+                if (_ticketErrorGridManager == value)
+                    return;
+
+                _ticketErrorGridManager = value;
+                OnPropertyChanged();
+            }
+        }
+
         public RelayCommand PunchInCommand { get; set; }
 
         public RelayCommand RecalcCommand { get; set; }
@@ -307,6 +337,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         public SupportTicketViewModel()
         {
             TablesToDelete.Add(AppGlobals.LookupContext.SupportTicketUser);
+            TablesToDelete.Add(AppGlobals.LookupContext.SupportTicketError);
+
             CustomerAutoFillSetup = new AutoFillSetup(
                 TableDefinition.GetFieldDefinition(p => p.CustomerId));
             CreateUserAutoFillSetup = new AutoFillSetup(
@@ -348,6 +380,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
 
             TicketUserGridManager = new SupportTicketCostManager(this);
+            TicketErrorGridManager = new SupportTicketErrorManager(this);
             base.Initialize();
         }
 
@@ -377,6 +410,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 .Include(p => p.AssignedToUser)
                 .Include(p => p.SupportTicketUsers)
                 .ThenInclude(p => p.User)
+                .Include(p => p.Errors)
+                .ThenInclude(p => p.Error)
                 .FirstOrDefault(p => p.Id == ticketId);
         }
         protected override void LoadFromEntity(SupportTicket entity)
@@ -391,7 +426,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             ClosedDate = entity.CloseDate;
             Notes = entity.Notes;
             TicketUserGridManager.LoadGrid(entity.SupportTicketUsers);
-            //MinutesSpent = entity.MinutesSpent;
+            TicketErrorGridManager.LoadGrid(entity.Errors);
+            MinutesSpent = entity.MinutesSpent;
+            ContactName = entity.ContactName;
             _loading = false;
         }
 
@@ -406,6 +443,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 if (customer != null)
                 {
                     PhoneNumber = customer.Phone;
+                    ContactName = customer.ContactName;
                 }
             }
         }
@@ -424,6 +462,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 AssignedToUserId = AssignedUserAutoFillValue.GetEntity<User>().Id,
                 CloseDate = ClosedDate,
                 Notes = Notes,
+                ContactName = ContactName,
             };
 
             if (KeyAutoFillValue != null)
@@ -439,6 +478,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             return result;
         }
 
+        protected override bool ValidateEntity(SupportTicket entity)
+        {
+            if (!TicketErrorGridManager.ValidateGrid())
+            {
+                return false;
+            }
+            return base.ValidateEntity(entity);
+        }
+
         protected override void ClearData()
         {
             _loading = true;
@@ -447,6 +495,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             CustomerAutoFillValue = DefaultCustomerAutoFillValue;
             CreateDate = DateTime.Now;
             PhoneNumber = string.Empty;
+            ContactName = string.Empty;
             CreateUserAutoFillValue = AppGlobals.LoggedInUser.GetAutoFillValue();
             ProductAutoFillValue = null;
             AssignedUserAutoFillValue = null;
@@ -455,6 +504,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             PunchInCommand.IsEnabled = false;
             LoadCustomer();
             TicketUserGridManager.SetupForNewRecord();
+            TicketErrorGridManager.SetupForNewRecord();
             TimeClockLookupCommand = GetLookupCommand(LookupCommands.Clear);
             MinutesSpent = 0;
             _loading = false;
@@ -481,6 +531,26 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 result = context.SaveEntity(entity, "Updating Ticket ID");
             }
 
+            if (result)
+            {
+                var errorsTable = context.GetTable<SupportTicketError>();
+                var oldErrors = errorsTable
+                    .Where(p => p.SupportTicketId == Id);
+
+                if (oldErrors.Any())
+                {
+                    context.RemoveRange(oldErrors);
+                }
+
+                var list = TicketErrorGridManager.GetEntityList();
+                foreach (var supportTicketError in list)
+                {
+                    supportTicketError.SupportTicketId = entity.Id;
+                }
+                context.AddRange(list);
+                result = context.Commit("Saving Errors");
+            }
+
             return result;
         }
 
@@ -492,6 +562,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             var entity = table.FirstOrDefault(p => p.Id == Id);
             if (entity != null)
             {
+                var errorsTable = context.GetTable<SupportTicketError>();
+                var oldErrors = errorsTable
+                    .Where(p => p.SupportTicketId == Id);
+
+                if (oldErrors.Any())
+                {
+                    context.RemoveRange(oldErrors);
+                }
+
                 var usersQuery = context.GetTable<SupportTicketUser>();
                 var users = usersQuery.Where(p => p.SupportTicketId == Id);
                 context.RemoveRange(users);

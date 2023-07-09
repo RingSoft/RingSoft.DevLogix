@@ -510,6 +510,10 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<DateTime?>("CloseDate")
                         .HasColumnType("datetime");
 
+                    b.Property<string>("ContactName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
                     b.Property<double?>("Cost")
                         .HasColumnType("numeric");
 
@@ -522,7 +526,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<int>("CustomerId")
                         .HasColumnType("integer");
 
-                    b.Property<double?>("MinutesSpent")
+                    b.Property<double>("MinutesSpent")
                         .HasColumnType("numeric");
 
                     b.Property<string>("Notes")

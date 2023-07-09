@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Net.Mail;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using RingSoft.DbLookup.EfCore;
 using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
@@ -21,6 +22,7 @@ namespace RingSoft.DevLogix.DataAccess.Configurations.CustomerManagement
             builder.Property(p => p.Notes).HasColumnType(DbConstants.MemoColumnType);
             builder.Property(p => p.MinutesSpent).HasColumnType(DbConstants.DecimalColumnType);
             builder.Property(p => p.Cost).HasColumnType(DbConstants.DecimalColumnType);
+            builder.Property(p => p.ContactName).HasColumnType(DbConstants.StringColumnType);
 
             builder.HasOne(p => p.Customer)
                 .WithMany(p => p.Tickets)
