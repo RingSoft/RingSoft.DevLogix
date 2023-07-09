@@ -989,13 +989,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 {
                     return updateResult;
                 }
-
-                if (!context.SaveNoCommitEntity(currentCustomer, "Saving Customer"))
-                {
-                    return DbDataProcessor.LastException;
-                }
-
             }
+            if (!context.SaveNoCommitEntity(currentCustomer, "Saving Customer"))
+            {
+                return DbDataProcessor.LastException;
+            }
+
             return string.Empty;
         }
 
