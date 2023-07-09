@@ -998,6 +998,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             if (currentCustomer.Id == Id)
             {
                 RefreshCost(customerUsers);
+                SupportMinutesSpent = currentCustomer.SupportMinutesSpent.GetValueOrDefault();
+                SupportCost = currentCustomer.SupportCost.GetValueOrDefault();
             }
             return string.Empty;
         }
@@ -1036,10 +1038,33 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                     return result;
                 }
             }
+
+            UpdateCustomerSupportValues(currentCustomer, timeClocksTable);
             currentCustomer.MinutesSpent += customerUser.MinutesSpent;
             currentCustomer.MinutesCost += customerUser.Cost;
 
             return result;
+        }
+
+        private static void UpdateCustomerSupportValues(
+            Customer currentCustomer
+            , IQueryable<TimeClock> timeClocksTable)
+        {
+            currentCustomer.SupportMinutesSpent = 0;
+            currentCustomer.SupportCost = 0;
+            var supportTimeClocks = timeClocksTable
+                .Include(p => p.User)
+                .Include(p => p.SupportTicket)
+                .ThenInclude(p => p.Customer)
+                .Where(p => p.SupportTicketId != null
+                            && p.SupportTicket.CustomerId == currentCustomer.Id).ToList();
+
+            foreach (var supportTimeClock in supportTimeClocks)
+            {
+                currentCustomer.SupportMinutesSpent += supportTimeClock.MinutesSpent;
+                var hours = supportTimeClock.MinutesSpent / 60;
+                currentCustomer.SupportCost += hours * supportTimeClock.User.HourlyRate;
+            }
         }
 
 
