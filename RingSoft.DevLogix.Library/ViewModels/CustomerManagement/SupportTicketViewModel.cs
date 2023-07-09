@@ -15,6 +15,7 @@ using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 using RingSoft.DevLogix.Library.ViewModels.QualityAssurance;
+using IDbContext = RingSoft.DevLogix.DataAccess.IDbContext;
 
 namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 {
@@ -759,22 +760,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                     .ThenInclude(p => p.User)
                     .FirstOrDefault(p => p.Id == currentTicket.Id);
 
-                //if (currentCustomer != null)
-                //{
-                //    var updateResult = UpdateCustomerValues(
-                //        totalCustomers
-                //        , currentCustomerIndex
-                //        , currentCustomer
-                //        , timeClocksTable
-                //        , usersTable
-                //        , context
-                //        , procedure);
+                if (currentTicket != null)
+                {
+                    var updateResult = UpdateTicketValues(
+                        totalCustomers
+                        , currentTicketIndex
+                        , currentTicket
+                        , timeClocksTable
+                        , usersTable
+                        , context
+                        , procedure);
 
-                //    if (!updateResult.IsNullOrEmpty())
-                //    {
-                //        return updateResult;
-                //    }
-                //}
+                    if (!updateResult.IsNullOrEmpty())
+                    {
+                        return updateResult;
+                    }
+                }
             }
             return string.Empty;
         }
@@ -797,24 +798,24 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 .Select(p => p.UserId)
                 .Distinct();
 
-            //foreach (var timeClockUser in timeClockUsers)
-            //{
-            //    var updateResult = UpdateCustomerTimeClockValues(
-            //        currentTicket
-            //        , timeClocksTable
-            //        , usersTable
-            //        , context
-            //        , timeClockUser
-            //        , customerUsers
-            //        , procedure);
+            foreach (var timeClockUser in timeClockUsers)
+            {
+                var updateResult = UpdateTicketTimeClockValues(
+                    currentTicket
+                    , timeClocksTable
+                    , usersTable
+                    , context
+                    , timeClockUser
+                    , ticketUsers
+                    , procedure);
 
-            //    if (!updateResult.IsNullOrEmpty())
-            //    {
-            //        return updateResult;
-            //    }
-            //}
+                if (!updateResult.IsNullOrEmpty())
+                {
+                    return updateResult;
+                }
+            }
 
-            if (!context.SaveNoCommitEntity(currentTicket, "Saving Customer", true))
+            if (!context.SaveNoCommitEntity(currentTicket, "Saving Support Ticket", true))
             {
                 return GblMethods.LastError;
             }
@@ -826,6 +827,63 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 MinutesSpent = currentTicket.MinutesSpent;
             }
             return string.Empty;
+        }
+        private static string UpdateTicketTimeClockValues(
+              SupportTicket currentTicket
+            , IQueryable<TimeClock> timeClocksTable
+            , IQueryable<User> usersTable
+            , IDbContext context
+            , int timeClockUser
+            , List<SupportTicketUser> ticketUsers
+            , AppProcedure procedure)
+        {
+            var result = string.Empty;
+            var ticketUser = currentTicket.SupportTicketUsers.FirstOrDefault(p => p.UserId == timeClockUser);
+            if (ticketUser == null)
+            {
+                ticketUser = new SupportTicketUser()
+                {
+                    SupportTicketId = currentTicket.Id,
+                    UserId = timeClockUser
+                };
+                UpdateTicketUserCost(usersTable, ticketUser, timeClocksTable, currentTicket);
+                context.AddRange(new List<SupportTicketUser>()
+                {
+                    ticketUser
+                });
+                ticketUsers.Add(ticketUser);
+            }
+            else
+            {
+                UpdateTicketUserCost(usersTable, ticketUser, timeClocksTable, currentTicket);
+
+                if (!context.SaveNoCommitEntity(currentTicket, "Saving Customer User", true))
+                {
+                    result = GblMethods.LastError;
+                    return result;
+                }
+            }
+
+            currentTicket.MinutesSpent += ticketUser.MinutesSpent;
+            currentTicket.Cost += ticketUser.Cost;
+
+            return result;
+        }
+        private static void UpdateTicketUserCost(IQueryable<User> usersTable, SupportTicketUser ticketUser
+            , IQueryable<TimeClock> timeClocksTable
+            , SupportTicket ticket)
+        {
+            var user = usersTable.FirstOrDefault(p => p.Id == ticketUser.UserId);
+            var ticketUserMinutes = timeClocksTable
+                .Where(p => p.SupportTicketId == ticket.Id
+                            && p.UserId == ticketUser.UserId)
+                .ToList()
+                .Sum(p => p.MinutesSpent);
+            if (ticketUserMinutes != null)
+            {
+                ticketUser.MinutesSpent = ticketUserMinutes.Value;
+                ticketUser.Cost = Math.Round((ticketUser.MinutesSpent / 60) * user.HourlyRate, 2);
+            }
         }
 
     }
