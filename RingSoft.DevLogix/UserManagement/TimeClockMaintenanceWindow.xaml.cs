@@ -164,10 +164,6 @@ namespace RingSoft.DevLogix.UserManagement
                 if (TopHeaderControl.CustomPanel is TimeClockHeaderControl timeClockHeaderControl)
                 {
                     TimeClockHeaderControl = timeClockHeaderControl;
-                    if (LocalViewModel.TimeClockMode == TimeClockModes.SupportTicket)
-                    {
-                        timeClockHeaderControl.ManualPunchOutButton.Visibility = Visibility.Collapsed;
-                    }
                     timeClockHeaderControl.PunchOutButton.Command =
                         LocalViewModel.PunchOutCommand;
                     timeClockHeaderControl.PunchOutButton.ToolTip.HeaderText = "Punch Out (Alt + P)";
@@ -231,11 +227,6 @@ namespace RingSoft.DevLogix.UserManagement
             SupportTicketControl.Visibility = Visibility.Collapsed;
             CustomerTimeRemLabel.Visibility = Visibility.Collapsed;
             CustomerTimeRemControl.Visibility = Visibility.Collapsed;
-            if (TimeClockHeaderControl != null && TimeClockHeaderControl.ManualPunchOutButton != null)
-            {
-                TimeClockHeaderControl.ManualPunchOutButton.Visibility = Visibility.Visible;
-            }
-            
 
             var keyText = string.Empty;
             switch (timeClockMode)
@@ -260,11 +251,6 @@ namespace RingSoft.DevLogix.UserManagement
                     KeyLabel.Visibility = Visibility.Collapsed;
                     SupportTicketLabel.Visibility = Visibility.Visible;
                     SupportTicketControl.Visibility = Visibility.Visible;
-                    if (TimeClockHeaderControl != null && TimeClockHeaderControl.ManualPunchOutButton != null)
-                    {
-                        TimeClockHeaderControl.ManualPunchOutButton.Visibility = Visibility.Collapsed;
-                    }
-
                     keyText = "Support Ticket";
                     break;
                 default:
