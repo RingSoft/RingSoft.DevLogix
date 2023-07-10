@@ -812,6 +812,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     projectTask = context.GetTable<ProjectTask>()
                         .Include(p => p.Project)
                         .ThenInclude(p => p.ProjectUsers)
+                        .Include(p => p.Project)
+                        .ThenInclude(p => p.Product)
                         .FirstOrDefault(p => p.Id == entity.ProjectTaskId.Value);
                     if (projectTask != null)
                     {
@@ -831,6 +833,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     var error = context.GetTable<Error>()
                         .Include(p => p.Users)
                         .ThenInclude(p => p.User)
+                        .Include(p => p.Product)
                         .FirstOrDefault(p => p.Id == entity.ErrorId.Value);
                     if (error != null)
                     {
@@ -842,6 +845,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     var testingOutline = context.GetTable<TestingOutline>()
                         .Include(p => p.Costs)
                         .ThenInclude(p => p.User)
+                        .Include(p => p.Product)
                         .FirstOrDefault(p => p.Id == entity.TestingOutlineId.Value);
                     if (testingOutline != null)
                     {
@@ -866,6 +870,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                         .Include(p => p.SupportTicketUsers)
                         .ThenInclude(p => p.User)
                         .Include(p => p.Customer)
+                        .Include(p => p.Product)
                         .FirstOrDefault(p => p.Id == entity.SupportTicketId.Value);
                     if (ticket != null)
                     {
@@ -1127,8 +1132,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
             if (result)
             {
+                
                 AppGlobals.CalculateProject(projectTask.Project, projectTask.Project.ProjectUsers.ToList());
                 result = context.SaveNoCommitEntity(projectTask.Project, "Saving Project");
+
+                if (result)
+                {
+                    result = UpdateProductCost(context, projectTask.Project.Product, entity);
+                }
             }
             if (result)
             {
@@ -1342,6 +1353,19 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         {
             var result = MinutesSpent - OriginalMinutesSpent;
             return result;
+        }
+
+        private bool UpdateProductCost(IDbContext context, Product product, TimeClock timeClock)
+        {
+            if (product != null && timeClock != null)
+            {
+                var hoursSpent = timeClock.MinutesSpent / 60;
+                var cost = hoursSpent * timeClock.User.HourlyRate;
+                product.Cost += cost;
+
+                return context.SaveNoCommitEntity(product, "Saving new cost.");
+            }
+            return true;
         }
     }
 }
