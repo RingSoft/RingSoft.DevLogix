@@ -16,6 +16,7 @@
     <None Remove="Resources\chart_bar32.png" />
     <None Remove="Resources\chronometer32.png" />
     <None Remove="Resources\clock.png" />
+    <None Remove="Resources\Customer.png" />
     <None Remove="Resources\gears.ico" />
     <None Remove="Resources\gears.png" />
     <None Remove="Resources\logout32.png" />
@@ -23,7 +24,9 @@
     <None Remove="Resources\outline32.png" />
     <None Remove="Resources\project32.png" />
     <None Remove="Resources\RedAlert.ico" />
+    <None Remove="Resources\SalesOrders.png" />
     <None Remove="Resources\software32.png" />
+    <None Remove="Resources\Support.png" />
     <None Remove="Resources\user32.png" />
     <None Remove="Resources\UsersTrack.png" />
     <None Remove="Resources\UserTrack.png" />
@@ -53,6 +56,7 @@
     <Resource Include="Resources\calculator.png" />
     <Resource Include="Resources\chart_bar32.png" />
     <Resource Include="Resources\chronometer32.png" />
+    <Resource Include="Resources\Customer.png" />
     <Resource Include="Resources\gears.ico" />
     <Resource Include="Resources\gears.png" />
     <Resource Include="Resources\logout32.png" />
@@ -60,7 +64,9 @@
     <Resource Include="Resources\outline32.png" />
     <Resource Include="Resources\project32.png" />
     <Resource Include="Resources\RedAlert.ico" />
+    <Resource Include="Resources\SalesOrders.png" />
     <Resource Include="Resources\software32.png" />
+    <Resource Include="Resources\Support.png" />
     <Resource Include="Resources\user32.png" />
     <Resource Include="Resources\UsersTrack.png" />
     <Resource Include="Resources\YellowAlert.ico" />

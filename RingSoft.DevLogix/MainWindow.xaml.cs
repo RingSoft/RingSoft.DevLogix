@@ -627,6 +627,9 @@ namespace RingSoft.DevLogix
                 ChartButton.Visibility = Visibility.Collapsed;
                 OutlinesButton.Visibility = Visibility.Collapsed;
                 ProjectsButton.Visibility = Visibility.Collapsed;
+                CustomersButton.Visibility = Visibility.Collapsed;
+                OrdersButton.Visibility = Visibility.Collapsed;
+                SupportTicketsButton.Visibility = Visibility.Collapsed;
                 return;
             }
 
@@ -660,10 +663,26 @@ namespace RingSoft.DevLogix
             UserTrackerButton.ToolTip.DescriptionText =
                 "Add or edit User Trackers.";
 
+            ProcessButton(CustomersButton, AppGlobals.LookupContext.Customer);
+            CustomersButton.ToolTip.HeaderText = "Show the Customer Maintenance Window (Alt + C)";
+            CustomersButton.ToolTip.DescriptionText =
+                "Add or edit Customers.";
+
+            ProcessButton(OrdersButton, AppGlobals.LookupContext.Order);
+            OrdersButton.ToolTip.HeaderText = "Show the Orders Window (Alt + O)";
+            OrdersButton.ToolTip.DescriptionText =
+                "Add or edit Orders.";
+
+            ProcessButton(SupportTicketsButton, AppGlobals.LookupContext.SupportTicket);
+            SupportTicketsButton.ToolTip.HeaderText = "Show the Support Tickets Window (Alt + U)";
+            SupportTicketsButton.ToolTip.DescriptionText =
+                "Add or edit Support Tickets.";
+
             ProcessButton(AdvancedFindButton, AppGlobals.LookupContext.AdvancedFinds);
             AdvancedFindButton.ToolTip.HeaderText = "Advanced Find (Alt + A)";
             AdvancedFindButton.ToolTip.DescriptionText =
                 "Search any table in the database for information you're looking for.";
+
 
             ProcessButton(ChartButton, AppGlobals.LookupContext.DevLogixCharts);
             ChartButton.ToolTip.HeaderText = "Dashboard Charts (Alt + H)";

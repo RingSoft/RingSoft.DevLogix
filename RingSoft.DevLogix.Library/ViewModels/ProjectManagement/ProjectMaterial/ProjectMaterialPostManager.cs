@@ -55,8 +55,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             var project = ViewModel.ProjectAutoFillValue.GetEntity<Project>();
             project = context.GetTable<Project>()
                 .Include(p => p.ProjectUsers)
+                .Include(p => p.Product)
                 .FirstOrDefault(p => p.Id == project.Id);
             var table = context.GetTable<ProjectMaterial>();
+
             foreach (var projectMaterialPostRow in rows)
             {
                 var historyItem = new ProjectMaterialHistory();
@@ -70,6 +72,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     projectMaterialList.Add(existingMaterial);
                 }
                 var extendedCost = projectMaterialPostRow.Quantity * projectMaterialPostRow.Cost;
+
+                project.Product.Cost += extendedCost;
+
+                if (!context.SaveNoCommitEntity(project.Product, "Saving Product Cost"))
+                {
+                    return false;
+                }
+
                 existingMaterial.ActualCost += extendedCost;
                 if (project != null) 
                     project.Cost += extendedCost;

@@ -30,6 +30,9 @@
             <BitmapImage x:Key="ProductImage" UriSource="/RingSoft.DevLogix;component/Resources/software32.png" />
             <BitmapImage x:Key="OutlinesImage" UriSource="/RingSoft.DevLogix;component/Resources/outline32.png" />
             <BitmapImage x:Key="ProjectsImage" UriSource="/RingSoft.DevLogix;component/Resources/project32.png" />
+            <BitmapImage x:Key="SalesImage" UriSource="/RingSoft.DevLogix;component/Resources/SalesOrders.png" />
+            <BitmapImage x:Key="CustomersImage" UriSource="/RingSoft.DevLogix;component/Resources/Customer.png" />
+            <BitmapImage x:Key="SupportImage" UriSource="/RingSoft.DevLogix;component/Resources/Support.png" />
 
             <LinearGradientBrush x:Key="WindowBackgroundBrush" StartPoint="0.5,0" EndPoint="0.5,1">
                 <GradientStop Color="Gray" Offset="0"/>

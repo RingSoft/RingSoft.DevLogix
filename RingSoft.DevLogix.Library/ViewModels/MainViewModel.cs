@@ -183,6 +183,9 @@ namespace RingSoft.DevLogix.Library.ViewModels
         public RelayCommand ErrorsCommand { get; }
         public RelayCommand OutlinesCommand { get; }
         public RelayCommand ProjectsCommand { get; }
+        public RelayCommand CustomersCommand { get; }
+        public RelayCommand OrdersCommand { get; }
+        public RelayCommand SupportTicketsCommand { get; }
         public RelayCommand UpgradeCommand { get; }
         public RelayCommand AboutCommand { get; }
         public ChartBarsViewModel ChartViewModel { get; private set; }
@@ -269,6 +272,21 @@ namespace RingSoft.DevLogix.Library.ViewModels
             ProjectsCommand = new RelayCommand((() =>
             {
                 MainView.ShowDbMaintenanceWindow(AppGlobals.LookupContext.Projects);
+            }));
+
+            CustomersCommand = new RelayCommand((() =>
+            {
+                MainView.ShowDbMaintenanceWindow(AppGlobals.LookupContext.Customer);
+            }));
+
+            OrdersCommand = new RelayCommand((() =>
+            {
+                MainView.ShowDbMaintenanceWindow(AppGlobals.LookupContext.Order);
+            }));
+
+            SupportTicketsCommand = new RelayCommand((() =>
+            {
+                MainView.ShowDbMaintenanceWindow(AppGlobals.LookupContext.SupportTicket);
             }));
 
             AdvancedFindCommand = new RelayCommand(ShowAdvancedFind);

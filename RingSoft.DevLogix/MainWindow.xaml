@@ -87,6 +87,11 @@
 
                 <ac:DbMaintenanceButton x:Name="ProjectsButton" Content="Pro_jects" ImageSource="{StaticResource ProjectsImage}" Command="{Binding ProjectsCommand}"/>
 
+                <ac:DbMaintenanceButton x:Name="CustomersButton" Content="_Customers" ImageSource="{StaticResource CustomersImage}" Command="{Binding CustomersCommand}"/>
+
+                <ac:DbMaintenanceButton x:Name="OrdersButton" Content="_Orders" ImageSource="{StaticResource SalesImage}" Command="{Binding OrdersCommand}"/>
+
+                <ac:DbMaintenanceButton x:Name="SupportTicketsButton" Content="S_upport Tickets" ImageSource="{StaticResource SupportImage}" Command="{Binding SupportTicketsCommand}"/>
                 <ac:DbMaintenanceButton x:Name="AdvancedFindButton" Content="_Advanced Find" ImageSource="{StaticResource FindImage}" Command="{Binding AdvancedFindCommand}"/>
 
                 <ac:DbMaintenanceButton x:Name="ChartButton" Content="C_hart" ImageSource="{StaticResource ChartImage}" Command="{Binding ChartCommand}"/>
