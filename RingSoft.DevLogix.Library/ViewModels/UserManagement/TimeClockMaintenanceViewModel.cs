@@ -1011,6 +1011,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 AppGlobals.CalculateError(error, error.Users.ToList());
                 result = context.SaveNoCommitEntity(error, "Saving Error");
             }
+            if (result)
+            {
+                result = UpdateProductCost(context, error.Product, entity);
+            }
 
             var errorViewModels = AppGlobals.MainViewModel.ErrorViewModels
                 .Where(p => p.Id == error.Id);
@@ -1041,6 +1045,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 AppGlobals.CalculateTestingOutline(testingOutline, testingOutline.Costs.ToList());
                 result = context.SaveNoCommitEntity(testingOutline, "Saving Testing Outline");
             }
+            if (result)
+            {
+                result = UpdateProductCost(context, testingOutline.Product, entity);
+            }
+
 
             var testingOutlineViewModels = AppGlobals.MainViewModel.TestingOutlineViewModels.Where(p => p.Id == testingOutline.Id);
             foreach (var testingOutlineViewModel in testingOutlineViewModels)
@@ -1105,6 +1114,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 result = context.SaveNoCommitEntity(ticket, "Saving Support Ticket");
             }
 
+            if (result)
+            {
+                result = UpdateProductCost(context, ticket.Product, entity);
+            }
             var ticketViewModels = AppGlobals.MainViewModel.SupportTicketViewModels
                 .Where(p => p.Id == ticket.Id);
             foreach (var ticketViewModel in ticketViewModels)
