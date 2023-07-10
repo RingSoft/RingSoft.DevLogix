@@ -658,7 +658,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
             lookupData.PrintOutput += (sender, e) =>
             {
-
+                
             };
 
             return string.Empty;
