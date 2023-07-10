@@ -15,6 +15,8 @@ using RingSoft.DevLogix.DataAccess.LookupModel.QualityAssurance;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 using RingSoft.App.Library;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
@@ -472,6 +474,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             TotalRevenue = entity.Revenue.GetValueOrDefault();
             TotalCost = entity.Cost.GetValueOrDefault();
             Difference = TotalRevenue - TotalCost;
+            View.RefreshView();
         }
 
         protected override Product GetEntityData()
@@ -520,6 +523,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             TestingOutlineLookupCommand = GetLookupCommand(LookupCommands.Clear);
             Price = null;
             TotalRevenue = TotalCost = Difference = 0;
+            View.RefreshView();
         }
 
         protected override bool SaveEntity(Product entity)
@@ -704,6 +708,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             if (currentProduct != null)
             {
                 currentProduct = productsTable
+                    .Include(p => p.OrderDetailProducts)
                    .FirstOrDefault(p => p.Id == currentProduct.Id);
 
                 if (currentProduct != null)
@@ -721,6 +726,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                     {
                         return updateResult;
                     }
+
+                    if (currentProduct.Id ==Id)
+                    {
+                        TotalRevenue = currentProduct.Revenue.GetValueOrDefault();
+                        TotalCost = currentProduct.Cost.GetValueOrDefault();
+                        Difference = TotalRevenue - TotalCost;
+                        View.RefreshView();
+                    }
                 }
             }
             return string.Empty;
@@ -735,7 +748,78 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             , DataAccess.IDbContext context
             , AppProcedure procedure)
         {
+            View.UpdateRecalcProcedure(currentCustomerIndex, totalProducts, currentProduct.Description);
+
+            var orderDetails = currentProduct.OrderDetailProducts.ToList();
+
+            currentProduct.Revenue = orderDetails.Sum(p => p.ExtendedPrice);
+            currentProduct.Cost = 0;
+            
+            var timeClocks = timeClocksTable
+                .Include(p => p.ProjectTask)
+                .ThenInclude(p => p.Project)
+                .Include(p => p.User)
+                .Where(p => p.ProjectTaskId != null
+                && p.ProjectTask.Project.ProductId == currentProduct.Id);
+
+            var cost = GetProductCost(timeClocks, procedure, "Project Task");
+            currentProduct.Cost += cost;
+
+            timeClocks = timeClocksTable
+                .Include(p => p.Error)
+                .Include(p => p.User)
+                .Where(p => p.ErrorId != null
+                            && p.Error.ProductId == currentProduct.Id);
+
+            cost = GetProductCost(timeClocks, procedure, "Product Error");
+            currentProduct.Cost += cost;
+
+            timeClocks = timeClocksTable
+                .Include(p => p.TestingOutline)
+                .Include(p => p.User)
+                .Where(p => p.TestingOutlineId != null
+                            && p.TestingOutline.ProductId == currentProduct.Id);
+
+            cost = GetProductCost(timeClocks, procedure, "Testing Outline");
+            currentProduct.Cost += cost;
+
+            timeClocks = timeClocksTable
+                .Include(p => p.SupportTicket)
+                .Include(p => p.User)
+                .Where(p => p.SupportTicketId != null
+                            && p.SupportTicket.ProductId == currentProduct.Id);
+
+            cost = GetProductCost(timeClocks, procedure, "Support Ticket");
+            currentProduct.Cost += cost;
+
+            if (!context.SaveNoCommitEntity(currentProduct, "Saving Product", true))
+            {
+                return GblMethods.LastError;
+            }
             return string.Empty;
+        }
+
+        private static double GetProductCost(IQueryable<TimeClock> timeClocks
+            , AppProcedure procedure
+            , string section)
+        {
+            var formatter = new IntegerEditControlSetup();
+            var totalFormat = formatter.FormatValue(timeClocks.Count());
+
+            var index = 1;
+            var cost = (double)0;
+            foreach (var timeClock in timeClocks)
+            {
+                var formattedIndex = formatter.FormatValue(index);
+                procedure.SplashWindow.SetProgress($"Calculating {section} Time Clocks {formattedIndex}/{totalFormat}");
+                var minutesSpent = timeClock.MinutesSpent;
+                var hoursSpent = Math.Round((double)minutesSpent / 60, 2);
+                var hourlyRate = timeClock.User.HourlyRate;
+                cost += Math.Round(hoursSpent * hoursSpent, 2);
+                index++;
+            }
+
+            return cost;
         }
     }
     }
