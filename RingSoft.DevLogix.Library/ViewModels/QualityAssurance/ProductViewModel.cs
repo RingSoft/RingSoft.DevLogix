@@ -13,6 +13,7 @@ using RingSoft.DevLogix.DataAccess.LookupModel;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.LookupModel.QualityAssurance;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
+using RingSoft.App.Library;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 {
@@ -25,7 +26,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         string GetArchivePath();
 
         void SetViewToVersions();
+
+        void RefreshView();
+
+        bool SetupRecalcFilter(LookupDefinitionBase lookup);
+
+        string StartRecalcProcedure(LookupDefinitionBase lookup);
+
+        void UpdateRecalcProcedure(int currentProduct, int totalProducts, string currentProductText);
     }
+
     public class ProductViewModel : DevLogixDbMaintenanceViewModel<Product>
     {
         public override TableDefinition<Product> TableDefinition => AppGlobals.LookupContext.Products;
@@ -41,6 +51,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 {
                     return;
                 }
+
                 _id = value;
                 OnPropertyChanged();
             }
@@ -57,6 +68,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 {
                     return;
                 }
+
                 _notes = value;
                 OnPropertyChanged();
             }
@@ -103,6 +115,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 {
                     return;
                 }
+
                 _departmentFilterAutoFillSetup = value;
                 OnPropertyChanged();
             }
@@ -119,6 +132,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 {
                     return;
                 }
+
                 _departmentFilterAutoFillValue = value;
                 OnPropertyChanged(null, false);
                 FilterVersions();
@@ -179,6 +193,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 {
                     return;
                 }
+
                 _createDepartmentAutoFillSetup = value;
                 OnPropertyChanged();
             }
@@ -195,6 +210,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 {
                     return;
                 }
+
                 _createDepartmentAutoFillValue = value;
                 OnPropertyChanged(null, _createDepartmentAutoFillSetup.SetDirty);
             }
@@ -211,6 +227,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 {
                     return;
                 }
+
                 _archiveDepartmentAutoFillSetup = value;
                 OnPropertyChanged();
             }
@@ -227,6 +244,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 {
                     return;
                 }
+
                 _archiveDepartmentAutoFillValue = value;
                 OnPropertyChanged(null, _archiveDepartmentAutoFillSetup.SetDirty);
             }
@@ -345,20 +363,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             TestOutlinesAddModifyCommand = new RelayCommand(OnTestOutlineAddModify);
             UpdateVersionsCommand = new RelayCommand(UpdateVersions);
             RecalcCommand = new RelayCommand(Recalc);
-            InstallerCommand = new RelayCommand(() =>
-            {
-                InstallerFileName = View.GetInstallerName();
-            });
-            ArchivePathCommand = new RelayCommand(() =>
-            {
-                ArchivePath = View.GetArchivePath();
-            });
-            GenerateGuidCommand = new RelayCommand(() =>
-            {
-                AppGuid = Guid.NewGuid().ToString();
-            });
+            InstallerCommand = new RelayCommand(() => { InstallerFileName = View.GetInstallerName(); });
+            ArchivePathCommand = new RelayCommand(() => { ArchivePath = View.GetArchivePath(); });
+            GenerateGuidCommand = new RelayCommand(() => { AppGuid = Guid.NewGuid().ToString(); });
 
-            var testOutlineLookup = new LookupDefinition<TestingOutlineLookup, TestingOutline>(AppGlobals.LookupContext.TestingOutlines);
+            var testOutlineLookup =
+                new LookupDefinition<TestingOutlineLookup, TestingOutline>(AppGlobals.LookupContext.TestingOutlines);
             testOutlineLookup.AddVisibleColumnDefinition(p => p.Name
                 , "Name"
                 , p => p.Name, 50);
@@ -368,6 +378,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                     , p => p.Name, 50);
             TestingOutlineLookup = testOutlineLookup;
         }
+
         protected override void Initialize()
         {
             if (base.View is IProductView productView)
@@ -472,6 +483,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 TotalRevenue = existProduct.Revenue.GetValueOrDefault();
                 TotalCost += existProduct.Cost.GetValueOrDefault();
             }
+
             var result = new Product()
             {
                 Id = Id,
@@ -518,8 +530,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 {
                     return CreateNewVersion(context, entity);
                 }
+
                 return result;
             }
+
             return false;
 
         }
@@ -557,6 +571,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             {
                 return false;
             }
+
             return true;
         }
 
@@ -573,6 +588,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                     return context.DeleteEntity(entity, $"Deleting Product Version '{entity.Description}'");
                 }
             }
+
             return false;
 
         }
@@ -604,12 +620,48 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             {
 
             }
+
             base.OnRecordDirtyChanged(newValue);
         }
 
         private void Recalc()
         {
+            var lookupFilter = ViewLookupDefinition.Clone();
+            if (!View.SetupRecalcFilter(lookupFilter))
+                return;
+            var result = View.StartRecalcProcedure(lookupFilter);
+            if (result.IsNullOrEmpty())
+            {
+                ControlsGlobals.UserInterface.ShowMessageBox(
+                    "Recalculation Complete"
+                    , "Recalculation Complete"
+                    , RsMessageBoxIcons.Information);
+            }
+            else
+            {
+                ControlsGlobals.UserInterface.ShowMessageBox(
+                    result
+                    , "Product Recalculating"
+                    , RsMessageBoxIcons.Error);
+            }
+        }
 
+        public string StartRecalcProcedure(LookupDefinitionBase lookupToFilter, AppProcedure appProcedure)
+        {
+            var result = string.Empty;
+            var lookupData = TableDefinition.LookupDefinition.GetLookupDataMaui(lookupToFilter, false);
+            var context = AppGlobals.DataRepository.GetDataContext();
+            DbDataProcessor.DontDisplayExceptions = true;
+
+            var totalProducts = lookupData.GetRecordCount();
+            var currentProduct = 1;
+
+            lookupData.PrintOutput += (sender, e) =>
+            {
+
+            };
+
+            return string.Empty;
         }
     }
 }

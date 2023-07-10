@@ -8,6 +8,9 @@ using System.Windows.Forms;
 using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using Button = System.Windows.Controls.Button;
 using RingSoft.DbLookup.Controls.WPF;
+using RingSoft.DbLookup.Lookup;
+using RingSoft.DbLookup;
+using System.Windows.Media;
 
 namespace RingSoft.DevLogix.QualityAssurance
 {
@@ -41,6 +44,7 @@ namespace RingSoft.DevLogix.QualityAssurance
         public override string ItemText => "Product";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;
         public override DbMaintenanceStatusBar DbStatusBar => StatusBar;
+        public RecalcProcedure RecalcProcedure { get; set; }
 
         public ProductMaintenanceWindow()
         {
@@ -160,5 +164,56 @@ namespace RingSoft.DevLogix.QualityAssurance
             VersionsTabItem.UpdateLayout();
             VersionLookupControl.Focus();
         }
+
+        public void RefreshView()
+        {
+            if (LocalViewModel.Difference < 0)
+            {
+                DifferenceControl.Foreground = new SolidColorBrush(Colors.LightPink);
+            }
+            else if (LocalViewModel.Difference > 0)
+            {
+                DifferenceControl.Foreground = new SolidColorBrush(Colors.LightGreen);
+            }
+            else
+            {
+                DifferenceControl.Foreground = new SolidColorBrush(Colors.Black);
+            }
+        }
+
+        public bool SetupRecalcFilter(LookupDefinitionBase lookupDefinition)
+        {
+            var genericInput = new GenericReportLookupFilterInput
+            {
+                LookupDefinitionToFilter = lookupDefinition,
+                CodeNameToFilter = "Product",
+                KeyAutoFillValue = LocalViewModel.KeyAutoFillValue,
+                ProcessText = "Recalculate"
+            };
+            var genericWindow = new GenericReportFilterWindow(genericInput);
+            genericWindow.Owner = this;
+            genericWindow.ShowInTaskbar = false;
+            genericWindow.ShowDialog();
+            return genericWindow.ViewModel.DialogReesult;
+        }
+
+        public string StartRecalcProcedure(LookupDefinitionBase lookupDefinition)
+        {
+            var result = string.Empty;
+            RecalcProcedure = new RecalcProcedure();
+            RecalcProcedure.StartRecalculate += (sender, args) =>
+            {
+                result = LocalViewModel.StartRecalcProcedure(lookupDefinition, RecalcProcedure);
+            };
+            RecalcProcedure.Start();
+            return result;
+        }
+
+        public void UpdateRecalcProcedure(int currentProduct, int totalProducts, string currentProductText)
+        {
+            var progress = $"Recalculating Customer {currentProductText} {currentProduct} / {totalProducts}";
+            RecalcProcedure.SplashWindow.SetProgress(progress);
+        }
+
     }
 }
