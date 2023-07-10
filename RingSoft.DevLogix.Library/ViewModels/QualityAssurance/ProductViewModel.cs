@@ -663,5 +663,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
             return string.Empty;
         }
+
+        private string ProcessCurrentCustomer(
+            PrimaryKeyValue primaryKeyValue
+            , DataAccess.IDbContext context
+            , int totalProducts
+            , int currentProductIndex
+            , AppProcedure procedure)
+        {
+            return string.Empty;
+        }
     }
-}
+    }
