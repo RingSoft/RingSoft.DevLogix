@@ -1171,8 +1171,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 procedure.SplashWindow.SetProgress(
                     $"Recalculating Orders {intFormatter.FormatValue(index)}/{totalFormat}");
                 var monthEndDate = new DateTime(order.OrderDate.Year, order.OrderDate.Month,
-                    DateTime.DaysInMonth(order.OrderDate.Year, order.OrderDate.Month));
-
+                    DateTime.DaysInMonth(order.OrderDate.Year, order.OrderDate.Month))
+                    .ToUniversalTime();
+                
                 var monthEndSales = listSales.FirstOrDefault(
                     p => p.MonthEnding == monthEndDate );
 

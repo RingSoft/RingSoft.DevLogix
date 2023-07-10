@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
@@ -10,6 +11,7 @@ using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
+using RingSoft.DevLogix.DataAccess.Model.UserManagement;
 using RingSoft.Printing.Interop;
 
 namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
@@ -329,6 +331,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         public AutoFillValue DefaultCustomerAutoFillValue { get; private set; }
 
         private bool _loading;
+        private double _oldTotal;
 
         public OrderViewModel()
         {
@@ -416,6 +419,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             Freight = entity.Freight.GetValueOrDefault();
             TotalDiscount = entity.TotalDiscount.GetValueOrDefault();
             Total = entity.Total.GetValueOrDefault();
+            _oldTotal = entity.Total.GetValueOrDefault();
             DetailsManager.LoadGrid(entity.Details);
             _loading = false;
         }
@@ -495,6 +499,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             {
                 LoadCustomer();
             }
+            _oldTotal = 0;
         }
 
         protected override bool SaveEntity(Order entity)
@@ -529,9 +534,59 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 result = context.Commit("Updating Details");
             }
 
+            var newTotal = entity.Total.GetValueOrDefault() - _oldTotal;
             if (result)
             {
-                
+                var customerTable = context.GetTable<Customer>();
+                var customer = customerTable.FirstOrDefault(
+                    p => p.Id == entity.CustomerId);
+                if (customer != null)
+                {
+                    customer.TotalSales += newTotal;
+                }
+
+                result = context.SaveEntity(customer, "Updating Total Sales");
+            }
+
+            if (result)
+            {
+                var usersTable = context.GetTable<User>();
+                var user = usersTable
+                    .Include(p => p.UserMonthlySales)
+                    .FirstOrDefault(p => p.Id == entity.SalespersonId);
+
+                if (user != null)
+                {
+                    user.TotalSales += Total;
+                    var monthEndDate = new DateTime(entity .OrderDate.Year, entity.OrderDate.Month,
+                        DateTime.DaysInMonth(entity.OrderDate.Year, entity.OrderDate.Month))
+                        .ToUniversalTime();
+
+                    var listSales = new List<UserMonthlySales>();
+                    var monthEndSales = user.UserMonthlySales.FirstOrDefault(
+                        p => p.MonthEnding == monthEndDate);
+
+                    if (monthEndSales == null)
+                    {
+                        monthEndSales = new UserMonthlySales()
+                        {
+                            UserId = user.Id,
+                            MonthEnding = monthEndDate,
+                            Quota = user.MonthlySalesQuota,
+                            TotalSales = newTotal,
+                            Difference = newTotal - user.MonthlySalesQuota,
+                        };
+                        listSales.Add(monthEndSales);
+                        context.AddRange(listSales);
+                        result = context.Commit("Adding Monthly Sales");
+                    }
+                    else
+                    {
+                        monthEndSales.TotalSales += newTotal;
+                        monthEndSales.Difference = monthEndSales.TotalSales - monthEndSales.Quota;
+                        result = context.SaveEntity(monthEndSales, "Updating Monthly Sales");
+                    }
+                }
             }
             return result;
         }
