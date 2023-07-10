@@ -19,6 +19,7 @@ using System.Runtime.CompilerServices;
 using System.Timers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using RingSoft.DevLogix.Library.ViewModels.CustomerManagement;
 
 namespace RingSoft.DevLogix.Library.ViewModels
 {
@@ -162,6 +163,8 @@ namespace RingSoft.DevLogix.Library.ViewModels
         public List<ProjectMaterialViewModel> MaterialViewModels { get; } = new List<ProjectMaterialViewModel>();
         public List<ErrorViewModel> ErrorViewModels { get; } = new List<ErrorViewModel>();
         public List<TestingOutlineViewModel> TestingOutlineViewModels { get; } = new List<TestingOutlineViewModel>();
+        public List<CustomerViewModel> CustomerViewModels { get; } = new List<CustomerViewModel>();
+        public List<SupportTicketViewModel> SupportTicketViewModels { get; } = new List<SupportTicketViewModel>();
         public TimeClockMaintenanceViewModel TimeClockMaintenanceViewModel { get; set; }
         public double? SupportMinutesPurchased { get; set; }
 

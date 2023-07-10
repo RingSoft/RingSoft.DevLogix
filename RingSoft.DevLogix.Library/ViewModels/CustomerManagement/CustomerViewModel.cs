@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net.NetworkInformation;
 using Microsoft.EntityFrameworkCore;
@@ -582,6 +583,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         public CustomerViewModel()
         {
+            AppGlobals.MainViewModel.CustomerViewModels.Add(this);
             TimeZoneAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.TimeZoneId));
             TerritoryAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.TerritoryId));
 
@@ -1175,5 +1177,17 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             if (ExecuteAddModifyCommand() == DbMaintenanceResults.Success)
                 SupportTicketLookupCommand = GetLookupCommand(LookupCommands.AddModify);
         }
+
+        public override void OnWindowClosing(CancelEventArgs e)
+        {
+            AppGlobals.MainViewModel.CustomerViewModels.Remove(this);
+            base.OnWindowClosing(e);
+        }
+
+        public void RefreshTimeClockLookup()
+        {
+            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh);
+        }
+
     }
 }

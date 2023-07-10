@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
 using DbPlatforms = RingSoft.App.Library.DbPlatforms;
 
 namespace RingSoft.DevLogix.Library
@@ -522,6 +523,12 @@ namespace RingSoft.DevLogix.Library
         {
             testingOutline.MinutesSpent = costs.Sum(p => p.TimeSpent);
             testingOutline.TotalCost = costs.Sum(p => p.Cost);
+        }
+
+        public static void CalculateCustomer(Customer customer, List<CustomerUser> costs)
+        {
+            customer.MinutesSpent = costs.Sum(p => p.MinutesSpent);
+            customer.MinutesCost = costs.Sum(p => p.Cost);
         }
 
         public static void ClockInUser(RingSoft.DevLogix.DataAccess.IDbContext context, User user)

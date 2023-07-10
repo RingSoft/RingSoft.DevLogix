@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.App.Library;
@@ -354,6 +355,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         public SupportTicketViewModel()
         {
+            AppGlobals.MainViewModel.SupportTicketViewModels.Add(this);
             TablesToDelete.Add(AppGlobals.LookupContext.SupportTicketUser);
             TablesToDelete.Add(AppGlobals.LookupContext.SupportTicketError);
 
@@ -886,5 +888,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
         }
 
+        public override void OnWindowClosing(CancelEventArgs e)
+        {
+            AppGlobals.MainViewModel.SupportTicketViewModels.Remove(this);
+            base.OnWindowClosing(e);
+        }
     }
 }

@@ -826,6 +826,17 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                         result = UpdateTestingOutline(entity, testingOutline, context, user);
                     }
                 }
+                else if (entity.CustomerId.HasValue)
+                {
+                    var customer = context.GetTable<Customer>()
+                        .Include(p => p.Users)
+                        .ThenInclude(p => p.User)
+                        .FirstOrDefault(p => p.Id == entity.CustomerId.Value);
+                    if (customer != null)
+                    {
+                        result = UpdateCustomer(entity, customer, context, user);
+                    }
+                }
 
                 if (result)
                 {
@@ -917,6 +928,17 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                         outlineViewModel.RefreshTimeClockLookup();
                     }
                 }
+
+                if (entity.CustomerId.HasValue)
+                {
+                    var customerViewModels = AppGlobals.MainViewModel.CustomerViewModels
+                        .Where(p => p.Id == entity.CustomerId.Value);
+                    foreach (var customerViewModel in customerViewModels)
+                    {
+                        customerViewModel.RefreshTimeClockLookup();
+                    }
+                }
+
             }
             return result;
         }
@@ -979,6 +1001,35 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         }
 
+        private bool UpdateCustomer(TimeClock entity, Customer customer, IDbContext context, User user)
+        {
+            var result = true;
+            user.CustomerMinutesSpent += entity.MinutesSpent.Value;
+            customer.MinutesSpent += entity.MinutesSpent.Value;
+
+            var customerUser = customer.Users.FirstOrDefault(p => p.UserId == user.Id);
+            if (customerUser != null)
+            {
+                customerUser.MinutesSpent += GetNewMinutesSpent();
+                customerUser.Cost = Math.Round((customerUser.MinutesSpent / 60) * user.HourlyRate, 2);
+                result = context.SaveNoCommitEntity(customerUser, "Saving Customer User");
+            }
+
+            if (result)
+            {
+                AppGlobals.CalculateCustomer(customer, customer.Users.ToList());
+                result = context.SaveNoCommitEntity(customer, "Saving Customer");
+            }
+
+            var customerViewModels = AppGlobals.MainViewModel.CustomerViewModels
+                .Where(p => p.Id == customer.Id);
+            foreach (var customerViewModel in customerViewModels)
+            {
+                customerViewModel.RefreshCost(customerUser);
+            }
+            return result;
+
+        }
 
         private bool UpdateProjectTask(TimeClock entity, ProjectTask projectTask, IDbContext context, User user)
         {
