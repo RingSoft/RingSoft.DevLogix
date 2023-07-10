@@ -35,9 +35,11 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
 
-                                <ac:DbMaintenanceButton Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" x:Name="UpdateVersionsButton" Content="_Update Versions" ImageSource="{StaticResource AfUpImage}" Style="{StaticResource SubButton}" HorizontalContentAlignment="Left"/>
+                                <ac:DbMaintenanceButton Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" x:Name="UpdateVersionsButton" Content="_Update Versions" ImageSource="{StaticResource AfUpImage}" Style="{StaticResource SubButton}" HorizontalContentAlignment="Left"/>
 
-                            </Grid>
+                                <ac:DbMaintenanceButton Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" x:Name="RecalculateButton" Content="_Recalculate" ImageSource="{StaticResource DecimalEditImage}" Style="{StaticResource SubButton}" HorizontalContentAlignment="Left"/>
+
+							</Grid>
 
                         </Border>
                     </ControlTemplate>
@@ -139,6 +141,8 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -187,7 +191,20 @@
                         <Label Grid.Row="5" Grid.Column="0" Content="Price"/>
 
                         <dec:DecimalEditControl Grid.Row="5" Grid.Column="1" HorizontalAlignment="Left"  FormatType="Currency" Value="{Binding Price, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
-                    </Grid>
+
+                        <Label Grid.Row="6" Grid.Column="0" Content="Total Revenue"/>
+
+                        <dec:DecimalReadOnlyBox Grid.Row="6" Grid.Column="1" HorizontalAlignment="Left" Width="100" FormatType="Currency" Value="{Binding TotalRevenue, Mode=TwoWay}"/>
+
+                        <Label Grid.Row="7" Grid.Column="0" Content="Total Cost"/>
+
+                        <dec:DecimalReadOnlyBox Grid.Row="7" Grid.Column="1" HorizontalAlignment="Left" Width="100" FormatType="Currency" Value="{Binding TotalCost, Mode=TwoWay}"/>
+
+                        <Label Grid.Row="8" Grid.Column="0" Content="Difference"/>
+
+                        <dec:DecimalReadOnlyBox Grid.Row="8" Grid.Column="1" x:Name="DifferenceControl" HorizontalAlignment="Left" Width="100" FormatType="Currency" Value="{Binding Difference, Mode=TwoWay}"/>
+
+					</Grid>
                 </TabItem>
                 <TabItem x:Name="TestOutlinesTabItem" Header="Testing Outlines">
 

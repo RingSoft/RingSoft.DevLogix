@@ -15,6 +15,8 @@ namespace RingSoft.DevLogix.QualityAssurance
     {
         public DbMaintenanceButton UpdateVersionsButton { get; set; }
 
+        public DbMaintenanceButton RecalculateButton { get; set; }
+
         static ProductHeaderControl()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ProductHeaderControl), new FrameworkPropertyMetadata(typeof(ProductHeaderControl)));
@@ -23,6 +25,8 @@ namespace RingSoft.DevLogix.QualityAssurance
         public override void OnApplyTemplate()
         {
             UpdateVersionsButton = GetTemplateChild(nameof(UpdateVersionsButton)) as DbMaintenanceButton;
+            RecalculateButton = GetTemplateChild(nameof(RecalculateButton)) as DbMaintenanceButton;
+            ;
 
             base.OnApplyTemplate();
         }
@@ -49,6 +53,10 @@ namespace RingSoft.DevLogix.QualityAssurance
                     productHeaderControl.UpdateVersionsButton.Command =
                         LocalViewModel.UpdateVersionsCommand;
 
+                    productHeaderControl.RecalculateButton.Command =
+                        LocalViewModel.RecalcCommand;
+
+
                     if (!AppGlobals.LookupContext.ProductVersions.HasRight(RightTypes.AllowEdit))
                     {
                         productHeaderControl.UpdateVersionsButton.Visibility = Visibility.Collapsed;
@@ -56,6 +64,9 @@ namespace RingSoft.DevLogix.QualityAssurance
 
                     productHeaderControl.UpdateVersionsButton.ToolTip.HeaderText = "Update Department Versions (Alt + U)";
                     productHeaderControl.UpdateVersionsButton.ToolTip.DescriptionText = "Update Versions departments.";
+
+                    productHeaderControl.RecalculateButton.ToolTip.HeaderText = "Recalculate Data (Alt + R)";
+                    productHeaderControl.RecalculateButton.ToolTip.DescriptionText = "Recalculate Totals.";
 
                 }
             };

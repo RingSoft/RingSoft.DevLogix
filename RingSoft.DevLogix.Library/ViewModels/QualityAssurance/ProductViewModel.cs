@@ -277,12 +277,59 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             }
         }
 
+        private double _totalRevenue;
+
+        public double TotalRevenue
+        {
+            get => _totalRevenue;
+            set
+            {
+                if (_totalRevenue == value)
+                    return;
+
+                _totalRevenue = value;
+                OnPropertyChanged(null, false);
+            }
+        }
+
+        private double _totalCost;
+
+        public double TotalCost
+        {
+            get => _totalCost;
+            set
+            {
+                if (_totalCost == value)
+                    return;
+
+                _totalCost = value;
+                OnPropertyChanged(null, false);
+            }
+        }
+
+        private double _difference;
+
+        public double Difference
+        {
+            get => _difference;
+            set
+            {
+                if (_difference == value)
+                    return;
+
+                _difference = value;
+                OnPropertyChanged(null, false);
+            }
+        }
+
 
         public RelayCommand VersionsAddModifyCommand { get; set; }
 
         public RelayCommand TestOutlinesAddModifyCommand { get; set; }
 
         public RelayCommand UpdateVersionsCommand { get; set; }
+
+        public RelayCommand RecalcCommand { get; set; }
 
         public RelayCommand InstallerCommand { get; set; }
 
@@ -297,6 +344,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             VersionsAddModifyCommand = new RelayCommand(OnVersionsAddModify);
             TestOutlinesAddModifyCommand = new RelayCommand(OnTestOutlineAddModify);
             UpdateVersionsCommand = new RelayCommand(UpdateVersions);
+            RecalcCommand = new RelayCommand(Recalc);
             InstallerCommand = new RelayCommand(() =>
             {
                 InstallerFileName = View.GetInstallerName();
@@ -371,31 +419,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                         }
                     }
                 }
-                //lookupDefinition.FilterDefinition.AddFixedFilter("ProductId", Conditions.Equals,
-                //    Id.ToString(), "ProductId");
-
-                //if (DepartmentFilterAutoFillValue.IsValid())
-                //{
-                //    var department =
-                //        AppGlobals.LookupContext.Departments.GetEntityFromPrimaryKeyValue(DepartmentFilterAutoFillValue
-                //            .PrimaryKeyValue);
-
-                //    var tableDefinition = AppGlobals.LookupContext.ProductVersionDepartments;
-                //    var field = tableDefinition.GetFieldDefinition(p => p.VersionId).FieldName;
-                //    var query = new SelectQuery(tableDefinition.TableName);
-                //    query.AddSelectColumn(field);
-                //    query.AddWhereItem(tableDefinition.GetFieldDefinition(p => p.DepartmentId).FieldName,
-                //        Conditions.Equals, department.Id);
-
-                //    var versionsTableDefinition = AppGlobals.LookupContext.ProductVersions;
-                //    field = versionsTableDefinition.GetFieldDefinition(p => p.Id).FieldName;
-                //    field = AppGlobals.LookupContext.DataProcessor.SqlGenerator.FormatSqlObject(field);
-                //    field =
-                //        $"{AppGlobals.LookupContext.DataProcessor.SqlGenerator.FormatSqlObject(versionsTableDefinition.TableName)}.{field}";
-                //    var sql = AppGlobals.LookupContext.DataProcessor.SqlGenerator.GenerateSelectStatement(query);
-                //    sql = $"{field} IN ({sql})";
-                //    lookupDefinition.FilterDefinition.AddFixedFilter("Department", null, "", sql);
-                //}
             }
 
             ProductVersionLookupCommand = GetLookupCommand(LookupCommands.Refresh);
@@ -433,10 +456,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             ArchiveDepartmentAutoFillValue =
                 ArchiveDepartmentAutoFillSetup.GetAutoFillValueForIdValue(entity.ArchiveDepartmentId);
             Price = entity.Price;
+            TotalRevenue = entity.Revenue.GetValueOrDefault();
+            TotalCost = entity.Cost.GetValueOrDefault();
+            Difference = TotalRevenue - TotalCost;
         }
 
         protected override Product GetEntityData()
         {
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var table = context.GetTable<Product>();
+            var existProduct = table
+                .FirstOrDefault(p => p.Id == Id);
+            if (existProduct != null)
+            {
+                TotalRevenue = existProduct.Revenue.GetValueOrDefault();
+                TotalCost += existProduct.Cost.GetValueOrDefault();
+            }
             var result = new Product()
             {
                 Id = Id,
@@ -448,6 +483,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 CreateDepartmentId = CreateDepartmentAutoFillValue.GetEntity(AppGlobals.LookupContext.Departments).Id,
                 ArchiveDepartmentId = ArchiveDepartmentAutoFillValue.GetEntity(AppGlobals.LookupContext.Departments).Id,
                 Price = Price,
+                Revenue = TotalRevenue,
+                Cost = TotalCost,
             };
 
             if (result.ArchiveDepartmentId == 0)
@@ -468,6 +505,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             CreateDepartmentAutoFillValue = ArchiveDepartmentAutoFillValue = null;
             TestingOutlineLookupCommand = GetLookupCommand(LookupCommands.Clear);
             Price = null;
+            TotalRevenue = TotalCost = Difference = 0;
         }
 
         protected override bool SaveEntity(Product entity)
@@ -567,6 +605,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
             }
             base.OnRecordDirtyChanged(newValue);
+        }
+
+        private void Recalc()
+        {
+
         }
     }
 }
