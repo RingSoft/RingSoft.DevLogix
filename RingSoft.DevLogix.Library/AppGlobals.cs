@@ -531,6 +531,12 @@ namespace RingSoft.DevLogix.Library
             customer.MinutesCost = costs.Sum(p => p.Cost);
         }
 
+        public static void CalculateTicket(SupportTicket ticket, List<SupportTicketUser> costs)
+        {
+            ticket.MinutesSpent = costs.Sum(p => p.MinutesSpent);
+            ticket.Cost = costs.Sum(p => p.Cost);
+        }
+
         public static void ClockInUser(RingSoft.DevLogix.DataAccess.IDbContext context, User user)
         {
             if (user != null && user.ClockOutReason != (byte)ClockOutReasons.ClockedIn)
@@ -592,14 +598,21 @@ namespace RingSoft.DevLogix.Library
         public static string GetSupportTimeLeftTextFromDate(
             DateTime startDate
             , double? supportMinutesPurchased
-            , out double? supportMinutesLeft)
+            , out double? supportMinutesLeft
+            , DateTime? punchOutDate = null)
         {
+            var result = string.Empty;
+            var nowDate = DateTime.Now;
+            if (punchOutDate != null)
+            {
+                nowDate = punchOutDate.GetValueOrDefault();
+            }
             if (supportMinutesPurchased != null)
             {
                 var endDate = startDate.AddMinutes(supportMinutesPurchased.Value);
-                var duration = endDate.Subtract(DateTime.Now);
+                var duration = endDate.Subtract(nowDate);
                 supportMinutesLeft = Math.Round(duration.TotalMinutes, 2);
-                var result = $"{duration.Days.ToString("00")} {duration.ToString("hh\\:mm\\:ss")}";
+                result = $"{duration.Days.ToString("00")} {duration.ToString("hh\\:mm\\:ss")}";
                 if (supportMinutesLeft < 0)
                 {
                     result = $"- {result}";
@@ -607,6 +620,7 @@ namespace RingSoft.DevLogix.Library
 
                 return result;
             }
+
             supportMinutesLeft = null;
             return null;
         }

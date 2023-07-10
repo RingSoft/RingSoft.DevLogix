@@ -277,6 +277,7 @@ namespace RingSoft.DevLogix.DataAccess
 
             TimeClockLookup = new LookupDefinition<TimeClockLookup, TimeClock>(TimeClocks);
             TimeClockLookup.InitialOrderByField = TimeClocks.GetFieldDefinition(p => p.Id);
+            TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
             TimeClockLookup.AddVisibleColumnDefinition(
                 p => p.Name
                 , "Time Clock ID"
@@ -620,6 +621,9 @@ namespace RingSoft.DevLogix.DataAccess
                 , p => p.Total, 25)
                 .HasHorizontalAlignmentType(LookupColumnAlignmentTypes.Right);
 
+            OrderLookup.InitialOrderByField = Order.GetFieldDefinition(p => p.Id);
+            OrderLookup.InitialOrderByType = OrderByTypes.Descending;
+
             Order.HasLookupDefinition(OrderLookup);
 
             OrderDetailLookup = new LookupDefinition<OrderDetailLookup, OrderDetail>(OrderDetail);
@@ -670,12 +674,13 @@ namespace RingSoft.DevLogix.DataAccess
                     , p => p.CompanyName, 25);
 
             SupportTicketLookup
-                .Include(p => p.Product)
                 .AddVisibleColumnDefinition(
-                    p => p.Product
-                    , "Product"
-                    , p => p.Description, 30);
+                    p => p.MinutesSpent
+                    , "Time Spent"
+                    , p => p.MinutesSpent, 30);
             SupportTicket.HasLookupDefinition(SupportTicketLookup);
+            SupportTicketLookup.InitialOrderByField = SupportTicket.GetFieldDefinition(p => p.Id);
+            SupportTicketLookup.InitialOrderByType = OrderByTypes.Descending;
 
             SupportTicketUserLookup =
                 new LookupDefinition<SupportTicketUserLookup, SupportTicketUser>(SupportTicketUser);

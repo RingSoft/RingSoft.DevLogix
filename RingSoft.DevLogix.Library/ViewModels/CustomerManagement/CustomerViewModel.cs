@@ -599,8 +599,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             TablesToDelete.Add(AppGlobals.LookupContext.CustomerUser);
 
             OrderLookupDefinition = AppGlobals.LookupContext.OrderLookup.Clone();
-            OrderLookupDefinition.InitialOrderByField = AppGlobals.LookupContext
-                .Order.GetFieldDefinition(p => p.Id);
+            //OrderLookupDefinition.InitialOrderByField = AppGlobals.LookupContext
+            //    .Order.GetFieldDefinition(p => p.Id);
 
             AddModifyOrderLookupCommand = new RelayCommand(AddModifyOrder);
 
@@ -613,20 +613,18 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 SupportMinutesLeft += NewSupportTime;
             }));
 
-            var timeClockLookup = new LookupDefinition<TimeClockLookup, TimeClock>(AppGlobals.LookupContext.TimeClocks);
-            timeClockLookup.AddVisibleColumnDefinition(p => p.PunchInDate, p => p.PunchInDate);
-            timeClockLookup.Include(p => p.User)
-                .AddVisibleColumnDefinition(p => p.UserName, p => p.Name);
-            timeClockLookup.AddVisibleColumnDefinition(p => p.MinutesSpent, p => p.MinutesSpent);
-            TimeClockLookup = timeClockLookup;
-            TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
-
+            //var timeClockLookup = new LookupDefinition<TimeClockLookup, TimeClock>(AppGlobals.LookupContext.TimeClocks);
+            //timeClockLookup.AddVisibleColumnDefinition(p => p.PunchInDate, p => p.PunchInDate);
+            //timeClockLookup.Include(p => p.User)
+            //    .AddVisibleColumnDefinition(p => p.UserName, p => p.Name);
+            //timeClockLookup.AddVisibleColumnDefinition(p => p.MinutesSpent, p => p.MinutesSpent);
+            //TimeClockLookup = timeClockLookup;
+            //TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
+            TimeClockLookup = AppGlobals.LookupContext.TimeClockLookup.Clone();
+            
             ComputerLookup = AppGlobals.LookupContext.CustomerComputerLookup.Clone();
 
             SupportTicketLookup = AppGlobals.LookupContext.SupportTicketLookup.Clone();
-            SupportTicketLookup.InitialOrderByField = AppGlobals.LookupContext
-                .SupportTicket.GetFieldDefinition(p => p.Id);
-
         }
 
         protected override void Initialize()

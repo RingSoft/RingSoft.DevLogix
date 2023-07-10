@@ -579,13 +579,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
             PrintProcessingHeader += ErrorViewModel_PrintProcessingHeader;
 
-            var timeClockLookup = new LookupDefinition<TimeClockLookup, TimeClock>(AppGlobals.LookupContext.TimeClocks);
-            timeClockLookup.AddVisibleColumnDefinition(p => p.PunchInDate, p => p.PunchInDate);
-            timeClockLookup.Include(p => p.User)
-                .AddVisibleColumnDefinition(p => p.UserName, p => p.Name);
-            timeClockLookup.AddVisibleColumnDefinition(p => p.MinutesSpent, p => p.MinutesSpent);
-            TimeClockLookup = timeClockLookup;
-            TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
+            //var timeClockLookup = new LookupDefinition<TimeClockLookup, TimeClock>(AppGlobals.LookupContext.TimeClocks);
+            //timeClockLookup.AddVisibleColumnDefinition(p => p.PunchInDate, p => p.PunchInDate);
+            //timeClockLookup.Include(p => p.User)
+            //    .AddVisibleColumnDefinition(p => p.UserName, p => p.Name);
+            //timeClockLookup.AddVisibleColumnDefinition(p => p.MinutesSpent, p => p.MinutesSpent);
+            TimeClockLookup = AppGlobals.LookupContext.TimeClockLookup.Clone();
+            //TimeClockLookup = timeClockLookup;
+            //TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
         }
 
         protected override void Initialize()

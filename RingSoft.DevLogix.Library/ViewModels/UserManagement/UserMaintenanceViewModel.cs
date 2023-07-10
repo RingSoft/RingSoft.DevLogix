@@ -556,12 +556,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
             TimeOffGridManager = new UserTimeOffGridManager(this);
 
-            var timeClockLookup = new LookupDefinition<TimeClockLookup, TimeClock>(AppGlobals.LookupContext.TimeClocks);
-            timeClockLookup.AddVisibleColumnDefinition(p => p.PunchInDate, p => p.PunchInDate);
-            timeClockLookup.AddVisibleColumnDefinition(p => p.MinutesSpent, p => p.MinutesSpent);
+            //var timeClockLookup = new LookupDefinition<TimeClockLookup, TimeClock>(AppGlobals.LookupContext.TimeClocks);
+            //timeClockLookup.AddVisibleColumnDefinition(p => p.PunchInDate, p => p.PunchInDate);
+            //timeClockLookup.AddVisibleColumnDefinition(p => p.MinutesSpent, p => p.MinutesSpent);
 
-            TimeClockLookup = timeClockLookup;
-            TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
+            TimeClockLookup = AppGlobals.LookupContext.TimeClockLookup.Clone();
+            //TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
 
             var salesLookup = AppGlobals.LookupContext.UserMonthlySalesLookup.Clone();
             salesLookup.AddVisibleColumnDefinition(

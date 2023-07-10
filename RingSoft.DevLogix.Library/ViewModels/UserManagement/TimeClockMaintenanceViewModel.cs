@@ -379,16 +379,27 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         public string? SupportTimeLeft { get; private set; }
 
-        public double? SupportMinutesLeft { get; private set; }
+        public double? SupportMinutesLeft
+        {
+            get => _supportMinutesLeft;
+            private set
+            {
+                _supportMinutesLeft = value;
+            }
+        }
 
         public TimeClockModes TimeClockMode { get; private set; }
+
+        public bool ManualPunchOut { get; set; }
 
         private DateTime _endDate;
         private Timer _timer = new Timer();
         private bool _loading;
         private bool _timerActive;
         private bool _setDirty = true;
-
+        private double? _supportMinutesLeft;
+        private DateTime? _newPunchOutDate;
+        private DateTime? _newPunchInDate;
         public TimeClockMaintenanceViewModel()
         {
             PunchOutCommand = new RelayCommand((() =>
@@ -403,9 +414,20 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             {
                 if (View.GetManualPunchOutDate(out var punchInDate, out var punchOutDate))
                 {
+                    ManualPunchOut = true;
+                    StopTimer();
                     PunchInDate = punchInDate.GetValueOrDefault();
                     PunchOutDate = punchOutDate;
+                    if (TimeClockMode == TimeClockModes.SupportTicket
+                        && SupportMinutesPurchased != 0)
+                    {
+                        _newPunchOutDate = punchOutDate;
+                        _newPunchInDate = punchInDate;
+                        SetElapsedTime(GetElapsedTime());
+                    }
+
                     DoSave();
+                    ManualPunchOut = false;
                 }
             }));
 
@@ -838,6 +860,19 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     }
                 }
 
+                else if (entity.SupportTicketId.HasValue)
+                {
+                    var ticket = context.GetTable<SupportTicket>()
+                        .Include(p => p.SupportTicketUsers)
+                        .ThenInclude(p => p.User)
+                        .Include(p => p.Customer)
+                        .FirstOrDefault(p => p.Id == entity.SupportTicketId.Value);
+                    if (ticket != null)
+                    {
+                        result = UpdateTicket(entity, ticket, context, user);
+                    }
+                }
+
                 if (result)
                 {
                     result = context.SaveNoCommitEntity(user, "Saving User");
@@ -939,6 +974,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     }
                 }
 
+                if (entity.SupportTicketId.HasValue)
+                {
+                    var ticketViewModels = AppGlobals.MainViewModel.SupportTicketViewModels
+                        .Where(p => p.Id == entity.SupportTicketId.Value);
+                    foreach (var ticketViewModel in ticketViewModels)
+                    {
+                        ticketViewModel.RefreshTimeClockLookup();
+                    }
+                }
+
             }
             return result;
         }
@@ -1026,6 +1071,40 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             foreach (var customerViewModel in customerViewModels)
             {
                 customerViewModel.RefreshCost(customerUser);
+            }
+            return result;
+
+        }
+
+        private bool UpdateTicket(TimeClock entity, SupportTicket ticket, IDbContext context, User user)
+        {
+            var result = true;
+            user.SupportTicketsMinutesSpent += entity.MinutesSpent.Value;
+            ticket.MinutesSpent += entity.MinutesSpent.Value;
+            ticket.Customer.SupportMinutesSpent += entity.MinutesSpent.Value;
+            ticket.Customer.SupportMinutesPurchased -= entity.MinutesSpent.Value;
+            SupportMinutesLeft = ticket.Customer.SupportMinutesPurchased;
+            
+            var ticketUser = ticket.SupportTicketUsers.FirstOrDefault(p => p.UserId == user.Id);
+            if (ticketUser != null)
+            {
+                ticketUser.MinutesSpent += GetNewMinutesSpent();
+                ticketUser.Cost = Math.Round((ticketUser.MinutesSpent / 60) * user.HourlyRate, 2);
+                ticket.Customer.SupportCost += ticketUser.Cost;
+                result = context.SaveNoCommitEntity(ticketUser, "Saving Support Tickets User");
+            }
+
+            if (result)
+            {
+                AppGlobals.CalculateTicket(ticket, ticket.SupportTicketUsers.ToList());
+                result = context.SaveNoCommitEntity(ticket, "Saving Support Ticket");
+            }
+
+            var ticketViewModels = AppGlobals.MainViewModel.SupportTicketViewModels
+                .Where(p => p.Id == ticket.Id);
+            foreach (var ticketViewModel in ticketViewModels)
+            {
+                ticketViewModel.RefreshCost(ticketUser);
             }
             return result;
 
@@ -1244,10 +1323,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         private void SetElapsedTime(string elapsedTime)
         {
+            var punchInDate = _newPunchInDate;
+            if (!punchInDate.HasValue)
+            {
+                punchInDate = PunchInDate;
+            }
             SupportTimeLeft = AppGlobals.GetSupportTimeLeftTextFromDate(
-                PunchInDate
+                punchInDate.GetValueOrDefault()
                 , SupportMinutesPurchased
-                , out var supportMinutesLeft);
+                , out var supportMinutesLeft
+                , _newPunchOutDate);
             ElapsedTime = elapsedTime;
             SupportMinutesLeft = supportMinutesLeft;
             View.SetElapsedTime();

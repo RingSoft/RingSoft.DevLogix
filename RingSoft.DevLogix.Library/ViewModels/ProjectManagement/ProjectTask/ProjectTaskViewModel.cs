@@ -383,15 +383,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             TablesToDelete.Add(AppGlobals.LookupContext.ProjectTaskLaborParts);
             TablesToDelete.Add(AppGlobals.LookupContext.ProjectTaskDependency);
 
-            var timeClockLookup = new LookupDefinition<TimeClockLookup, TimeClock>(AppGlobals.LookupContext.TimeClocks);
-            timeClockLookup.AddVisibleColumnDefinition(p => p.PunchInDate, p => p.PunchInDate);
-            timeClockLookup.Include(p => p.User)
-                .AddVisibleColumnDefinition(p => p.UserName, p => p.Name);
-            var column = timeClockLookup.AddVisibleColumnDefinition(p => p.MinutesSpent, p => p.MinutesSpent);
-            column.HasSearchForHostId(DevLogixLookupContext.TimeSpentHostId);
+            //var timeClockLookup = new LookupDefinition<TimeClockLookup, TimeClock>(AppGlobals.LookupContext.TimeClocks);
+            //timeClockLookup.AddVisibleColumnDefinition(p => p.PunchInDate, p => p.PunchInDate);
+            //timeClockLookup.Include(p => p.User)
+            //    .AddVisibleColumnDefinition(p => p.UserName, p => p.Name);
+            //var column = timeClockLookup.AddVisibleColumnDefinition(p => p.MinutesSpent, p => p.MinutesSpent);
+            //column.HasSearchForHostId(DevLogixLookupContext.TimeSpentHostId);
 
-            TimeClockLookup = timeClockLookup;
-            TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
+            TimeClockLookup = AppGlobals.LookupContext.TimeClockLookup.Clone();
+            //TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
         }
 
 

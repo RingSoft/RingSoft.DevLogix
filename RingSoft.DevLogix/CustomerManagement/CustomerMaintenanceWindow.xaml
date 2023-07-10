@@ -255,7 +255,7 @@
 
                                 <lc:LookupColumn PropertyName="{lc:NameOf CreateDate, Type={x:Type lm:SupportTicketLookup}}" Header="Date" Width="150"/>
 
-                                <lc:LookupColumn PropertyName="{lc:NameOf Product, Type={x:Type lm:SupportTicketLookup}}" Header="Product" Width="200"/>
+                                <lc:LookupColumn PropertyName="{lc:NameOf MinutesSpent, Type={x:Type lm:SupportTicketLookup}}" Header="Time Spent" Width="200"/>
 
                             </lc:LookupControl.LookupColumns>
 
@@ -289,6 +289,8 @@
                         <lc:LookupControl LookupDefinition="{Binding TimeClockLookup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Command="{Binding TimeClockLookupCommand, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
 
                             <lc:LookupControl.LookupColumns>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf Name, Type={x:Type lookupModel:TimeClockLookup}}" Header="Name" Width="80"/>
 
                                 <lc:LookupColumn PropertyName="{lc:NameOf PunchInDate, Type={x:Type lookupModel:TimeClockLookup}}" Header="Punch In Date" Width="200"/>
 

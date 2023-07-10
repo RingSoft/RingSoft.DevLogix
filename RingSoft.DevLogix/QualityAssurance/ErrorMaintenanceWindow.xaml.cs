@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -20,9 +21,12 @@ using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels;
+using RingSoft.DevLogix.Library.ViewModels.CustomerManagement;
 using RingSoft.DevLogix.Library.ViewModels.QualityAssurance;
 using RingSoft.DevLogix.ProjectManagement;
 using RingSoft.DevLogix.UserManagement;
+using Clipboard = System.Windows.Clipboard;
+using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 
 namespace RingSoft.DevLogix.QualityAssurance
 {
@@ -170,6 +174,26 @@ namespace RingSoft.DevLogix.QualityAssurance
             var progress = $"Recalculating Error {currentErrorText} {currentError} / {totalErrors}";
             RecalcProcedure.SplashWindow.SetProgress(progress);
 
+        }
+
+        protected override void OnPreviewKeyDown(KeyEventArgs e)
+        {
+            var ctrlKeyDown = Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl);
+            if (ctrlKeyDown)
+            {
+                switch (e.Key)
+                {
+                    case Key.T:
+                        TabControl.Focus();
+                        if (TabControl.SelectedItem is TabItem tabItem)
+                        {
+                            tabItem.Focus();
+                        }
+                        break;
+                }
+            }
+
+            base.OnPreviewKeyDown(e);
         }
     }
 }

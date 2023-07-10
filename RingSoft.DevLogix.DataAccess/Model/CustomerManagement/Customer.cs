@@ -88,5 +88,10 @@ namespace RingSoft.DevLogix.DataAccess.Model.CustomerManagement
             CustomerComputers = new HashSet<CustomerComputer>();
             Tickets = new HashSet<SupportTicket>();
         }
+
+        public override string ToString()
+        {
+            return CompanyName;
+        }
     }
 }

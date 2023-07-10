@@ -10,7 +10,7 @@ namespace RingSoft.DevLogix.DataAccess.LookupModel.CustomerManagement
 
         public string Customer { get; set; }
 
-        public string Product { get; set; }
+        public double MinutesSpent { get; set; }
     }
 
     public class SupportTicketUserLookup

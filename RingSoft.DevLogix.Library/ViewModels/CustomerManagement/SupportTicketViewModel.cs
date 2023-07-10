@@ -368,13 +368,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             AssignedUserAutoFillSetup = new AutoFillSetup(
                 TableDefinition.GetFieldDefinition(p => p.AssignedToUserId));
 
-            var timeClockLookup = new LookupDefinition<TimeClockLookup, TimeClock>(AppGlobals.LookupContext.TimeClocks);
-            timeClockLookup.AddVisibleColumnDefinition(p => p.PunchInDate, p => p.PunchInDate);
-            timeClockLookup.Include(p => p.User)
-                .AddVisibleColumnDefinition(p => p.UserName, p => p.Name);
-            timeClockLookup.AddVisibleColumnDefinition(p => p.MinutesSpent, p => p.MinutesSpent);
-            TimeClockLookup = timeClockLookup;
-            TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
+            //var timeClockLookup = new LookupDefinition<TimeClockLookup, TimeClock>(AppGlobals.LookupContext.TimeClocks);
+            //timeClockLookup.AddVisibleColumnDefinition(p => p.PunchInDate, p => p.PunchInDate);
+            //timeClockLookup.Include(p => p.User)
+            //    .AddVisibleColumnDefinition(p => p.UserName, p => p.Name);
+            //timeClockLookup.AddVisibleColumnDefinition(p => p.MinutesSpent, p => p.MinutesSpent);
+            //TimeClockLookup = timeClockLookup;
+            //TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
+            TimeClockLookup = AppGlobals.LookupContext.TimeClockLookup.Clone();
 
             PunchInCommand = new RelayCommand(PunchIn);
             RecalcCommand = new RelayCommand(Recalc);

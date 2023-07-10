@@ -65,5 +65,10 @@ namespace RingSoft.DevLogix.DataAccess.Model.CustomerManagement
             SupportTicketUsers = new HashSet<SupportTicketUser>();
             Errors = new HashSet<SupportTicketError>();
         }
+
+        public override string ToString()
+        {
+            return TicketId;
+        }
     }
 }

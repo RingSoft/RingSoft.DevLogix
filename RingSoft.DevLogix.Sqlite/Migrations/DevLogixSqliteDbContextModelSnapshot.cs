@@ -1640,6 +1640,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .HasColumnType("numeric");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
