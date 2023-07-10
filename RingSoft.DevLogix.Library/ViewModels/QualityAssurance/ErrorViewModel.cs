@@ -1192,7 +1192,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             if (!View.ProcessRecalcLookupFilter(lookupFilter))
                 return;
             var result = View.StartRecalcProcedure(lookupFilter);
-            if (!result.IsNullOrEmpty())
+            if (result.IsNullOrEmpty())
+            {
+                ControlsGlobals.UserInterface.ShowMessageBox("Recalculation Complete"
+                , "Recalculation", RsMessageBoxIcons.Information);
+            }
+            else
             {
                 ControlsGlobals.UserInterface.ShowMessageBox(result, "Error Recalculating", RsMessageBoxIcons.Error);
             }
