@@ -14,6 +14,8 @@ using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.LookupModel.QualityAssurance;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 using RingSoft.App.Library;
+using Microsoft.EntityFrameworkCore;
+using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 {
@@ -692,6 +694,45 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             , DataAccess.IDbContext context
             , int totalProducts
             , int currentProductIndex
+            , AppProcedure procedure)
+        {
+            var productsTable = context.GetTable<Product>();
+            var orderDetailsTable = context.GetTable<OrderDetail>();
+            var timeClocksTable = context.GetTable<TimeClock>();
+
+            var currentProduct = TableDefinition.GetEntityFromPrimaryKeyValue(primaryKeyValue);
+            if (currentProduct != null)
+            {
+                currentProduct = productsTable
+                   .FirstOrDefault(p => p.Id == currentProduct.Id);
+
+                if (currentProduct != null)
+                {
+                    var updateResult = UpdateProductValues(
+                        totalProducts
+                        , currentProductIndex
+                        , currentProduct
+                        , timeClocksTable
+                        , orderDetailsTable
+                        , context
+                        , procedure);
+
+                    if (!updateResult.IsNullOrEmpty())
+                    {
+                        return updateResult;
+                    }
+                }
+            }
+            return string.Empty;
+        }
+
+        private string UpdateProductValues(
+            int totalProducts
+            , int currentCustomerIndex
+            , Product currentProduct
+            , IQueryable<TimeClock> timeClocksTable
+            , IQueryable<OrderDetail> orderDetailsTable
+            , DataAccess.IDbContext context
             , AppProcedure procedure)
         {
             return string.Empty;
