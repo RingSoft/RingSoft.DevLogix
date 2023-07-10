@@ -658,13 +658,36 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
             lookupData.PrintOutput += (sender, e) =>
             {
-                
-            };
+                foreach (var primaryKeyValue in e.Result)
+                {
+                    var processResult = ProcessCurrentProduct(
+                        primaryKeyValue
+                        , context
+                        , totalProducts
+                        , currentProduct
+                        , appProcedure);
 
-            return string.Empty;
+                    if (!processResult.IsNullOrEmpty())
+                    {
+                        result = processResult;
+                        return;
+                    }
+                }
+
+            };
+            lookupData.DoPrintOutput(10);
+            if (result.IsNullOrEmpty())
+            {
+                if (!context.Commit("Recalculating Finished", true))
+                {
+                    result = GblMethods.LastError;
+                }
+            }
+            DbDataProcessor.DontDisplayExceptions = false;
+            return result;
         }
 
-        private string ProcessCurrentCustomer(
+        private string ProcessCurrentProduct(
             PrimaryKeyValue primaryKeyValue
             , DataAccess.IDbContext context
             , int totalProducts
