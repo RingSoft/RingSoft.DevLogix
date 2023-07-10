@@ -87,10 +87,12 @@ namespace RingSoft.DevLogix
             AppGlobals.LookupContext.LookupAddView += LookupContext_LookupAddView;
 
             WindowRegistry.RegisterWindow<DevLogixChartMaintenanceWindow>(AppGlobals.LookupContext.DevLogixCharts);
+            WindowRegistry.RegisterWindow<DevLogixChartMaintenanceWindow>(AppGlobals.LookupContext.DevLogixChartBars);
             WindowRegistry.RegisterWindow<SystemPreferencesWindow>(AppGlobals.LookupContext.SystemPreferences);
 
             WindowRegistry.RegisterWindow<UserMaintenanceWindow>(AppGlobals.LookupContext.Users);
             WindowRegistry.RegisterWindow<UserMaintenanceWindow>(AppGlobals.LookupContext.UsersTimeOff);
+            WindowRegistry.RegisterWindow<UserMaintenanceWindow>(AppGlobals.LookupContext.UseerMonthlySales);
             WindowRegistry.RegisterWindow<GroupsMaintenanceWindow>(AppGlobals.LookupContext.Groups);
             WindowRegistry.RegisterWindow<DepartmentMaintenanceWindow>(AppGlobals.LookupContext.Departments);
             WindowRegistry.RegisterWindow<TimeClockMaintenanceWindow>(AppGlobals.LookupContext.TimeClocks);
@@ -103,6 +105,8 @@ namespace RingSoft.DevLogix
             WindowRegistry.RegisterWindow<ProductVersionMaintenanceWindow>(AppGlobals.LookupContext.ProductVersionDepartments);
             WindowRegistry.RegisterWindow<ErrorMaintenanceWindow>(AppGlobals.LookupContext.Errors);
             WindowRegistry.RegisterWindow<ErrorMaintenanceWindow>(AppGlobals.LookupContext.ErrorTesters);
+            WindowRegistry.RegisterWindow<ErrorMaintenanceWindow>(AppGlobals.LookupContext.ErrorDevelopers);
+            WindowRegistry.RegisterWindow<ErrorMaintenanceWindow>(AppGlobals.LookupContext.ErrorUsers);
             WindowRegistry.RegisterWindow<TestingTemplatesMaintenanceWindow>(AppGlobals.LookupContext.TestingTemplates);
             WindowRegistry.RegisterWindow<TestingOutlineMaintenanceWindow>(AppGlobals.LookupContext.TestingOutlines);
 
@@ -117,6 +121,7 @@ namespace RingSoft.DevLogix
             WindowRegistry.RegisterWindow<ProjectMaterialHistoryWindow>(AppGlobals.LookupContext.ProjectMaterialHistory);
 
             WindowRegistry.RegisterWindow<CustomerMaintenanceWindow>(AppGlobals.LookupContext.Customer);
+            WindowRegistry.RegisterWindow<CustomerMaintenanceWindow>(AppGlobals.LookupContext.CustomerUser);
             WindowRegistry.RegisterWindow<TimeZoneMaintenanceWindow>(AppGlobals.LookupContext.TimeZone);
             WindowRegistry.RegisterWindow<TerritoryMaintenanceWindow>(AppGlobals.LookupContext.Territory);
             WindowRegistry.RegisterWindow<CustomerMaintenanceWindow>(AppGlobals.LookupContext.CustomerProduct);
@@ -124,6 +129,7 @@ namespace RingSoft.DevLogix
             WindowRegistry.RegisterWindow<OrderMaintenanceWindow>(AppGlobals.LookupContext.OrderDetail);
             WindowRegistry.RegisterWindow<CustomerComputerMaintenanceWindow>(AppGlobals.LookupContext.CustomerComputer);
             WindowRegistry.RegisterWindow<SupportTicketMaintenanceWindow>(AppGlobals.LookupContext.SupportTicket);
+            WindowRegistry.RegisterWindow<SupportTicketMaintenanceWindow>(AppGlobals.LookupContext.SupportTicketUser);
 
             AppGlobals.LookupContext.FormatSearchForEvent += (sender, args) =>
             {
