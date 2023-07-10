@@ -18,6 +18,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
+using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 {
@@ -754,6 +755,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
             currentProduct.Revenue = orderDetails.Sum(p => p.ExtendedPrice);
             currentProduct.Cost = 0;
+
+            var materialsTable = context.GetTable<ProjectMaterial>();
+            var materials = materialsTable
+                .Include(p => p.Project)
+                .Where(p => p.Project.ProductId == currentProduct.Id).ToList();
+
+            var cost = materials.Sum(p => p.ActualCost);
+            currentProduct.Cost += cost;
             
             var timeClocks = timeClocksTable
                 .Include(p => p.ProjectTask)
@@ -762,7 +771,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 .Where(p => p.ProjectTaskId != null
                 && p.ProjectTask.Project.ProductId == currentProduct.Id);
 
-            var cost = GetProductCost(timeClocks, procedure, "Project Task");
+            cost = GetProductCost(timeClocks, procedure, "Project Task");
             currentProduct.Cost += cost;
 
             timeClocks = timeClocksTable
