@@ -518,12 +518,28 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 result = context.SaveEntity(entity, "Updating Order ID");
             }
 
+            var newTotal = entity.Total.GetValueOrDefault() - _oldTotal;
+            var productsTable = context.GetTable<Product>();
+
             if (result)
             {
                 var newDetails = DetailsManager.GetEntityList();
                 foreach (var orderDetail in newDetails)
                 {
                     orderDetail.OrderId = entity.Id;
+
+                    var product = productsTable
+                        .FirstOrDefault(p => p.Id == orderDetail.ProductId);
+                    if (product != null)
+                    {
+                        product.Revenue += orderDetail.ExtendedPrice;
+
+                        result = context.SaveEntity(product, "Updating Product Revenue");
+                        if (!result)
+                        {
+                            return result;
+                        }
+                    }
                 }
 
                 var detailsTable = context.GetTable<OrderDetail>();
@@ -534,7 +550,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 result = context.Commit("Updating Details");
             }
 
-            var newTotal = entity.Total.GetValueOrDefault() - _oldTotal;
             if (result)
             {
                 var customerTable = context.GetTable<Customer>();
