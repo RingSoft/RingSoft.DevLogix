@@ -188,6 +188,7 @@ namespace RingSoft.DevLogix.QualityAssurance
                         if (TabControl.SelectedItem is TabItem tabItem)
                         {
                             tabItem.Focus();
+                            e.Handled = true;
                         }
                         break;
                 }

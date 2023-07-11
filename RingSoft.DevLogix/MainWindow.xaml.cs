@@ -1,17 +1,15 @@
 ﻿using RingSoft.App.Controls;
 using RingSoft.App.Library;
 using RingSoft.DataEntryControls.WPF;
+using RingSoft.DbLookup;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Controls.WPF.AdvancedFind;
 using RingSoft.DbLookup.ModelDefinition;
-using RingSoft.DevLogix.DataAccess.Model;
-using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels;
 using RingSoft.DevLogix.Library.ViewModels.UserManagement;
-using RingSoft.DevLogix.Sqlite.Migrations;
 using RingSoft.DevLogix.UserManagement;
 using ScottPlot.Plottable;
 using System;
@@ -21,7 +19,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using RingSoft.DbLookup;
 using Customer = RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Customer;
 using Error = RingSoft.DevLogix.DataAccess.Model.Error;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
@@ -80,6 +77,7 @@ namespace RingSoft.DevLogix
                     if (args.Key == Key.C)
                     {
                         ViewModel.PunchOut(true, AppGlobals.LoggedInUser);
+                        args.Handled = true;
                     }
                 }
             };
