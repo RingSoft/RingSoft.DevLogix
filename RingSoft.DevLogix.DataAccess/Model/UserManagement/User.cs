@@ -151,5 +151,10 @@ namespace RingSoft.DevLogix.DataAccess.Model
             Orders = new HashSet<Order>();
             UserMonthlySales = new HashSet<UserMonthlySales>();
         }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }
