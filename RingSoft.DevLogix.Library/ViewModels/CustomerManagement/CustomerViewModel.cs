@@ -718,7 +718,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         }
         protected override Customer GetEntityData()
         {
-            double supportMinutesSpent = 0;
+            var supportMinutesSpent = 0.0;
+            var minutesSpent = 0.0;
+            var cost = 0.0;
             if (Id > 0)
             {
                 var context = AppGlobals.DataRepository.GetDataContext();
@@ -728,8 +730,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 if (oldCustomer != null)
                 {
                     supportMinutesSpent = oldCustomer.SupportMinutesSpent;
-                    //result.MinutesSpent = oldCustomer.MinutesSpent;
-                    //result.Cost = oldCustomer.Cost;
+                    minutesSpent = oldCustomer.MinutesSpent;
+                    cost = oldCustomer.MinutesCost;
 
                 }
             }
@@ -753,6 +755,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 Notes = Notes,
                 SupportMinutesPurchased = SupportMinutesLeft,
                 SupportMinutesSpent = supportMinutesSpent,
+                MinutesSpent = minutesSpent,
+                MinutesCost = cost,
                 SupportCost = SupportCost,
                 TotalSales = TotalSales,
             };
@@ -891,6 +895,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         public void RefreshCost(CustomerUser customerUser)
         {
             CustomerUserGridManager.RefreshCost(customerUser);
+
             GetTotals();
         }
 
@@ -898,6 +903,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         {
             SupportMinutesSpent = customer.SupportMinutesSpent;
             SupportCost = customer.SupportCost;
+        }
+
+        public void RefreshSales(Customer customer)
+        {
+            TotalSales = customer.TotalSales;
+            GetTotals();
         }
 
         public void RefreshSupportLookup()
@@ -910,6 +921,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             MinutesSpent = minutesSpent;
             TotalCost = total;
             TotalTimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
+            SalesDifference = TotalSales - TotalCost;
         }
 
         private void Recalc()
@@ -1057,9 +1069,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             if (currentCustomer.Id == Id)
             {
                 RefreshCost(customerUsers);
+                RefreshSales(currentCustomer);
                 SupportMinutesSpent = currentCustomer.SupportMinutesSpent;
                 SupportCost = currentCustomer.SupportCost;
-                TotalSales = currentCustomer.TotalSales;
                 UpdateTotals();
             }
             return string.Empty;

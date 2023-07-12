@@ -558,6 +558,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 if (customer != null)
                 {
                     customer.TotalSales += newTotal;
+
+                    var customerViewModels = AppGlobals.MainViewModel.CustomerViewModels
+                        .Where(p => p.Id == entity.CustomerId);
+
+                    foreach (var customerViewModel in customerViewModels)
+                    {
+                        customerViewModel.RefreshSales(customer);
+                    }
                 }
 
                 result = context.SaveEntity(customer, "Updating Total Sales");
