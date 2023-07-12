@@ -51,9 +51,13 @@ namespace RingSoft.DevLogix.DataAccess.Model.CustomerManagement
 
         public double? SupportMinutesPurchased { get; set; }
 
-        public double? SupportMinutesSpent { get; set; }
+        [Required]
+        [DefaultValue(0)]
+        public double SupportMinutesSpent { get; set; }
 
-        public double? SupportCost { get; set; }
+        [Required]
+        [DefaultValue(0)]
+        public double SupportCost { get; set; }
 
         public string? Notes { get; set; }
 

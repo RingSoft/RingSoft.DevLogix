@@ -699,8 +699,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             MinutesSpent = entity.MinutesSpent;
             TotalCost = entity.MinutesCost;
             TotalTimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
-            SupportMinutesSpent = entity.SupportMinutesSpent.GetValueOrDefault();
-            SupportCost = entity.SupportCost.GetValueOrDefault();
+            SupportMinutesSpent = entity.SupportMinutesSpent;
+            SupportCost = entity.SupportCost;
             TotalSales = entity.TotalSales;
             Notes = entity.Notes;
             _loading = false;
@@ -718,7 +718,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         }
         protected override Customer GetEntityData()
         {
-            double? supportMinutesSpent = null;
+            double supportMinutesSpent = 0;
             if (Id > 0)
             {
                 var context = AppGlobals.DataRepository.GetDataContext();
@@ -894,6 +894,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             GetTotals();
         }
 
+        public void RefreshSupport(Customer customer)
+        {
+            SupportMinutesSpent = customer.SupportMinutesSpent;
+            SupportCost = customer.SupportCost;
+        }
+
+        public void RefreshSupportLookup()
+        {
+            SupportTicketLookupCommand = GetLookupCommand(LookupCommands.Refresh);
+        }
         private void GetTotals()
         {
             CustomerUserGridManager.GetTotals(out var minutesSpent, out var total);
@@ -1047,8 +1057,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             if (currentCustomer.Id == Id)
             {
                 RefreshCost(customerUsers);
-                SupportMinutesSpent = currentCustomer.SupportMinutesSpent.GetValueOrDefault();
-                SupportCost = currentCustomer.SupportCost.GetValueOrDefault();
+                SupportMinutesSpent = currentCustomer.SupportMinutesSpent;
+                SupportCost = currentCustomer.SupportCost;
                 TotalSales = currentCustomer.TotalSales;
                 UpdateTotals();
             }
@@ -1133,7 +1143,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 procedure.SplashWindow.SetProgress
                     ($"Processing Time Clock {intControlSetup.FormatValue(index)}/{formattedTotal}");
                 
-                currentCustomer.SupportMinutesSpent += supportTimeClock.MinutesSpent;
+                currentCustomer.SupportMinutesSpent += supportTimeClock.MinutesSpent.GetValueOrDefault();
                 var hours = supportTimeClock.MinutesSpent / 60;
                 currentCustomer.SupportCost += Math.Round((double)hours * supportTimeClock.User.HourlyRate, 2);
                 index++;

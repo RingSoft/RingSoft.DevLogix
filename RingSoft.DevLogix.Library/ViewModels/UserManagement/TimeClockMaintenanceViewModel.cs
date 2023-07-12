@@ -789,6 +789,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 AppGlobals.MainViewModel.SetupTimer(null, null);
             }
 
+            int? customerId = null;
             var makeName = Id == 0 && entity.Name.IsNullOrEmpty();
             var saveChildren = entity.Id != 0;
             var context = AppGlobals.DataRepository.GetDataContext();
@@ -874,6 +875,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                         .FirstOrDefault(p => p.Id == entity.SupportTicketId.Value);
                     if (ticket != null)
                     {
+                        customerId = ticket.CustomerId;
                         result = UpdateTicket(entity, ticket, context, user);
                     }
                 }
@@ -987,6 +989,17 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     {
                         ticketViewModel.RefreshTimeClockLookup();
                     }
+
+                    if (customerId.HasValue)
+                    {
+                        var customerViewModels = AppGlobals.MainViewModel.CustomerViewModels
+                            .Where(p => p.Id == customerId.GetValueOrDefault());
+
+                        foreach (var customerViewModel in customerViewModels)
+                        {
+                            customerViewModel.RefreshSupportLookup();
+                        }
+                    }
                 }
 
             }
@@ -1095,6 +1108,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             var result = true;
             user.SupportTicketsMinutesSpent += entity.MinutesSpent.Value;
             ticket.MinutesSpent += entity.MinutesSpent.Value;
+            if (ticket.Customer.SupportMinutesSpent == null)
+            {
+                ticket.Customer.SupportMinutesSpent = 0;
+            }
+
             ticket.Customer.SupportMinutesSpent += entity.MinutesSpent.Value;
             ticket.Customer.SupportMinutesPurchased -= entity.MinutesSpent.Value;
             SupportMinutesLeft = ticket.Customer.SupportMinutesPurchased;
@@ -1124,6 +1142,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             {
                 ticketViewModel.RefreshCost(ticketUser);
             }
+
+            var customerViewModels = AppGlobals.MainViewModel.CustomerViewModels
+                .Where(p => p.Id == ticket.CustomerId);
+            foreach (var customerViewModel in customerViewModels)
+            {
+                customerViewModel.RefreshSupport(ticket.Customer);
+            }
+
             return result;
 
         }

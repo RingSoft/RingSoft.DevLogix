@@ -257,13 +257,13 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
-                    b.Property<double?>("SupportCost")
+                    b.Property<double>("SupportCost")
                         .HasColumnType("numeric");
 
                     b.Property<double?>("SupportMinutesPurchased")
                         .HasColumnType("numeric");
 
-                    b.Property<double?>("SupportMinutesSpent")
+                    b.Property<double>("SupportMinutesSpent")
                         .HasColumnType("numeric");
 
                     b.Property<int>("TerritoryId")

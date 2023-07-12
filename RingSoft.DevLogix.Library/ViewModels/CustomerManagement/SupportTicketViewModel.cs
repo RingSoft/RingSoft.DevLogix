@@ -481,6 +481,17 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         protected override SupportTicket GetEntityData()
         {
+            var minutesSpent = (double)0;
+
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var table = context.GetTable<SupportTicket>();
+            var existTicket = table
+                .FirstOrDefault(p => p.Id == Id);
+            if (existTicket !=  null)
+            {
+                minutesSpent = existTicket.MinutesSpent;
+            }
+
             var result = new SupportTicket
             {
                 Id = Id,
@@ -493,6 +504,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 CloseDate = ClosedDate,
                 Notes = Notes,
                 ContactName = ContactName,
+                MinutesSpent = minutesSpent,
             };
 
             if (KeyAutoFillValue != null)
