@@ -586,7 +586,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             //timeClockLookup.AddVisibleColumnDefinition(p => p.MinutesSpent, p => p.MinutesSpent);
             TimeClockLookup = AppGlobals.LookupContext.TimeClockLookup.Clone();
             //TimeClockLookup = timeClockLookup;
-            //TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
+            TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
         }
 
         protected override void Initialize()

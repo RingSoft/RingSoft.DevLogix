@@ -376,6 +376,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             //TimeClockLookup = timeClockLookup;
             //TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
             TimeClockLookup = AppGlobals.LookupContext.TimeClockLookup.Clone();
+            TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
 
             PunchInCommand = new RelayCommand(PunchIn);
             RecalcCommand = new RelayCommand(Recalc);
@@ -388,7 +389,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 View = supportTicketView;
             }
 
-            ViewLookupDefinition.InitialOrderByField = TableDefinition.GetFieldDefinition(p => p.Id);
             if (LookupAddViewArgs != null && LookupAddViewArgs.ParentWindowPrimaryKeyValue != null)
             {
                 if (LookupAddViewArgs.ParentWindowPrimaryKeyValue.TableDefinition ==

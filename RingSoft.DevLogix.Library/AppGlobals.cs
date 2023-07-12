@@ -66,7 +66,7 @@ namespace RingSoft.DevLogix.Library
             RingSoftAppGlobals.AppCopyright = "©2023 by Peter Ringering";
             RingSoftAppGlobals.PathToDownloadUpgrade = MasterDbContext.ProgramDataFolder;
             RingSoftAppGlobals.AppGuid = "96ac9aa5-65af-43ca-8cb8-6e35a2f12570";
-            RingSoftAppGlobals.AppVersion = 173;
+            RingSoftAppGlobals.AppVersion = 174;
             SystemGlobals.ProgramDataFolder = MasterDbContext.ProgramDataFolder;
         }
 
@@ -376,7 +376,7 @@ namespace RingSoft.DevLogix.Library
 
             if (minutesSpent >= 0)
             {
-                if (minutesSpent > 60)
+                if (minutesSpent >= 60)
                 {
                     hoursSpent = Math.Round(minutesSpent / 60, 2);
                     timeSpent = $"{FormatValue(hoursSpent, DecimalFieldTypes.Decimal)} Hours";
@@ -388,7 +388,7 @@ namespace RingSoft.DevLogix.Library
                 }
             }
 
-            if (hoursSpent > 24)
+            if (hoursSpent >= 24)
             {
                 daysSpent = Math.Round(hoursSpent / 24, 2);
                 timeSpent = $"{FormatValue(daysSpent, DecimalFieldTypes.Decimal)} Days";
@@ -417,7 +417,7 @@ namespace RingSoft.DevLogix.Library
 
             if (megaHertz >= 0)
             {
-                if (megaHertz > 1000)
+                if (megaHertz >= 1000)
                 {
                     gigaHertz = Math.Round(megaHertz / 1000, 2);
                     speed = $"{FormatValue(gigaHertz, DecimalFieldTypes.Decimal)} GHz";
@@ -429,13 +429,13 @@ namespace RingSoft.DevLogix.Library
                 }
             }
 
-            if (gigaHertz > 1000)
+            if (gigaHertz >= 1000)
             {
                 teraHertz = Math.Round(gigaHertz / 1000, 2);
                 speed = $"{FormatValue(teraHertz, DecimalFieldTypes.Decimal)} THz";
             }
 
-            if (teraHertz > 1000)
+            if (teraHertz >= 1000)
             {
                 petaHertz = Math.Round(teraHertz / 1000, 2);
                 speed = $"{FormatValue(petaHertz, DecimalFieldTypes.Decimal)} PHz";
@@ -477,13 +477,13 @@ namespace RingSoft.DevLogix.Library
                 }
             }
 
-            if (gigaBytes > 1000)
+            if (gigaBytes >= 1000)
             {
                 teraBytes = Math.Round(gigaBytes / 1000, 2);
                 space = $"{FormatValue(teraBytes, DecimalFieldTypes.Decimal)} TB";
             }
 
-            if (teraBytes > 1000)
+            if (teraBytes >= 1000)
             {
                 petaBytes = Math.Round(teraBytes / 1000, 2);
                 space = $"{FormatValue(petaBytes, DecimalFieldTypes.Decimal)} PB";

@@ -561,7 +561,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             //timeClockLookup.AddVisibleColumnDefinition(p => p.MinutesSpent, p => p.MinutesSpent);
 
             TimeClockLookup = AppGlobals.LookupContext.TimeClockLookup.Clone();
-            //TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
+            TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
 
             var salesLookup = AppGlobals.LookupContext.UserMonthlySalesLookup.Clone();
             salesLookup.AddVisibleColumnDefinition(

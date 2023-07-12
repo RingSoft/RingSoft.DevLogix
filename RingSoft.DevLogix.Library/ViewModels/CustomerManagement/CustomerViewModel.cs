@@ -599,8 +599,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             TablesToDelete.Add(AppGlobals.LookupContext.CustomerUser);
 
             OrderLookupDefinition = AppGlobals.LookupContext.OrderLookup.Clone();
-            //OrderLookupDefinition.InitialOrderByField = AppGlobals.LookupContext
-            //    .Order.GetFieldDefinition(p => p.Id);
+            OrderLookupDefinition.InitialOrderByType = OrderByTypes.Descending;
 
             AddModifyOrderLookupCommand = new RelayCommand(AddModifyOrder);
 
@@ -621,10 +620,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             //TimeClockLookup = timeClockLookup;
             //TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
             TimeClockLookup = AppGlobals.LookupContext.TimeClockLookup.Clone();
-            
+            TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
+
             ComputerLookup = AppGlobals.LookupContext.CustomerComputerLookup.Clone();
 
             SupportTicketLookup = AppGlobals.LookupContext.SupportTicketLookup.Clone();
+            SupportTicketLookup.InitialOrderByType = OrderByTypes.Descending;
         }
 
         protected override void Initialize()

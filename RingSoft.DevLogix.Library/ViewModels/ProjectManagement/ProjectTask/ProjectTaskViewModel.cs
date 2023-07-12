@@ -391,7 +391,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             //column.HasSearchForHostId(DevLogixLookupContext.TimeSpentHostId);
 
             TimeClockLookup = AppGlobals.LookupContext.TimeClockLookup.Clone();
-            //TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
+            TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
         }
 
 
