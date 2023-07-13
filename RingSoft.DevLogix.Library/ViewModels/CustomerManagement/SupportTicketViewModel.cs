@@ -49,6 +49,35 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
         }
 
+        private AutoFillSetup _statusAutoFillSetup;
+
+        public AutoFillSetup StatusAutoFillSetup
+        {
+            get => _statusAutoFillSetup;
+            set
+            {
+                if (_statusAutoFillSetup == value)
+                    return;
+
+                _statusAutoFillSetup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private AutoFillValue _statusAutoFillValue;
+
+        public AutoFillValue StatusAutoFillValue
+        {
+            get => _statusAutoFillValue;
+            set
+            {
+                if (_statusAutoFillValue == value)
+                    return;
+
+                _statusAutoFillValue = value;
+                OnPropertyChanged();
+            }
+        }
         private AutoFillSetup _customerAutoFillSetup;
 
         public AutoFillSetup CustomerAutoFillSetup
@@ -359,6 +388,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             TablesToDelete.Add(AppGlobals.LookupContext.SupportTicketUser);
             TablesToDelete.Add(AppGlobals.LookupContext.SupportTicketError);
 
+            StatusAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.StatusId));
             CustomerAutoFillSetup = new AutoFillSetup(
                 TableDefinition.GetFieldDefinition(p => p.CustomerId));
             CreateUserAutoFillSetup = new AutoFillSetup(
@@ -432,6 +462,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             var table = context.GetTable<SupportTicket>();
             return table
                 .Include(p => p.Customer)
+                .Include(p => p.Status)
                 .Include(p => p.CreateUser)
                 .Include(p => p.Product)
                 .Include(p => p.AssignedToUser)
@@ -445,6 +476,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         protected override void LoadFromEntity(SupportTicket entity)
         {
             _loading = true;
+            StatusAutoFillValue = entity.Status.GetAutoFillValue();
             CustomerAutoFillValue = entity.Customer.GetAutoFillValue();
             CreateDate = entity.CreateDate.ToLocalTime();
             CreateUserAutoFillValue = entity.CreateUser.GetAutoFillValue();
@@ -494,6 +526,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             var result = new SupportTicket
             {
                 Id = Id,
+                StatusId = StatusAutoFillValue.GetEntity<SupportTicketStatus>().Id,
                 CustomerId = CustomerAutoFillValue.GetEntity<Customer>().Id,
                 CreateDate = CreateDate.ToUniversalTime(),
                 PhoneNumber = PhoneNumber,
@@ -515,11 +548,23 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 result.AssignedToUserId = null;
             }
 
+            if (result.StatusId == 0)
+            {
+                result.StatusId = null;
+            }
+
+
             return result;
         }
 
         protected override bool ValidateEntity(SupportTicket entity)
         {
+            if (entity.StatusId == null)
+            {
+                Processor.HandleAutoFillValFail(new DbAutoFillMap(StatusAutoFillSetup, StatusAutoFillValue));
+                return false;
+            }
+
             if (!TicketErrorGridManager.ValidateGrid())
             {
                 return false;

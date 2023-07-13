@@ -10,6 +10,7 @@ using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.Lookup;
+using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.LookupModel;
@@ -47,6 +48,36 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                     return;
                 }
                 _id = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private AutoFillSetup _statusAutoFillSetup;
+
+        public AutoFillSetup StatusAutoFillSetup
+        {
+            get => _statusAutoFillSetup;
+            set
+            {
+                if (_statusAutoFillSetup == value)
+                    return;
+
+                _statusAutoFillSetup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private AutoFillValue _statusAutoFillValue;
+
+        public AutoFillValue StatusAutoFillValue
+        {
+            get => _statusAutoFillValue;
+            set
+            {
+                if (_statusAutoFillValue == value)
+                    return;
+
+                _statusAutoFillValue = value;
                 OnPropertyChanged();
             }
         }
@@ -586,6 +617,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             AppGlobals.MainViewModel.CustomerViewModels.Add(this);
             TimeZoneAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.TimeZoneId));
             TerritoryAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.TerritoryId));
+            StatusAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.StatusId));
+
 
             PunchInCommand = new RelayCommand(PunchIn);
 
@@ -668,6 +701,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             var context = AppGlobals.DataRepository.GetDataContext();
             var table = context.GetTable<Customer>();
             var result = table
+                .Include(p => p.Status)
                 .Include(p => p.TimeZone)
                 .Include(p => p.Territory)
                 .Include(p => p.CustomerProducts)
@@ -681,6 +715,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         protected override void LoadFromEntity(Customer entity)
         {
             _loading = true;
+            StatusAutoFillValue = entity.Status.GetAutoFillValue();
             ContactName = entity.ContactName;
             ContactTitle = entity.ContactTitle;
             Address = entity.Address;
@@ -740,6 +775,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             var result = new Customer
             {
                 Id = Id,
+                StatusId = StatusAutoFillValue.GetEntity<CustomerStatus>().Id,
                 CompanyName = KeyAutoFillValue.Text,
                 ContactName = ContactName,
                 ContactTitle = ContactTitle,
@@ -761,12 +797,25 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 SupportCost = SupportCost,
                 TotalSales = TotalSales,
             };
+
+            if (result.StatusId == 0)
+            {
+                result.StatusId = null;
+            }
             return result;
         }
 
         protected override bool ValidateEntity(Customer entity)
         {
             var result = base.ValidateEntity(entity);
+            if (result)
+            {
+                if (entity.StatusId == null)
+                {
+                    Processor.HandleAutoFillValFail(new DbAutoFillMap(StatusAutoFillSetup, StatusAutoFillValue));
+                    return false;
+                }
+            }
             if (result)
             {
                 if (!ProductManager.ValidateGrid())

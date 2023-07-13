@@ -1056,6 +1056,8 @@ namespace RingSoft.DevLogix.DataAccess
                 .HasSearchForHostId(TimeSpentHostId);
             Customer.GetFieldDefinition(p => p.MinutesCost)
                 .HasDecimalFieldType(DecimalFieldTypes.Currency);
+            Customer.GetFieldDefinition(p => p.StatusId)
+                .CanSetNull(false);
 
             CustomerProduct.PriorityLevel = 600;
             CustomerProduct.GetFieldDefinition(
@@ -1107,6 +1109,9 @@ namespace RingSoft.DevLogix.DataAccess
                 .HasDecimalFieldType(DecimalFieldTypes.Currency);
             SupportTicket.GetFieldDefinition(p => p.MinutesSpent)
                 .HasSearchForHostId(TimeSpentHostId);
+            SupportTicket.GetFieldDefinition(p => p.StatusId)
+                .CanSetNull(false);
+
 
             SupportTicketUser.PriorityLevel = 900;
             SupportTicketUser.GetFieldDefinition(p => p.Cost)

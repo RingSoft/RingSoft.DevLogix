@@ -115,13 +115,16 @@
 
             <lc:AutoFillControl Grid.Row="3" Grid.Column="1" Width="200" HorizontalAlignment="Left" Setup="{Binding ProductAutoFillSetup}" Value="{Binding ProductAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
+            <Label Grid.Row="3" Grid.Column="2" Content="Status"/>
+
+            <lc:AutoFillControl Grid.Row="3" Grid.Column="3" Width="200" HorizontalAlignment="Left" Setup="{Binding StatusAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding StatusAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
             <TabControl Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="5">
 
                 <TabItem Header="Details">
 
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
@@ -137,18 +140,14 @@
 
                         <lc:AutoFillControl Grid.Row="0" Grid.Column="1" Width="200" HorizontalAlignment="Left" Setup="{Binding CreateUserAutoFillSetup}" Value="{Binding CreateUserAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-                        <Label Grid.Row="0" Grid.Column="2" Content="Closed Date"/>
 
-                        <dec:DateEditControl Grid.Row="0" Grid.Column="3" DateFormatType="DateTime" Width="200" HorizontalAlignment="Left" Value="{Binding ClosedDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AllowNullValue="True"/>
+                        <Label Grid.Row="0" Grid.Column="2" Content="Assigned To"/>
 
+                        <lc:AutoFillControl Grid.Row="0" Grid.Column="3" Width="200" HorizontalAlignment="Left" Setup="{Binding AssignedUserAutoFillSetup}" Value="{Binding AssignedUserAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-                        <Label Grid.Row="1" Grid.Column="0" Content="Assigned To"/>
+                        <Label Grid.Row="1" Grid.Column="0" Content="Notes" VerticalAlignment="Top"/>
 
-                        <lc:AutoFillControl Grid.Row="1" Grid.Column="1" Width="200" HorizontalAlignment="Left" Setup="{Binding AssignedUserAutoFillSetup}" Value="{Binding AssignedUserAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-
-                        <Label Grid.Row="2" Grid.Column="0" Content="Notes" VerticalAlignment="Top"/>
-
-                        <dec:DataEntryMemoEditor Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="4" x:Name="NotesControl" Text="{Binding Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <dec:DataEntryMemoEditor Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4" x:Name="NotesControl" Text="{Binding Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                     </Grid>
                 </TabItem>

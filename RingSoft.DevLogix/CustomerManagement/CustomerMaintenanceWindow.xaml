@@ -98,6 +98,10 @@
 
             <dec:StringEditControl Grid.Row="1" Grid.Column="1" Width="200" HorizontalAlignment="Left" Text="{Binding PhoneNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="50"/>
 
+            <Label Grid.Row="1" Grid.Column="2" Content="Status"/>
+
+            <lc:AutoFillControl Grid.Row="1" Grid.Column="3" Width="200" HorizontalAlignment="Left" Setup="{Binding StatusAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding StatusAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
             <Label Grid.Row="2" Grid.Column="0" Content="Time Zone"/>
 
             <lc:AutoFillControl Grid.Row="2" Grid.Column="1" Width="200" HorizontalAlignment="Left" Setup="{Binding TimeZoneAutoFillSetup}" Value="{Binding TimeZoneAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
