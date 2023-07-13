@@ -244,6 +244,9 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar");
 
+                    b.Property<DateTime?>("LastContactDate")
+                        .HasColumnType("datetime");
+
                     b.Property<decimal>("MinutesCost")
                         .HasColumnType("numeric");
 

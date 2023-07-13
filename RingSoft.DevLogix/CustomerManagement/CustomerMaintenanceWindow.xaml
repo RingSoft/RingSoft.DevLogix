@@ -146,6 +146,7 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -207,6 +208,10 @@
                             <dl:TimeControl Minutes="{Binding NewSupportTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                         </StackPanel>
+
+                        <Label Grid.Row="7" Grid.Column="0" Content="Last Sales Contact Date"/>
+
+                        <dec:DateReadOnlyBox Grid.Row="7" Grid.Column="1" Width="200" HorizontalAlignment="Left" DateFormatType="DateTime" Value="{Binding LastContactDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                     </Grid>
                 </TabItem>

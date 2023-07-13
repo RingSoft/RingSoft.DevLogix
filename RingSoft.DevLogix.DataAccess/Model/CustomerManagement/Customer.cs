@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -80,6 +81,7 @@ namespace RingSoft.DevLogix.DataAccess.Model.CustomerManagement
         [DefaultValue(0)]
         public double MinutesSpent { get; set; }
 
+        public DateTime? LastContactDate { get; set; }
 
         public virtual ICollection<TimeClock> TimeClocks { get; set; }
         public virtual ICollection<Order> Orders { get; set; }

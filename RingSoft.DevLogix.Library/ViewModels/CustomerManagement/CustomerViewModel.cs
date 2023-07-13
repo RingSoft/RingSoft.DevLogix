@@ -596,6 +596,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
         }
 
+        private DateTime? _lastContactDate;
+
+        public DateTime? LastContactDate
+        {
+            get => _lastContactDate;
+            set
+            {
+                if (_lastContactDate == value)
+                    return;
+
+                _lastContactDate = value;
+                OnPropertyChanged(null, false);
+            }
+        }
+
+
         public RelayCommand PunchInCommand { get; private set; }
 
         public RelayCommand RecalcCommand { get; private set; }
@@ -739,6 +755,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             SupportCost = entity.SupportCost;
             TotalSales = entity.TotalSales;
             Notes = entity.Notes;
+            LastContactDate = entity.LastContactDate;
+            if (LastContactDate.HasValue)
+            {
+                LastContactDate = LastContactDate.Value.ToLocalTime();
+            }
             _loading = false;
             UpdateTotals();
         }
@@ -757,6 +778,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             var supportMinutesSpent = 0.0;
             var minutesSpent = 0.0;
             var cost = 0.0;
+            DateTime? lastContactDate = null;
             if (Id > 0)
             {
                 var context = AppGlobals.DataRepository.GetDataContext();
@@ -768,7 +790,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                     supportMinutesSpent = oldCustomer.SupportMinutesSpent;
                     minutesSpent = oldCustomer.MinutesSpent;
                     cost = oldCustomer.MinutesCost;
-
+                    lastContactDate = oldCustomer.LastContactDate;
                 }
             }
 
@@ -796,6 +818,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 MinutesCost = cost,
                 SupportCost = SupportCost,
                 TotalSales = TotalSales,
+                LastContactDate = lastContactDate,
             };
 
             if (result.StatusId == 0)
@@ -859,6 +882,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             SupportCost = 0;
             TotalSales = 0;
             SalesDifference = 0;
+            LastContactDate = null;
             View.RefreshView();
         }
 
@@ -1116,8 +1140,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 return GblMethods.LastError;
             }
 
-            if (currentCustomer.Id == Id)
+            if (currentCustomer.Id == Id) 
             {
+                if (currentCustomer.LastContactDate.HasValue)
+                {
+                    LastContactDate = currentCustomer.LastContactDate.Value.ToLocalTime();
+                }
                 RefreshCost(customerUsers);
                 RefreshSales(currentCustomer);
                 SupportMinutesSpent = currentCustomer.SupportMinutesSpent;
@@ -1176,8 +1204,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 }
             }
 
+            var lastCustomerTimeClock = timeClocksTable
+                .OrderByDescending(p => p.PunchInDate)
+                .FirstOrDefault(p => p.CustomerId == currentCustomer.Id);
+
             currentCustomer.MinutesSpent += customerUser.MinutesSpent;
             currentCustomer.MinutesCost += customerUser.Cost;
+            if (lastCustomerTimeClock != null)
+            {
+                currentCustomer.LastContactDate = lastCustomerTimeClock.PunchInDate;
+            }
 
             return result;
         }

@@ -1090,6 +1090,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             if (result)
             {
                 AppGlobals.CalculateCustomer(customer, customer.Users.ToList());
+                customer.LastContactDate = PunchInDate.ToUniversalTime();
                 result = context.SaveNoCommitEntity(customer, "Saving Customer");
             }
 
@@ -1097,6 +1098,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 .Where(p => p.Id == customer.Id);
             foreach (var customerViewModel in customerViewModels)
             {
+                if (customer.LastContactDate.HasValue)
+                {
+                    customerViewModel.LastContactDate = customer.LastContactDate.Value.ToLocalTime();
+                }
                 customerViewModel.RefreshCost(customerUser);
             }
             return result;

@@ -1058,6 +1058,10 @@ namespace RingSoft.DevLogix.DataAccess
                 .HasDecimalFieldType(DecimalFieldTypes.Currency);
             Customer.GetFieldDefinition(p => p.StatusId)
                 .CanSetNull(false);
+            Customer.GetFieldDefinition(p => p.LastContactDate)
+                .HasDateType(DbDateTypes.DateTime)
+                .DoConvertToLocalTime()
+                .HasDescription("Last Sales Contact Date");
 
             CustomerProduct.PriorityLevel = 600;
             CustomerProduct.GetFieldDefinition(
