@@ -73,7 +73,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                         }
                         else
                         {
-                            Manager.ViewModel.View.GetNewLineType(autoFillCellProps.AutoFillValue.Text, 
+                            var item = string.Empty;
+                            if (autoFillCellProps.AutoFillValue!= null)
+                            {
+                                item = autoFillCellProps.AutoFillValue.Text;
+                            }
+                            Manager.ViewModel.View.GetNewLineType(item, 
                                 out var materialPartPkValue, out var lineType);
                             var newRow = Manager.ConstructRowFromLineType(lineType);
                             Manager.ReplaceRow(this, newRow);
