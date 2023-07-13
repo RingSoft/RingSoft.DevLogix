@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging.Abstractions;
 using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
@@ -593,6 +594,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             TicketErrorGridManager.SetupForNewRecord();
             TimeClockLookupCommand = GetLookupCommand(LookupCommands.Clear);
             MinutesSpent = 0;
+            StatusAutoFillValue = null;
             _loading = false;
             GetTotals();
         }

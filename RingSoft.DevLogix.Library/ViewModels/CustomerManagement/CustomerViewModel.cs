@@ -883,6 +883,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             TotalSales = 0;
             SalesDifference = 0;
             LastContactDate = null;
+            StatusAutoFillValue = null;
             View.RefreshView();
         }
 
