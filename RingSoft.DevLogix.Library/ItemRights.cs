@@ -274,7 +274,13 @@ namespace RingSoft.DevLogix.Library
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Territories", AppGlobals.LookupContext.Territory));
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Customer Computers", 
                 AppGlobals.LookupContext.CustomerComputer));
+            category.Items.Add(new RightCategoryItem(item: "Add/Edit Customer Statuses",
+                AppGlobals.LookupContext.CustomerStatus));
+
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Support Tickets", AppGlobals.LookupContext.SupportTicket));
+            category.Items.Add(new RightCategoryItem(item: "Add/Edit Support Ticket Statuses",
+                AppGlobals.LookupContext.SupportTicketStatus));
+
 
             Categories.Add(category);
 

@@ -14,6 +14,10 @@ namespace RingSoft.DevLogix.DataAccess.Model.CustomerManagement
         [MaxLength(50)]
         public string CompanyName { get; set; }
 
+        public int? StatusId { get; set; }
+
+        public virtual CustomerStatus Status { get; set; }
+
         [MaxLength(50)]
         public string? ContactName { get; set; }
 

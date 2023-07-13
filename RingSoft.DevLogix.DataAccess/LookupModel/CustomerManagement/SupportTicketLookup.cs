@@ -26,4 +26,9 @@ namespace RingSoft.DevLogix.DataAccess.LookupModel.CustomerManagement
 
         public string ErrorId { get; set; }
     }
+
+    public class SupportTicketStatusLookup
+    {
+        public string Description { get; set; }
+    }
 }

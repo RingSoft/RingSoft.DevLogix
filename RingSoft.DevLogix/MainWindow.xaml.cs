@@ -189,6 +189,16 @@ namespace RingSoft.DevLogix
                     });
                 }
 
+                if (AppGlobals.LookupContext.CustomerStatus.HasRight(RightTypes.AllowView))
+                {
+                    menuItem.Items.Add(new MenuItem()
+                    {
+                        Header = "Add/Edit Customer St_atuses...",
+                        Command = ViewModel.ShowMaintenanceWindowCommand,
+                        CommandParameter = AppGlobals.LookupContext.CustomerStatus,
+                    });
+                }
+
                 if (AppGlobals.LookupContext.CustomerComputer.HasRight(RightTypes.AllowView))
                 {
                     menuItem.Items.Add(new MenuItem()
@@ -206,6 +216,16 @@ namespace RingSoft.DevLogix
                         Header = "Add/Edit _Support Tickets...",
                         Command = ViewModel.ShowMaintenanceWindowCommand,
                         CommandParameter = AppGlobals.LookupContext.SupportTicket,
+                    });
+                }
+
+                if (AppGlobals.LookupContext.SupportTicketStatus.HasRight(RightTypes.AllowView))
+                {
+                    menuItem.Items.Add(new MenuItem()
+                    {
+                        Header = "Add/Edit Su_pport Ticket Statuses...",
+                        Command = ViewModel.ShowMaintenanceWindowCommand,
+                        CommandParameter = AppGlobals.LookupContext.SupportTicketStatus,
                     });
                 }
 

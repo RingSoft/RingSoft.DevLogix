@@ -13,7 +13,6 @@ namespace RingSoft.DevLogix.DataAccess.Configurations.CustomerManagement
             builder.Property(p => p.Id).HasColumnType(DbConstants.IntegerColumnType);
             builder.Property(p => p.TicketId).HasColumnType(DbConstants.StringColumnType);
             builder.Property(p => p.CreateDate).HasColumnType(DbConstants.DateColumnType);
-            builder.Property(p => p.CloseDate).HasColumnType(DbConstants.DateColumnType);
             builder.Property(p => p.CustomerId).HasColumnType(DbConstants.IntegerColumnType);
             builder.Property(p => p.PhoneNumber).HasColumnType(DbConstants.StringColumnType);
             builder.Property(p => p.CreateUserId).HasColumnType(DbConstants.IntegerColumnType);
@@ -23,6 +22,7 @@ namespace RingSoft.DevLogix.DataAccess.Configurations.CustomerManagement
             builder.Property(p => p.MinutesSpent).HasColumnType(DbConstants.DecimalColumnType);
             builder.Property(p => p.Cost).HasColumnType(DbConstants.DecimalColumnType);
             builder.Property(p => p.ContactName).HasColumnType(DbConstants.StringColumnType);
+            builder.Property(p => p.StatusId).HasColumnType(DbConstants.IntegerColumnType);
 
             builder.HasOne(p => p.Customer)
                 .WithMany(p => p.Tickets)
@@ -45,6 +45,11 @@ namespace RingSoft.DevLogix.DataAccess.Configurations.CustomerManagement
                 .OnDelete(DeleteBehavior.Restrict)
                 .IsRequired(false);
 
+            builder.HasOne(p => p.Status)
+                .WithMany(p => p.Tickets)
+                .HasForeignKey(p => p.StatusId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .IsRequired(false);
         }
     }
 }

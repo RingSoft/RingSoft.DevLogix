@@ -451,7 +451,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             ProductAutoFillValue = entity.Product.GetAutoFillValue();
             AssignedUserAutoFillValue = entity.AssignedToUser.GetAutoFillValue();
             PhoneNumber = entity.PhoneNumber;
-            ClosedDate = entity.CloseDate;
             Notes = entity.Notes;
             TicketUserGridManager.LoadGrid(entity.SupportTicketUsers);
             TicketErrorGridManager.LoadGrid(entity.Errors);
@@ -501,7 +500,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 CreateUserId = CreateUserAutoFillValue.GetEntity<User>().Id,
                 ProductId = ProductAutoFillValue.GetEntity<Product>().Id,
                 AssignedToUserId = AssignedUserAutoFillValue.GetEntity<User>().Id,
-                CloseDate = ClosedDate,
                 Notes = Notes,
                 ContactName = ContactName,
                 MinutesSpent = minutesSpent,

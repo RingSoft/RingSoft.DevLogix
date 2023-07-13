@@ -19,7 +19,9 @@ namespace RingSoft.DevLogix.DataAccess.Model.CustomerManagement
         [Required]
         public DateTime CreateDate { get; set; }
 
-        public DateTime? CloseDate { get; set; }
+        public int? StatusId { get; set; }
+
+        public virtual SupportTicketStatus Status { get; set; }
 
         [Required]
         public int CustomerId { get; set; }

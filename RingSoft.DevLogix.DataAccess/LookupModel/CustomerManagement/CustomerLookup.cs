@@ -42,4 +42,8 @@ namespace RingSoft.DevLogix.DataAccess.LookupModel.CustomerManagement
         public string UserName { get; set; }
     }
 
+    public class CustomerStatusLookup
+    {
+        public string Description { get; set; }
+    }
 }

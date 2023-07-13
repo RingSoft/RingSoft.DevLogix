@@ -30,6 +30,7 @@ namespace RingSoft.DevLogix.DataAccess.Configurations.CustomerManagement
             builder.Property(p => p.TotalSales).HasColumnType(DbConstants.DecimalColumnType);
             builder.Property(p => p.MinutesSpent).HasColumnType(DbConstants.DecimalColumnType);
             builder.Property(p => p.MinutesCost).HasColumnType(DbConstants.DecimalColumnType);
+            builder.Property(p => p.StatusId).HasColumnType(DbConstants.IntegerColumnType);
 
             builder .HasOne(p => p.TimeZone)
                 .WithMany(p => p.Customers)
@@ -40,6 +41,12 @@ namespace RingSoft.DevLogix.DataAccess.Configurations.CustomerManagement
                 .WithMany(p => p.Customers)
                 .HasForeignKey(p => p.TerritoryId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(p => p.Status)
+                .WithMany(p => p.Customers)
+                .HasForeignKey(p => p.StatusId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .IsRequired(false);
         }
     }
 }

@@ -93,6 +93,8 @@ namespace RingSoft.DevLogix.DataAccess
         public TableDefinition<SupportTicketUser> SupportTicketUser { get; set; }
         public TableDefinition<CustomerUser> CustomerUser { get; set; }
         public TableDefinition<SupportTicketError> SupportTicketError { get; set; }
+        public TableDefinition<CustomerStatus> CustomerStatus { get; set; }
+        public TableDefinition<SupportTicketStatus> SupportTicketStatus { get; set; }
 
         public LookupDefinition<DevLogixChartLookup, SystemMaster> SystemMasterLookupDefinition { get; set; }
         public LookupDefinition<DevLogixChartLookup, DevLogixChart> DevLogixChartLookup { get; set; }
@@ -148,6 +150,8 @@ namespace RingSoft.DevLogix.DataAccess
         public LookupDefinition<SupportTicketUserLookup, SupportTicketUser> SupportTicketUserLookup { get; set; }
         public LookupDefinition<CustomerUserLookup, CustomerUser> CustomerUserLookup { get; set; }
         public LookupDefinition<SupportTicketErrorLookup, SupportTicketError> SupportTicketErrorLookup { get; set; }
+        public LookupDefinition<CustomerStatusLookup, CustomerStatus> CustomerStatusLookup { get; set; }
+        public LookupDefinition<SupportTicketStatusLookup, SupportTicketStatus> SupportTicketStatusLookup { get; set; }
 
         public SqliteDataProcessor SqliteDataProcessor { get; }
         public SqlServerDataProcessor SqlServerDataProcessor { get; }
@@ -729,6 +733,21 @@ namespace RingSoft.DevLogix.DataAccess
                     , "Error"
                     , p => p.ErrorId, 50);
             SupportTicketError.HasLookupDefinition(SupportTicketErrorLookup);
+
+            CustomerStatusLookup = new LookupDefinition<CustomerStatusLookup, CustomerStatus>(CustomerStatus);
+            CustomerStatusLookup.AddVisibleColumnDefinition(
+                p => p.Description
+                , "Description"
+                , p => p.Description, 99);
+            CustomerStatus.HasLookupDefinition(CustomerStatusLookup);
+
+            SupportTicketStatusLookup = new LookupDefinition<SupportTicketStatusLookup, SupportTicketStatus>(SupportTicketStatus);
+            SupportTicketStatusLookup.AddVisibleColumnDefinition(
+                p => p.Description
+                , "Description"
+                , p => p.Description, 99);
+            SupportTicketStatus.HasLookupDefinition(SupportTicketStatusLookup);
+
         }
 
         public LookupDefinition<ProductVersionLookup, ProductVersion> MakeProductVersionLookupDefinition()
@@ -1080,9 +1099,6 @@ namespace RingSoft.DevLogix.DataAccess
             SupportTicket.GetFieldDefinition(p => p.TicketId)
                 .IsGeneratedKey();
             SupportTicket.GetFieldDefinition(p => p.CreateDate)
-                .HasDateType(DbDateTypes.DateTime)
-                .DoConvertToLocalTime();
-            SupportTicket.GetFieldDefinition(p => p.CloseDate)
                 .HasDateType(DbDateTypes.DateTime)
                 .DoConvertToLocalTime();
             SupportTicket.GetFieldDefinition(p => p.Notes)

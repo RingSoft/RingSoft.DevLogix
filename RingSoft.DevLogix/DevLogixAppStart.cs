@@ -130,6 +130,8 @@ namespace RingSoft.DevLogix
             WindowRegistry.RegisterWindow<CustomerComputerMaintenanceWindow>(AppGlobals.LookupContext.CustomerComputer);
             WindowRegistry.RegisterWindow<SupportTicketMaintenanceWindow>(AppGlobals.LookupContext.SupportTicket);
             WindowRegistry.RegisterWindow<SupportTicketMaintenanceWindow>(AppGlobals.LookupContext.SupportTicketUser);
+            WindowRegistry.RegisterWindow<CustomerStatusMaintenanceWindow>(AppGlobals.LookupContext.CustomerStatus);
+            WindowRegistry.RegisterWindow<SupportTicketStatusMaintenanceWindow>(AppGlobals.LookupContext.SupportTicketStatus);
 
             AppGlobals.LookupContext.FormatSearchForEvent += (sender, args) =>
             {

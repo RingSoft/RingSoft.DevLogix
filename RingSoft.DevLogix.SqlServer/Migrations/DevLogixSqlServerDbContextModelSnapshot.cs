@@ -266,6 +266,9 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
+                    b.Property<int?>("StatusId")
+                        .HasColumnType("integer");
+
                     b.Property<decimal>("SupportCost")
                         .HasColumnType("numeric");
 
@@ -292,6 +295,8 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .HasColumnType("nvarchar");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("StatusId");
 
                     b.HasIndex("TerritoryId");
 
@@ -379,6 +384,24 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("CustomerProduct");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.CustomerStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CustomerStatus");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.CustomerUser", b =>
@@ -522,9 +545,6 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<int?>("AssignedToUserId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime?>("CloseDate")
-                        .HasColumnType("datetime");
-
                     b.Property<string>("ContactName")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
@@ -555,6 +575,9 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("StatusId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("TicketId")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -569,6 +592,8 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("StatusId");
 
                     b.ToTable("SupportTicket");
                 });
@@ -586,6 +611,24 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.HasIndex("ErrorId");
 
                     b.ToTable("SupportTicketError");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.SupportTicketStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SupportTicketStatus");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.SupportTicketUser", b =>
@@ -1966,6 +2009,11 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Customer", b =>
                 {
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.CustomerStatus", "Status")
+                        .WithMany("Customers")
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Territory", "Territory")
                         .WithMany("Customers")
                         .HasForeignKey("TerritoryId")
@@ -1981,6 +2029,8 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", null)
                         .WithMany("Customers")
                         .HasForeignKey("UserId");
+
+                    b.Navigation("Status");
 
                     b.Navigation("Territory");
 
@@ -2099,6 +2149,11 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.SupportTicketStatus", "Status")
+                        .WithMany("Tickets")
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.Navigation("AssignedToUser");
 
                     b.Navigation("CreateUser");
@@ -2106,6 +2161,8 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("Customer");
 
                     b.Navigation("Product");
+
+                    b.Navigation("Status");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.SupportTicketError", b =>
@@ -2799,6 +2856,11 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("Users");
                 });
 
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.CustomerStatus", b =>
+                {
+                    b.Navigation("Customers");
+                });
+
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Order", b =>
                 {
                     b.Navigation("Details");
@@ -2811,6 +2873,11 @@ namespace RingSoft.DevLogix.SqlServer.Migrations
                     b.Navigation("SupportTicketUsers");
 
                     b.Navigation("TimeClocks");
+                });
+
+            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.SupportTicketStatus", b =>
+                {
+                    b.Navigation("Tickets");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Territory", b =>

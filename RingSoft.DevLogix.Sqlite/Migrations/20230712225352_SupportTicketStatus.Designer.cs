@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RingSoft.DevLogix.Sqlite;
 
@@ -10,9 +11,11 @@ using RingSoft.DevLogix.Sqlite;
 namespace RingSoft.DevLogix.Sqlite.Migrations
 {
     [DbContext(typeof(DevLogixSqliteDbContext))]
-    partial class DevLogixSqliteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230712225352_SupportTicketStatus")]
+    partial class SupportTicketStatus
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.1");
@@ -257,9 +260,6 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
-                    b.Property<int?>("StatusId")
-                        .HasColumnType("integer");
-
                     b.Property<double>("SupportCost")
                         .HasColumnType("numeric");
 
@@ -286,8 +286,6 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .HasColumnType("nvarchar");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("StatusId");
 
                     b.HasIndex("TerritoryId");
 
@@ -558,9 +556,6 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("StatusId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("TicketId")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -575,8 +570,6 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("ProductId");
-
-                    b.HasIndex("StatusId");
 
                     b.ToTable("SupportTicket");
                 });
@@ -1942,11 +1935,6 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Customer", b =>
                 {
-                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.CustomerStatus", "Status")
-                        .WithMany("Customers")
-                        .HasForeignKey("StatusId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Territory", "Territory")
                         .WithMany("Customers")
                         .HasForeignKey("TerritoryId")
@@ -1962,8 +1950,6 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.HasOne("RingSoft.DevLogix.DataAccess.Model.User", null)
                         .WithMany("Customers")
                         .HasForeignKey("UserId");
-
-                    b.Navigation("Status");
 
                     b.Navigation("Territory");
 
@@ -2082,11 +2068,6 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.SupportTicketStatus", "Status")
-                        .WithMany("Tickets")
-                        .HasForeignKey("StatusId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.Navigation("AssignedToUser");
 
                     b.Navigation("CreateUser");
@@ -2094,8 +2075,6 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("Customer");
 
                     b.Navigation("Product");
-
-                    b.Navigation("Status");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.SupportTicketError", b =>
@@ -2789,11 +2768,6 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("Users");
                 });
 
-            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.CustomerStatus", b =>
-                {
-                    b.Navigation("Customers");
-                });
-
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Order", b =>
                 {
                     b.Navigation("Details");
@@ -2806,11 +2780,6 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                     b.Navigation("SupportTicketUsers");
 
                     b.Navigation("TimeClocks");
-                });
-
-            modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.SupportTicketStatus", b =>
-                {
-                    b.Navigation("Tickets");
                 });
 
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Territory", b =>

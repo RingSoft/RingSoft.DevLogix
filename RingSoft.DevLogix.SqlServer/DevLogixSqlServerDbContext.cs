@@ -62,6 +62,8 @@ namespace RingSoft.DevLogix.SqlServer
         public DbSet<SupportTicketUser> SupportTicketUser { get; set; }
         public DbSet<CustomerUser> CustomerUser { get; set; }
         public DbSet<SupportTicketError> SupportTicketError { get; set; }
+        public DbSet<CustomerStatus> CustomerStatus { get; set; }
+        public DbSet<SupportTicketStatus> SupportTicketStatus { get; set; }
         public DbSet<TestingTemplate> TestingTemplates { get; set; }
 
         public bool IsDesignTime { get; set; }
