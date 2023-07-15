@@ -480,7 +480,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             //var column = timeClockLookup.AddVisibleColumnDefinition(p => p.MinutesSpent, p => p.MinutesSpent);
             //column.HasSearchForHostId(DevLogixLookupContext.TimeSpentHostId);
 
-            TimeClockLookup = AppGlobals.LookupContext.TimeClockLookup.Clone();
+            TimeClockLookup = AppGlobals.LookupContext.TimeClockTabLookup.Clone();
             TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
             //TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
             TimeClockLookup.Include(p => p.ProjectTask)

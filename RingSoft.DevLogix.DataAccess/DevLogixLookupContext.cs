@@ -108,6 +108,7 @@ namespace RingSoft.DevLogix.DataAccess
         public LookupDefinition<UsersGroupsLookup, UsersGroup> UsersGroupsLookup { get; set; }
         public LookupDefinition<DepartmentLookup, Department> DepartmentLookup { get; set; }
         public LookupDefinition<TimeClockLookup, TimeClock> TimeClockLookup { get; set; }
+        public LookupDefinition<TimeClockLookup, TimeClock> TimeClockTabLookup { get; set; }
         public LookupDefinition<UserTrackerLookup, UserTracker> UserTrackerLookup { get; set; }
         public LookupDefinition<UserTrackerUserLookup, UserTrackerUser> UserTrackerUserLookup { get; set; }
         public LookupDefinition<UserMonthlySalesLookup, UserMonthlySales> UserMonthlySalesLookup { get; set; }
@@ -280,8 +281,7 @@ namespace RingSoft.DevLogix.DataAccess
             UsersGroups.HasLookupDefinition(UsersGroupsLookup);
 
             TimeClockLookup = new LookupDefinition<TimeClockLookup, TimeClock>(TimeClocks);
-            TimeClockLookup.InitialOrderByField = TimeClocks.GetFieldDefinition(p => p.Id);
-            
+
             TimeClockLookup.AddVisibleColumnDefinition(
                 p => p.Name
                 , "Time Clock ID"
@@ -303,6 +303,26 @@ namespace RingSoft.DevLogix.DataAccess
                     25);
             column.HasSearchForHostId(TimeSpentHostId);
             TimeClocks.HasLookupDefinition(TimeClockLookup);
+
+            TimeClockTabLookup = new LookupDefinition<TimeClockLookup, TimeClock>(TimeClocks);
+
+            TimeClockTabLookup.AddVisibleColumnDefinition(
+                p => p.PunchInDate
+                , "Punch In Date"
+                , p => p.PunchInDate, 25);
+            
+            TimeClockTabLookup.Include(p => p.User)
+                .AddVisibleColumnDefinition(
+                    p => p.UserName
+                    , "User"
+                    , p => p.Name, 25);
+
+            TimeClockTabLookup.AddVisibleColumnDefinition(
+                    p => p.MinutesSpent
+                    , "Time Spent"
+                    , p => p.MinutesSpent,
+                    25);
+
 
             UserTrackerLookup = new LookupDefinition<UserTrackerLookup, UserTracker>(UserTracker);
             UserTrackerLookup.AddVisibleColumnDefinition(p => p.Name, "Name", p => p.Name, 95);

@@ -375,13 +375,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
             ErrorLookup = errorLookup;
 
-            var timeClockLookup = new LookupDefinition<TimeClockLookup, TimeClock>(AppGlobals.LookupContext.TimeClocks);
-            timeClockLookup.AddVisibleColumnDefinition(p => p.PunchInDate, p => p.PunchInDate);
-            timeClockLookup.Include(p => p.User)
-                .AddVisibleColumnDefinition(p => p.UserName, p => p.Name);
-            timeClockLookup.AddVisibleColumnDefinition(p => p.MinutesSpent, p => p.MinutesSpent);
+            //var timeClockLookup = new LookupDefinition<TimeClockLookup, TimeClock>(AppGlobals.LookupContext.TimeClocks);
+            //timeClockLookup.AddVisibleColumnDefinition(p => p.PunchInDate, p => p.PunchInDate);
+            //timeClockLookup.Include(p => p.User)
+            //    .AddVisibleColumnDefinition(p => p.UserName, p => p.Name);
+            //timeClockLookup.AddVisibleColumnDefinition(p => p.MinutesSpent, p => p.MinutesSpent);
 
-            TimeClockLookup = timeClockLookup;
+            //TimeClockLookup = timeClockLookup;
+            TimeClockLookup = AppGlobals.LookupContext.TimeClockTabLookup.Clone();
             TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
         }
 

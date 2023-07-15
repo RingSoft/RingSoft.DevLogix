@@ -560,7 +560,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             //timeClockLookup.AddVisibleColumnDefinition(p => p.PunchInDate, p => p.PunchInDate);
             //timeClockLookup.AddVisibleColumnDefinition(p => p.MinutesSpent, p => p.MinutesSpent);
 
-            TimeClockLookup = AppGlobals.LookupContext.TimeClockLookup.Clone();
+            TimeClockLookup = AppGlobals.LookupContext.TimeClockTabLookup.Clone();
             TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
 
             var salesLookup = AppGlobals.LookupContext.UserMonthlySalesLookup.Clone();
