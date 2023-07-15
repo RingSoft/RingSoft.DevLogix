@@ -88,5 +88,10 @@ namespace RingSoft.DevLogix.DataAccess.Model
             Users = new HashSet<ErrorUser>();
             SupportTickets = new HashSet<SupportTicketError>();
         }
+
+        public override string ToString()
+        {
+            return ErrorId;
+        }
     }
 }
