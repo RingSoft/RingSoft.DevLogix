@@ -12,6 +12,8 @@ namespace RingSoft.DevLogix.Tests.UserManagement
     {
         public AppRights Rights { get; private set; } = new AppRights();
 
+        public TestAppProcedure RecalcProcedure { get; } = new TestAppProcedure();
+
         public UserMaintenanceViewModel LocalViewModel { get; set; }
 
         public void OnValidationFail(FieldDefinition fieldDefinition, string text, string caption)
@@ -72,12 +74,7 @@ namespace RingSoft.DevLogix.Tests.UserManagement
 
         public string StartRecalcProcedure(LookupDefinitionBase lookupDefinition)
         {
-            return string.Empty;
-        }
-
-        public string StartRecalcProcedure(LookupDefinitionBase lookupDefinition, AppProcedure procedure)
-        {
-            return LocalViewModel.StartRecalculateProcedure(lookupDefinition, procedure);
+            return LocalViewModel.StartRecalculateProcedure(lookupDefinition, RecalcProcedure);
         }
 
         public void UpdateRecalcProcedure(int currentProject, int totalProjects, string currentProjectText)
