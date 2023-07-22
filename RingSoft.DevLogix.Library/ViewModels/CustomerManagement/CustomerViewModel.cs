@@ -928,6 +928,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
                 context.RemoveRange(existingProducts);
 
+                var usersTable = context.GetTable<CustomerUser>();
+                var existingUsers = usersTable.Where(
+                    p => p.CustomerId == Id).ToList();
+
+                context.RemoveRange(existingUsers);
+
                 result = context.DeleteEntity(delCustomer, "Deleting Customer");
             }
             return result;
