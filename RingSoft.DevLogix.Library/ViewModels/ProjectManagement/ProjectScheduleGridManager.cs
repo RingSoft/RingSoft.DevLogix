@@ -315,8 +315,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
                 detail.StringField01 = projectScheduleGridRow.Date.FormatDateValue(DbDateTypes.DateOnly);
                 detail.StringField02 = projectScheduleGridRow.Description;
-                detail.NumberField01 = numberSetup.FormatValue((decimal)projectScheduleGridRow.HoursWorked);
-                detail.NumberField02 = numberSetup.FormatValue((decimal)projectScheduleGridRow.HoursRemaining);
+                detail.NumberField01 = numberSetup.FormatValue(projectScheduleGridRow.HoursWorked);
+                detail.NumberField02 = numberSetup.FormatValue(projectScheduleGridRow.HoursRemaining);
 
                 detailsChunk.Add(detail);
                 counter++;

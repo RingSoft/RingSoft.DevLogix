@@ -50,25 +50,25 @@ namespace RingSoft.DevLogix.Library.ViewModels
                         , new DecimalEditControlSetup
                         {
                             FormatType = DecimalEditFormatTypes.Number,
-                        }, (decimal)Quantity);
+                        }, Quantity);
                 case OrderDetailsColumns.Price:
                     return new DataEntryGridDecimalCellProps(this, columnId
                         , new DecimalEditControlSetup
                         {
                             FormatType = DecimalEditFormatTypes.Currency,
-                        }, (decimal)UnitPrice);
+                        }, UnitPrice);
                 case OrderDetailsColumns.ExtendedPrice:
                     return new DataEntryGridDecimalCellProps(this, columnId
                         , new DecimalEditControlSetup
                         {
                             FormatType = DecimalEditFormatTypes.Currency,
-                        }, (decimal)ExtendedPrice);
+                        }, ExtendedPrice);
                 case OrderDetailsColumns.Discount:
                     return new DataEntryGridDecimalCellProps(this, columnId
                         , new DecimalEditControlSetup
                         {
                             FormatType = DecimalEditFormatTypes.Currency,
-                        }, (decimal)Discount);
+                        }, Discount);
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -101,19 +101,19 @@ namespace RingSoft.DevLogix.Library.ViewModels
                 case OrderDetailsColumns.Quantity:
                     if (value is DataEntryGridDecimalCellProps decimalCellProps)
                     {
-                        Quantity = decimalCellProps.Value.GetValueOrDefault().ToDouble();
+                        Quantity = decimalCellProps.Value.GetValueOrDefault();
                     }
                     break;
                 case OrderDetailsColumns.Price:
                     if (value is DataEntryGridDecimalCellProps decimalCellProps1)
                     {
-                        UnitPrice = decimalCellProps1.Value.GetValueOrDefault().ToDouble();
+                        UnitPrice = decimalCellProps1.Value.GetValueOrDefault();
                     }
                     break;
                 case OrderDetailsColumns.Discount:
                     if (value is DataEntryGridDecimalCellProps decimalCellProps2)
                     {
-                        Discount = decimalCellProps2.Value.GetValueOrDefault().ToDouble();
+                        Discount = decimalCellProps2.Value.GetValueOrDefault();
                     }
                     break;
                 default:

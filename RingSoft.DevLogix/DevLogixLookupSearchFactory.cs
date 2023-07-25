@@ -29,16 +29,16 @@ namespace RingSoft.DevLogix
         {
             if (hostId == DevLogixLookupContext.TimeSpentHostId)
             {
-                return AppGlobals.MakeTimeSpent(value.ToDecimal().ToDouble());
+                return AppGlobals.MakeTimeSpent(value.ToDecimal());
             }
 
             if (hostId == DevLogixLookupContext.SpeedHostId)
             {
-                return AppGlobals.MakeSpeed(value.ToDecimal().ToDouble());
+                return AppGlobals.MakeSpeed(value.ToDecimal());
             }
             if (hostId == DevLogixLookupContext.MemoryHostId)
             {
-                return AppGlobals.MakeSpace(value.ToDecimal().ToDouble());
+                return AppGlobals.MakeSpace(value.ToDecimal());
             }
 
             return base.FormatValue(hostId, value);

@@ -48,7 +48,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
                     {
                         FormatType = DecimalEditFormatTypes.Currency,
                         Precision = 2,
-                    }, (decimal)Cost);
+                    }, Cost);
                 default:
                     throw new ArgumentOutOfRangeException();
             }

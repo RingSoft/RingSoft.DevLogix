@@ -38,12 +38,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     return new DataEntryGridDecimalCellProps(this, columnId, new DecimalEditControlSetup
                     {
                         FormatType = DecimalEditFormatTypes.Number,
-                    }, (decimal)HoursWorked);
+                    }, HoursWorked);
                 case ProjectScheduleColumns.HoursRemaining:
                     return new DataEntryGridDecimalCellProps(this, columnId, new DecimalEditControlSetup
                     {
                         FormatType = DecimalEditFormatTypes.Number,
-                    }, (decimal)HoursRemaining);
+                    }, HoursRemaining);
                 default:
                     throw new ArgumentOutOfRangeException();
             }

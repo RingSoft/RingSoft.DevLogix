@@ -37,19 +37,19 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     return new DataEntryGridDecimalCellProps(this, columnId, new DecimalEditControlSetup
                     {
                         AllowNullValue = false,
-                    }, (decimal)Quantity);
+                    }, Quantity);
                 case ProjectMaterialPartColumns.Cost:
                     return new DataEntryGridDecimalCellProps(this, columnId, new DecimalEditControlSetup
                     {
                         FormatType = DecimalEditFormatTypes.Currency,
                         AllowNullValue = false,
-                    }, (decimal)Cost);
+                    }, Cost);
                 case ProjectMaterialPartColumns.ExtendedCost:
                     return new DataEntryGridDecimalCellProps(this, columnId, new DecimalEditControlSetup
                     {
                         FormatType = DecimalEditFormatTypes.Currency,
                         AllowNullValue = false,
-                    }, (decimal)ExtendedCost);
+                    }, ExtendedCost);
             }
             return base.GetCellProps(columnId);
         }
@@ -87,7 +87,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 case ProjectMaterialPartColumns.Quantity:
                     if (value is DataEntryGridDecimalCellProps qtyDecimalCellProps)
                     {
-                        Quantity = qtyDecimalCellProps.Value.Value.ToDouble();
+                        Quantity = qtyDecimalCellProps.Value.Value;
                         CalculateRow();
                     }
                     break;
@@ -95,7 +95,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 case ProjectMaterialPartColumns.Cost:
                     if (value is DataEntryGridDecimalCellProps decimalCellProps)
                     {
-                        Cost = decimalCellProps.Value.Value.ToDouble();
+                        Cost = decimalCellProps.Value.Value;
                         CalculateRow();
                     }
                     break;

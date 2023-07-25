@@ -137,17 +137,17 @@ namespace RingSoft.DevLogix
             {
                 if (args.SearchForHostId == DevLogixLookupContext.TimeSpentHostId)
                 {
-                    args.Value = AppGlobals.MakeTimeSpent(args.RawValue.ToDecimal().ToDouble());
+                    args.Value = AppGlobals.MakeTimeSpent(args.RawValue.ToDecimal());
                 }
 
                 if (args.SearchForHostId == DevLogixLookupContext.SpeedHostId)
                 {
-                    args.Value = AppGlobals.MakeSpeed(args.RawValue.ToDecimal().ToDouble());
+                    args.Value = AppGlobals.MakeSpeed(args.RawValue.ToDecimal());
                 }
 
                 if (args.SearchForHostId == DevLogixLookupContext.MemoryHostId)
                 {
-                    args.Value = AppGlobals.MakeSpace(args.RawValue.ToDecimal().ToDouble());
+                    args.Value = AppGlobals.MakeSpace(args.RawValue.ToDecimal());
                 }
 
             };

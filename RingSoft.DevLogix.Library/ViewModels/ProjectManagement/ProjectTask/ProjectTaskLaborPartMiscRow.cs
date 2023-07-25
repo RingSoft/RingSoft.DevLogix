@@ -45,7 +45,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     {
                         AllowNullValue = false,
                         FormatType = DecimalEditFormatTypes.Number,
-                    }, (decimal)Quantity);
+                    }, Quantity);
                 case ProjectTaskLaborPartColumns.MinutesCost:
                     return new TimeCostCellProps(this, columnId, Minutes);
                 case ProjectTaskLaborPartColumns.ExtendedMinutes:
@@ -111,7 +111,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 case ProjectTaskLaborPartColumns.Quantity:
                     if (value is DataEntryGridDecimalCellProps decimalCellProps)
                     {
-                        Quantity = decimalCellProps.Value.Value.ToDouble();
+                        Quantity = decimalCellProps.Value.Value;
                         if (Quantity == 0)
                         {
                             Quantity = 1;

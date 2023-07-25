@@ -85,18 +85,18 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     return new DataEntryGridDecimalCellProps(this, columnId, new DecimalEditControlSetup
                     {
                         AllowNullValue = false,
-                    }, (decimal)Quantity);
+                    }, Quantity);
                 case ProjectMaterialPartColumns.Cost:
                     return new DataEntryGridDecimalCellProps(this, columnId, new DecimalEditControlSetup
                     {
                         FormatType = DecimalEditFormatTypes.Currency,
-                    }, (decimal)Cost);
+                    }, Cost);
 
                 case ProjectMaterialPartColumns.ExtendedCost:
                     return new DataEntryGridDecimalCellProps(this, columnId, new DecimalEditControlSetup
                     {
                         FormatType = DecimalEditFormatTypes.Currency,
-                    }, (decimal)ExtendedCost);
+                    }, ExtendedCost);
             }
             return base.GetCellProps(columnId);
         }
@@ -115,14 +115,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 case ProjectMaterialPartColumns.Quantity:
                     if (value is DataEntryGridDecimalCellProps decimalCellProps)
                     {
-                        Quantity = decimalCellProps.Value.Value.ToDouble();
+                        Quantity = decimalCellProps.Value.Value;
                         CalculateRow();
                     }
                     break;
                 case ProjectMaterialPartColumns.Cost:
                     if (value is DataEntryGridDecimalCellProps costDecimalCellProps)
                     {
-                        Cost = costDecimalCellProps.Value.Value.ToDouble();
+                        Cost = costDecimalCellProps.Value.Value;
                         CalculateRow();
                     }
                     break;

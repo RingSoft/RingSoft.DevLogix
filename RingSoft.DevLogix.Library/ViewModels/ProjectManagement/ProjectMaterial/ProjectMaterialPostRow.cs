@@ -52,20 +52,20 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     {
                         AllowNullValue = false,
                         FormatType = DecimalEditFormatTypes.Number,
-                    }, (decimal)Quantity);
+                    }, Quantity);
                 case ProjectMaterialPostColumns.Cost:
                     return new DataEntryGridDecimalCellProps(this, columnId, new DecimalEditControlSetup
                     {
                         AllowNullValue = false,
                         FormatType = DecimalEditFormatTypes.Currency,
-                    }, (decimal)Cost);
+                    }, Cost);
 
                 case ProjectMaterialPostColumns.Extended:
                     return new DataEntryGridDecimalCellProps(this, columnId, new DecimalEditControlSetup
                     {
                         AllowNullValue = false,
                         FormatType = DecimalEditFormatTypes.Currency,
-                    }, (decimal)(Quantity * Cost));
+                    }, (Quantity * Cost));
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -118,13 +118,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 case ProjectMaterialPostColumns.Quantity:
                     if (value is DataEntryGridDecimalCellProps decimalCellProps)
                     {
-                        Quantity = decimalCellProps.Value.Value.ToDouble();
+                        Quantity = decimalCellProps.Value.Value;
                     }
                     break;
                 case ProjectMaterialPostColumns.Cost:
                     if (value is DataEntryGridDecimalCellProps costDecimalCellProps)
                     {
-                        Cost = costDecimalCellProps.Value.Value.ToDouble();
+                        Cost = costDecimalCellProps.Value.Value;
                     }
 
                     break;

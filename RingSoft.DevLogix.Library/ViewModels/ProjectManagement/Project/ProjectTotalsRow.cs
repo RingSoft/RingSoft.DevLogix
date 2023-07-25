@@ -54,7 +54,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     return new DataEntryGridDecimalCellProps(this, columnId, new DecimalEditControlSetup
                     {
                         FormatType = DecimalEditFormatTypes.Currency
-                    }, (decimal)Cost);
+                    }, Cost);
                 default:
                     throw new ArgumentOutOfRangeException();
             }

@@ -56,7 +56,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     return new DataEntryGridDecimalCellProps(this, columnId, new DecimalEditControlSetup()
                     {
                         FormatType = DecimalEditFormatTypes.Percent,
-                    }, (decimal)PercentComplete);
+                    }, PercentComplete);
             }
             return new DataEntryGridTextCellProps(this, columnId);
         }
@@ -167,7 +167,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 case ProjectTaskLaborPartColumns.PercentComplete:
                     if (value is DataEntryGridDecimalCellProps decimalCellProps)
                     {
-                        PercentComplete = decimalCellProps.Value.GetValueOrDefault().ToDouble();
+                        PercentComplete = decimalCellProps.Value.GetValueOrDefault();
                         IsComplete = PercentComplete == 1;
                         Manager.CalcPercentComplete();
                     }

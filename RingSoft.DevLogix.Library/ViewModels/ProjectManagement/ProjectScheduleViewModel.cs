@@ -256,7 +256,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 StringField01 = ProjectName,
                 StringField02 = StartDate.FormatDateValue(DbDateTypes.DateOnly),
                 StringField03 = CalculatedDeadline.GetValueOrDefault().FormatDateValue(DbDateTypes.DateOnly),
-                NumberField01 = numberSetup.FormatValue((decimal)RemainingHours),
+                NumberField01 = numberSetup.FormatValue(RemainingHours),
             };
             headerChunk.Add(headerRow);
             PrintingInteropGlobals.HeaderProcessor.AddChunk(headerChunk, PrinterSetup.PrintingProperties);

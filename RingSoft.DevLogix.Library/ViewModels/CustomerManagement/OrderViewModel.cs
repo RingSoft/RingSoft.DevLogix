@@ -756,8 +756,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 e.HeaderRow.StringField06 = order.PostalCode;
                 e.HeaderRow.StringField07 = order.Country;
                 e.HeaderRow.StringField08 = order.OrderId;
-                e.HeaderRow.NumberField01 = currencySetup.FormatValue((decimal)order.SubTotal);
-                e.HeaderRow.NumberField02 = currencySetup.FormatValue((decimal)order.Total);
+                e.HeaderRow.NumberField01 = currencySetup.FormatValue(order.SubTotal);
+                e.HeaderRow.NumberField02 = currencySetup.FormatValue(order.Total);
                 var detailsChunk = new List<PrintingInputDetailsRow>();
                 foreach (var detail in order.Details)
                 {
@@ -765,8 +765,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                     detailRow.HeaderRowKey = e.HeaderRow.RowKey;
                     detailRow.TablelId = 1;
                     detailRow.StringField01 = detail.Product.Description;
-                    detailRow.NumberField01 = qtySetup.FormatValue((decimal)detail.Quantity);
-                    detailRow.NumberField02 = currencySetup.FormatValue((decimal)detail.ExtendedPrice);
+                    detailRow.NumberField01 = qtySetup.FormatValue(detail.Quantity);
+                    detailRow.NumberField02 = currencySetup.FormatValue(detail.ExtendedPrice);
                     detailsChunk.Add(detailRow);
                 }
 

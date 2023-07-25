@@ -76,7 +76,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     return new DataEntryGridDecimalCellProps(this, columnId, new DecimalEditControlSetup()
                     {
                         FormatType = DecimalEditFormatTypes.Percent,
-                    }, (decimal)Billability);
+                    }, Billability);
                 default:
                     throw new ArgumentOutOfRangeException();
             }

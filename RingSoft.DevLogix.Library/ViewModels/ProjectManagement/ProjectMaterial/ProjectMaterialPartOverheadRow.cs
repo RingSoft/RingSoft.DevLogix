@@ -36,7 +36,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     {
                         FormatType = DecimalEditFormatTypes.Currency,
                         AllowNullValue = false,
-                    }, (decimal)Cost);
+                    }, Cost);
             }
             return base.GetCellProps(columnId);
         }
@@ -75,7 +75,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 case ProjectMaterialPartColumns.Cost:
                     if (value is DataEntryGridDecimalCellProps decimalCellProps)
                     {
-                        Cost = decimalCellProps.Value.Value.ToDouble();
+                        Cost = decimalCellProps.Value.Value;
                         Manager.CalculateTotalCost();
                     }
                     break;
