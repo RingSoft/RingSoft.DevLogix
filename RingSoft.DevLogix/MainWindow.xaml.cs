@@ -875,9 +875,9 @@ namespace RingSoft.DevLogix
             base.OnPreviewKeyDown(e);
         }
 
-        protected override void OnClosing(CancelEventArgs e)
+        protected async override void OnClosing(CancelEventArgs e)
         {
-            if (!ViewModel.ValidateWindowClose())
+            if (!await ViewModel.ValidateWindowClose())
             {
                 e.Cancel = true;
                 return;

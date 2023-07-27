@@ -815,22 +815,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
             }
 
-            if (result.FoundByUserId == 0)
-            {
-                result.FoundByUserId = null;
-                if (AppGlobals.LoggedInUser != null)
-                {
-                    var message = "Found by user cannot be empty. Do you wish to set the found by user to yourself?";
-                    var caption = "Validation Check";
-                    if (ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, caption) ==
-                        MessageBoxButtonsResult.Yes)
-                    {
-                        FoundUserAutoFillValue = FoundUserAutoFillSetup.GetAutoFillValueForIdValue(AppGlobals.LoggedInUser.Id);
-                        result.FoundByUserId = AppGlobals.LoggedInUser.Id;
-                    }
-
-                }
-            }
+            ValidateFoundByUser(result);
 
             if (result.FixedVersionId == 0)
             {
@@ -853,6 +838,25 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             }
 
             return result;
+        }
+
+        private async void ValidateFoundByUser(Error result)
+        {
+            if (result.FoundByUserId == 0)
+            {
+                result.FoundByUserId = null;
+                if (AppGlobals.LoggedInUser != null)
+                {
+                    var message = "Found by user cannot be empty. Do you wish to set the found by user to yourself?";
+                    var caption = "Validation Check";
+                    if (await ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, caption) ==
+                        MessageBoxButtonsResult.Yes)
+                    {
+                        FoundUserAutoFillValue = FoundUserAutoFillSetup.GetAutoFillValueForIdValue(AppGlobals.LoggedInUser.Id);
+                        result.FoundByUserId = AppGlobals.LoggedInUser.Id;
+                    }
+                }
+            }
         }
 
         protected override bool ValidateEntity(Error entity)

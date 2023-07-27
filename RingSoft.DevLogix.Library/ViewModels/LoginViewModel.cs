@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using RingSoft.App.Interop;
 using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
@@ -296,7 +297,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
             }
         }
 
-        private void DeleteOrganization()
+        private async void DeleteOrganization()
         {
             string message;
             if (SelectedItem.Organization.Id == 1)
@@ -308,7 +309,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
             }
 
             message = "Are you sure you wish to delete this Organization?";
-            if (ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, "Confirm Delete") ==
+            if ( await ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, "Confirm Delete") ==
                 MessageBoxButtonsResult.Yes)
             {
                 if (MasterDbContext.DeleteOrganization(SelectedItem.Organization.Id))
@@ -335,13 +336,13 @@ namespace RingSoft.DevLogix.Library.ViewModels
             View.CloseWindow();
         }
 
-        public bool DoCancelClose()
+        public async Task<bool> DoCancelClose()
         {
             CancelClose = false;
             if (AppGlobals.LoggedInOrganization == null && !DialogResult)
             {
                 var message = "Application will shut down if you do not login.  Do you wish to continue?";
-                if (ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, "Login Failure") ==
+                if ( await ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, "Login Failure") ==
                     MessageBoxButtonsResult.Yes)
                 {
                     View.ShutDownApplication();

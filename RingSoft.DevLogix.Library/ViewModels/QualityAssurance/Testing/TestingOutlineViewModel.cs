@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
@@ -791,7 +792,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             }
         }
 
-        public bool ChangeProduct()
+        public async Task<bool> ChangeProduct()
         {
             if (DetailsGridManager.CompletedRowsExist())
             {
@@ -803,7 +804,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
                     var message =
                         "Changing the Product will force a retest on this Testing Outline.  Are you sure you want to do this?";
                     var caption = "Force Retest?";
-                    var result = ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, caption, true);
+                    var result = await ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, caption, true);
 
                     if (result == MessageBoxButtonsResult.Yes)
                     {

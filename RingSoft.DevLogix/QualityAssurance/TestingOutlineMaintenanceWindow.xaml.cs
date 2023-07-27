@@ -95,11 +95,11 @@ namespace RingSoft.DevLogix.QualityAssurance
                         "Clear all completed values in the Steps grid.";
                 }
             };
-            ProductControl.PreviewLostKeyboardFocus += (sender, args) =>
+            ProductControl.PreviewLostKeyboardFocus += async (sender, args) =>
             {
                 if ((WPFControlsGlobals.ActiveWindow is TestingOutlineMaintenanceWindow))
                 {
-                    if (!LocalViewModel.ChangeProduct())
+                    if (!await LocalViewModel.ChangeProduct())
                     {
                         args.Handled = true;
                     }

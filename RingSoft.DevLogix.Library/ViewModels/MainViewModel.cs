@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Timers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -314,13 +315,13 @@ namespace RingSoft.DevLogix.Library.ViewModels
             ShowMaintenanceWindowCommand = new RelayCommand<TableDefinitionBase>(ShowMaintenanceWindow);
             RefreshChartCommand = new RelayCommand(RefreshChart);
             EditChartCommand = new RelayCommand(EditChart);
-            ChangeOrgCommand = new RelayCommand((() =>
+            ChangeOrgCommand = new RelayCommand(( async () =>
             {
                 if (AppGlobals.LoggedInUser.ClockOutReason == (byte)ClockOutReasons.ClockedIn)
                 {
                     var message = "Do you wish to clock out?";
                     var caption = "Clock Out";
-                    if (ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, caption) ==
+                    if (await ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, caption) ==
                         MessageBoxButtonsResult.Yes)
                     {
                         if (!PunchOut(true, AppGlobals.LoggedInUser))
@@ -460,7 +461,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
             MainView.ShowAdvancedFindWindow();
         }
 
-        private void Logout()
+        private async void Logout()
         {
             var cont = true;
             var context = AppGlobals.DataRepository.GetDataContext();
@@ -475,7 +476,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
                         case ClockOutReasons.ClockedIn:
                             var message = "Do you want to clock out before you log off?";
                             var caption = "Clock Out?";
-                            var clockOut = ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, caption);
+                            var clockOut = await ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, caption);
                             if (clockOut == MessageBoxButtonsResult.Yes)
                             {
                                 cont = PunchOut(true, user);
@@ -614,7 +615,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
             UserAutoFillValue = null;
         }
 
-        private bool ValidateNewTimeClock()
+        private async Task<bool> ValidateNewTimeClock()
         {
             var context = AppGlobals.DataRepository.GetDataContext();
             var tableQuery = context.GetTable<TimeClock>();
@@ -625,7 +626,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
                 var message =
                     "You currently are punched into an active time card. Do you wish to load that time card instead?";
                 var caption = "Already Punched in";
-                if (ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, caption, true) ==
+                if (await ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, caption, true) ==
                     MessageBoxButtonsResult.Yes)
                 {
                     MainView.LaunchTimeClock(activeTimeCard);
@@ -637,41 +638,41 @@ namespace RingSoft.DevLogix.Library.ViewModels
             return true;
         }
 
-        public void PunchIn(Error error)
+        public async void PunchIn(Error error)
         {
-            if (ValidateNewTimeClock())
+            if (await ValidateNewTimeClock())
             {
                 MainView.PunchIn(error);
             }
         }
 
-        public void PunchIn(TestingOutline outline)
+        public async void PunchIn(TestingOutline outline)
         {
-            if (ValidateNewTimeClock())
+            if (await ValidateNewTimeClock())
             {
                 MainView.PunchIn(outline);
             }
         }
 
-        public void PunchIn(ProjectTask task)
+        public async void PunchIn(ProjectTask task)
         {
-            if (ValidateNewTimeClock())
+            if (await ValidateNewTimeClock())
             {
                 MainView.PunchIn(task);
             }
         }
 
-        public void PunchIn(Customer customer)
+        public async void PunchIn(Customer customer)
         {
-            if (ValidateNewTimeClock())
+            if (await ValidateNewTimeClock())
             {
                 MainView.PunchIn(customer);
             }
         }
 
-        public void PunchIn(SupportTicket ticket)
+        public async void PunchIn(SupportTicket ticket)
         {
-            if (ValidateNewTimeClock())
+            if (await ValidateNewTimeClock())
             {
                 MainView.PunchIn(ticket);
             }
@@ -778,7 +779,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
             return PunchOut(clockOut, user, context);
         }
 
-        public bool ValidateWindowClose()
+        public async Task<bool> ValidateWindowClose()
         {
             if (AppGlobals.LoggedInUser == null)
             {
@@ -795,7 +796,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
                     {
                         var message = "Do you want to clock out before you exit the application?";
                         var caption = "Clock Out?";
-                        var clockOut = ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, caption);
+                        var clockOut = await ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, caption);
                         if (clockOut == MessageBoxButtonsResult.Yes)
                         {
                             if (!PunchOut(true, user.Id))

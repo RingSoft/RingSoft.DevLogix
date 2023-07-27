@@ -105,9 +105,9 @@ namespace RingSoft.DevLogix.ProjectManagement
                 };
             };
 
-            ProjectControl.PreviewLostKeyboardFocus += (sender, args) =>
+            ProjectControl.PreviewLostKeyboardFocus += async (sender, args) => 
             {
-                if (!showingLookup && !LocalViewModel.ValidateProjectChange())
+                if (!showingLookup && !await LocalViewModel.ValidateProjectChange())
                 {
                     args.Handled = true;
                 }

@@ -15,6 +15,7 @@ using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using System.ComponentModel;
 using System.Data;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 {
@@ -883,12 +884,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             base.OnWindowClosing(e);
         }
 
-        public bool ValidateProjectChange()
+        public async Task<bool> ValidateProjectChange()
         {
             var projectId = ProjectAutoFillValue.GetEntity<Project>().Id;
             if (!_loading && projectId != ProjectTaskDependencyManager.ProjectFilter)
             {
-                var result = ProjectTaskDependencyManager.ValidateProjectChange();
+                var result = await ProjectTaskDependencyManager.ValidateProjectChange();
                 return result;
             }
             return true;

@@ -51,7 +51,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             return new DataEntryGridAutoFillCellProps(this, columnId, DependencyAutoFillSetup, DependencyAutoFillValue);
         }
 
-        public override void SetCellValue(DataEntryGridEditingCellProps value)
+        public override async void SetCellValue(DataEntryGridEditingCellProps value)
         {
             if (value is DataEntryGridAutoFillCellProps autoFillCellProps)
             {
@@ -64,7 +64,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                         var message =
                             "The project task you have selected already exists in the grid. Do you wish to go to that row?";
                         var caption = "Entry Validation";
-                        var result = ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, caption);
+                        var result = await ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, caption);
                         if (result == MessageBoxButtonsResult.Yes)
                         {
                             Manager.Grid?.GotoCell(existRow, 1);

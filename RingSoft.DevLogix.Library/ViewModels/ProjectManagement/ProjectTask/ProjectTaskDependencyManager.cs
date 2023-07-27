@@ -5,6 +5,7 @@ using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
 namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
@@ -76,7 +77,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             return true;
         }
 
-        public bool ValidateProjectChange()
+        public async Task<bool> ValidateProjectChange()
         {
             var rowsExist = Rows.Any(p => !p.IsNew);
             if (rowsExist)
@@ -84,7 +85,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 var message =
                     "Changing the project will cause the dependencies grid to be cleared. Are you sure this is what you want to do?";
                 var caption = "Change Validation";
-                var msgResult = ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, caption);
+                var msgResult = await ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, caption);
                 if (msgResult == MessageBoxButtonsResult.Yes)
                 {
                     ClearRows();
