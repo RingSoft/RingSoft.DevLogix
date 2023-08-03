@@ -22,11 +22,11 @@ namespace RingSoft.DevLogix.Tests
         public DevLogixTestDataRepository(TestDataRegistry context) : base(context)
         {
             DataContext = context;
-            DataContext.AddEntity(new DataRepositoryRegistryItem<User>(new User()));
-            DataContext.AddEntity(new DataRepositoryRegistryItem<Department>(new Department()));
-            DataContext.AddEntity(new DataRepositoryRegistryItem<TimeClock>(new TimeClock()));
-            DataContext.AddEntity(new DataRepositoryRegistryItem<Project>(new Project()));
-            DataContext.AddEntity(new DataRepositoryRegistryItem<ProjectTask>(new ProjectTask()));
+            DataContext.AddEntity(new DataRepositoryRegistryItem<User>());
+            DataContext.AddEntity(new DataRepositoryRegistryItem<Department>());
+            DataContext.AddEntity(new DataRepositoryRegistryItem<TimeClock>());
+            DataContext.AddEntity(new DataRepositoryRegistryItem<Project>());
+            DataContext.AddEntity(new DataRepositoryRegistryItem<ProjectTask>());
         }
 
         public DataAccess.IDbContext GetDataContext()

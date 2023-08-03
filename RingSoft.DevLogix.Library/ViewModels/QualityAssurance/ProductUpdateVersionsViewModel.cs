@@ -9,6 +9,8 @@ using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.Lookup;
+using RingSoft.DbLookup.QueryBuilder;
+using RingSoft.DevLogix.DataAccess.LookupModel;
 using RingSoft.DevLogix.DataAccess.Model;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
@@ -131,6 +133,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         public bool DialogResult { get; private set; }
 
+        public LookupDefinition<ProductVersionLookup, ProductVersion>  ProductVersionLookup { get; set; }
+
         public ProductUpdateVersionsViewModel()
         {
             ExistingDepartmentSetup = new AutoFillSetup(AppGlobals.LookupContext.DepartmentLookup.Clone());
@@ -138,7 +142,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
             NewDepartmentSetup = new AutoFillSetup(AppGlobals.LookupContext.DepartmentLookup.Clone());
 
-            UpdateVersionSetup = new AutoFillSetup(AppGlobals.LookupContext.ProductVersionLookup.Clone());
+            ProductVersionLookup = AppGlobals.LookupContext.ProductVersionLookup.Clone();
+            UpdateVersionSetup = new AutoFillSetup(ProductVersionLookup);
 
             OkCommand = new RelayCommand(OnOK);
 
@@ -149,6 +154,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         {
             View = view;
             ProductViewModel = productViewModel;
+            ProductVersionLookup.FilterDefinition.AddFixedFilter(p => p.ProductId
+                , Conditions.Equals, ProductViewModel.Id);
         }
 
         private void OnCancel()
@@ -208,6 +215,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             var newProductVersionDepartments = new List<ProductVersionDepartment>();
             foreach (var productVersion in newVersionsList)
             {
+                productVersion.DepartmentId = newDepartment.Id;
+                productVersion.VersionDate = nowDate;
+                context.SaveNoCommitEntity(productVersion, "Saving Product Version");
                 var newProductDepartment = new ProductVersionDepartment()
                 {
                     DepartmentId = newDepartment.Id,
@@ -216,6 +226,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 };
                 newProductVersionDepartments.Add(newProductDepartment);
             }
+
 
             if (newProductVersionDepartments.Any())
             {
