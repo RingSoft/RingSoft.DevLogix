@@ -69,6 +69,7 @@
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
@@ -88,7 +89,12 @@
 
             <lc:AutoFillControl Grid.Row="0" Grid.Column="3" x:Name="DescriptionControl" Setup="{Binding KeyAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding KeyAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left"/>
 
-            <TabControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" x:Name="TabControl" VerticalAlignment="Stretch">
+            <Label Grid.Row="1" Grid.Column="0" Content="Create Version Department"/>
+
+            <lc:AutoFillControl Grid.Row="1" Grid.Column="1" x:Name="CreateDepartmentControl" Setup="{Binding CreateDepartmentAutoFillSetup}" Value="{Binding CreateDepartmentAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left"/>
+
+
+			<TabControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="5" x:Name="TabControl" VerticalAlignment="Stretch">
 
                 <TabItem x:Name="VersionsTabItem" Header="Versions">
 
@@ -150,59 +156,79 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
-                        <Label Grid.Row="0" Grid.Column="0" Content="Installer Path/File Name"/>
 
-                        <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+                        <Label Grid.Row="0" Grid.Column="0" Content="Price"/>
 
-                            <dec:StringEditControl Width="300" Text="{Binding InstallerFileName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <dec:DecimalEditControl Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left"  FormatType="Currency" Value="{Binding Price, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
 
-                            <Button Content="..." Width="25" Height="20" Command="{Binding InstallerCommand}"/>
+                        <Label Grid.Row="1" Grid.Column="0" Content="Total Revenue"/>
 
-                        </StackPanel>
+                        <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" Width="100" FormatType="Currency" Value="{Binding TotalRevenue, Mode=TwoWay}"/>
 
-                        <Label Grid.Row="1" Grid.Column="0" Content="Version Archive Path"/>
+                        <Label Grid.Row="2" Grid.Column="0" Content="Total Cost"/>
 
-                        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+                        <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left" Width="100" FormatType="Currency" Value="{Binding TotalCost, Mode=TwoWay}"/>
 
-                            <dec:StringEditControl Width="300" Text="{Binding ArchivePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Label Grid.Row="3" Grid.Column="0" Content="Difference"/>
 
-                            <Button Content="..." Width="25" Height="20" Command="{Binding ArchivePathCommand}"/>
+                        <dec:DecimalReadOnlyBox Grid.Row="3" Grid.Column="1" x:Name="DifferenceControl" HorizontalAlignment="Left" Width="100" FormatType="Currency" Value="{Binding Difference, Mode=TwoWay}"/>
 
-                        </StackPanel>
+						<GroupBox  Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Header="Software Deployment Properties (Optional)">
 
-                        <Label Grid.Row="2" Grid.Column="0" Content="Application GUID"/>
+							<Grid>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="Auto"/>
+								</Grid.RowDefinitions>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="Auto"/>
+									<ColumnDefinition Width="Auto"/>
+									<ColumnDefinition Width="*"/>
+								</Grid.ColumnDefinitions>
 
-                        <StackPanel Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Horizontal">
+								<Label Grid.Row="0" Grid.Column="0" Content="Installer Path/File Name"/>
 
-                            <dec:StringEditControl Width="300" Text="{Binding AppGuid, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+								<StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
 
-                            <Button Content="Generate GUID" Height="20" Command="{Binding GenerateGuidCommand}" />
+									<dec:StringEditControl Width="300" Text="{Binding InstallerFileName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-                        </StackPanel>
+									<Button Content="..." Width="25" Height="20" Command="{Binding InstallerCommand}"/>
 
-                        <Label Grid.Row="3" Grid.Column="0" Content="Create Version Department"/>
+								</StackPanel>
 
-                        <lc:AutoFillControl Grid.Row="3" Grid.Column="1" x:Name="CreateDepartmentControl" Setup="{Binding CreateDepartmentAutoFillSetup}" Value="{Binding CreateDepartmentAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="300" HorizontalAlignment="Left"/>
+								<Label Grid.Row="1" Grid.Column="0" Content="Version Archive Path"/>
 
-                        <Label Grid.Row="4" Grid.Column="0" Content="Archive Version Department"/>
+								<StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
 
-                        <lc:AutoFillControl Grid.Row="4" Grid.Column="1" Setup="{Binding ArchiveDepartmentAutoFillSetup}" Value="{Binding ArchiveDepartmentAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="300" HorizontalAlignment="Left"/>
+									<dec:StringEditControl Width="300" Text="{Binding ArchivePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-                        <Label Grid.Row="5" Grid.Column="0" Content="Price"/>
+									<Button Content="..." Width="25" Height="20" Command="{Binding ArchivePathCommand}"/>
 
-                        <dec:DecimalEditControl Grid.Row="5" Grid.Column="1" HorizontalAlignment="Left"  FormatType="Currency" Value="{Binding Price, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
+								</StackPanel>
 
-                        <Label Grid.Row="6" Grid.Column="0" Content="Total Revenue"/>
+								<Label Grid.Row="2" Grid.Column="0" Content="Application GUID"/>
 
-                        <dec:DecimalReadOnlyBox Grid.Row="6" Grid.Column="1" HorizontalAlignment="Left" Width="100" FormatType="Currency" Value="{Binding TotalRevenue, Mode=TwoWay}"/>
+								<StackPanel Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Horizontal">
 
-                        <Label Grid.Row="7" Grid.Column="0" Content="Total Cost"/>
+									<dec:StringEditControl Width="300" Text="{Binding AppGuid, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                        <dec:DecimalReadOnlyBox Grid.Row="7" Grid.Column="1" HorizontalAlignment="Left" Width="100" FormatType="Currency" Value="{Binding TotalCost, Mode=TwoWay}"/>
+									<Button Content="Generate GUID" Height="20" Command="{Binding GenerateGuidCommand}" />
 
-                        <Label Grid.Row="8" Grid.Column="0" Content="Difference"/>
+								</StackPanel>
 
-                        <dec:DecimalReadOnlyBox Grid.Row="8" Grid.Column="1" x:Name="DifferenceControl" HorizontalAlignment="Left" Width="100" FormatType="Currency" Value="{Binding Difference, Mode=TwoWay}"/>
+								<Label Grid.Row="3" Grid.Column="0" Content="Archive Version Department"/>
+
+								<lc:AutoFillControl Grid.Row="3" Grid.Column="1" Setup="{Binding ArchiveDepartmentAutoFillSetup}" Value="{Binding ArchiveDepartmentAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="300" HorizontalAlignment="Left"/>
+
+							</Grid>
+						</GroupBox>
 
 					</Grid>
                 </TabItem>
