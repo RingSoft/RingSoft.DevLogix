@@ -8,38 +8,13 @@ using RingSoft.DevLogix.Library.ViewModels.UserManagement;
 
 namespace RingSoft.DevLogix.Tests.UserManagement
 {
-    public class UserView : IUserView
+    public class UserView : TestDbMaintenanceView, IUserView
     {
         public AppRights Rights { get; private set; } = new AppRights();
 
         public TestAppProcedure RecalcProcedure { get; } = new TestAppProcedure();
 
         public UserMaintenanceViewModel LocalViewModel { get; set; }
-
-        public void OnValidationFail(FieldDefinition fieldDefinition, string text, string caption)
-        {
-            
-        }
-
-        public void HandleAutoFillValFail(DbAutoFillMap autoFillMap)
-        {
-            
-        }
-
-        public void ResetViewForNewRecord()
-        {
-            
-        }
-
-        public void SetReadOnlyMode(bool readOnlyValue)
-        {
-            
-        }
-
-        public List<DbAutoFillMap> GetAutoFills()
-        {
-            return new List<DbAutoFillMap>();
-        }
 
 
         public string GetRights()
@@ -58,11 +33,6 @@ namespace RingSoft.DevLogix.Tests.UserManagement
         }
 
         public void RefreshView()
-        {
-            
-        }
-
-        public void OnValGridFail(DataEntryGridManager dataEntryGridManager)
         {
             
         }

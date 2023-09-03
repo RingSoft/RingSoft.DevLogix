@@ -27,6 +27,12 @@ namespace RingSoft.DevLogix.Tests
             DataContext.AddEntity(new DataRepositoryRegistryItem<TimeClock>());
             DataContext.AddEntity(new DataRepositoryRegistryItem<Project>());
             DataContext.AddEntity(new DataRepositoryRegistryItem<ProjectTask>());
+            DataContext.AddEntity(new DataRepositoryRegistryItem<Product>());
+            DataContext.AddEntity(new DataRepositoryRegistryItem<ProductVersion>());
+            DataContext.AddEntity(new DataRepositoryRegistryItem<ProductVersionDepartment>());
+            DataContext.AddEntity(new DataRepositoryRegistryItem<ErrorStatus>());
+            DataContext.AddEntity(new DataRepositoryRegistryItem<ErrorPriority>());
+            DataContext.AddEntity(new DataRepositoryRegistryItem<Error>());
         }
 
         public DataAccess.IDbContext GetDataContext()

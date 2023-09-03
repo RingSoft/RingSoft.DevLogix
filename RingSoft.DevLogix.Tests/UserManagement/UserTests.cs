@@ -94,67 +94,67 @@ namespace RingSoft.DevLogix.Tests.UserManagement
             Globals.ClearData();
             var user = new User()
             {
-                Id = 1,
+                Id = 100,
                 Name = "Test",
                 HourlyRate = 10,
             };
 
             var timeClock = new TimeClock()
             {
-                Id = 1,
+                Id = 100,
                 MinutesSpent = 60,
                 ProjectTask = new ProjectTask()
                 {
-                    Id = 1,
+                    Id = 100,
                     Name = "Test",
                     Project = new Project()
                     {
-                        Id = 1,
+                        Id = 100,
                         Name = "Test",
                         IsBillable = true,
                     },
                 },
-                ProjectTaskId = 1,
+                ProjectTaskId = 100,
             };
             user.TimeClocks.Add(timeClock);
 
             timeClock = new TimeClock()
             {
-                Id = 2,
+                Id = 101,
                 MinutesSpent = 120,
                 ProjectTask = new ProjectTask()
                 {
-                    Id = 2,
+                    Id = 101,
                     Name = "Test2",
                     Project = new Project()
                     {
-                        Id = 2,
+                        Id = 101,
                         Name = "Test2",
                         IsBillable = false,
                     },
                 },
-                ProjectTaskId = 2,
+                ProjectTaskId = 101,
             };
             user.TimeClocks.Add(timeClock);
 
             timeClock = new TimeClock()
             {
-                Id = 3,
+                Id = 102,
                 MinutesSpent = 180,
                 Error = new Error()
                 {
-                    Id = 1,
+                    Id = 100,
                 },
-                ErrorId = 1,
+                ErrorId = 100,
             };
             user.TimeClocks.Add(timeClock);
 
             timeClock = new TimeClock()
             {
-                Id = 4,
+                Id = 103,
                 MinutesSpent = 240,
                 TestingOutline = new TestingOutline(),
-                TestingOutlineId = 1,
+                TestingOutlineId = 100,
             };
 
             user.TimeClocks.Add(timeClock);
