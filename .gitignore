@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 /RingSoft.DevLogix.Sqlite/DevLogixSqliteDbContext.cs
 /RingSoft.DevLogix/RingSoft.DevLogix.csproj
+/RingSoft.DevLogix.Library/RingSoft.DevLogix.Library.csproj
