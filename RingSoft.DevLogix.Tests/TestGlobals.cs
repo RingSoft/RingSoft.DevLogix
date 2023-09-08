@@ -8,6 +8,18 @@ using RingSoft.DevLogix.Sqlite;
 
 namespace RingSoft.DevLogix.Tests
 {
+    public enum TestDepartments
+    {
+        ProductDevelopment = 1,
+        QualityAssurance = 2,
+        Production = 3,
+    }
+
+    public enum TestUsers
+    {
+        DaveSmittyPD = 1,
+        JohnDoeQA = 2,
+    }
     public class TestGlobals<TViewModel, TView> : DbMaintenanceTestGlobals<TViewModel, TView>
         where TViewModel : DbMaintenanceViewModelBase
         where TView : IDbMaintenanceView, new()
@@ -39,6 +51,13 @@ namespace RingSoft.DevLogix.Tests
             AppGlobals.Rights = new AppRights();
 
             base.ClearData();
+            LoadDatabase();
+        }
+
+
+        private void LoadDatabase()
+        {
+
         }
     }
 }
