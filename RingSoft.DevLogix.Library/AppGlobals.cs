@@ -576,6 +576,11 @@ namespace RingSoft.DevLogix.Library
             {
                 var productVersion = productVersions.FirstOrDefault();
 
+                if (SystemGlobals.UnitTestMode)
+                {
+
+                }
+
                 if (productVersion != null)
                 {
                     if (AppGlobals.LoggedInUser != null)
