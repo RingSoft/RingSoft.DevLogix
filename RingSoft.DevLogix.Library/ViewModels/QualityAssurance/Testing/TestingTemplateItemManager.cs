@@ -53,7 +53,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
             var generatedData = new List<GenerateData>();
             var rows = Rows.OfType<TestingTemplateItemRow>()
-                .Where(p => p.IsNew == false);
+                .Where(p => p.IsNew == false
+                && !p.Description.IsNullOrEmpty());
 
             foreach (var testingTemplate in templatesToProcess)
             {

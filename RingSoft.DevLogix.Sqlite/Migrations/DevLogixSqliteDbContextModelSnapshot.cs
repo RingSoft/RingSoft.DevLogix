@@ -972,7 +972,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("ArchivePath")
-                        .HasMaxLength(50)
+                        .HasMaxLength(200)
                         .HasColumnType("nvarchar");
 
                     b.Property<double?>("Cost")
@@ -987,7 +987,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
                         .HasColumnType("nvarchar");
 
                     b.Property<string>("InstallerFileName")
-                        .HasMaxLength(50)
+                        .HasMaxLength(200)
                         .HasColumnType("nvarchar");
 
                     b.Property<string>("Notes")

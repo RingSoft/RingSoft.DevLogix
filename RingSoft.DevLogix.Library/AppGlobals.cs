@@ -568,6 +568,16 @@ namespace RingSoft.DevLogix.Library
             AutoFillValue result = null;
             var context = AppGlobals.DataRepository.GetDataContext();
             var productTable = context.GetTable<ProductVersionDepartment>();
+
+            if (SystemGlobals.UnitTestMode)
+            {
+                foreach (var productVersionDepartment in productTable)
+                {
+                    AppGlobals.LookupContext.ProductVersionDepartments
+                        .FillOutEntity(productVersionDepartment);
+                }
+            }
+
             var productVersions = productTable.Include(p => p.ProductVersion)
                 .OrderByDescending(p => p.ReleaseDateTime)
                 .Where(p => p.ProductVersion.ProductId == product.Id);
@@ -576,12 +586,7 @@ namespace RingSoft.DevLogix.Library
             {
                 var productVersion = productVersions.FirstOrDefault();
 
-                if (SystemGlobals.UnitTestMode)
-                {
-
-                }
-
-                if (productVersion != null)
+               if (productVersion != null)
                 {
                     if (AppGlobals.LoggedInUser != null)
                     {

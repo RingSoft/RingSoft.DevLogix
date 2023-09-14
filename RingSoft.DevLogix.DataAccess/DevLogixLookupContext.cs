@@ -1064,6 +1064,8 @@ namespace RingSoft.DevLogix.DataAccess
 
             TimeZone.PriorityLevel = 100;
 
+            CustomerStatus.PriorityLevel = 100;
+
             Customer.PriorityLevel = 500;
             Customer.GetFieldDefinition(p => p.Notes).IsMemo();
             Customer.GetFieldDefinition(p => p.SupportMinutesPurchased)
@@ -1121,6 +1123,7 @@ namespace RingSoft.DevLogix.DataAccess
             CustomerComputer.GetFieldDefinition(p => p.RamSize)
                 .HasSearchForHostId(MemoryHostId);
 
+            SupportTicketStatus.PriorityLevel = 100;
             SupportTicket.PriorityLevel = 800;
             SupportTicket.GetFieldDefinition(p => p.TicketId)
                 .IsGeneratedKey();

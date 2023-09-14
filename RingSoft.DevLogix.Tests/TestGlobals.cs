@@ -301,6 +301,7 @@ namespace RingSoft.DevLogix.Tests
 
             if (user != null)
             {
+                AppGlobals.LookupContext.Users.FillOutEntity(user);
                 AppGlobals.LoggedInUser = user;
             }
         }

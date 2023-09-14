@@ -17,6 +17,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.DevLogix.SqlServer
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.DevLogix.Tests", "RingSoft.DevLogix.Tests\RingSoft.DevLogix.Tests.csproj", "{FDE1961B-D5A5-415E-B34B-9B190893AF48}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.DbLookup", "..\RingSoft.DbLookup\RingSoft.DbLookup\RingSoft.DbLookup.csproj", "{C7496ADE-BC2D-4F18-8948-9B0462AA46B8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.DbMaintenance", "..\RingSoft.DbLookup\RingSoft.DbMaintenance\RingSoft.DbMaintenance.csproj", "{19D4590E-7E8F-468C-A8CA-F25660A7B649}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.DbLookup.EfCore", "..\RingSoft.DbLookup\RingSoft.DbLookup.EfCore\RingSoft.DbLookup.EfCore.csproj", "{53E69328-4046-4C8C-88A8-CD38A1130887}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +57,18 @@ Global
 		{FDE1961B-D5A5-415E-B34B-9B190893AF48}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FDE1961B-D5A5-415E-B34B-9B190893AF48}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FDE1961B-D5A5-415E-B34B-9B190893AF48}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7496ADE-BC2D-4F18-8948-9B0462AA46B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7496ADE-BC2D-4F18-8948-9B0462AA46B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7496ADE-BC2D-4F18-8948-9B0462AA46B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7496ADE-BC2D-4F18-8948-9B0462AA46B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19D4590E-7E8F-468C-A8CA-F25660A7B649}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19D4590E-7E8F-468C-A8CA-F25660A7B649}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19D4590E-7E8F-468C-A8CA-F25660A7B649}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19D4590E-7E8F-468C-A8CA-F25660A7B649}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53E69328-4046-4C8C-88A8-CD38A1130887}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53E69328-4046-4C8C-88A8-CD38A1130887}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53E69328-4046-4C8C-88A8-CD38A1130887}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53E69328-4046-4C8C-88A8-CD38A1130887}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
