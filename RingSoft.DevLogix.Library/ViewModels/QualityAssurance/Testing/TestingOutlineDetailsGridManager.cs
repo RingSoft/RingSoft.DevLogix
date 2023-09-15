@@ -82,6 +82,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             Grid?.RefreshGridView();
         }
 
+        public override List<TestingOutlineDetails> GetEntityList()
+        {
+            var tempList = base.GetEntityList();
+            var result = new List<TestingOutlineDetails>();
+            foreach (var detail in tempList)
+            {
+                if (!string.IsNullOrEmpty(detail.Step))
+                {
+                    result.Add(detail);
+                }
+            }
+
+            return result;
+        }
+
+
         public void Retest()
         {
             var rows = Rows.OfType<TestingOutlineDetailsGridRow>()

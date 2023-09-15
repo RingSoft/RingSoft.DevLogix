@@ -35,6 +35,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             return new TestingTemplateItemRow(this);
         }
 
+        public override List<TestingTemplateItem> GetEntityList()
+        {
+            var tempList = base.GetEntityList()
+                .Where(p => !p.Description.IsNullOrEmpty());
+            var result = new List<TestingTemplateItem>(tempList);
+
+            return result;
+        }
+
         public void UpdateTestingOutlines()
         {
             var context = AppGlobals.DataRepository.GetDataContext();
