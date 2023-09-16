@@ -81,6 +81,19 @@ namespace RingSoft.DevLogix.QualityAssurance
                     errorHeaderControl.RecalculateButton.ToolTip.HeaderText = "Recalculate Cost (Alt + R)";
                     errorHeaderControl.RecalculateButton.ToolTip.DescriptionText =
                         "Recalculate the cost values for a range of product errors.";
+
+                    if (!AppGlobals.LookupContext.TimeClocks.HasRight(RightTypes.AllowAdd))
+                    {
+                        errorHeaderControl.PunchInButton.Visibility = Visibility.Collapsed;
+                    }
+                    if (!AppGlobals.LookupContext.TimeClocks.HasRight(RightTypes.AllowAdd))
+                    {
+                        errorHeaderControl.PunchInButton.Visibility = Visibility.Collapsed;
+                    }
+                    if (!AppGlobals.LookupContext.Errors.HasRight(RightTypes.AllowEdit))
+                    {
+                        errorHeaderControl.RecalculateButton.Visibility = Visibility.Collapsed;
+                    }
                 }
             };
         }
