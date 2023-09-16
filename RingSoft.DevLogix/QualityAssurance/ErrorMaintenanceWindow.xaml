@@ -124,7 +124,7 @@
 
             <lc:AutoFillControl Grid.Row="4" Grid.Column="1" Setup="{Binding FixedVersionAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding FixedVersionAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left" RsIsTabStop="False"/>
 
-            <GroupBox Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Header="Product Development" IsTabStop="False">
+            <GroupBox Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" x:Name="PdGroupBox" Header="Product Development" IsTabStop="False">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -138,9 +138,9 @@
 
                     <Label Grid.Row="0" Grid.Column="0" Content="Assigned To"/>
 
-                    <lc:AutoFillControl Grid.Row="0" Grid.Column="1" Setup="{Binding AssignedDeveloperAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding AssignedDeveloperAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left" RsIsTabStop="False"/>
+                    <lc:AutoFillControl Grid.Row="0" Grid.Column="1" x:Name="PdAutoFillControl" Setup="{Binding AssignedDeveloperAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding AssignedDeveloperAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left" RsIsTabStop="False"/>
 
-                    <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center">
+                    <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" x:Name="PdButtonsPanel" Orientation="Horizontal" HorizontalAlignment="Center">
 
                         <Button Content="_Clipboard Copy" Width="100" IsTabStop="False" Command="{Binding ClipboardCopyCommand}"/>
 
@@ -151,7 +151,7 @@
                 </Grid>
             </GroupBox>
 
-            <GroupBox Grid.Row="5" Grid.Column="2" Grid.ColumnSpan="2" Header="Quality Assurance" Margin="5,0,0,0" IsTabStop="False">
+            <GroupBox Grid.Row="5" Grid.Column="2" Grid.ColumnSpan="2" x:Name="QaGroupBox" Header="Quality Assurance" Margin="5,0,0,0" IsTabStop="False">
 
                 <Grid>
                     <Grid.RowDefinitions>
@@ -166,9 +166,9 @@
 
                     <Label Grid.Row="0" Grid.Column="0" Content="Assigned To"/>
 
-                    <lc:AutoFillControl Grid.Row="0" Grid.Column="1" Setup="{Binding AssignedQualityAssuranceAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding AssignedQualityAssuranceAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left" RsIsTabStop="False"/>
+                    <lc:AutoFillControl Grid.Row="0" Grid.Column="1" x:Name="QaAutoFillControl" Setup="{Binding AssignedQualityAssuranceAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding AssignedQualityAssuranceAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left" RsIsTabStop="False"/>
 
-                    <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center">
+                    <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" x:Name="QaButtonsPanel" Orientation="Horizontal" HorizontalAlignment="Center">
 
                         <Button Content="Pa_ss" Width="100" IsTabStop="False" Command="{Binding PassCommand}"/>
 

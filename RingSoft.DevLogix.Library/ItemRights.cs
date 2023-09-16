@@ -240,9 +240,9 @@ namespace RingSoft.DevLogix.Library
             category = new RightCategory("Quality Assurance" , MenuCategories.Qa);
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Error Statuses", AppGlobals.LookupContext.ErrorStatuses));
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Error Priorities", AppGlobals.LookupContext.ErrorPriorities));
-            category.Items.Add(new RightCategoryItem(item: "Add/Edit Error Products", AppGlobals.LookupContext.Products));
-            category.Items.Add(new RightCategoryItem(item: "Add/Edit Error Product Versions", AppGlobals.LookupContext.ProductVersions));
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Errors", AppGlobals.LookupContext.Errors));
+            category.Items.Add(new RightCategoryItem(item: "Add/Edit Products", AppGlobals.LookupContext.Products));
+            category.Items.Add(new RightCategoryItem(item: "Add/Edit Product Versions", AppGlobals.LookupContext.ProductVersions));
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Testing Templates", AppGlobals.LookupContext.TestingTemplates));
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Testing Outlines", AppGlobals.LookupContext.TestingOutlines));
 

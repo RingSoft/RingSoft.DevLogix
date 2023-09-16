@@ -26,6 +26,7 @@ using RingSoft.DevLogix.Library.ViewModels.QualityAssurance;
 using RingSoft.DevLogix.ProjectManagement;
 using RingSoft.DevLogix.UserManagement;
 using Clipboard = System.Windows.Clipboard;
+using Control = System.Windows.Controls.Control;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 
 namespace RingSoft.DevLogix.QualityAssurance
@@ -195,6 +196,39 @@ namespace RingSoft.DevLogix.QualityAssurance
             }
 
             base.OnPreviewKeyDown(e);
+        }
+
+        public override void SetControlReadOnlyMode(Control control, bool readOnlyValue)
+        {
+            if (control == PdGroupBox)
+            {
+                PdAutoFillControl.SetReadOnlyMode(readOnlyValue);
+
+                PdButtonsPanel.IsEnabled = !readOnlyValue;
+                return;
+            }
+            if (control == QaGroupBox)
+            {
+                QaAutoFillControl.SetReadOnlyMode(readOnlyValue);
+
+                QaButtonsPanel.IsEnabled = !readOnlyValue;
+                return;
+            }
+
+            if (control == DescriptionTextBox)
+            {
+                DescriptionTextBox.IsReadOnly = readOnlyValue;
+                DescriptionTextBox.IsReadOnlyCaretVisible = readOnlyValue;
+                return;
+            }
+            if (control == ResolutionTextBox)
+            {
+                ResolutionTextBox.IsReadOnly = readOnlyValue;
+                ResolutionTextBox.IsReadOnlyCaretVisible = readOnlyValue;
+                return;
+            }
+
+            base.SetControlReadOnlyMode(control, readOnlyValue);
         }
     }
 }

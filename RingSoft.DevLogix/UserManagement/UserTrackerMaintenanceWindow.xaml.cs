@@ -55,7 +55,6 @@ namespace RingSoft.DevLogix.UserManagement
         public UserTrackerMaintenanceWindow()
         {
             InitializeComponent();
-            RegisterFormKeyControl(NameControl);
             TopHeaderControl.Loaded += (sender, args) =>
             {
                 if (TopHeaderControl.CustomPanel is UserTrackerHeaderControl userHeaderControl)
@@ -70,6 +69,13 @@ namespace RingSoft.DevLogix.UserManagement
             {
                 _closed = true;
             };
+        }
+
+        protected override void OnLoaded()
+        {
+            RegisterFormKeyControl(NameControl);
+
+            base.OnLoaded();
         }
 
         public override void ResetViewForNewRecord()
