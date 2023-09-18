@@ -53,6 +53,10 @@ namespace RingSoft.DevLogix.UserManagement
 
         public override void OnValidationFail(FieldDefinition fieldDefinition, string text, string caption)
         {
+            if (fieldDefinition == AppGlobals.LookupContext.Departments.GetFieldDefinition(p => p.Description))
+            {
+                DescriptionControl.Focus();
+            }
             if (fieldDefinition == AppGlobals.LookupContext.Departments.GetFieldDefinition(p => p.ErrorFixStatusId))
             {
                 TabControl.SelectedIndex = 0;

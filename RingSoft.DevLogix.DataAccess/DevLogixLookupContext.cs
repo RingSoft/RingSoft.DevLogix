@@ -904,6 +904,8 @@ namespace RingSoft.DevLogix.DataAccess
             ErrorPriorities.PriorityLevel = 100;
             
             Departments.PriorityLevel = 200;
+            Departments.GetFieldDefinition(p => p.Description)
+                .HasDescription("Name");
             DevLogixCharts.PriorityLevel = 200;
 
             AdvancedFinds.PriorityLevel = 250;
