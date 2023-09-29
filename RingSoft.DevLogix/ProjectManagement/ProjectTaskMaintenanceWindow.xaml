@@ -138,9 +138,9 @@
 
                         <lc:AutoFillControl Grid.Row="0" Grid.Column="1" x:Name="ProjectControl" Width="200" HorizontalAlignment="Left" Setup="{Binding ProjectAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding ProjectAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-                        <Label Grid.Row="0" Grid.Column="2" Content="Assigned To"/>
+                        <Label Grid.Row="0" Grid.Column="2" x:Name="UserLabel" Content="Assigned To"/>
 
-                        <lc:AutoFillControl Grid.Row="0" Grid.Column="3" x:Name="UserControl" Width="200" HorizontalAlignment="Left" Setup="{Binding UserAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding UserAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <lc:AutoFillControl Grid.Row="0" Grid.Column="3" x:Name="UserControl" Width="200" HorizontalAlignment="Left" Setup="{Binding UserAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding UserAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" UiCommand="{Binding UserUiCommand}" UiLabel="{Binding ElementName=UserLabel}"/>
 
                         <Label Grid.Row="1" Grid.Column="0" Content="Time Cost"/>
 

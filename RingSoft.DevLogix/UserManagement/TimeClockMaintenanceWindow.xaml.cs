@@ -207,15 +207,6 @@ namespace RingSoft.DevLogix.UserManagement
             base.ResetViewForNewRecord();
         }
 
-        public override void OnValidationFail(FieldDefinition fieldDefinition, string text, string caption)
-        {
-            if (fieldDefinition == AppGlobals.LookupContext.TimeClocks.GetFieldDefinition(p => p.PunchOutDate))
-            {
-                PunchOutControl.Focus();
-            }
-            base.OnValidationFail(fieldDefinition, text, caption);
-        }
-
         public void SetTimeClockMode(TimeClockModes timeClockMode)
         {
             KeyLabel.Visibility = Visibility.Visible;

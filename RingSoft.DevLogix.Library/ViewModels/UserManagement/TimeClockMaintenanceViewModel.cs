@@ -375,6 +375,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         public RelayCommand ManualPunchOutCommand { get; private set; }
 
+        public UiCommand PunchOutDateUiCommand { get; }
+
         public double? SupportMinutesPurchased { get; private set; }
 
         public string? SupportTimeLeft { get; private set; }
@@ -409,6 +411,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
                 _setDirty = true;
             }));
+            PunchOutDateUiCommand = new UiCommand();
+
+            MapFieldToUiCommand(PunchOutDateUiCommand
+                , AppGlobals.LookupContext.TimeClocks.GetFieldDefinition(p => p.PunchOutDate));
+            ;
 
             ManualPunchOutCommand = new RelayCommand((() =>
             {
@@ -709,9 +716,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         {
             if (entity.PunchInDate > entity.PunchOutDate)
             {
+                PunchOutDateUiCommand.SetFocus();
                 var message = "The Punch In Date cannot be greater than the Punch Out Date";
-                View.OnValidationFail(TableDefinition.GetFieldDefinition(p => p.PunchOutDate)
-                    , message, "Validation Fail");
+                ControlsGlobals.UserInterface.ShowMessageBox(message, "Validation Fail"
+                    , RsMessageBoxIcons.Exclamation);
                 return false;
             }
             return base.ValidateEntity(entity);

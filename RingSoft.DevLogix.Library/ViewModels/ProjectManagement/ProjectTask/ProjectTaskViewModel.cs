@@ -354,6 +354,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public RelayCommand RecalcCommand { get; private set; }
 
+        public UiCommand UserUiCommand { get; }
+
         public ProjectTotalsRow ActualRow { get; private set; }
 
         public ProjectTotalsRow StatusRow { get; private set; }
@@ -393,6 +395,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
             TimeClockLookup = AppGlobals.LookupContext.TimeClockTabLookup.Clone();
             TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
+
+            UserUiCommand = new UiCommand();
         }
 
 
@@ -621,8 +625,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     var message =
                         "The Assigned To User you have chosen has not been added to the project. Please select a user that has been added to the project.";
                     var caption = "Invalid User";
-                    View.OnValidationFail(TableDefinition.GetFieldDefinition(p => p.UserId),
-                        message, caption);
+                    UserUiCommand.SetFocus();
+                    ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
                     return false;
                 }
             }

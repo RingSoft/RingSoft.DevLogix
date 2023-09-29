@@ -38,9 +38,9 @@
 
                 <lc:AutoFillControl Grid.Row="1" Grid.Column="1" x:Name="DescriptionControl" Setup="{Binding KeyAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding KeyAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left"/>
 
-                <Label Grid.Row="2" Grid.Column="0" Content="Priority Level"/>
+                <Label Grid.Row="2" Grid.Column="0" x:Name="LevelLabel" Content="Priority Level"/>
 
-                <dec:IntegerEditControl Grid.Row="2" Grid.Column="1" x:Name="LevelControl" Value="{Binding Level, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="75" HorizontalAlignment="Left"/>
+                <dec:IntegerEditControl Grid.Row="2" Grid.Column="1" x:Name="LevelControl" Value="{Binding Level, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="75" HorizontalAlignment="Left" UiCommand="{Binding LevelUiCommand}" UiLabel="{Binding ElementName=LevelLabel}"/>
 
             </Grid>
 

@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DevLogix.DataAccess.Model;
@@ -41,6 +42,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             }
         }
 
+        public UiCommand LevelUiCommand { get; } = new UiCommand();
+
         protected override ErrorPriority PopulatePrimaryKeyControls(ErrorPriority newEntity, PrimaryKeyValue primaryKeyValue)
         {
             var query = AppGlobals.DataRepository.GetDataContext().GetTable<ErrorPriority>();
@@ -74,8 +77,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             {
                 var message = "Level must have a value";
                 var caption = "Validation Failure";
-                View.OnValidationFail(AppGlobals.LookupContext.ErrorPriorities.GetFieldDefinition(p => p.Level),
-                    message, caption);
+                LevelUiCommand.SetFocus();
+                ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
                 return false;
             }
             return base.ValidateEntity(entity);
