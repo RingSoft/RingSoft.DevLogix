@@ -88,7 +88,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
                             if (generatedOutline == null)
                             {
                                 var detailId = outline.TestingOutline.Details
-                                    .Count + 1;
+                                    .ToList().Max(p => p.DetailId) + 1;
                                 generatedOutline = new GenerateData()
                                 {
                                     TestingOutline = outline.TestingOutline,
