@@ -544,6 +544,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         public RelayCommand RecalcCommand { get; set; }
 
+        public UiCommand DescriptionUiCommand { get; } = new UiCommand();
+
+        public UiCommand ResolutionUiCommand { get; } = new UiCommand();
+
         public new IErrorView View { get; private set; }
 
         public double MinutesSpent { get; private set; }
@@ -597,6 +601,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             {
                 View = errorView;
             }
+
+            MapFieldToUiCommand(DescriptionUiCommand, TableDefinition.GetFieldDefinition(p => p.Description));
+            MapFieldToUiCommand(ResolutionUiCommand, TableDefinition.GetFieldDefinition(p => p.Resolution));
 
             ViewLookupDefinition.InitialOrderByField = TableDefinition.GetFieldDefinition(p => p.Id);
             StatusAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ErrorStatusId));

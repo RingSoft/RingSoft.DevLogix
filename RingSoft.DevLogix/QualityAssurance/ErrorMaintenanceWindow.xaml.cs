@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using RingSoft.App.Controls;
+using RingSoft.DataEntryControls.WPF;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Lookup;
@@ -62,6 +63,9 @@ namespace RingSoft.DevLogix.QualityAssurance
         public override DbMaintenanceStatusBar DbStatusBar => StatusBar;
         public RecalcProcedure RecalcProcedure { get; set; }
 
+        private VmUiControl _descriptionUiControl;
+        private VmUiControl _resolutionUiControl;
+
         public ErrorMaintenanceWindow()
         {
             InitializeComponent();
@@ -107,6 +111,8 @@ namespace RingSoft.DevLogix.QualityAssurance
         protected override void OnLoaded()
         {
             RegisterFormKeyControl(ErrorIdControl);
+            _descriptionUiControl = new VmUiControl(DescriptionTextBox, LocalViewModel.DescriptionUiCommand);
+            _resolutionUiControl = new VmUiControl(ResolutionTextBox, LocalViewModel.ResolutionUiCommand);
             
             base.OnLoaded();
         }
