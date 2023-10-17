@@ -477,7 +477,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         public int MasterUserId { get; private set; }
 
         public bool MasterMode { get; private set; }
-        
+
+        public AutoFillValue DefaultDepartmentAutoFillValue { get; private set; }
+
         private int _rowFocusId = -1;
         private string? _oldPassword;
         private const string _dummyPassword = "{1D56EF31}";
@@ -604,6 +606,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             GroupsManager = new UsersGroupsManager( this);
 
             BillabilityGridManager.MakeGrid();
+
+            if (LookupAddViewArgs != null && LookupAddViewArgs.ParentWindowPrimaryKeyValue != null)
+            {
+                if (LookupAddViewArgs.ParentWindowPrimaryKeyValue.TableDefinition ==
+                    AppGlobals.LookupContext.Departments)
+                {
+                    var department =
+                        AppGlobals.LookupContext.Departments.GetEntityFromPrimaryKeyValue(LookupAddViewArgs
+                            .ParentWindowPrimaryKeyValue);
+                    DefaultDepartmentAutoFillValue =
+                        AppGlobals.LookupContext.OnAutoFillTextRequest(AppGlobals.LookupContext.Departments,
+                            department.Id.ToString());
+
+                }
+            }
+
 
             base.Initialize();
         }
@@ -861,7 +879,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         {
             Id = 0;
             KeyAutoFillValue = null;
-            DepartmentAutoFillValue = null;
+            DepartmentAutoFillValue = DefaultDepartmentAutoFillValue;
             EmailAddress = null;
             PhoneNumber = null;
             DefaultChartAutoFillValue = null;

@@ -192,7 +192,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             {
                 if (_userLookupCommand == value) return;
                 _userLookupCommand = value;
-                OnPropertyChanged();
+                OnPropertyChanged(null, false);
             }
         }
 
