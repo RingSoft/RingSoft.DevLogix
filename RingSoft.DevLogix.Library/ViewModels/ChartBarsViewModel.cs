@@ -191,12 +191,25 @@ namespace RingSoft.DevLogix.Library.ViewModels
                 }
             }
             Bars = new List<ChartBarViewModel>();
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var advFindTable = context.GetTable<AdvancedFind>();
             foreach (var devLogixChartBar in bars)
             {
                 if (devLogixChartBar.AdvancedFindId > 0)
                 {
-                    var chartBarViewModel = new ChartBarViewModel(this, devLogixChartBar);
-                    Bars.Add(chartBarViewModel);
+                    var advFind = advFindTable
+                        .FirstOrDefault(p => p.Id == devLogixChartBar.AdvancedFindId);
+                    if (advFind != null)
+                    {
+                        var tableDef = AppGlobals.LookupContext.TableDefinitions
+                            .FirstOrDefault(p => p.EntityName == advFind.Table);
+                        if (tableDef != null
+                            && tableDef.CanViewTable)
+                        {
+                            var chartBarViewModel = new ChartBarViewModel(this, devLogixChartBar);
+                            Bars.Add(chartBarViewModel);
+                        }
+                    }
                 }
             }
             View.RefreshChart();
