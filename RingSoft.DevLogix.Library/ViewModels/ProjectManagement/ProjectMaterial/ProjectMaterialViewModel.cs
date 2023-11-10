@@ -438,7 +438,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 foreach (var primaryKeyValue in args.Result)
                 {
                     //projectMaterialPrimaryKey.PopulateFromDataRow(tableRow);
-                    if (primaryKeyValue.IsValid)
+                    if (primaryKeyValue.IsValid())
                     {
                         var projectMaterial = TableDefinition.GetEntityFromPrimaryKeyValue(primaryKeyValue);
                         projectMaterial = projectMaterialTable

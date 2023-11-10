@@ -506,7 +506,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 var lookup = AppGlobals.LookupContext.DevLogixChartLookup.Clone();
                 lookup.WindowClosed += (sender, args) =>
                 {
-                    if (!args.LookupData.SelectedPrimaryKeyValue.IsValid)
+                    if (!args.LookupData.SelectedPrimaryKeyValue.IsValid())
                     {
                         return;
                     }
@@ -1290,7 +1290,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             {
                 DateFormatType = DateFormatTypes.DateTime,
             };
-            if (primaryKey.IsValid)
+            if (primaryKey.IsValid())
             {
                 var user = TableDefinition.GetEntityFromPrimaryKeyValue(primaryKey);
                 if (user != null)

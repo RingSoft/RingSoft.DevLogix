@@ -1,5 +1,7 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 using RingSoft.App.Controls;
+using RingSoft.DataEntryControls.WPF;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Lookup;
@@ -23,7 +25,8 @@ namespace RingSoft.DevLogix
     public class DevLogixDbMaintenanceWindowProcessor : AppDbMaintenanceWindowProcessor
     {
         private bool _rightsSet;
-        public override void SetupControl(IDbMaintenanceView view)
+
+        protected override void SetupControl(IDbMaintenanceView view)
         {
             base.SetupControl(view);
             MaintenanceButtonsControl.Loaded += (sender, args) =>

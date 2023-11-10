@@ -77,6 +77,11 @@ namespace RingSoft.DevLogix.UserManagement
                 }
             };
 
+            Loaded += (sender, args) =>
+            {
+                var test = Processor;
+            };
+
             TimeOffGrid.Loaded += (sender, args) =>
             {
                 if (_timeOffRowFocus >= 0)
@@ -91,6 +96,7 @@ namespace RingSoft.DevLogix.UserManagement
 
         protected override void OnLoaded()
         {
+            var test = Processor;
             RegisterFormKeyControl(NameControl);
             RefreshView();
             base.OnLoaded();
@@ -167,7 +173,7 @@ namespace RingSoft.DevLogix.UserManagement
             {
                 RightsTab.Visibility = Visibility.Collapsed;
             }
-            SetMasterUserMode(LocalViewModel.MasterMode);
+            SetMasterUserMode(UserMaintenanceViewModel.MasterMode);
         }
 
         public void OnValGridFail(UserGrids userGrid)

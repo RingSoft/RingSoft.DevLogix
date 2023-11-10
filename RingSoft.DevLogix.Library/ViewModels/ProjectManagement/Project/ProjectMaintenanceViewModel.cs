@@ -759,7 +759,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 foreach (var primaryKeyValue in args.Result)
                 {
                     var projectPrimaryKey = primaryKeyValue;
-                    if (projectPrimaryKey.IsValid)
+                    if (projectPrimaryKey.IsValid())
                     {
                         var project = TableDefinition.GetEntityFromPrimaryKeyValue(projectPrimaryKey);
                         project = projectTable
