@@ -26,9 +26,15 @@ namespace RingSoft.DevLogix
     {
         private bool _rightsSet;
 
-        protected override void SetupControl(IDbMaintenanceView view)
+        public override void Initialize(BaseWindow window, Control buttonsControl, DbMaintenanceViewModelBase viewModel,
+            IDbMaintenanceView view, DbMaintenanceStatusBar statusBar)
         {
-            base.SetupControl(view);
+            base.Initialize(window, buttonsControl, viewModel, view, statusBar);
+        }
+
+        protected override void SetupControl()
+        {
+            base.SetupControl();
             MaintenanceButtonsControl.Loaded += (sender, args) =>
             {
                 if (!_rightsSet)
