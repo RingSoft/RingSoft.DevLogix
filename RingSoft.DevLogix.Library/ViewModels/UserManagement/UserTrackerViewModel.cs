@@ -95,7 +95,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         public RefreshRate RefreshRate
         {
             get => (RefreshRate)RefreshRateItem.NumericValue;
-            set => RefreshRateItem = RefreshRateSetup.GetItem((int)value);
+            set
+            {
+                var washValue = (int)value;
+                if (washValue == 2)
+                {
+                    washValue = 1;
+                }
+                RefreshRateItem = RefreshRateSetup.GetItem(washValue);
+            }
         }
 
         private double? _redAlertMinutes;
