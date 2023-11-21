@@ -11,6 +11,7 @@ using RingSoft.DbLookup.RecordLocking;
 using RingSoft.DevLogix.DataAccess.LookupModel;
 using RingSoft.DevLogix.DataAccess.Model;
 using System;
+using System.Linq;
 using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using RingSoft.DevLogix.DataAccess.LookupModel.CustomerManagement;
 using RingSoft.DevLogix.DataAccess.LookupModel.ProjectManagement;
@@ -978,6 +979,7 @@ namespace RingSoft.DevLogix.DataAccess
                 .DoConvertToLocalTime();
 
             ProductVersionDepartments.PriorityLevel = 500;
+            ProductVersionDepartments.IsGridTable();
             ProductVersionDepartments.GetFieldDefinition(p => p.ReleaseDateTime)
                 .HasDateType(DbDateTypes.DateTime);
 

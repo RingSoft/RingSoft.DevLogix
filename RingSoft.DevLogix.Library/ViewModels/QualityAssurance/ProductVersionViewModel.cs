@@ -299,17 +299,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         protected override ProductVersion PopulatePrimaryKeyControls(ProductVersion newEntity, PrimaryKeyValue primaryKeyValue)
         {
-            var query = AppGlobals.DataRepository.GetDataContext().GetTable<ProductVersion>();
-            var result = query
-                .Include(p => p.ProductVersionDepartments)
-                .FirstOrDefault(p => p.Id == newEntity.Id);
-            if (result != null)
-            {
-                Id = result.Id;
-                KeyAutoFillValue = AppGlobals.LookupContext.OnAutoFillTextRequest(TableDefinition, Id.ToString());
-            }
-
-            return result;
+            Id = newEntity.Id;
+            return base.PopulatePrimaryKeyControls(newEntity, primaryKeyValue);
         }
 
         protected override void LoadFromEntity(ProductVersion entity)
@@ -394,22 +385,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         protected override bool SaveEntity(ProductVersion entity)
         {
-            var context = AppGlobals.DataRepository.GetDataContext();
+            var context = SystemGlobals.DataRepository.GetDataContext();
             if (context != null)
             {
                 if (context.SaveEntity(entity, $"Saving Product Version '{entity.Description}'"))
                 {
-                    var departmentsToAdd = DepartmentsManager.GetEntityList();
-                    var departmentsToRemove = context.GetTable<ProductVersionDepartment>()
-                        .Where(p => p.VersionId == entity.Id);
-
-                    foreach (var productVersionDepartment in departmentsToAdd)
-                    {
-                        productVersionDepartment.VersionId = entity.Id;
-                    }
-                    context.RemoveRange(departmentsToRemove);
-                    context.AddRange(departmentsToAdd);
-
+                    DepartmentsManager.SaveNoCommitData(entity, context);
                     return context.Commit("Saving Product Version Details");
                 }
             }
@@ -419,20 +400,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         protected override bool DeleteEntity()
         {
-            var context = AppGlobals.DataRepository.GetDataContext();
+            var context = SystemGlobals.DataRepository.GetDataContext();
             var query = context.GetTable<ProductVersion>();
             if (query != null)
             {
                 if (!ValidateOnlyVersion()) return false;
-
-                var departmentsToRemove = context.GetTable<ProductVersionDepartment>()
-                    .Where(p => p.VersionId == Id);
-
-                context.RemoveRange(departmentsToRemove);
                 var entity = query.FirstOrDefault(p => p.Id == Id);
-                
+
                 if (entity != null)
                 {
+                    DepartmentsManager.DeleteNoCommitData(entity, context);
                     return context.DeleteEntity(entity, $"Deleting Product Version '{entity.Description}'");
                 }
             }
