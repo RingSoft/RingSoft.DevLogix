@@ -979,7 +979,7 @@ namespace RingSoft.DevLogix.DataAccess
                 .DoConvertToLocalTime();
 
             ProductVersionDepartments.PriorityLevel = 500;
-            ProductVersionDepartments.IsGridTable();
+            ProductVersionDepartments.SetHeaderEntity<ProductVersion>();
             ProductVersionDepartments.GetFieldDefinition(p => p.ReleaseDateTime)
                 .HasDateType(DbDateTypes.DateTime);
 
