@@ -69,7 +69,6 @@ namespace RingSoft.DevLogix.Tests
             AppGlobals.UnitTesting = true;
             AppGlobals.Initialize();
             AppGlobals.DataRepository = DataRepository;
-            SystemGlobals.DataRepository = DataRepository;
             AppGlobals.LookupContext.Initialize(new DevLogixSqliteDbContext(), DbPlatforms.Sqlite);
             AppGlobals.MainViewModel = new MainViewModel();
             AppGlobals.LoggedInUser = new User();

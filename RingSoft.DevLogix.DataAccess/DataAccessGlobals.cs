@@ -71,7 +71,7 @@ namespace RingSoft.DevLogix.DataAccess
             modelBuilder.ApplyConfiguration(new CustomerStatusConfiguration());
             modelBuilder.ApplyConfiguration(new SupportTicketStatusConfiguration());
 
-            AdvancedFindDataProcessorEfCore.ConfigureAdvancedFind(modelBuilder);
+            SystemDataRepositoryEfCore.ConfigureAdvancedFind(modelBuilder);
         }
 
         //public static void UpgradeProjects(MigrationBuilder migrationBuilder)

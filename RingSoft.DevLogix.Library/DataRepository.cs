@@ -1,17 +1,19 @@
-﻿using RingSoft.DevLogix.DataAccess;
-using System.Linq;
+﻿using System.Linq;
 using RingSoft.App.Library;
+using RingSoft.DbLookup;
 using RingSoft.DbLookup.DataProcessor;
+using RingSoft.DbLookup.EfCore;
 using RingSoft.DbLookup.Lookup;
+using IDbContext = RingSoft.DevLogix.DataAccess.IDbContext;
 
 namespace RingSoft.DevLogix.Library
 {
-    public interface IDataRepository : DbLookup.IDataRepository
+    public interface IDataRepository
     {
         IDbContext GetDataContext();
     }
 
-    public class DataRepository : IDataRepository
+    public class DataRepository : SystemDataRepositoryEfCore, IDataRepository
     {
         public IDbContext GetDataContext()
         {
@@ -27,11 +29,6 @@ namespace RingSoft.DevLogix.Library
                 platform = DbPlatforms.SqlServer;
             }
             return AppGlobals.GetNewDbContext(platform);
-        }
-
-        DbLookup.IDbContext DbLookup.IDataRepository.GetDataContext()
-        {
-            return AppGlobals.GetNewDbContext();
         }
     }
 }

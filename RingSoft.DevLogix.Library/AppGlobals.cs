@@ -73,13 +73,11 @@ namespace RingSoft.DevLogix.Library
         public static void Initialize()
         {
             DataRepository ??= new DataRepository();
-            SystemGlobals.DataRepository = DataRepository;
             SystemGlobals.ConvertAllDatesToUniversalTime = true;
 
             AppSplashProgress?.Invoke(null, new AppProgressArgs("Initializing Database Structure."));
 
             LookupContext = new DevLogixLookupContext();
-            SystemGlobals.LookupContext = LookupContext;
             LookupContext.SqliteDataProcessor.FilePath = MasterDbContext.ProgramDataFolder;
             LookupContext.SqliteDataProcessor.FileName = MasterDbContext.DemoDataFileName;
             
