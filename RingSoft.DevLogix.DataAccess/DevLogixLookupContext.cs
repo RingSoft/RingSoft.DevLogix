@@ -191,16 +191,12 @@ namespace RingSoft.DevLogix.DataAccess
         {
             dbContext.SetLookupContext(this);
             _dbContext = dbContext.DbContext;
-            //SystemGlobals.AdvancedFindLookupContext = this;
 
             SetProcessor(dbPlatform);
             if (_initialized)
             {
                 return;
             }
-            //var configuration = new AdvancedFindLookupConfiguration(SystemGlobals.AdvancedFindLookupContext);
-            //configuration.InitializeModel();
-            //configuration.ConfigureLookups();
             Initialize();
             _initialized = true;
         }
