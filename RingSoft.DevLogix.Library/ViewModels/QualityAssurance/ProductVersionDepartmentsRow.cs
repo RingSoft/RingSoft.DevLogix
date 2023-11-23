@@ -6,6 +6,7 @@ using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model;
+using RingSoft.DevLogix.Sqlite.Migrations;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 {
@@ -119,11 +120,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         public override void SaveToEntity(ProductVersionDepartment entity, int rowIndex)
         {
-            var department =
-                AppGlobals.LookupContext.Departments.GetEntityFromPrimaryKeyValue(DepartmentAutoFillValue
-                    .PrimaryKeyValue);
-
-            entity.DepartmentId = department.Id;
+            entity.DepartmentId = DepartmentAutoFillValue.GetEntity<Department>().Id;
             entity.ReleaseDateTime = ReleaseDateTime.Value.ToUniversalTime();
         }
 
