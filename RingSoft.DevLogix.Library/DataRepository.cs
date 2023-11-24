@@ -13,9 +13,9 @@ namespace RingSoft.DevLogix.Library
         IDbContext GetDataContext();
     }
 
-    public class DataRepository : SystemDataRepositoryEfCore, IDataRepository
+    public class DataRepository : SystemDataRepositoryBase, IDataRepository
     {
-        public IDbContext GetDataContext()
+        public override DbLookup.IDbContext GetDataContext()
         {
             return AppGlobals.GetNewDbContext();
         }
@@ -29,6 +29,11 @@ namespace RingSoft.DevLogix.Library
                 platform = DbPlatforms.SqlServer;
             }
             return AppGlobals.GetNewDbContext(platform);
+        }
+
+        IDbContext IDataRepository.GetDataContext()
+        {
+            return AppGlobals.GetNewDbContext();
         }
     }
 }
