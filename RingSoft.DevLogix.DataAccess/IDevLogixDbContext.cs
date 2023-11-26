@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using RingSoft.DbLookup.EfCore;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
@@ -8,7 +7,7 @@ using RingSoft.DevLogix.DataAccess.Model.UserManagement;
 
 namespace RingSoft.DevLogix.DataAccess
 {
-    public interface IDevLogixDbContext : IAdvancedFindDbContextEfCore, IDbContext
+    public interface IDevLogixDbContext : IDbContext, DbLookup.IDbContext
     {
         DbContext DbContext { get; }
 
