@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.DbLookup", "..\Rin
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.DbLookup.EfCore", "..\RingSoft.DbLookup\RingSoft.DbLookup.EfCore\RingSoft.DbLookup.EfCore.csproj", "{92722067-1CE5-49C1-98DD-1465BBAACB17}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.DbMaintenance", "..\RingSoft.DbLookup\RingSoft.DbMaintenance\RingSoft.DbMaintenance.csproj", "{CDD894DF-E397-4DB9-A245-0619741E5294}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{92722067-1CE5-49C1-98DD-1465BBAACB17}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{92722067-1CE5-49C1-98DD-1465BBAACB17}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{92722067-1CE5-49C1-98DD-1465BBAACB17}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDD894DF-E397-4DB9-A245-0619741E5294}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDD894DF-E397-4DB9-A245-0619741E5294}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDD894DF-E397-4DB9-A245-0619741E5294}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDD894DF-E397-4DB9-A245-0619741E5294}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

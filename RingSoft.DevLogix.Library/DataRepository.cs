@@ -13,7 +13,7 @@ namespace RingSoft.DevLogix.Library
         IDbContext GetDataContext();
     }
 
-    public class DataRepository : SystemDataRepositoryBase, IDataRepository
+    public class DataRepository : SystemDataRepository, IDataRepository
     {
         public override DbLookup.IDbContext GetDataContext()
         {

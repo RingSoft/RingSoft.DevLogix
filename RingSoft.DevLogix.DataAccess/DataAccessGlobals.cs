@@ -7,6 +7,7 @@ using System.Linq;
 using RingSoft.DevLogix.DataAccess.Configurations.ProjectManagement;
 using RingSoft.DevLogix.DataAccess.Configurations.QualityAssurance;
 using Microsoft.EntityFrameworkCore.Migrations;
+using RingSoft.DbLookup;
 using RingSoft.DevLogix.DataAccess.Configurations.CustomerManagement;
 using RingSoft.DevLogix.DataAccess.Configurations.UserManagement;
 using RingSoft.DevLogix.DataAccess.Model;
@@ -71,7 +72,7 @@ namespace RingSoft.DevLogix.DataAccess
             modelBuilder.ApplyConfiguration(new CustomerStatusConfiguration());
             modelBuilder.ApplyConfiguration(new SupportTicketStatusConfiguration());
 
-            SystemDataRepositoryEfCore.ConfigureAdvancedFind(modelBuilder);
+            DbContextEfCore.ConfigureAdvancedFind(modelBuilder);
         }
 
         //public static void UpgradeProjects(MigrationBuilder migrationBuilder)
