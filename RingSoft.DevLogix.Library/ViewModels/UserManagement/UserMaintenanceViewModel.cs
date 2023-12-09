@@ -641,18 +641,41 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             return result;
         }
 
-        protected override User PopulatePrimaryKeyControls(User newEntity, PrimaryKeyValue primaryKeyValue)
+        protected override void PopulatePrimaryKeyControls(User newEntity, PrimaryKeyValue primaryKeyValue)
         {
             SetMasterMode(newEntity);
+            Id = newEntity.Id;
+            View.RefreshView();
+
+            ChangeChartCommand.IsEnabled = true;
+
+            TimeClockLookup.FilterDefinition.ClearFixedFilters();
+            TimeClockLookup.FilterDefinition.AddFixedFilter(p => p.UserId, Conditions.Equals, Id);
+            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
+
+            UserMonthlySalesLookup.FilterDefinition.ClearFixedFilters();
+            UserMonthlySalesLookup.FilterDefinition.AddFixedFilter(
+                p => p.UserId
+                , Conditions.Equals
+                , newEntity.Id);
+            UserMonthlySalesLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
+
+            if (!TableDefinition.HasRight(RightTypes.AllowEdit))
+            {
+                var readOnlyMode = AppGlobals.LoggedInUser.Id != Id;
+                View.SetUserReadOnlyMode(readOnlyMode);
+                SaveButtonEnabled = !readOnlyMode;
+            }
+        }
+
+        protected override User GetEntityFromDb(User newEntity, PrimaryKeyValue primaryKeyValue)
+        {
             IQueryable<User> query = AppGlobals.DataRepository.GetDataContext().GetTable<User>();
 
             var result = query
                 .Include(p => p.UserTimeOff)
                 .Include(p => p.UserGroups)
                 .FirstOrDefault(p => p.Id == newEntity.Id);
-            Id = result.Id;
-            KeyAutoFillValue = AppGlobals.LookupContext.OnAutoFillTextRequest(TableDefinition, Id.ToString());
-            View.RefreshView();
 
             if (AppGlobals.LoggedInUser == null)
             {
@@ -672,25 +695,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
             PopulateClockReason(result);
 
-            ChangeChartCommand.IsEnabled = true;
-
-            TimeClockLookup.FilterDefinition.ClearFixedFilters();
-            TimeClockLookup.FilterDefinition.AddFixedFilter(p => p.UserId, Conditions.Equals, Id);
-            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
-
-            UserMonthlySalesLookup.FilterDefinition.ClearFixedFilters();
-            UserMonthlySalesLookup.FilterDefinition.AddFixedFilter(
-                p => p.UserId
-                , Conditions.Equals
-                , result.Id);
-            UserMonthlySalesLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
-
-            if (!TableDefinition.HasRight(RightTypes.AllowEdit))
-            {
-                var readOnlyMode = AppGlobals.LoggedInUser.Id != Id;
-                View.SetUserReadOnlyMode(readOnlyMode);
-                SaveButtonEnabled = !readOnlyMode;
-            }
             _oldPassword = result.Password;
 
             return result;

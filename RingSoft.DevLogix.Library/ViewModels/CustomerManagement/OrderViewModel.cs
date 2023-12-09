@@ -368,13 +368,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             base.Initialize();
         }
 
-        protected override Order PopulatePrimaryKeyControls(Order newEntity, PrimaryKeyValue primaryKeyValue)
+        protected override void PopulatePrimaryKeyControls(Order newEntity, PrimaryKeyValue primaryKeyValue)
+        {
+            Id = newEntity.Id;
+        }
+
+        protected override Order GetEntityFromDb(Order newEntity, PrimaryKeyValue primaryKeyValue)
         {
             var order = GetOrder(newEntity.Id);
-
-            Id = newEntity.Id;
-            KeyAutoFillValue = order.GetAutoFillValue();
-
             return order;
         }
 

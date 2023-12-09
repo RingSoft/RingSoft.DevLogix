@@ -56,17 +56,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
-        protected override LaborPart PopulatePrimaryKeyControls(LaborPart newEntity, PrimaryKeyValue primaryKeyValue)
+        protected override void PopulatePrimaryKeyControls(LaborPart newEntity, PrimaryKeyValue primaryKeyValue)
         {
-            var context = AppGlobals.DataRepository.GetDataContext();
-            var table = context.GetTable<LaborPart>();
-            var result = table.FirstOrDefault(p => p.Id == newEntity.Id);
-            if (result != null)
-            {
-                Id = result.Id;
-            }
-
-            return result;
+            Id = newEntity.Id;
         }
 
         protected override void LoadFromEntity(LaborPart entity)

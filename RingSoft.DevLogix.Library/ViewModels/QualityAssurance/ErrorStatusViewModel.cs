@@ -25,13 +25,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         public override TableDefinition<ErrorStatus> TableDefinition => AppGlobals.LookupContext.ErrorStatuses;
 
-        protected override ErrorStatus PopulatePrimaryKeyControls(ErrorStatus newEntity, PrimaryKeyValue primaryKeyValue)
+        protected override void PopulatePrimaryKeyControls(ErrorStatus newEntity, PrimaryKeyValue primaryKeyValue)
         {
-            var query = AppGlobals.DataRepository.GetDataContext().GetTable<ErrorStatus>();
-            var result = query.FirstOrDefault(p => p.Id == newEntity.Id);
-            Id = result.Id;
-            KeyAutoFillValue = AppGlobals.LookupContext.OnAutoFillTextRequest(TableDefinition, Id.ToString());
-            return result;
+            Id = newEntity.Id;
         }
 
         protected override void LoadFromEntity(ErrorStatus entity)

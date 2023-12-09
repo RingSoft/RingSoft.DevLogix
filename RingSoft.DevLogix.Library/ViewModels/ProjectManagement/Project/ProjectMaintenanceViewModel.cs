@@ -547,12 +547,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         }
 
 
-        protected override Project PopulatePrimaryKeyControls(Project newEntity, PrimaryKeyValue primaryKeyValue)
+        protected override void PopulatePrimaryKeyControls(Project newEntity, PrimaryKeyValue primaryKeyValue)
         {
-            var project = GetProject(newEntity.Id);
-
-            Id = project.Id;
-            KeyAutoFillValue = KeyAutoFillSetup.GetAutoFillValueForIdValue(project.Id);
+            Id = newEntity.Id;
 
             TimeClockLookup.FilterDefinition.ClearFixedFilters();
             TimeClockLookup.FilterDefinition.Include(p => p.ProjectTask)
@@ -574,7 +571,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             HistoryLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
 
             CalculateDeadlineCommand.IsEnabled = true;
+        }
 
+        protected override Project GetEntityFromDb(Project newEntity, PrimaryKeyValue primaryKeyValue)
+        {
+            var project = GetProject(newEntity.Id);
             return project;
         }
 

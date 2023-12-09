@@ -460,11 +460,20 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             return result;
         }
 
-        protected override ProjectTask PopulatePrimaryKeyControls(ProjectTask newEntity, PrimaryKeyValue primaryKeyValue)
+        protected override void PopulatePrimaryKeyControls(ProjectTask newEntity, PrimaryKeyValue primaryKeyValue)
+        {
+            Id = newEntity.Id;
+
+            TimeClockLookup.FilterDefinition.ClearFixedFilters();
+            TimeClockLookup.FilterDefinition.AddFixedFilter(p => p.ProjectTaskId, Conditions.Equals, Id);
+            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
+
+            PunchInCommand.IsEnabled = true;
+        }
+
+        protected override ProjectTask GetEntityFromDb(ProjectTask newEntity, PrimaryKeyValue primaryKeyValue)
         {
             var result = GetProjectTask(newEntity.Id);
-            Id = result.Id;
-            KeyAutoFillValue = result.GetAutoFillValue();
 
             var hasEditRight = TableDefinition.HasRight(RightTypes.AllowEdit);
             if (!hasEditRight)
@@ -486,12 +495,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             {
                 LaborPartsManager.SetDisplayMode(DisplayModes.All);
             }
-
-            TimeClockLookup.FilterDefinition.ClearFixedFilters();
-            TimeClockLookup.FilterDefinition.AddFixedFilter(p => p.ProjectTaskId, Conditions.Equals, Id);
-            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
-
-            PunchInCommand.IsEnabled = true;
 
             return result;
         }

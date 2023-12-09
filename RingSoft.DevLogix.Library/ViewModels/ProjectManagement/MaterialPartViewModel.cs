@@ -57,16 +57,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         }
 
 
-        protected override MaterialPart PopulatePrimaryKeyControls(MaterialPart newEntity, PrimaryKeyValue primaryKeyValue)
+        protected override void PopulatePrimaryKeyControls(MaterialPart newEntity, PrimaryKeyValue primaryKeyValue)
         {
-            var table = AppGlobals.DataRepository.GetDataContext().GetTable<MaterialPart>();
-            var result = table.FirstOrDefault(p => p.Id == newEntity.Id);
-            if (result != null)
-            {
-                Id = result.Id;
-            }
-
-            return result;
+            Id = newEntity.Id;
         }
 
         protected override void LoadFromEntity(MaterialPart entity)

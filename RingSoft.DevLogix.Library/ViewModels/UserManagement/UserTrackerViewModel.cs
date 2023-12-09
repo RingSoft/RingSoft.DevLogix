@@ -226,7 +226,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             base.Initialize();
         }
 
-        protected override UserTracker PopulatePrimaryKeyControls(UserTracker newEntity, PrimaryKeyValue primaryKeyValue)
+        protected override void PopulatePrimaryKeyControls(UserTracker newEntity, PrimaryKeyValue primaryKeyValue)
+        {
+            Id = newEntity.Id;
+            RefreshNowCommand.IsEnabled = true;
+        }
+
+        protected override UserTracker GetEntityFromDb(UserTracker newEntity, PrimaryKeyValue primaryKeyValue)
         {
             var context = AppGlobals.DataRepository.GetDataContext();
             var result = context.GetTable<UserTracker>()
@@ -234,8 +240,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 .ThenInclude(p => p.User)
                 .FirstOrDefault(p => p.Id == newEntity.Id);
 
-            Id = result.Id;
-            RefreshNowCommand.IsEnabled = true;
             return result;
         }
 

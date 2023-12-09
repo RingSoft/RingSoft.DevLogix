@@ -22,13 +22,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
         }
 
-        protected override CustomerStatus PopulatePrimaryKeyControls(CustomerStatus newEntity, PrimaryKeyValue primaryKeyValue)
+        protected override void PopulatePrimaryKeyControls(CustomerStatus newEntity, PrimaryKeyValue primaryKeyValue)
         {
-            var query = AppGlobals.DataRepository.GetDataContext().GetTable<CustomerStatus>();
-            var result = query.FirstOrDefault(p => p.Id == newEntity.Id);
-            Id = result.Id;
-            KeyAutoFillValue = result.GetAutoFillValue();
-            return result;
+            Id = newEntity.Id;
         }
 
         protected override void LoadFromEntity(CustomerStatus entity)

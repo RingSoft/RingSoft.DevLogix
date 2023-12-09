@@ -40,14 +40,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         }
 
 
-        protected override TimeZone PopulatePrimaryKeyControls(TimeZone newEntity, PrimaryKeyValue primaryKeyValue)
+        protected override void PopulatePrimaryKeyControls(TimeZone newEntity, PrimaryKeyValue primaryKeyValue)
         {
             Id = newEntity.Id;
-            var context = AppGlobals.DataRepository.GetDataContext();
-            var table = context.GetTable<TimeZone>();
-            var timeZone = table.FirstOrDefault(p => p.Id == newEntity.Id);
-            KeyAutoFillValue = timeZone.GetAutoFillValue();
-            return timeZone;
         }
 
         protected override void LoadFromEntity(TimeZone entity)

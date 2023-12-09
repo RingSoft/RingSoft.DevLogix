@@ -686,12 +686,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             base.Initialize();
         }
 
-        protected override Customer PopulatePrimaryKeyControls(Customer newEntity, PrimaryKeyValue primaryKeyValue)
+        protected override void PopulatePrimaryKeyControls(Customer newEntity, PrimaryKeyValue primaryKeyValue)
         {
-            var result = GetCustomer(newEntity.Id);
-
             Id = newEntity.Id;
-            KeyAutoFillValue = result.GetAutoFillValue();
 
             OrderLookupDefinition.FilterDefinition.ClearFixedFilters();
             OrderLookupDefinition.FilterDefinition.AddFixedFilter(p => p.CustomerId, Conditions.Equals, Id);
@@ -708,6 +705,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             SupportTicketLookup.FilterDefinition.ClearFixedFilters();
             SupportTicketLookup.FilterDefinition.AddFixedFilter(p => p.CustomerId, Conditions.Equals, Id);
             SupportTicketLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
+        }
+
+        protected override Customer GetEntityFromDb(Customer newEntity, PrimaryKeyValue primaryKeyValue)
+        {
+            var result = GetCustomer(newEntity.Id);
 
             return result;
         }

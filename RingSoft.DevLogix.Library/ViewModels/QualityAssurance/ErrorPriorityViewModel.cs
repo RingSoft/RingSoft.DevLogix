@@ -44,14 +44,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         public UiCommand LevelUiCommand { get; } = new UiCommand();
 
-        protected override ErrorPriority PopulatePrimaryKeyControls(ErrorPriority newEntity, PrimaryKeyValue primaryKeyValue)
+        protected override void PopulatePrimaryKeyControls(ErrorPriority newEntity, PrimaryKeyValue primaryKeyValue)
         {
-            var query = AppGlobals.DataRepository.GetDataContext().GetTable<ErrorPriority>();
-            var result = query.FirstOrDefault(p => p.Id == newEntity.Id);
-            Id = result.Id;
-            KeyAutoFillValue = AppGlobals.LookupContext.OnAutoFillTextRequest(TableDefinition, Id.ToString());
-            return result;
-
+            Id = newEntity.Id;
         }
 
         protected override void LoadFromEntity(ErrorPriority entity)

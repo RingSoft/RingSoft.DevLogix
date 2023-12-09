@@ -695,12 +695,25 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             return null;
         }
 
-        protected override Error PopulatePrimaryKeyControls(Error newEntity, PrimaryKeyValue primaryKeyValue)
+        protected override void PopulatePrimaryKeyControls(Error newEntity, PrimaryKeyValue primaryKeyValue)
+        {
+            Id = newEntity.Id;
+            if (MaintenanceMode == DbMaintenanceModes.EditMode)
+            {
+                WriteOffCommand.IsEnabled = ClipboardCopyCommand.IsEnabled =
+                    PassCommand.IsEnabled = FailCommand.IsEnabled = PunchInCommand.IsEnabled = true;
+            }
+
+            TimeClockLookup.FilterDefinition.ClearFixedFilters();
+            TimeClockLookup.FilterDefinition.AddFixedFilter(p => p.ErrorId, Conditions.Equals, Id);
+            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
+        }
+
+        protected override Error GetEntityFromDb(Error newEntity, PrimaryKeyValue primaryKeyValue)
         {
             var result = GetError(newEntity.Id);
             if (result != null)
             {
-                Id = result.Id;
                 //if (_makeErrorIdContext != null && _makeErrorId)
                 //{
                 //    var errorId = $"E-{result.Id}";
@@ -711,16 +724,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 _makeErrorId = false;
                 KeyAutoFillValue = result.GetAutoFillValue();
             }
-
-            if (MaintenanceMode == DbMaintenanceModes.EditMode)
-            {
-                WriteOffCommand.IsEnabled = ClipboardCopyCommand.IsEnabled =
-                    PassCommand.IsEnabled = FailCommand.IsEnabled = PunchInCommand.IsEnabled = true;
-            }
-
-            TimeClockLookup.FilterDefinition.ClearFixedFilters();
-            TimeClockLookup.FilterDefinition.AddFixedFilter(p => p.ErrorId, Conditions.Equals, Id);
-            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
 
             return result;
         }

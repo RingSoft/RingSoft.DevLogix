@@ -282,21 +282,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             base.Initialize();
         }
 
-        protected override Department PopulatePrimaryKeyControls(Department newEntity, PrimaryKeyValue primaryKeyValue)
+        protected override void PopulatePrimaryKeyControls(Department newEntity, PrimaryKeyValue primaryKeyValue)
         {
-            var query = AppGlobals.DataRepository.GetDataContext().GetTable<Department>();
-            var result = query.FirstOrDefault(p => p.Id == newEntity.Id);
-            if (result != null)
-            {
-                Id = result.Id;
-                KeyAutoFillValue = AppGlobals.LookupContext.OnAutoFillTextRequest(TableDefinition, Id.ToString());
-            }
+            Id = newEntity.Id;
 
             UserLookupDefinition.FilterDefinition.ClearFixedFilters();
             UserLookupDefinition.FilterDefinition.AddFixedFilter(p => p.DepartmentId, Conditions.Equals, Id);
             UserLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
-
-            return result;
         }
 
         protected override void LoadFromEntity(Department entity)

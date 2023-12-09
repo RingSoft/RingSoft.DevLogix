@@ -297,10 +297,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             base.OnWindowClosing(e);
         }
 
-        protected override ProductVersion PopulatePrimaryKeyControls(ProductVersion newEntity, PrimaryKeyValue primaryKeyValue)
+        protected override void PopulatePrimaryKeyControls(ProductVersion newEntity, PrimaryKeyValue primaryKeyValue)
         {
             Id = newEntity.Id;
-            return base.PopulatePrimaryKeyControls(newEntity, primaryKeyValue);
         }
 
         protected override void LoadFromEntity(ProductVersion entity)

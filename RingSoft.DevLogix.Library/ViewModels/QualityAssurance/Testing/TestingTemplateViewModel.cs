@@ -105,7 +105,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             TablesToDelete.Add(AppGlobals.LookupContext.TestingTemplatesItems);
         }
 
-        protected override TestingTemplate PopulatePrimaryKeyControls(TestingTemplate newEntity, PrimaryKeyValue primaryKeyValue)
+        protected override void PopulatePrimaryKeyControls(TestingTemplate newEntity, PrimaryKeyValue primaryKeyValue)
+        {
+            Id = newEntity.Id;
+
+            BaseAutoFillSetup.LookupDefinition.FilterDefinition.ClearFixedFilters();
+            var idField = TableDefinition.GetFieldDefinition(p => p.Id);
+            BaseAutoFillSetup.LookupDefinition.FilterDefinition.AddFixedFilter(idField, Conditions.NotEquals, Id);
+        }
+
+        protected override TestingTemplate GetEntityFromDb(TestingTemplate newEntity, PrimaryKeyValue primaryKeyValue)
         {
             var context = AppGlobals.DataRepository.GetDataContext();
             var table = context.GetTable<TestingTemplate>();
@@ -113,12 +122,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
                 .Include(p => p.BaseTemplate)
                 .Include(p => p.Items)
                 .FirstOrDefault(p => p.Id == newEntity.Id);
-
-            Id = result.Id;
-
-            BaseAutoFillSetup.LookupDefinition.FilterDefinition.ClearFixedFilters();
-            var idField = TableDefinition.GetFieldDefinition(p => p.Id);
-            BaseAutoFillSetup.LookupDefinition.FilterDefinition.AddFixedFilter(idField, Conditions.NotEquals, Id);
 
             return result;
         }

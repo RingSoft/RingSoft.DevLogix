@@ -274,7 +274,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             base.Initialize();
         }
 
-        protected override ProjectMaterial PopulatePrimaryKeyControls(ProjectMaterial newEntity, PrimaryKeyValue primaryKeyValue)
+        protected override void PopulatePrimaryKeyControls(ProjectMaterial newEntity, PrimaryKeyValue primaryKeyValue)
+        {
+            Id = newEntity.Id;
+        }
+
+        protected override ProjectMaterial GetEntityFromDb(ProjectMaterial newEntity, PrimaryKeyValue primaryKeyValue)
         {
             var result = new ProjectMaterial();
             var context = AppGlobals.DataRepository.GetDataContext();
@@ -285,8 +290,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 .FirstOrDefault(p => p.Id == newEntity.Id);
             if (result != null)
             {
-                Id = result.Id;
-                KeyAutoFillValue = result.GetAutoFillValue();
                 HistoryLookup.FilterDefinition.ClearFixedFilters();
                 HistoryLookup.FilterDefinition.AddFixedFilter(p => p.ProjectMaterialId, Conditions.Equals, Id);
                 HistoryLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
@@ -294,6 +297,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
 
             return result;
+
         }
 
         protected override void LoadFromEntity(ProjectMaterial entity)

@@ -95,15 +95,17 @@ namespace RingSoft.DevLogix.Library.ViewModels
             }
         }
 
-        protected override DevLogixChart PopulatePrimaryKeyControls(DevLogixChart newEntity, PrimaryKeyValue primaryKeyValue)
+        protected override void PopulatePrimaryKeyControls(DevLogixChart newEntity, PrimaryKeyValue primaryKeyValue)
+        {
+            AppGlobals.MainViewModel.ChartViewModel.DisableBalloons(AppGlobals.MainViewModel.ChartViewModel.ChartId == Id);
+        }
+
+        protected override DevLogixChart GetEntityFromDb(DevLogixChart newEntity, PrimaryKeyValue primaryKeyValue)
         {
             IQueryable<DevLogixChart> query = AppGlobals.DataRepository.GetDataContext().GetTable<DevLogixChart>();
 
             var result = query.Include(p => p.ChartBars)
                 .FirstOrDefault(p => p.Id == newEntity.Id);
-            Id = result.Id;
-            KeyAutoFillValue = AppGlobals.LookupContext.OnAutoFillTextRequest(TableDefinition, Id.ToString());
-            AppGlobals.MainViewModel.ChartViewModel.DisableBalloons(AppGlobals.MainViewModel.ChartViewModel.ChartId == Id);
             return result;
         }
 

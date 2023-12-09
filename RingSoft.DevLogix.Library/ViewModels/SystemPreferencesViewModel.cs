@@ -55,7 +55,12 @@ namespace RingSoft.DevLogix.Library.ViewModels
             PreviousCommand.IsEnabled = false;
         }
 
-        protected override SystemPreferences PopulatePrimaryKeyControls(SystemPreferences newEntity, PrimaryKeyValue primaryKeyValue)
+        protected override void PopulatePrimaryKeyControls(SystemPreferences newEntity, PrimaryKeyValue primaryKeyValue)
+        {
+            Id = newEntity.Id;
+        }
+
+        protected override SystemPreferences GetEntityFromDb(SystemPreferences newEntity, PrimaryKeyValue primaryKeyValue)
         {
             var context = AppGlobals.DataRepository.GetDataContext();
             var table = context.GetTable<SystemPreferences>();
@@ -63,11 +68,8 @@ namespace RingSoft.DevLogix.Library.ViewModels
                 .Include(p => p.Holidays)
                 .FirstOrDefault(p => p.Id == newEntity.Id);
 
-            if (result != null)
-            {
-                Id = result.Id;
-            }
             return result;
+
         }
 
         protected override void LoadFromEntity(SystemPreferences entity)

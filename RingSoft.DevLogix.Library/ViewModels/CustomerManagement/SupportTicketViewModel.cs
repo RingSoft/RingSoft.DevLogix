@@ -441,19 +441,20 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             base.Initialize();
         }
 
-        protected override SupportTicket PopulatePrimaryKeyControls(SupportTicket newEntity,
+        protected override void PopulatePrimaryKeyControls(SupportTicket newEntity,
             PrimaryKeyValue primaryKeyValue)
         {
-            var result = GetTicket(newEntity.Id);
-
-            Id = result.Id;
-            KeyAutoFillValue = result.GetAutoFillValue();
+            Id = newEntity.Id;
             PunchInCommand.IsEnabled = true;
 
             TimeClockLookup.FilterDefinition.ClearFixedFilters();
             TimeClockLookup.FilterDefinition.AddFixedFilter(p => p.SupportTicketId, Conditions.Equals, Id);
             TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
+        }
 
+        protected override SupportTicket GetEntityFromDb(SupportTicket newEntity, PrimaryKeyValue primaryKeyValue)
+        {
+            var result = GetTicket(newEntity.Id);
             return result;
         }
 

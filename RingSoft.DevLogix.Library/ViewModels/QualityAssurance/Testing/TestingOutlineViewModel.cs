@@ -411,11 +411,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             base.Initialize();
         }
 
-        protected override TestingOutline PopulatePrimaryKeyControls(TestingOutline newEntity, PrimaryKeyValue primaryKeyValue)
+        protected override void PopulatePrimaryKeyControls(TestingOutline newEntity, PrimaryKeyValue primaryKeyValue)
         {
-            var result = GetTestingOutline(newEntity.Id);
-
-            Id = result.Id;
+            Id = newEntity.Id;
             PunchInCommand.IsEnabled = true;
 
             ErrorLookup.FilterDefinition.ClearFixedFilters();
@@ -425,7 +423,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             TimeClockLookup.FilterDefinition.ClearFixedFilters();
             TimeClockLookup.FilterDefinition.AddFixedFilter(p => p.TestingOutlineId, Conditions.Equals, Id);
             TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
+        }
 
+        protected override TestingOutline GetEntityFromDb(TestingOutline newEntity, PrimaryKeyValue primaryKeyValue)
+        {
+            var result = GetTestingOutline(newEntity.Id);
             return result;
         }
 

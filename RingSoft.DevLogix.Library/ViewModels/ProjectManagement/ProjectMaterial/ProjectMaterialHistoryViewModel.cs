@@ -184,18 +184,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             UserAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.UserId));
         }
 
-        protected override ProjectMaterialHistory PopulatePrimaryKeyControls(ProjectMaterialHistory newEntity,
+        protected override void PopulatePrimaryKeyControls(ProjectMaterialHistory newEntity,
             PrimaryKeyValue primaryKeyValue)
         {
-            var table = AppGlobals.DataRepository.GetDataContext().GetTable<ProjectMaterialHistory>();
-            var history = table
-                .Include(p => p.User)
-                .Include(p => p.ProjectMaterial)
-                .FirstOrDefault(p => p.Id == newEntity.Id);
-
-            Id = history.Id;
-
-            return history;
+            Id = newEntity.Id;
         }
 
         protected override void LoadFromEntity(ProjectMaterialHistory entity)

@@ -108,14 +108,17 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         }
 
 
-        protected override Group PopulatePrimaryKeyControls(Group newEntity, PrimaryKeyValue primaryKeyValue)
+        protected override void PopulatePrimaryKeyControls(Group newEntity, PrimaryKeyValue primaryKeyValue)
+        {
+            Id = newEntity.Id;
+        }
+
+        protected override Group GetEntityFromDb(Group newEntity, PrimaryKeyValue primaryKeyValue)
         {
             IQueryable<Group> query = AppGlobals.DataRepository.GetDataContext().GetTable<Group>();
             query = query.Include(p => p.UserGroups);
             var result = query.FirstOrDefault(p => p.Id == newEntity.Id);
 
-            Id = result.Id;
-            KeyAutoFillValue = AppGlobals.LookupContext.OnAutoFillTextRequest(TableDefinition, Id.ToString());
             return result;
         }
 

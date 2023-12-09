@@ -63,17 +63,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         }
 
-        protected override Territory PopulatePrimaryKeyControls(Territory newEntity, PrimaryKeyValue primaryKeyValue)
+        protected override void PopulatePrimaryKeyControls(Territory newEntity, PrimaryKeyValue primaryKeyValue)
         {
-            var context = AppGlobals.DataRepository.GetDataContext();
-            var table = context.GetTable<Territory>();
-            var result = table
-                .Include(p => p.Salesperson)
-                .FirstOrDefault(p => p.Id == newEntity.Id);
-
             Id = newEntity.Id;
-            KeyAutoFillValue = result.GetAutoFillValue();
-            return result;
         }
 
         protected override void LoadFromEntity(Territory entity)

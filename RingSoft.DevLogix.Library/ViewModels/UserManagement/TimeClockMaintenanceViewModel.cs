@@ -579,7 +579,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             View.SetTimeClockMode(TimeClockModes.SupportTicket);
         }
 
-        protected override TimeClock PopulatePrimaryKeyControls(TimeClock newEntity, PrimaryKeyValue primaryKeyValue)
+        protected override void PopulatePrimaryKeyControls(TimeClock newEntity, PrimaryKeyValue primaryKeyValue)
+        {
+            Id = newEntity.Id;
+        }
+
+        protected override TimeClock GetEntityFromDb(TimeClock newEntity, PrimaryKeyValue primaryKeyValue)
         {
             var context = AppGlobals.DataRepository.GetDataContext();
             var timeClock = context.GetTable<TimeClock>()
@@ -591,11 +596,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 .Include(p => p.SupportTicket)
                 .ThenInclude(p => p.Customer)
                 .FirstOrDefault(p => p.Id == newEntity.Id);
-            Id = newEntity.Id;
-            if (timeClock.MinutesSpent != null) 
+
+            if (timeClock.MinutesSpent != null)
                 OriginalMinutesSpent = timeClock.MinutesSpent.Value;
             EnablePunchOut(timeClock);
-            KeyAutoFillValue = timeClock.GetAutoFillValue();
+
             return timeClock;
         }
 

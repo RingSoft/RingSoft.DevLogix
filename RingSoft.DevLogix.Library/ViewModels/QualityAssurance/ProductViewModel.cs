@@ -441,22 +441,26 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         }
 
 
-        protected override Product PopulatePrimaryKeyControls(Product newEntity, PrimaryKeyValue primaryKeyValue)
+        protected override void PopulatePrimaryKeyControls(Product newEntity, PrimaryKeyValue primaryKeyValue)
         {
             ProductVersionLookupDefinition.FilterDefinition.ClearFixedFilters();
-            var query = AppGlobals.DataRepository.GetDataContext().GetTable<Product>();
-            var result = query.FirstOrDefault(p => p.Id == newEntity.Id);
-            if (result != null)
-            {
-                Id = result.Id;
-                KeyAutoFillValue = AppGlobals.LookupContext.OnAutoFillTextRequest(TableDefinition, Id.ToString());
-                FilterVersions();
-                UpdateVersionsCommand.IsEnabled = true;
-            }
+            Id = newEntity.Id;
 
             TestingOutlineLookup.FilterDefinition.ClearFixedFilters();
             TestingOutlineLookup.FilterDefinition.AddFixedFilter(p => p.ProductId, Conditions.Equals, Id);
             TestingOutlineLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
+        }
+
+        protected override Product GetEntityFromDb(Product newEntity, PrimaryKeyValue primaryKeyValue)
+        {
+            var query = AppGlobals.DataRepository.GetDataContext().GetTable<Product>();
+            var result = query.FirstOrDefault(p => p.Id == newEntity.Id);
+            if (result != null)
+            {
+                KeyAutoFillValue = AppGlobals.LookupContext.OnAutoFillTextRequest(TableDefinition, Id.ToString());
+                FilterVersions();
+                UpdateVersionsCommand.IsEnabled = true;
+            }
 
             return result;
         }

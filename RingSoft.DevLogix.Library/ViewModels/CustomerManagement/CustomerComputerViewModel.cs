@@ -249,15 +249,19 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             base.Initialize();
         }
 
-        protected override CustomerComputer PopulatePrimaryKeyControls(CustomerComputer newEntity, PrimaryKeyValue primaryKeyValue)
+        protected override void PopulatePrimaryKeyControls(CustomerComputer newEntity, PrimaryKeyValue primaryKeyValue)
+        {
+            Id = newEntity.Id;
+        }
+
+        protected override CustomerComputer GetEntityFromDb(CustomerComputer newEntity, PrimaryKeyValue primaryKeyValue)
         {
             var context = AppGlobals.DataRepository.GetDataContext();
             var table = context.GetTable<CustomerComputer>();
             var result = table
                 .Include(p => p.Customer)
                 .FirstOrDefault(p => p.Id == newEntity.Id);
-            Id = newEntity.Id;
-            KeyAutoFillValue = result.GetAutoFillValue();
+
             return result;
         }
 
