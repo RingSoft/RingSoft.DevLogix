@@ -33,7 +33,7 @@ namespace RingSoft.DevLogix
     {
         public static List<WindowRegistryItem> Items  { get; private set; } = new List<WindowRegistryItem>();
 
-        public static void RegisterWindow<TWindow>(TableDefinitionBase tableDefinition) where TWindow : DbMaintenanceWindow, new()
+        public static void RegisterWindow<TWindow>(TableDefinitionBase tableDefinition) where TWindow : RingSoft.App.Controls.DbMaintenanceWindow, new()
         {
             Items.Add(new WindowRegistryItem
             {
@@ -42,12 +42,12 @@ namespace RingSoft.DevLogix
             });
         }
 
-        public static  DbMaintenanceWindow GetMaintenanceWindow(TableDefinitionBase tableDefinition)
+        public static  RingSoft.App.Controls.DbMaintenanceWindow GetMaintenanceWindow(TableDefinitionBase tableDefinition)
         {
             var item = Items.FirstOrDefault(p => p.TableDefinition == tableDefinition);
             if (item != null)
             {
-                var window = (DbMaintenanceWindow)Activator.CreateInstance(item.MaintenanceWindow);
+                var window = (RingSoft.App.Controls.DbMaintenanceWindow)Activator.CreateInstance(item.MaintenanceWindow);
                 return window;
             }
 
@@ -236,7 +236,7 @@ namespace RingSoft.DevLogix
             if (maintenanceWindow != null) ShowAddOnTheFlyWindow(maintenanceWindow, e);
         }
 
-        public void ShowAddOnTheFlyWindow(DbMaintenanceWindow maintenanceWindow, LookupAddViewArgs e)
+        public void ShowAddOnTheFlyWindow(RingSoft.App.Controls.DbMaintenanceWindow maintenanceWindow, LookupAddViewArgs e)
         {
             Window ownWindow = null;
             if (e.OwnerWindow is Window ownerWindow)
