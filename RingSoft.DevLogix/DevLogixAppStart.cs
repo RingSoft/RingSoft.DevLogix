@@ -60,8 +60,7 @@ namespace RingSoft.DevLogix
         {
             AppGlobals.InitSettings();
 
-            LookupControlsGlobals.LookupControlContentTemplateFactory =
-                new AppLookupContentTemplateFactory(application);
+            var appLookupContentTemplateFactory = new AppLookupContentTemplateFactory(application);
         }
 
         protected override void CheckVersion()
@@ -223,9 +222,9 @@ namespace RingSoft.DevLogix
             };
             AppGlobals.AppSplashProgress -= AppGlobals_AppSplashProgress;
 
-            LookupControlsGlobals.DbMaintenanceProcessorFactory = new DevLogixDbMaintenanceFactory();
-            LookupControlsGlobals.LookupControlSearchForFactory = new DevLogixLookupSearchFactory();
-            WPFControlsGlobals.DataEntryGridHostFactory = new DevLogixGridCellFactory();
+            var devLogixDbMaintenanceFactory = new DevLogixDbMaintenanceFactory();
+            var devLogixLookupSearchFactory = new DevLogixLookupSearchFactory();
+            var devLogixGridCellFactory = new DevLogixGridCellFactory();
 
             return base.DoProcess();
         }

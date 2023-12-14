@@ -16,7 +16,7 @@ namespace RingSoft.DevLogix
         {
             
         }
-        public override IDbMaintenanceProcessor GetProcessor()
+        public override DbMaintenanceWindowProcessor GetProcessor()
         {
             return new DevLogixDbMaintenanceWindowProcessor();
         }
