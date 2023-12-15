@@ -80,7 +80,6 @@ namespace RingSoft.DevLogix.Library
             LookupContext = new DevLogixLookupContext();
             LookupContext.SqliteDataProcessor.FilePath = MasterDbContext.ProgramDataFolder;
             LookupContext.SqliteDataProcessor.FileName = MasterDbContext.DemoDataFileName;
-            
 
             if (!UnitTesting)
             {
