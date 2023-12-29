@@ -35,18 +35,27 @@ namespace RingSoft.DevLogix.Tests.QualityAssurance
                 .GetAutoFillValue();
 
             Globals.ViewModel.Description = "Test";
+            //Globals.ViewModel.WriteOffCommand.Execute(null);
+
+            Assert.IsFalse(Globals.ViewModel.WriteOffCommand.IsEnabled);
             Globals.ViewModel.SaveCommand.Execute(null);
 
             var context = SystemGlobals.DataRepository.GetDataContext();
             var table = context.GetTable<Error>();
             var error = table.FirstOrDefault();
+
             Assert.AreEqual("E-1", error.ErrorId);
 
             Globals.ViewModel.NewCommand.Execute(null);
-            Globals.ViewModel.OnRecordSelected(error.GetAutoFillValue().PrimaryKeyValue);
+            Globals.ViewModel.OnRecordSelected(error);
+            
             Assert.AreEqual("E-1", Globals.ViewModel.KeyAutoFillValue.Text);
 
             Globals.ViewModel.WriteOffCommand.Execute(null);
+            Globals.ViewModel.SaveCommand.Execute(null);
+            Globals.ViewModel.OnRecordSelected(error);
+            Assert.AreEqual(1, Globals.ViewModel.DeveloperManager.Rows.Count);
+
             var errorStatus = Globals.ViewModel.StatusAutoFillValue.GetEntity<ErrorStatus>();
             Assert.AreEqual(AppGlobals.LoggedInUser.Department.ErrorFixStatusId, errorStatus.Id);
 

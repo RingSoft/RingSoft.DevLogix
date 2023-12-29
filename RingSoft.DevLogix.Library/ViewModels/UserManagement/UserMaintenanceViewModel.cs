@@ -996,7 +996,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         }
 
-        public override DbMaintenanceResults DoDelete(bool unitTestMode = false)
+        protected override DbMaintenanceResults DoDelete()
         {
             var caption = "Delete Not Allowed";
             //if (AppGlobals.LoggedInUser != null && AppGlobals.LoggedInUser.Id == Id)
@@ -1013,7 +1013,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 return DbMaintenanceResults.ValidationError;
             }
 
-            return base.DoDelete(unitTestMode);
+            return base.DoDelete();
         }
 
         protected override bool DeleteEntity()

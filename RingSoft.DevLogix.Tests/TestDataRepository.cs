@@ -4,6 +4,7 @@ using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.Testing;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
+using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 using RingSoft.DevLogix.DataAccess.Model.UserManagement;
 using RingSoft.DevLogix.Library;
 using IDataRepository = RingSoft.DevLogix.Library.IDataRepository;
@@ -33,6 +34,9 @@ namespace RingSoft.DevLogix.Tests
             DataContext.AddEntity(new DataRepositoryRegistryItem<ErrorStatus>());
             DataContext.AddEntity(new DataRepositoryRegistryItem<ErrorPriority>());
             DataContext.AddEntity(new DataRepositoryRegistryItem<Error>());
+            DataContext.AddEntity(new DataRepositoryRegistryItem<ErrorDeveloper>());
+            DataContext.AddEntity(new DataRepositoryRegistryItem<ErrorQa>());
+            DataContext.AddEntity(new DataRepositoryRegistryItem<ErrorUser>());
         }
 
         public DataAccess.IDbContext GetDataContext()
