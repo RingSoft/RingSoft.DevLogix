@@ -6,6 +6,7 @@ using System.Windows.Documents;
 using System.Windows.Media;
 using RingSoft.App.Controls;
 using RingSoft.DataEntryControls.Engine;
+using RingSoft.DataEntryControls.WPF;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Lookup;
@@ -49,9 +50,15 @@ namespace RingSoft.DevLogix.CustomerManagement
     {
         public RecalcProcedure RecalcProcedure { get; set; }
 
+        public VmUiControl SendEmailUiControl { get; }
+
+        public VmUiControl ClickWebUiControl { get; }
+
         public CustomerMaintenanceWindow()
         {
             InitializeComponent();
+            SendEmailUiControl = new VmUiControl(SendEmailControl, LocalViewModel.SendEmailUiCommand);
+            ClickWebUiControl = new VmUiControl(ClickWebControl, LocalViewModel.ClickWebUiCommand);
             TopHeaderControl.Loaded += (sender, args) =>
             {
                 if (TopHeaderControl.CustomPanel is CustomerHeaderControl customerHeaderControl)
@@ -75,6 +82,7 @@ namespace RingSoft.DevLogix.CustomerManagement
                     customerHeaderControl.RecalcButton.Command = LocalViewModel.RecalcCommand;
                 }
             };
+            RegisterFormKeyControl(CompanyControl);
         }
 
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
@@ -82,41 +90,19 @@ namespace RingSoft.DevLogix.CustomerManagement
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;
         public override DbMaintenanceStatusBar DbStatusBar => StatusBar;
 
-        protected override void OnLoaded()
-        {
-            RegisterFormKeyControl(CompanyControl);
-            base.OnLoaded();
-        }
-
-        public override void ResetViewForNewRecord()
-        {
-            CompanyControl.Focus();
-            base.ResetViewForNewRecord();
-        }
-
         public void RefreshView()
         {
             var textBlock = SendEmailControl;
-            if (LocalViewModel.EmailAddress.IsNullOrEmpty())
+            if (!LocalViewModel.EmailAddress.IsNullOrEmpty())
             {
-                SendEmailControl.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                SendEmailControl.Visibility = Visibility.Visible;
                 SendEmailControl.Inlines.Clear();
                 var url = $"mailto:{LocalViewModel.EmailAddress}";
                 SetupUrl(textBlock, url, "Send Email");
             }
 
             textBlock = ClickWebControl;
-            if (LocalViewModel.WebAddress.IsNullOrEmpty())
+            if (!LocalViewModel.WebAddress.IsNullOrEmpty())
             {
-                ClickWebControl.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                ClickWebControl.Visibility = Visibility.Visible;
                 var prefix = "http://www.";
                 if (LocalViewModel.WebAddress.Contains(prefix))
                 {

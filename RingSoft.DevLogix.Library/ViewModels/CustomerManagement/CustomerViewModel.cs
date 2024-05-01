@@ -34,6 +34,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         void UpdateRecalcProcedure(int currentCustomer, int totalCustomers, string currentCustomerText);
     }
+
     public class CustomerViewModel : DevLogixDbMaintenanceViewModel<Customer>
     {
         private int _id;
@@ -47,6 +48,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 {
                     return;
                 }
+
                 _id = value;
                 OnPropertyChanged();
             }
@@ -123,6 +125,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 {
                     return;
                 }
+
                 _address = value;
                 OnPropertyChanged();
             }
@@ -205,7 +208,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         private AutoFillSetup _timeZoneAutoFillSetup;
 
-        public AutoFillSetup TimeZoneAutoFillSetup 
+        public AutoFillSetup TimeZoneAutoFillSetup
         {
             get => _timeZoneAutoFillSetup;
             set
@@ -275,7 +278,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
                 _emailAddress = value;
                 OnPropertyChanged();
-                View.RefreshView();
+                RefreshView();
             }
         }
 
@@ -291,7 +294,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
                 _webAddress = value;
                 OnPropertyChanged();
-                View.RefreshView();
+                RefreshView();
             }
         }
 
@@ -547,7 +550,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             {
                 if (_totalSales == value)
                     return;
-                
+
                 _totalSales = value;
                 OnPropertyChanged(null, false);
             }
@@ -624,6 +627,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         public RelayCommand AddSupportCommand { get; set; }
 
+        public UiCommand SendEmailUiCommand { get; } = new UiCommand();
+
+        public UiCommand ClickWebUiCommand { get; } = new UiCommand();
+
         public new ICustomerView View { get; private set; }
 
         private bool _loading;
@@ -656,10 +663,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
             AddModifySupportTicketCommand = new RelayCommand(AddModifySupportTicket);
 
-            AddSupportCommand = new RelayCommand((() =>
-            {
-                SupportMinutesLeft += NewSupportTime;
-            }));
+            AddSupportCommand = new RelayCommand((() => { SupportMinutesLeft += NewSupportTime; }));
 
             //var timeClockLookup = new LookupDefinition<TimeClockLookup, TimeClock>(AppGlobals.LookupContext.TimeClocks);
             //timeClockLookup.AddVisibleColumnDefinition(p => p.PunchInDate, p => p.PunchInDate);
@@ -683,6 +687,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             {
                 View = customerView;
             }
+
             base.Initialize();
         }
 
@@ -762,6 +767,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             {
                 LastContactDate = LastContactDate.Value.ToLocalTime();
             }
+
             _loading = false;
             UpdateTotals();
         }
@@ -772,9 +778,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             {
                 return;
             }
+
             SalesDifference = TotalSales - TotalCost;
-            View.RefreshView();
+            RefreshView();
         }
+
         protected override Customer GetEntityData()
         {
             var supportMinutesSpent = 0.0;
@@ -827,6 +835,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             {
                 result.StatusId = null;
             }
+
             return result;
         }
 
@@ -841,6 +850,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                     return false;
                 }
             }
+
             if (result)
             {
                 if (!ProductManager.ValidateGrid())
@@ -856,7 +866,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         {
             Id = 0;
             KeyAutoFillValue = null;
-            
+
             ContactName = null;
             ContactTitle = null;
             Address = null;
@@ -886,7 +896,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             SalesDifference = 0;
             LastContactDate = null;
             StatusAutoFillValue = null;
-            View.RefreshView();
+            RefreshView();
         }
 
         protected override bool SaveEntity(Customer entity)
@@ -905,6 +915,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 {
                     customerProduct.CustomerId = entity.Id;
                 }
+
                 context.RemoveRange(existingProducts);
                 context.AddRange(customerProducts);
             }
@@ -913,6 +924,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             {
                 result = context.Commit("Finalizing Customer Save");
             }
+
             return result;
         }
 
@@ -938,6 +950,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
                 result = context.DeleteEntity(delCustomer, "Deleting Customer");
             }
+
             return result;
         }
 
@@ -962,6 +975,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 {
                     return;
                 }
+
                 user.User = AppGlobals.LoggedInUser;
                 CustomerUserGridManager.AddUserRow(user);
             }
@@ -975,6 +989,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             CustomerUserGridManager.RefreshCost(users);
             GetTotals();
         }
+
         public void RefreshCost(CustomerUser customerUser)
         {
             CustomerUserGridManager.RefreshCost(customerUser);
@@ -998,6 +1013,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         {
             SupportTicketLookupCommand = GetLookupCommand(LookupCommands.Refresh);
         }
+
         private void GetTotals()
         {
             CustomerUserGridManager.GetTotals(out var minutesSpent, out var total);
@@ -1064,6 +1080,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                     result = GblMethods.LastError;
                 }
             }
+
             DbDataProcessor.DontDisplayExceptions = false;
             return result;
         }
@@ -1103,6 +1120,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                     }
                 }
             }
+
             return string.Empty;
         }
 
@@ -1149,18 +1167,20 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 return GblMethods.LastError;
             }
 
-            if (currentCustomer.Id == Id) 
+            if (currentCustomer.Id == Id)
             {
                 if (currentCustomer.LastContactDate.HasValue)
                 {
                     LastContactDate = currentCustomer.LastContactDate.Value.ToLocalTime();
                 }
+
                 RefreshCost(customerUsers);
                 RefreshSales(currentCustomer);
                 SupportMinutesSpent = currentCustomer.SupportMinutesSpent;
                 SupportCost = currentCustomer.SupportCost;
                 UpdateTotals();
             }
+
             return string.Empty;
         }
 
@@ -1249,7 +1269,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             {
                 procedure.SplashWindow.SetProgress
                     ($"Processing Time Clock {intControlSetup.FormatValue(index)}/{formattedTotal}");
-                
+
                 currentCustomer.SupportMinutesSpent += supportTimeClock.MinutesSpent.GetValueOrDefault();
                 var hours = supportTimeClock.MinutesSpent / 60;
                 currentCustomer.SupportCost += Math.Round((double)hours * supportTimeClock.User.HourlyRate, 2);
@@ -1304,5 +1324,26 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh);
         }
 
+        public void RefreshView()
+        {
+            if (EmailAddress.IsNullOrEmpty())
+            {
+                SendEmailUiCommand.Visibility = UiVisibilityTypes.Collapsed;
+            }
+            else
+            {
+                SendEmailUiCommand.Visibility = UiVisibilityTypes.Visible;
+            }
+            if (WebAddress.IsNullOrEmpty())
+            {
+                ClickWebUiCommand.Visibility = UiVisibilityTypes.Collapsed;
+            }
+            else
+            {
+                ClickWebUiCommand.Visibility = UiVisibilityTypes.Visible;
+            }
+
+            View.RefreshView();
+        }
     }
 }

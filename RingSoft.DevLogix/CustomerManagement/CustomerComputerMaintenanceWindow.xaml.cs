@@ -24,26 +24,15 @@ namespace RingSoft.DevLogix.CustomerManagement
     /// </summary>
     public partial class CustomerComputerMaintenanceWindow
     {
-        public CustomerComputerMaintenanceWindow()
-        {
-            InitializeComponent();
-        }
-
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Computer";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;
         public override DbMaintenanceStatusBar DbStatusBar => StatusBar;
 
-        protected override void OnLoaded()
+        public CustomerComputerMaintenanceWindow()
         {
+            InitializeComponent();
             RegisterFormKeyControl(NameControl);
-            base.OnLoaded();
-        }
-
-        public override void ResetViewForNewRecord()
-        {
-            NameControl.Focus();
-            base.ResetViewForNewRecord();
         }
     }
 }
