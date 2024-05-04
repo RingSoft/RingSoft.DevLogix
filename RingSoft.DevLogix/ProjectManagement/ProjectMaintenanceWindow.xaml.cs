@@ -1,19 +1,12 @@
-﻿using System;
-using System.Runtime.InteropServices;
-using RingSoft.App.Controls;
-using RingSoft.DbMaintenance;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
-using RingSoft.App.Library;
-using RingSoft.DataEntryControls.Engine;
+﻿using RingSoft.App.Controls;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Lookup;
-using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
+using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels.ProjectManagement;
-using RingSoft.DevLogix.QualityAssurance;
+using System;
+using System.Windows;
 
 namespace RingSoft.DevLogix.ProjectManagement
 {
@@ -85,20 +78,7 @@ namespace RingSoft.DevLogix.ProjectManagement
                     _userFocus = -1;
                 }
             };
-
-        }
-
-        protected override void OnLoaded()
-        {
             RegisterFormKeyControl(NameControl);
-            base.OnLoaded();
-        }
-
-        public override void ResetViewForNewRecord()
-        {
-            NameControl.Focus();
-
-            base.ResetViewForNewRecord();
         }
 
         public bool SetupRecalcFilter(LookupDefinitionBase lookupDefinition)

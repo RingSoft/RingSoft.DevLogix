@@ -465,9 +465,21 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 }
             }));
 
-            ProjectTotalsManager = new ProjectTotalsManager();
-
             ProjectDaysGridManager = new ProjectDaysGridManager(this);
+            ProjectDaysGridManager.Initialize();
+
+            ProjectTotalsManager = new ProjectTotalsManager();
+            ProjectTotalsManager.Initialize();
+
+            ActualRow = new ProjectTotalsRow(ProjectTotalsManager);
+            ActualRow.RowTitle = "Actual";
+            ProjectTotalsManager.InsertRow(ActualRow);
+
+            StatusRow = new ProjectTotalsRow(ProjectTotalsManager);
+            StatusRow.RowTitle = "Status";
+            StatusRow.NegativeDisplayStyleId = ProjectTotalsManager.NegativeDisplayStyleId;
+            StatusRow.PositiveDisplayStyleId = ProjectTotalsManager.PositiveDisplayStyleId;
+            ProjectTotalsManager.InsertRow(StatusRow);
 
             UsersGridManager = new ProjectUsersGridManager(this);
 
@@ -513,20 +525,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
             AppGlobals.MainViewModel.ProjectViewModels.Add(this);
             RecalcCommand.IsEnabled = TableDefinition.HasRight(RightTypes.AllowEdit);
-
-            ProjectTotalsManager.Initialize();
-
-            ActualRow = new ProjectTotalsRow(ProjectTotalsManager);
-            ActualRow.RowTitle = "Actual";
-            ProjectTotalsManager.InsertRow(ActualRow);
-
-            StatusRow = new ProjectTotalsRow(ProjectTotalsManager);
-            StatusRow.RowTitle = "Status";
-            StatusRow.NegativeDisplayStyleId = ProjectTotalsManager.NegativeDisplayStyleId;
-            StatusRow.PositiveDisplayStyleId = ProjectTotalsManager.PositiveDisplayStyleId;
-            ProjectTotalsManager.InsertRow(StatusRow);
-
-            ProjectDaysGridManager.Initialize();
 
             base.Initialize();
         }

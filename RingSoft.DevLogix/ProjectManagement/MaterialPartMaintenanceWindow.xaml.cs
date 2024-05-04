@@ -30,18 +30,7 @@ namespace RingSoft.DevLogix.ProjectManagement
         public MaterialPartMaintenanceWindow()
         {
             InitializeComponent();
-        }
-
-        protected override void OnLoaded()
-        {
             RegisterFormKeyControl(KeyControl);
-            base.OnLoaded();
-        }
-
-        public override void ResetViewForNewRecord()
-        {
-            KeyControl.Focus();
-            base.ResetViewForNewRecord();
         }
     }
 }
