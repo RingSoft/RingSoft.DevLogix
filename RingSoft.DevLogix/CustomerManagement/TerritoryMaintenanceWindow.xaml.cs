@@ -10,26 +10,15 @@ namespace RingSoft.DevLogix.CustomerManagement
     /// </summary>
     public partial class TerritoryMaintenanceWindow
     {
-        public TerritoryMaintenanceWindow()
-        {
-            InitializeComponent();
-        }
-
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Territory";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;
         public override DbMaintenanceStatusBar DbStatusBar => StatusBar;
 
-        protected override void OnLoaded()
+        public TerritoryMaintenanceWindow()
         {
+            InitializeComponent();
             RegisterFormKeyControl(DescriptionControl);
-            base.OnLoaded();
-        }
-
-        public override void ResetViewForNewRecord()
-        {
-            DescriptionControl.Focus();
-            base.ResetViewForNewRecord();
         }
     }
 }

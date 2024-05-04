@@ -22,21 +22,21 @@ namespace RingSoft.DevLogix.CustomerManagement
     /// </summary>
     public partial class OrderMaintenanceWindow
     {
-        public OrderMaintenanceWindow()
-        {
-            InitializeComponent();
-        }
-
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Order";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;
         public override DbMaintenanceStatusBar DbStatusBar => StatusBar;
 
+        public OrderMaintenanceWindow()
+        {
+            InitializeComponent();
+            RegisterFormKeyControl(OrderIdControl);
+        }
+
         protected override void OnLoaded()
         {
-            RegisterFormKeyControl(OrderIdControl);
-            base.OnLoaded();
             TopHeaderControl.PrintButton.Content = "_Print Invoice";
+            base.OnLoaded();
         }
 
         public override void ResetViewForNewRecord()

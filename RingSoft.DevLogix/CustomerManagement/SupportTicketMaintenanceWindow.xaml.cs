@@ -1,23 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using RingSoft.App.Controls;
+﻿using RingSoft.App.Controls;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels.CustomerManagement;
+using System.Windows;
 
 namespace RingSoft.DevLogix.CustomerManagement
 {
@@ -31,11 +19,6 @@ namespace RingSoft.DevLogix.CustomerManagement
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(SupportTicketHeaderControl),
                 new FrameworkPropertyMetadata(typeof(SupportTicketHeaderControl)));
-        }
-
-        public SupportTicketHeaderControl()
-        {
-
         }
 
         public override void OnApplyTemplate()
@@ -52,6 +35,10 @@ namespace RingSoft.DevLogix.CustomerManagement
     /// </summary>
     public partial class SupportTicketMaintenanceWindow : ISupportTicketView
     {
+        public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
+        public override string ItemText => "Support Ticket";
+        public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;
+        public override DbMaintenanceStatusBar DbStatusBar => StatusBar;
         public RecalcProcedure RecalcProcedure { get; set; }
 
         public SupportTicketMaintenanceWindow()
@@ -80,18 +67,8 @@ namespace RingSoft.DevLogix.CustomerManagement
                     supportTicketHeaderControl.RecalcButton.Command = LocalViewModel.RecalcCommand;
                 }
             };
-
-        }
-
-        public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
-        public override string ItemText => "Support Ticket";
-        public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;
-        public override DbMaintenanceStatusBar DbStatusBar => StatusBar;
-
-        protected override void OnLoaded()
-        {
             RegisterFormKeyControl(TicketIdControl);
-            base.OnLoaded();
+
         }
 
         public override void ResetViewForNewRecord()

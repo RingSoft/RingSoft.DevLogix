@@ -48,6 +48,11 @@ namespace RingSoft.DevLogix.CustomerManagement
     /// </summary>
     public partial class CustomerMaintenanceWindow : ICustomerView
     {
+        public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
+        public override string ItemText => "Customer";
+        public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;
+        public override DbMaintenanceStatusBar DbStatusBar => StatusBar;
+
         public RecalcProcedure RecalcProcedure { get; set; }
 
         public VmUiControl SendEmailUiControl { get; }
@@ -84,11 +89,6 @@ namespace RingSoft.DevLogix.CustomerManagement
             };
             RegisterFormKeyControl(CompanyControl);
         }
-
-        public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
-        public override string ItemText => "Customer";
-        public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;
-        public override DbMaintenanceStatusBar DbStatusBar => StatusBar;
 
         public void RefreshView()
         {

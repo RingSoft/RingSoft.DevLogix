@@ -31,12 +31,7 @@ namespace RingSoft.DevLogix.CustomerManagement
         public CustomerStatusMaintenanceWindow()
         {
             InitializeComponent();
-        }
-
-        public override void ResetViewForNewRecord()
-        {
-            DescriptionControl.Focus();
-            base.ResetViewForNewRecord();
+            RegisterFormKeyControl(DescriptionControl);
         }
     }
 }
