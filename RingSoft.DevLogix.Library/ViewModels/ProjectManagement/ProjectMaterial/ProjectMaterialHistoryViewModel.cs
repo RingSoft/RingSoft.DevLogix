@@ -263,5 +263,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
             AppGlobals.MainViewModel.MainView.ShowHistoryPrintFilterWindow(callBack);
         }
+
+        public override void ProcessPrintOutputData(PrinterSetupArgs printerSetupArgs)
+        {
+            base.ProcessPrintOutputData(printerSetupArgs);
+        }
     }
 }
