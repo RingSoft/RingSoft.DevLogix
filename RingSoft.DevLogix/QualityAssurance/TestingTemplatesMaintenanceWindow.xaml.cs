@@ -4,6 +4,7 @@ using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.Library;
 using System.Windows;
 using System.Windows.Controls;
+using RingSoft.DbLookup;
 
 namespace RingSoft.DevLogix.QualityAssurance
 {

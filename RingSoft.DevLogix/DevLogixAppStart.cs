@@ -7,6 +7,7 @@ using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.WPF;
 using RingSoft.DataEntryControls.WPF.DataEntryGrid.EditingControlHost;
+using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Controls.WPF.AdvancedFind;

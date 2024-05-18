@@ -2,6 +2,7 @@
 using RingSoft.DevLogix.DataAccess.Model;
 using System;
 using System.Linq;
+using RingSoft.DbLookup;
 
 namespace RingSoft.DevLogix.Library
 {

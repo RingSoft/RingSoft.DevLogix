@@ -2,6 +2,7 @@
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.Library;
 using System.Windows;
+using RingSoft.DbLookup;
 using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using RingSoft.DevLogix.Library.ViewModels.UserManagement;
 using RingSoft.DbLookup.Controls.WPF;

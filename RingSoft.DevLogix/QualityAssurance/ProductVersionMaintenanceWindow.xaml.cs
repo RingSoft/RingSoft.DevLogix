@@ -16,6 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
+using RingSoft.DbLookup;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels.QualityAssurance;

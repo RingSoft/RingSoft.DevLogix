@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using RingSoft.DataEntryControls.Engine;
+using RingSoft.DbLookup;
 using RingSoft.DbLookup.ModelDefinition;
 
 namespace RingSoft.DevLogix.Library

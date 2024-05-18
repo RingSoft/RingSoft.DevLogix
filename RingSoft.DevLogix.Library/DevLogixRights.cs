@@ -1,4 +1,8 @@
-﻿using RingSoft.DevLogix.Library.ViewModels.ProjectManagement;
+﻿using RingSoft.DbLookup.ModelDefinition;
+using RingSoft.DevLogix.Library.ViewModels.ProjectManagement;
+using System.Collections.Generic;
+using System.Linq;
+using RingSoft.DbLookup;
 
 namespace RingSoft.DevLogix.Library
 {
@@ -78,6 +82,32 @@ namespace RingSoft.DevLogix.Library
             category.Items.Add(new RightCategoryItem(item: "View/Edit System Preferences", AppGlobals.LookupContext.SystemPreferences));
             Categories.Add(category);
 
+        }
+    }
+
+    public class AppRights
+    {
+        public ItemRights UserRights { get; set; }
+
+        public List<ItemRights> GroupRights { get; private set; }
+
+        public AppRights()
+        {
+            UserRights = new DevLogixRights();
+
+            GroupRights = new List<ItemRights>();
+        }
+
+        public bool HasRight(TableDefinitionBase tableDefinition, RightTypes rightType)
+        {
+            return UserRights.HasRight(tableDefinition, rightType) ||
+                   GroupRights.Any(p => p.HasRight(tableDefinition, rightType));
+        }
+
+        public bool HasSpecialRight(TableDefinitionBase tableDefinition, int rightType)
+        {
+            return UserRights.HasSpecialRight(tableDefinition, rightType) ||
+                   GroupRights.Any(p => p.HasSpecialRight(tableDefinition, rightType));
         }
     }
 }
