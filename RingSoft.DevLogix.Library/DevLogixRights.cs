@@ -84,30 +84,4 @@ namespace RingSoft.DevLogix.Library
 
         }
     }
-
-    public class AppRights
-    {
-        public ItemRights UserRights { get; set; }
-
-        public List<ItemRights> GroupRights { get; private set; }
-
-        public AppRights()
-        {
-            UserRights = new DevLogixRights();
-
-            GroupRights = new List<ItemRights>();
-        }
-
-        public bool HasRight(TableDefinitionBase tableDefinition, RightTypes rightType)
-        {
-            return UserRights.HasRight(tableDefinition, rightType) ||
-                   GroupRights.Any(p => p.HasRight(tableDefinition, rightType));
-        }
-
-        public bool HasSpecialRight(TableDefinitionBase tableDefinition, int rightType)
-        {
-            return UserRights.HasSpecialRight(tableDefinition, rightType) ||
-                   GroupRights.Any(p => p.HasSpecialRight(tableDefinition, rightType));
-        }
-    }
 }

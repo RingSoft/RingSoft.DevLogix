@@ -1,5 +1,6 @@
 ﻿using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
+using RingSoft.DbLookup;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using RingSoft.DbMaintenance;
@@ -10,7 +11,7 @@ namespace RingSoft.DevLogix.Tests.UserManagement
 {
     public class UserView : TestDbMaintenanceView, IUserView
     {
-        public AppRights Rights { get; private set; } = new AppRights();
+        public AppRights Rights { get; private set; } = new AppRights(new DevLogixRights());
 
         public TestAppProcedure RecalcProcedure { get; } = new TestAppProcedure();
 
@@ -29,7 +30,7 @@ namespace RingSoft.DevLogix.Tests.UserManagement
 
         public void ResetRights()
         {
-            Rights = new AppRights();
+            Rights = new AppRights(new DevLogixRights());
         }
 
         public void RefreshView()

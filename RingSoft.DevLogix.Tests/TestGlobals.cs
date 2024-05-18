@@ -72,7 +72,7 @@ namespace RingSoft.DevLogix.Tests
             AppGlobals.LookupContext.Initialize(new DevLogixSqliteDbContext(), DbPlatforms.Sqlite);
             AppGlobals.MainViewModel = new MainViewModel();
             AppGlobals.LoggedInUser = new User();
-            AppGlobals.Rights = new AppRights();
+            AppGlobals.Rights = new AppRights(new DevLogixRights());
 
             base.Initialize();
         }
@@ -80,7 +80,7 @@ namespace RingSoft.DevLogix.Tests
         public override void ClearData()
         {
             AppGlobals.LoggedInUser = new User();
-            AppGlobals.Rights = new AppRights();
+            AppGlobals.Rights = new AppRights(new DevLogixRights());
 
             base.ClearData();
             LoadDatabase();

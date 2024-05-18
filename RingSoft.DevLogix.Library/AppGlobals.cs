@@ -225,7 +225,7 @@ namespace RingSoft.DevLogix.Library
                     throw new ArgumentOutOfRangeException();
             }
 
-            Rights = new AppRights();
+            Rights = new AppRights(new DevLogixRights());
 
             AppSplashProgress?.Invoke(null, new AppProgressArgs($"Connecting to the {organization.Name} Database."));
             //var selectQuery = new SelectQuery(LookupContext.SystemMaster.TableName);
