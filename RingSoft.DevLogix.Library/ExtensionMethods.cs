@@ -8,16 +8,6 @@ namespace RingSoft.DevLogix.Library
 {
     public static class ExtensionMethods
     {
-        public static bool HasRight(this TableDefinitionBase tableDefinition, RightTypes rightType)
-        {
-            return SystemGlobals.Rights.HasRight(tableDefinition, rightType);
-        }
-
-        public static bool HasSpecialRight(this TableDefinitionBase tableDefinition, int rightType)
-        {
-            return SystemGlobals.Rights.HasSpecialRight(tableDefinition, rightType);
-        }
-
         public static bool IsSupervisor(this User user, IQueryable<User> userQuery = null)
         {
             if (user == null)
