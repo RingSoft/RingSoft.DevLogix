@@ -149,14 +149,14 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
             AppGlobals.LoggedInUser = user;
             SystemGlobals.UserName = user.Name;
-            AppGlobals.Rights.UserRights.LoadRights(user.Rights.Decrypt());
+            SystemGlobals.Rights.UserRights.LoadRights(user.Rights.Decrypt());
 
-            AppGlobals.Rights.GroupRights.Clear();
+            SystemGlobals.Rights.GroupRights.Clear();
             foreach (var userUserGroup in user.UserGroups)
             {
                 var rights = new DevLogixRights();
                 rights.LoadRights(userUserGroup.Group.Rights.Decrypt());
-                AppGlobals.Rights.GroupRights.Add(rights);
+                SystemGlobals.Rights.GroupRights.Add(rights);
             }
 
             DialogResult = true;

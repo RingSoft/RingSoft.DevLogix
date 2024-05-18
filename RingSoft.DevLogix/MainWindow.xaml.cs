@@ -140,7 +140,7 @@ namespace RingSoft.DevLogix
         private void MakeCustomersMenu()
         {
             var userCategory =
-                AppGlobals.Rights.UserRights.Categories.FirstOrDefault(p =>
+                SystemGlobals.Rights.UserRights.Categories.FirstOrDefault(p =>
                     p.MenuCategoryId == (int)MenuCategories.Customers);
 
             var items = userCategory.Items.Where(p => p.TableDefinition.HasRight(RightTypes.AllowView));
@@ -235,7 +235,7 @@ namespace RingSoft.DevLogix
             private void MakeUserMenu()
         {
             var userCategory =
-                AppGlobals.Rights.UserRights.Categories.FirstOrDefault(p =>
+                SystemGlobals.Rights.UserRights.Categories.FirstOrDefault(p =>
                     p.MenuCategoryId == (int)MenuCategories.UserManagement);
 
             var items = userCategory.Items.Where(p => p.TableDefinition.HasRight(RightTypes.AllowView));
@@ -297,7 +297,7 @@ namespace RingSoft.DevLogix
         private void MakeQaMenu()
         {
             var qaCategory =
-                AppGlobals.Rights.UserRights.Categories.FirstOrDefault(p =>
+                SystemGlobals.Rights.UserRights.Categories.FirstOrDefault(p =>
                     p.MenuCategoryId == (int)MenuCategories.Qa);
 
             var items = qaCategory.Items.Where(p => p.TableDefinition.HasRight(RightTypes.AllowView));
@@ -390,7 +390,7 @@ namespace RingSoft.DevLogix
         private void MakeProjectMenu()
         {
             var projectCategory =
-                AppGlobals.Rights.UserRights.Categories.FirstOrDefault(p =>
+                SystemGlobals.Rights.UserRights.Categories.FirstOrDefault(p =>
                     p.MenuCategoryId == (int)MenuCategories.Projects);
 
             var items = projectCategory.Items.Where(p => p.TableDefinition.HasRight(RightTypes.AllowView));
@@ -575,7 +575,7 @@ namespace RingSoft.DevLogix
             MakeProjectMenu();
 
             var toolsCategory =
-                AppGlobals.Rights.UserRights.Categories.FirstOrDefault(p =>
+                SystemGlobals.Rights.UserRights.Categories.FirstOrDefault(p =>
                     p.MenuCategoryId == (int)MenuCategories.Tools);
 
             var items = toolsCategory.Items.Where(p => p.TableDefinition.HasRight(RightTypes.AllowView));

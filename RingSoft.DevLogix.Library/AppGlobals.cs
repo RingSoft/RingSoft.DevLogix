@@ -54,8 +54,6 @@ namespace RingSoft.DevLogix.Library
 
         public static MainViewModel MainViewModel { get; set; }
 
-        public static AppRights Rights { get; set; }
-
         public static User LoggedInUser { get; set; }
 
         public static event EventHandler<AppProgressArgs> AppSplashProgress;
@@ -225,7 +223,7 @@ namespace RingSoft.DevLogix.Library
                     throw new ArgumentOutOfRangeException();
             }
 
-            Rights = new AppRights(new DevLogixRights());
+            SystemGlobals.Rights = new AppRights(new DevLogixRights());
 
             AppSplashProgress?.Invoke(null, new AppProgressArgs($"Connecting to the {organization.Name} Database."));
             //var selectQuery = new SelectQuery(LookupContext.SystemMaster.TableName);
