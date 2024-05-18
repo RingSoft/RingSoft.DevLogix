@@ -141,7 +141,7 @@ namespace RingSoft.DevLogix
         {
             var userCategory =
                 AppGlobals.Rights.UserRights.Categories.FirstOrDefault(p =>
-                    p.MenuCategory == MenuCategories.Customers);
+                    p.MenuCategoryId == (int)MenuCategories.Customers);
 
             var items = userCategory.Items.Where(p => p.TableDefinition.HasRight(RightTypes.AllowView));
             if (items.Any())
@@ -236,7 +236,7 @@ namespace RingSoft.DevLogix
         {
             var userCategory =
                 AppGlobals.Rights.UserRights.Categories.FirstOrDefault(p =>
-                    p.MenuCategory == MenuCategories.UserManagement);
+                    p.MenuCategoryId == (int)MenuCategories.UserManagement);
 
             var items = userCategory.Items.Where(p => p.TableDefinition.HasRight(RightTypes.AllowView));
             if (items.Any())
@@ -298,7 +298,7 @@ namespace RingSoft.DevLogix
         {
             var qaCategory =
                 AppGlobals.Rights.UserRights.Categories.FirstOrDefault(p =>
-                    p.MenuCategory == MenuCategories.Qa);
+                    p.MenuCategoryId == (int)MenuCategories.Qa);
 
             var items = qaCategory.Items.Where(p => p.TableDefinition.HasRight(RightTypes.AllowView));
             if (items.Any())
@@ -391,7 +391,7 @@ namespace RingSoft.DevLogix
         {
             var projectCategory =
                 AppGlobals.Rights.UserRights.Categories.FirstOrDefault(p =>
-                    p.MenuCategory == MenuCategories.Projects);
+                    p.MenuCategoryId == (int)MenuCategories.Projects);
 
             var items = projectCategory.Items.Where(p => p.TableDefinition.HasRight(RightTypes.AllowView));
             if (items.Any())
@@ -576,7 +576,7 @@ namespace RingSoft.DevLogix
 
             var toolsCategory =
                 AppGlobals.Rights.UserRights.Categories.FirstOrDefault(p =>
-                    p.MenuCategory == MenuCategories.Tools);
+                    p.MenuCategoryId == (int)MenuCategories.Tools);
 
             var items = toolsCategory.Items.Where(p => p.TableDefinition.HasRight(RightTypes.AllowView));
             if (items.Any())

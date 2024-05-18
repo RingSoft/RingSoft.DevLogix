@@ -1,18 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using RingSoft.App.Controls;
+﻿using RingSoft.App.Controls;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DataEntryControls.WPF.DataEntryGrid;
 using RingSoft.DbLookup;
@@ -22,7 +8,7 @@ using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels.ProjectManagement;
-using RingSoft.DevLogix.QualityAssurance;
+using System.Windows;
 
 namespace RingSoft.DevLogix.ProjectManagement
 {
@@ -88,20 +74,7 @@ namespace RingSoft.DevLogix.ProjectManagement
 
                 }
             };
-
-        }
-
-        protected override void OnLoaded()
-        {
             RegisterFormKeyControl(KeyControl);
-            base.OnLoaded();
-        }
-
-        public override void ResetViewForNewRecord()
-        {
-            //TabControl.SelectedItem = DetailsTabItem;
-            KeyControl.Focus();
-            base.ResetViewForNewRecord();
         }
 
         public void GetNewLineType(string text, out PrimaryKeyValue materialPartPkValue, out MaterialPartLineTypes lineType)

@@ -1,38 +1,23 @@
-﻿using System;
+﻿using RingSoft.DataEntryControls.Engine;
+using RingSoft.DbLookup.ModelDefinition;
+using RingSoft.DevLogix.Library.ViewModels.ProjectManagement;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using RingSoft.DataEntryControls.Engine;
-using RingSoft.DbLookup.ModelDefinition;
-using RingSoft.DevLogix.DataAccess.Model;
-using RingSoft.DevLogix.Library.ViewModels.ProjectManagement;
 
 namespace RingSoft.DevLogix.Library
 {
-    public enum MenuCategories
-    {
-        UserManagement = 0,
-        Tools = 1,
-        Qa = 2,
-        Projects = 3,
-        Customers = 4,
-    }
     public enum RightTypes
     {
         AllowView = 0,
         AllowAdd = 1,
         AllowEdit = 2,
         AllowDelete = 3,
-        Special = 4,
     }
 
-    public enum ItemRightTypes
-    {
-        User = 0,
-        Group = 1,
-    }
 
     public class SpecialRight
     {
@@ -191,13 +176,13 @@ namespace RingSoft.DevLogix.Library
     {
         public string Category { get; private set; }
 
-        public MenuCategories MenuCategory { get; private set; }
+        public int MenuCategoryId { get; private set; }
 
         public List<RightCategoryItem> Items { get; private set; } = new List<RightCategoryItem>();
 
-        public RightCategory(string name, MenuCategories menuCategory)
+        public RightCategory(string name, int menuCategoryId)
         {
-            MenuCategory = menuCategory;
+            MenuCategoryId = menuCategoryId;
             Category = name;
         }
     }
@@ -228,7 +213,7 @@ namespace RingSoft.DevLogix.Library
         {
             Categories = new List<RightCategory>();
 
-            var category = new RightCategory("User Management", MenuCategories.UserManagement);
+            var category = new RightCategory("User Management", (int)MenuCategories.UserManagement);
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Users", AppGlobals.LookupContext.Users));
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Groups", AppGlobals.LookupContext.Groups));
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Departments", AppGlobals.LookupContext.Departments));
@@ -237,7 +222,7 @@ namespace RingSoft.DevLogix.Library
                 AppGlobals.LookupContext.UserTracker));
             Categories.Add(category);
 
-            category = new RightCategory("Quality Assurance" , MenuCategories.Qa);
+            category = new RightCategory("Quality Assurance" , (int)MenuCategories.Qa);
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Error Statuses", AppGlobals.LookupContext.ErrorStatuses));
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Error Priorities", AppGlobals.LookupContext.ErrorPriorities));
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Errors", AppGlobals.LookupContext.Errors));
@@ -248,7 +233,7 @@ namespace RingSoft.DevLogix.Library
 
             Categories.Add(category);
 
-            category = new RightCategory("Project Management", MenuCategories.Projects);
+            category = new RightCategory("Project Management", (int)MenuCategories.Projects);
             var categoryItem = new RightCategoryItem(item: "Add/Edit Projects", AppGlobals.LookupContext.Projects);
             category.Items.Add(categoryItem);
 
@@ -267,7 +252,7 @@ namespace RingSoft.DevLogix.Library
 
             Categories.Add(category);
 
-            category = new RightCategory("Customer Management", MenuCategories.Customers);
+            category = new RightCategory("Customer Management", (int)MenuCategories.Customers);
             category.Items.Add(categoryItem = new RightCategoryItem(item: "Add/Edit Customers", AppGlobals.LookupContext.Customer));
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Orders", AppGlobals.LookupContext.Order));
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Time Zones", AppGlobals.LookupContext.TimeZone));
@@ -284,7 +269,7 @@ namespace RingSoft.DevLogix.Library
 
             Categories.Add(category);
 
-            category = new RightCategory("Miscellaneous", MenuCategories.Tools);
+            category = new RightCategory("Miscellaneous", (int)MenuCategories.Tools);
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Charts", AppGlobals.LookupContext.DevLogixCharts));
             category.Items.Add(new RightCategoryItem(item: "Add/Edit Advanced Finds", AppGlobals.LookupContext.AdvancedFinds));
             category.Items.Add(new RightCategoryItem(item: "View Record Locks", AppGlobals.LookupContext.RecordLocks));
