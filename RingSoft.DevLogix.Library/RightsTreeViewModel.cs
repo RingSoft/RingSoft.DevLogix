@@ -199,7 +199,7 @@ namespace RingSoft.DevLogix.Library
         private string _loadedRights;
         private bool _rightsLoaded;
 
-        public ItemRights Rights { get; private set; } = new ItemRights();
+        public ItemRights Rights { get; } = new DevLogixRights();
 
         public IRightsTreeControl Control { get; private set; }
 

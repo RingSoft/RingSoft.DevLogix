@@ -154,7 +154,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
             AppGlobals.Rights.GroupRights.Clear();
             foreach (var userUserGroup in user.UserGroups)
             {
-                var rights = new ItemRights();
+                var rights = new DevLogixRights();
                 rights.LoadRights(userUserGroup.Group.Rights.Decrypt());
                 AppGlobals.Rights.GroupRights.Add(rights);
             }
