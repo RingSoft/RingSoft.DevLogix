@@ -84,4 +84,12 @@ namespace RingSoft.DevLogix.Library
 
         }
     }
+
+    public class DevLogixRightsFactory : ItemRightsFactory
+    {
+        public override ItemRights GetNewItemRights()
+        {
+            return new DevLogixRights();
+        }
+    }
 }

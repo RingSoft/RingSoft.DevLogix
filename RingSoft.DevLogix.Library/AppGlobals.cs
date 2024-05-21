@@ -79,6 +79,8 @@ namespace RingSoft.DevLogix.Library
             LookupContext.SqliteDataProcessor.FilePath = MasterDbContext.ProgramDataFolder;
             LookupContext.SqliteDataProcessor.FileName = MasterDbContext.DemoDataFileName;
 
+            SystemGlobals.ItemRightsFactory = new DevLogixRightsFactory();
+
             if (!UnitTesting)
             {
                 AppSplashProgress?.Invoke(null, new AppProgressArgs("Connecting to the Master Database."));

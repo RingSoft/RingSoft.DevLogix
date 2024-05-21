@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:RingSoft.DevLogix"
-                    xmlns:dllib="clr-namespace:RingSoft.DevLogix.Library;assembly=RingSoft.DevLogix.Library">
+                    xmlns:dllib="clr-namespace:RingSoft.DbLookup;assembly=RingSoft.DbLookup">
 
     <Style TargetType="{x:Type local:RightsTree}">
         <Setter Property="Template">

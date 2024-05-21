@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using RingSoft.DataEntryControls.WPF;
+using RingSoft.DbLookup;
 using RingSoft.DevLogix.Library;
 
 namespace RingSoft.DevLogix
