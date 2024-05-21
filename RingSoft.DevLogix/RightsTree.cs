@@ -4,7 +4,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using RingSoft.DataEntryControls.WPF;
 using RingSoft.DevLogix.Library;
-using TreeViewItem = RingSoft.DevLogix.Library.TreeViewItem;
 
 namespace RingSoft.DevLogix
 {
@@ -127,7 +126,7 @@ namespace RingSoft.DevLogix
                 {
                     if (args.Key == Key.Space)
                     {
-                        var item = TreeView.SelectedItem as TreeViewItem;
+                        var item = TreeView.SelectedItem as RightTreeViewItem;
                         if (item != null)
                         {
                             if (item.ThreeState)
