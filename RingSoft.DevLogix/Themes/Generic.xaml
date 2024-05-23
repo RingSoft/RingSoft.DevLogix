@@ -4,8 +4,6 @@
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary
-            Source="pack://application:,,,/RingSoft.DevLogix;component/Themes/RightsTreeTemplate.xaml"/>
-        <ResourceDictionary
             Source="pack://application:,,,/RingSoft.DevLogix;component/Themes/ChartBarsControlTemplate.xaml"/>
         <ResourceDictionary
             Source="pack://application:,,,/RingSoft.DevLogix;component/Themes/TimeControlTemplate.xaml"/>
