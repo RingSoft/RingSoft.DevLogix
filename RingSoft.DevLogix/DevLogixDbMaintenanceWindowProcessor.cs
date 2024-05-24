@@ -24,48 +24,48 @@ namespace RingSoft.DevLogix
 
     public class DevLogixDbMaintenanceWindowProcessor : AppDbMaintenanceWindowProcessor
     {
-        private bool _rightsSet;
+        //private bool _rightsSet;
 
-        public override void Initialize(BaseWindow window, Control buttonsControl, DbMaintenanceViewModelBase viewModel,
-            IDbMaintenanceView view, DbMaintenanceStatusBar statusBar)
-        {
-            base.Initialize(window, buttonsControl, viewModel, view, statusBar);
-        }
+        //public override void Initialize(BaseWindow window, Control buttonsControl, DbMaintenanceViewModelBase viewModel,
+        //    IDbMaintenanceView view, DbMaintenanceStatusBar statusBar)
+        //{
+        //    base.Initialize(window, buttonsControl, viewModel, view, statusBar);
+        //}
 
-        protected override void SetupControl()
-        {
-            base.SetupControl();
-            MaintenanceButtonsControl.Loaded += (sender, args) =>
-            {
-                if (!_rightsSet)
-                {
-                    _rightsSet = true;
-                    SetRights();
-                }
-            };
-            if (DeleteButton != null)
-            {
-                _rightsSet = true;
-                SetRights();
-            }
-        }
+        //protected override void SetupControl()
+        //{
+        //    base.SetupControl();
+        //    MaintenanceButtonsControl.Loaded += (sender, args) =>
+        //    {
+        //        if (!_rightsSet)
+        //        {
+        //            _rightsSet = true;
+        //            SetRights();
+        //        }
+        //    };
+        //    if (DeleteButton != null)
+        //    {
+        //        _rightsSet = true;
+        //        SetRights();
+        //    }
+        //}
 
-        private void SetRights()
-        {
-            if (!ViewModel.TableDefinitionBase.HasRight(RightTypes.AllowDelete))
-            {
-                DeleteButton.Visibility = Visibility.Collapsed;
-            }
+        //private void SetRights()
+        //{
+        //    if (!ViewModel.TableDefinitionBase.HasRight(RightTypes.AllowDelete))
+        //    {
+        //        DeleteButton.Visibility = Visibility.Collapsed;
+        //    }
 
-            if (!ViewModel.TableDefinitionBase.HasRight(RightTypes.AllowAdd))
-            {
-                NewButton.Visibility = Visibility.Collapsed;
-                if (ViewModel.LookupAddViewArgs == null ||
-                    ViewModel.LookupAddViewArgs.LookupFormMode != LookupFormModes.View)
-                {
-                    ViewModel.OnGotoNextButton();
-                }
-            }
-        }
+        //    if (!ViewModel.TableDefinitionBase.HasRight(RightTypes.AllowAdd))
+        //    {
+        //        NewButton.Visibility = Visibility.Collapsed;
+        //        if (ViewModel.LookupAddViewArgs == null ||
+        //            ViewModel.LookupAddViewArgs.LookupFormMode != LookupFormModes.View)
+        //        {
+        //            ViewModel.OnGotoNextButton();
+        //        }
+        //    }
+        //}
     }
 }
