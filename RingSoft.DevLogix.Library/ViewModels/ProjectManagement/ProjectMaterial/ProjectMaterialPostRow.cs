@@ -13,7 +13,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
     {
         public new ProjectMaterialPostManager Manager { get; private set; }
 
-        public DateTime Date { get; private set;  } = DateTime.Now;
+        public DateTime Date { get; private set;  } = GblMethods.NowDate();
 
         public AutoFillSetup MaterialAutoFillSetup { get; private set; }
 
