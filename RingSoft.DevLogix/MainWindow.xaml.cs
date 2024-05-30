@@ -561,6 +561,15 @@ namespace RingSoft.DevLogix
                 Command = ViewModel.LogoutCommand
             });
 
+            if (AppGlobals.LoggedInUser.Id == 1)
+            {
+                fileMenu.Items.Add(new MenuItem()
+                {
+                    Header = $"_Repair Dates",
+                    Command = ViewModel.RepairDatesCommand
+                });
+            }
+
             fileMenu.Items.Add(new MenuItem()
             {
                 Header = $"E_xit",
@@ -905,5 +914,14 @@ namespace RingSoft.DevLogix
             splashWindow.ShowDialog();
         }
 
+        public void RepairDates()
+        {
+            var procedure = new TwoTierProcedure();
+            procedure.DoProcedure += (sender, result) =>
+            {
+                AppGlobals.FixAllDateTimes(procedure);
+            };
+            procedure.Start();
+        }
     }
 }

@@ -68,6 +68,8 @@ namespace RingSoft.DevLogix.Library.ViewModels
         bool UpgradeVersion();
 
         void ShowAbout();
+
+        void RepairDates();
     }
 
     public class MainViewModel : INotifyPropertyChanged
@@ -171,6 +173,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
         public double? SupportMinutesPurchased { get; set; }
 
         public RelayCommand LogoutCommand { get; set; }
+        public RelayCommand RepairDatesCommand { get; set; }
         public RelayCommand<TableDefinitionBase> ShowMaintenanceWindowCommand { get; }
         public RelayCommand ExitCommand { get; }
         public RelayCommand AdvancedFindCommand { get; }
@@ -247,6 +250,10 @@ namespace RingSoft.DevLogix.Library.ViewModels
             _timer.Enabled = true;
             ExitCommand = new RelayCommand(Exit);
             LogoutCommand = new RelayCommand(Logout);
+            RepairDatesCommand = new RelayCommand((() =>
+            {
+                MainView.RepairDates();
+            }));
 
             UsersCommand =
                 new RelayCommand((() => { MainView.ShowDbMaintenanceWindow(AppGlobals.LookupContext.Users); }));

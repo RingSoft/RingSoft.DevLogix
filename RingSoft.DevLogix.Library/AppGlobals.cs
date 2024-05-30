@@ -19,6 +19,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using RingSoft.DbLookup.QueryBuilder;
+using RingSoft.DbLookup.TableProcessing;
 using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
 using DbPlatforms = RingSoft.App.Library.DbPlatforms;
 
@@ -632,5 +634,62 @@ namespace RingSoft.DevLogix.Library
             return null;
         }
 
+        public static void FixAllDateTimes(ITwoTierProcedure procedure)
+        {
+            var context = SystemGlobals.DataRepository.GetDataContext();
+            var tables = LookupContext
+                .TableDefinitions
+                .Where(p => p.FieldDefinitions
+                    .Any(p => p.FieldDataType == FieldDataTypes.DateTime));
+
+            var tableIndex = 1;
+            var fields = new List<DateFieldDefinition>();
+            foreach (var table in tables)
+            {
+                procedure.UpdateTopTier($"Processing Table {table.Description}", tables.Count(), tableIndex);
+                var query = table.GetQueryableForTable(context);
+                var recCount = query.Count();
+                var recIndex = 1;
+                foreach (var o in query)
+                {
+                    procedure.UpdateBottomTier($"Processing Record {recIndex}/{recCount}", recCount, recIndex);
+                    var saveEntity = false;
+                    var existFields = table.FieldDefinitions
+                        .Where(p => p.FieldDataType == FieldDataTypes.DateTime);
+                    foreach (var fieldDefinition in existFields)
+                    {
+                        if (fieldDefinition is DateFieldDefinition dateField)
+                        {
+                            switch (dateField.DateType)
+                            {
+                                case DbDateTypes.DateOnly:
+                                    break;
+                                case DbDateTypes.DateTime:
+                                    var dateString = GblMethods.GetPropertyValue(o, dateField.PropertyName);
+                                    if (!dateString.IsNullOrEmpty())
+                                    {
+                                        var dateVal = GblMethods.ScrubDateTime(dateString.ToDate().Value);
+                                        GblMethods.SetPropertyValue(o, dateField.PropertyName, dateVal.FormatDateValue(DbDateTypes.DateTime));
+                                        saveEntity = true;
+                                    }
+                                    break;
+                                case DbDateTypes.Millisecond:
+                                    break;
+                                default:
+                                    throw new ArgumentOutOfRangeException();
+                            }
+                        }
+                    }
+
+                    if (saveEntity)
+                    {
+                        context.SaveEntity(o, "Repairing Date");
+                    }
+
+                    recIndex++;
+                }
+                tableIndex++;
+            }
+        }
     }
 }
