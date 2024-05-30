@@ -205,7 +205,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             RefreshRateSetup.LoadFromEnum<RefreshRate>();
             RefreshNowCommand = new RelayCommand(() =>
             {
-                LastRefresh = DateTime.Now;
+                LastRefresh = GblMethods.NowDate();
                 Refresh();
             });
             UserManager = new UserTrackerUserManager(this);
@@ -336,7 +336,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         {
             if (LastRefresh == null)
             {
-                LastRefresh = DateTime.Now;
+                LastRefresh = GblMethods.NowDate();
             }
             UpdateRefreshText();
             UserManager.RefreshGrid();
@@ -351,14 +351,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
             if (RefreshValue == 0)
             {
-                LastRefresh = DateTime.Now;
+                LastRefresh = GblMethods.NowDate();
                 return;
             }
-            var nextRefresh = DateTime.Now;
+
+            var nextRefresh = GblMethods.NowDate();
             switch (RefreshRate)
             {
                 case RefreshRate.None:
-                    nextRefresh = DateTime.Now;
+                    nextRefresh = GblMethods.NowDate();
                     return;
                 case RefreshRate.Hours:
                     nextRefresh = LastRefresh.Value.AddHours(RefreshValue);
@@ -373,9 +374,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     throw new ArgumentOutOfRangeException();
             }
             
-            if (DateTime.Now > nextRefresh)
+            if (GblMethods.NowDate() > nextRefresh)
             {
-                LastRefresh = DateTime.Now;
+                LastRefresh = GblMethods.NowDate();
                 Refresh();
             }
         }

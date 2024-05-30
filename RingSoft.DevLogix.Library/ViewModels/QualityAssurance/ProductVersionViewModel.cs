@@ -472,7 +472,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                                     try
                                     {
                                         file.CopyTo(archiveFile);
-                                        ArchiveDateTime = DateTime.Now;
+                                        ArchiveDateTime = GblMethods.NowDate();
                                         DoSave();
                                         View.SetFocusToDeploy();
                                     }

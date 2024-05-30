@@ -539,7 +539,7 @@ namespace RingSoft.DevLogix.Library
             if (user != null && user.ClockOutReason != (byte)ClockOutReasons.ClockedIn)
             {
                 user.ClockOutReason = (byte)ClockOutReasons.ClockedIn;
-                user.ClockDate = DateTime.Now.ToUniversalTime();
+                user.ClockDate = GblMethods.NowDate().ToUniversalTime();
                 context.SaveEntity(user, "Clocking In");
             }
         }
@@ -609,7 +609,7 @@ namespace RingSoft.DevLogix.Library
             , DateTime? punchOutDate = null)
         {
             var result = string.Empty;
-            var nowDate = DateTime.Now;
+            var nowDate = GblMethods.NowDate();
             if (punchOutDate != null)
             {
                 nowDate = punchOutDate.GetValueOrDefault();

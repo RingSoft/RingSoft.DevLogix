@@ -212,7 +212,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     TimeClock = table
                         .FirstOrDefault(p => p.UserId == UserId
                                              && p.PunchOutDate == null);
-                    var now = DateTime.Now.ToUniversalTime();
+                    var now = GblMethods.NowDate().ToUniversalTime();
                     var userTable = context.GetTable<User>();
                     if (userTable != null)
                     {

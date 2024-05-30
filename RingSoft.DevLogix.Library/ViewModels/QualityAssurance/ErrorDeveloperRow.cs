@@ -72,7 +72,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         public void SetDeveloperProperties()
         {
             DeveloperAutoFillValue = DeveloperAutoFillSetup.GetAutoFillValueForIdValue(AppGlobals.LoggedInUser.Id);
-            FixedDate = DateTime.Now;
+            FixedDate = GblMethods.NowDate();
         }
     }
 }

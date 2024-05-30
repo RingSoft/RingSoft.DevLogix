@@ -555,7 +555,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             {
                 Description = "00.85.1",
                 ProductId = product.Id,
-                VersionDate = DateTime.Now.ToUniversalTime(),
+                VersionDate = GblMethods.NowDate(),
                 DepartmentId = product.CreateDepartmentId,
             };
             if (context.SaveEntity(newVersion, "Creating new version"))

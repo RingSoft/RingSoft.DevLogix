@@ -2,7 +2,6 @@
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.ModelDefinition;
-using RingSoft.DevLogix.DataAccess;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
@@ -20,7 +19,9 @@ using System.Threading.Tasks;
 using System.Timers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using RingSoft.DbLookup;
 using RingSoft.DevLogix.Library.ViewModels.CustomerManagement;
+using IDbContext = RingSoft.DevLogix.DataAccess.IDbContext;
 
 namespace RingSoft.DevLogix.Library.ViewModels
 {
@@ -355,7 +356,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
         {
             var result = string.Empty;
 
-            var duration = DateTime.Now.Subtract(_startDate.Value.ToLocalTime());
+            var duration = GblMethods.NowDate().Subtract(_startDate.Value.ToLocalTime());
             result = $"{duration.Days.ToString("00")} {duration.ToString("hh\\:mm\\:ss")}";
 
             return result;
@@ -723,7 +724,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
             if (user != null)
             {
-                user.ClockDate = DateTime.Now.ToUniversalTime();
+                user.ClockDate = GblMethods.NowDate().ToUniversalTime();
                 user.ClockOutReason = (byte)clockReasonViewModel.ClockOutReason;
                 if (clockReasonViewModel.ClockOutReason == ClockOutReasons.Other)
                 {

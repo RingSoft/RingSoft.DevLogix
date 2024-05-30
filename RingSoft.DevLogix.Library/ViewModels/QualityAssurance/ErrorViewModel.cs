@@ -791,12 +791,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         protected override Error GetEntityData()
         {
-            var errorDate = ErrorDate.ToUniversalTime();
-            errorDate = GblMethods.ScrubDateTime(errorDate);
             var result = new Error
             {
                 Id = Id,
-                ErrorDate = errorDate,
+                ErrorDate = ErrorDate.ToUniversalTime(),
                 ErrorStatusId = StatusAutoFillValue.GetEntity<ErrorStatus>().Id,
                 ProductId = ProductAutoFillValue.GetEntity<Product>().Id,
                 ErrorPriorityId = PriorityAutoFillValue.GetEntity<ErrorPriority>().Id,
@@ -886,7 +884,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         protected override void ClearData()
         {
             Id = 0;
-            ErrorDate = DateTime.Now;
+            ErrorDate = GblMethods.NowDate();
             StatusAutoFillValue = ProductAutoFillValue = PriorityAutoFillValue = FoundVersionAutoFillValue =
                 FixedVersionAutoFillValue = AssignedDeveloperAutoFillValue = AssignedQualityAssuranceAutoFillValue =  null;
             Description = Resolution = string.Empty;

@@ -581,7 +581,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             KeyAutoFillValue = null;
             Id = 0;
             CustomerAutoFillValue = DefaultCustomerAutoFillValue;
-            CreateDate = DateTime.Now;
+            CreateDate = GblMethods.NowDate();
             PhoneNumber = string.Empty;
             ContactName = string.Empty;
             CreateUserAutoFillValue = AppGlobals.LoggedInUser.GetAutoFillValue();

@@ -208,7 +208,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             newVersions =
                 newVersions.Where(p => !p.ProductVersionDepartments.Any(p => p.DepartmentId == newDepartment.Id));
 
-            var nowDate = DateTime.Now.ToUniversalTime();
+            var nowDate = GblMethods.NowDate().ToUniversalTime();
             nowDate = new DateTime(nowDate.Year, nowDate.Month, nowDate.Day, nowDate.Hour, nowDate.Minute,
                 nowDate.Second);
             var newVersionsList = newVersions.ToList();

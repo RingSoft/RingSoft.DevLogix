@@ -662,7 +662,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             KeyAutoFillValue = null;
             StartDate = null;
             ManagerAutoFillValue = null;
-            OriginalDeadline = Deadline = DateTime.Now;
+            OriginalDeadline = Deadline = GblMethods.NowDate();
             ProductAutoFillValue = null;
             IsBillable = false;
             TimeClockLookupCommand = GetLookupCommand(LookupCommands.Clear);

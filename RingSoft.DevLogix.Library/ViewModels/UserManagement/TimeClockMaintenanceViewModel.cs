@@ -479,7 +479,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             {
                 if (_timerActive)
                 {
-                    _endDate = DateTime.Now;
+                    _endDate = GblMethods.NowDate();
                     SetElapsedTime(GetElapsedTime());
                 }
             };
@@ -508,7 +508,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
             UserAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.UserId));
             UserAutoFillValue = UserAutoFillSetup.GetAutoFillValueForIdValue(AppGlobals.LoggedInUser.Id);
-            PunchInDate = DateTime.Now;
+            PunchInDate = GblMethods.NowDate();
 
             if (punchIn)
             {
@@ -1327,7 +1327,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         {
             if (!PunchOutDate.HasValue)
             {
-                PunchOutDate = DateTime.Now;
+                PunchOutDate = GblMethods.NowDate();
             }
 
             _endDate = PunchOutDate.Value;
@@ -1363,7 +1363,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
             else if (!fromPunchIn)
             {
-                _endDate = DateTime.Now;
+                _endDate = GblMethods.NowDate();
                 PunchIn(false);
             }
 

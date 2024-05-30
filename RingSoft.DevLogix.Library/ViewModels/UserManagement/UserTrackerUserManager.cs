@@ -5,6 +5,7 @@ using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.UserManagement;
 using System;
 using System.Linq;
+using RingSoft.DbLookup;
 
 namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 {
@@ -82,7 +83,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             {
                 var typeTran =
                     ClockOutReasons.TypeTranslations.FirstOrDefault(p => p.NumericValue == user.ClockOutReason);
-                var nowDate = DateTime.Now.ToUniversalTime();
+                var nowDate = GblMethods.NowDate().ToUniversalTime();
                 if (typeTran != null)
                 {
                     var clockText = typeTran.TextValue;

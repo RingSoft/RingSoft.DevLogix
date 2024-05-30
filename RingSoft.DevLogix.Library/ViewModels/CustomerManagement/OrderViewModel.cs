@@ -479,8 +479,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         {
             Id = 0;
             KeyAutoFillValue = null;
-            OrderDate = DateTime.Now;
-            ShippedDate = DateTime.Now;
+            OrderDate = GblMethods.NowDate();
+            ShippedDate = GblMethods.NowDate();
             CompanyName = string.Empty;
             ContactName = string.Empty;
             ContactTitle = string.Empty;

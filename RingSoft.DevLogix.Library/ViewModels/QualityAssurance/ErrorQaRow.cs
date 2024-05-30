@@ -81,7 +81,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         {
             TesterAutoFillValue = TesterAutoFillSetup.GetAutoFillValueForIdValue(AppGlobals.LoggedInUser.Id);
             NewStatusAutoFillValue = NewStatusAutoFillSetup.GetAutoFillValueForIdValue(newStatusValue);
-            DateChanged = DateTime.Now;
+            DateChanged = GblMethods.NowDate();
         }
     }
 }

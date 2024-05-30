@@ -127,7 +127,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         public void AddNewDepartment(int departmentId)
         {
             DepartmentAutoFillValue = DepartmentAutoFillSetup.GetAutoFillValueForIdValue(departmentId);
-            ReleaseDateTime = DateTime.Now;
+            ReleaseDateTime = GblMethods.NowDate();
         }
     }
 }
