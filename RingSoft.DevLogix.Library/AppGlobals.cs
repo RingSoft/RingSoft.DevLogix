@@ -683,7 +683,7 @@ namespace RingSoft.DevLogix.Library
 
                     if (saveEntity)
                     {
-                        context.SaveEntity(o, "Repairing Date");
+                        table.SaveObject(o, context, "Repairing Date");
                     }
 
                     recIndex++;
