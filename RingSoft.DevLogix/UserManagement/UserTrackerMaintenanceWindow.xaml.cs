@@ -1,24 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using RingSoft.App.Controls;
-using RingSoft.DataEntryControls.WPF;
+﻿using RingSoft.App.Controls;
 using RingSoft.DbLookup;
+using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.Library.ViewModels.UserManagement;
-using RingSoft.DevLogix.Library;
-using RingSoft.DbLookup.Controls.WPF;
-using RingSoft.DevLogix.QualityAssurance;
+using System.Windows;
 
 namespace RingSoft.DevLogix.UserManagement
 {
@@ -69,19 +54,7 @@ namespace RingSoft.DevLogix.UserManagement
             {
                 _closed = true;
             };
-        }
-
-        protected override void OnLoaded()
-        {
             RegisterFormKeyControl(NameControl);
-
-            base.OnLoaded();
-        }
-
-        public override void ResetViewForNewRecord()
-        {
-            NameControl.Focus();
-            base.ResetViewForNewRecord();
         }
 
         public void SetAlertLevel(AlertLevels level, string message)

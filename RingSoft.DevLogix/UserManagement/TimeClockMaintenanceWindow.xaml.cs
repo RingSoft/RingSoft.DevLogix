@@ -1,30 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using RingSoft.App.Controls;
+﻿using RingSoft.App.Controls;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup.Controls.WPF;
-using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model;
-using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
-using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels.UserManagement;
-using RingSoft.DevLogix.QualityAssurance;
-using RingSoft.DevLogix.Sqlite.Migrations;
+using System;
+using System.Windows;
+using System.Windows.Input;
 using Customer = RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Customer;
 using SupportTicket = RingSoft.DevLogix.DataAccess.Model.CustomerManagement.SupportTicket;
 
@@ -193,12 +177,7 @@ namespace RingSoft.DevLogix.UserManagement
             };
 
             Closed += (sender, args) => { _isActive = false; };
-        }
-
-        protected override void OnLoaded()
-        {
             RegisterFormKeyControl(NameControl);
-            base.OnLoaded();
         }
 
         public override void ResetViewForNewRecord()

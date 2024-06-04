@@ -34,22 +34,16 @@ namespace RingSoft.DevLogix.UserManagement
         public DepartmentMaintenanceWindow()
         {
             InitializeComponent();
+            RegisterFormKeyControl(DescriptionControl);
         }
 
         protected override void OnLoaded()
         {
-            RegisterFormKeyControl(DescriptionControl);
             if (!AppGlobals.LookupContext.Users.HasRight(RightTypes.AllowAdd))
             {
                 AddModifyUserButton.Visibility = Visibility.Collapsed;
             }
             base.OnLoaded();
-        }
-
-        public override void ResetViewForNewRecord()
-        {
-            DescriptionControl.Focus();
-            base.ResetViewForNewRecord();
         }
 
         public override void OnValidationFail(FieldDefinition fieldDefinition, string text, string caption)

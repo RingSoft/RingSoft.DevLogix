@@ -92,19 +92,12 @@ namespace RingSoft.DevLogix.UserManagement
                     _timeOffRowFocus = -1;
                 }
             };
-        }
 
-        protected override void OnLoaded()
-        {
-            var test = Processor;
             RegisterFormKeyControl(NameControl);
-            RefreshView();
-            base.OnLoaded();
         }
 
         public override void ResetViewForNewRecord()
         {
-            NameControl.Focus();
             RefreshView();
             PasswordBox.Password = string.Empty;
             base.ResetViewForNewRecord();
@@ -174,11 +167,6 @@ namespace RingSoft.DevLogix.UserManagement
                 RightsTab.Visibility = Visibility.Collapsed;
             }
             SetMasterUserMode(UserMaintenanceViewModel.MasterMode);
-        }
-
-        public void OnValGridFail(UserGrids userGrid)
-        {
-            
         }
 
         public bool SetupRecalcFilter(LookupDefinitionBase lookupDefinition)

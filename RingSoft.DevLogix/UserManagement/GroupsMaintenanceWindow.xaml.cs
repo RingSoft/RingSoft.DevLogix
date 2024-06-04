@@ -32,18 +32,7 @@ namespace RingSoft.DevLogix.UserManagement
         public GroupsMaintenanceWindow()
         {
             InitializeComponent();
-        }
-
-        protected override void OnLoaded()
-        {
             RegisterFormKeyControl(NameControl);
-            base.OnLoaded();
-        }
-
-        public override void ResetViewForNewRecord()
-        {
-            NameControl.Focus();
-            base.ResetViewForNewRecord();
         }
 
         public string GetRights()
