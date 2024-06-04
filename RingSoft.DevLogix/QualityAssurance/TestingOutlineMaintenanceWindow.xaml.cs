@@ -107,12 +107,6 @@ namespace RingSoft.DevLogix.QualityAssurance
             };
         }
 
-        public override void ResetViewForNewRecord()
-        {
-            NameControl.Focus();
-            base.ResetViewForNewRecord();
-        }
-
         public void PunchIn(TestingOutline testingOutline)
         {
             AppGlobals.MainViewModel.PunchIn(testingOutline);

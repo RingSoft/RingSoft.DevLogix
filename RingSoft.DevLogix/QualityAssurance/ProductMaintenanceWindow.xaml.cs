@@ -74,12 +74,11 @@ namespace RingSoft.DevLogix.QualityAssurance
 
                 }
             };
-
+            RegisterFormKeyControl(DescriptionControl);
         }
 
         protected override void OnLoaded()
         {
-            RegisterFormKeyControl(DescriptionControl);
             if (!AppGlobals.LookupContext.ProductVersions.HasRight(RightTypes.AllowAdd))
             {
                 AddModifyButton.Visibility = Visibility.Collapsed;
@@ -90,12 +89,6 @@ namespace RingSoft.DevLogix.QualityAssurance
                 TabControl.SelectedItem = NotesTabItem;
             }
             base.OnLoaded();
-        }
-
-        public override void ResetViewForNewRecord()
-        {
-            DescriptionControl.Focus();
-            base.ResetViewForNewRecord();
         }
 
         public override void OnValidationFail(FieldDefinition fieldDefinition, string text, string caption)

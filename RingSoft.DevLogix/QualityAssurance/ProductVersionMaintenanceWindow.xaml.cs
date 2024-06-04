@@ -100,12 +100,11 @@ namespace RingSoft.DevLogix.QualityAssurance
 
                 }
             };
+            RegisterFormKeyControl(DescriptionControl);
         }
 
         protected override void OnLoaded()
         {
-            RegisterFormKeyControl(DescriptionControl);
-
             if (!LocalViewModel.TableDefinition.HasRight(RightTypes.AllowEdit))
             {
                 ArchiveButton.Visibility = Visibility.Collapsed;
@@ -130,12 +129,6 @@ namespace RingSoft.DevLogix.QualityAssurance
                 }
             };
             base.OnLoaded();
-        }
-
-        public override void ResetViewForNewRecord()
-        {
-            DescriptionControl.Focus();
-            base.ResetViewForNewRecord();
         }
 
         public bool UploadFile(FileInfo file, Department department, Product product)

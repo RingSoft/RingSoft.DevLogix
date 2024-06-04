@@ -30,19 +30,7 @@ namespace RingSoft.DevLogix.QualityAssurance
         public ErrorStatusMaintenanceWindow()
         {
             InitializeComponent();
-        }
-
-        protected override void OnLoaded()
-        {
             RegisterFormKeyControl(DescriptionControl);
-            base.OnLoaded();
         }
-
-        public override void ResetViewForNewRecord()
-        {
-            DescriptionControl.Focus();
-            base.ResetViewForNewRecord();
-        }
-
     }
 }

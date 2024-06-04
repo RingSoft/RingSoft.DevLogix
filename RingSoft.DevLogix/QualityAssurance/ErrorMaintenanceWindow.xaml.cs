@@ -1,31 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Forms;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using RingSoft.App.Controls;
+﻿using RingSoft.App.Controls;
 using RingSoft.DataEntryControls.WPF;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Lookup;
-using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.Library;
-using RingSoft.DevLogix.Library.ViewModels;
-using RingSoft.DevLogix.Library.ViewModels.CustomerManagement;
 using RingSoft.DevLogix.Library.ViewModels.QualityAssurance;
-using RingSoft.DevLogix.ProjectManagement;
-using RingSoft.DevLogix.UserManagement;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using Clipboard = System.Windows.Clipboard;
 using Control = System.Windows.Controls.Control;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
@@ -100,6 +84,10 @@ namespace RingSoft.DevLogix.QualityAssurance
                     }
                 }
             };
+
+            RegisterFormKeyControl(ErrorIdControl);
+            _descriptionUiControl = new VmUiControl(DescriptionTextBox, LocalViewModel.DescriptionUiCommand);
+            _resolutionUiControl = new VmUiControl(ResolutionTextBox, LocalViewModel.ResolutionUiCommand);
         }
 
         private void DetailsGrid_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -108,27 +96,18 @@ namespace RingSoft.DevLogix.QualityAssurance
             ResolutionTextBox.MaxWidth = DetailsGrid.ActualWidth / 2;
         }
 
-        protected override void OnLoaded()
-        {
-            RegisterFormKeyControl(ErrorIdControl);
-            _descriptionUiControl = new VmUiControl(DescriptionTextBox, LocalViewModel.DescriptionUiCommand);
-            _resolutionUiControl = new VmUiControl(ResolutionTextBox, LocalViewModel.ResolutionUiCommand);
-            
-            base.OnLoaded();
-        }
-
         public override void ResetViewForNewRecord()
         {
             StatusControl.Focus();
             base.ResetViewForNewRecord();
         }
 
-        public void SetFocusAfterText(string text, bool descrioption, bool setFocus)
+        public void SetFocusAfterText(string text, bool description, bool setFocus)
         {
             var index = text.Length;
             if (index >= 0)
             {
-                if (descrioption)
+                if (description)
                 {
                     if (setFocus)
                     {

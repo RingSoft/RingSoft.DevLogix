@@ -55,11 +55,5 @@ namespace RingSoft.DevLogix.QualityAssurance
             };
 
         }
-
-        public override void ResetViewForNewRecord()
-        {
-            NameControl.Focus();
-            base.ResetViewForNewRecord();
-        }
     }
 }
