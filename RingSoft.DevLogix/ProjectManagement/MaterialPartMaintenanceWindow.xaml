@@ -10,7 +10,7 @@
         xmlns:local="clr-namespace:RingSoft.DevLogix.ProjectManagement"
         mc:Ignorable="d"
         Style="{StaticResource BaseWindowStyle}"
-        Title="Material Parts Maintenance Window" Height="300" Width="400">
+        Title="Material Parts Maintenance Window" Height="300" Width="500">
 
     <Window.DataContext>
         <vm:MaterialPartViewModel x:Name="LocalViewModel"/>

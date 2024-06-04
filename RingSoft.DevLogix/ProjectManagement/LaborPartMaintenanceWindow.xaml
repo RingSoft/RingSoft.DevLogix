@@ -11,7 +11,7 @@
         xmlns:local="clr-namespace:RingSoft.DevLogix.ProjectManagement"
         mc:Ignorable="d"
         Style="{StaticResource BaseWindowStyle}"
-        Title="Labor Part Maintenance Window" Height="300" Width="400">
+        Title="Labor Part Maintenance Window" Height="300" Width="500">
 
     <Window.DataContext>
         <vm:LaborPartViewModel x:Name="LocalViewModel"/>
