@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows;
-using RingSoft.App.Controls;
+﻿using RingSoft.App.Controls;
 using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
-using RingSoft.DataEntryControls.WPF;
-using RingSoft.DataEntryControls.WPF.DataEntryGrid.EditingControlHost;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
-using RingSoft.DbLookup.Controls.WPF;
-using RingSoft.DbLookup.Controls.WPF.AdvancedFind;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.QueryBuilder;
@@ -21,6 +13,10 @@ using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.ProjectManagement;
 using RingSoft.DevLogix.QualityAssurance;
 using RingSoft.DevLogix.UserManagement;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows;
 
 namespace RingSoft.DevLogix
 {

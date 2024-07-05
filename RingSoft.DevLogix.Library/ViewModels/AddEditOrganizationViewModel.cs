@@ -166,48 +166,9 @@ namespace RingSoft.DevLogix.Library.ViewModels
                     throw new ArgumentOutOfRangeException();
             }
 
-            //var systemMaster = new SystemMaster() { OrganizationName = Object.Name + "1" };
-            //sourceDbContext.SystemMaster.Add(systemMaster);
-            //try
-            //{
-            //    sourceDbContext.DbContext.SaveChanges();
-            //}
-            //catch (Exception e)
-            //{
-            //    Console.WriteLine(e);
-            //    throw;
-            //}
             switch (OriginalDbPlatform)
             {
                 case DbPlatforms.Sqlite:
-                    if (DbPlatform == DbPlatforms.SqlServer)
-                    {
-                        //var efContext = SystemGlobals.DataRepository.GetDataContext(destinationProcessor);
-                        //var sourceList = efContext.GetListOfDatabases(destinationProcessor);
-                        //var databaseList = new List<string>(sourceList);
-                        //var getListResults = destinationProcessor.GetListOfDatabases();
-                        
-                        //if (getListResults.ResultCode == GetDataResultCodes.Success)
-                        //{
-                        //    foreach (DataRow dataRow in getListResults.DataSet.Tables[0].Rows)
-                        //    {
-                        //        databaseList.Add(
-                        //            dataRow.GetRowValue(getListResults.DataSet.Tables[0].Columns[0].ColumnName));
-                        //    }
-                        //}
-                        //var databaseExists =
-                        //    databaseList.Contains(SqlServerLoginViewModel.Database);
-
-                        //if (databaseExists)
-                        //{
-                        //    var message =
-                        //        "You must first delete the destination database in Microsoft SQL Server management studio in order to continue.";
-
-                        //    var caption = "Delete First";
-                        //    procedure.ShowMessage(message, caption, RsMessageBoxIcons.Exclamation);
-                        //    return false;
-                        //}
-                    }
                     break;
                 case DbPlatforms.SqlServer:
                     break;

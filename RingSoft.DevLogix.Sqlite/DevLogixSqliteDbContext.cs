@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.EntityFrameworkCore;
-using RingSoft.DbLookup;
-using RingSoft.DbLookup.AdvancedFind;
+﻿using Microsoft.EntityFrameworkCore;
 using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.EfCore;
-using RingSoft.DbLookup.RecordLocking;
 using RingSoft.DevLogix.DataAccess;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
