@@ -663,7 +663,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
             AddModifySupportTicketCommand = new RelayCommand(AddModifySupportTicket);
 
-            AddSupportCommand = new RelayCommand((() => { SupportMinutesLeft += NewSupportTime; }));
+            AddSupportCommand = new RelayCommand((() =>
+            {
+                if (SupportMinutesLeft == null)
+                {
+                    SupportMinutesLeft = 0;
+                }
+                SupportMinutesLeft += NewSupportTime;
+            }));
 
             //var timeClockLookup = new LookupDefinition<TimeClockLookup, TimeClock>(AppGlobals.LookupContext.TimeClocks);
             //timeClockLookup.AddVisibleColumnDefinition(p => p.PunchInDate, p => p.PunchInDate);

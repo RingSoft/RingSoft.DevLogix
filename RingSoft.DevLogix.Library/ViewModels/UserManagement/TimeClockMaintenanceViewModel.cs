@@ -1134,6 +1134,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             ticket.Customer.SupportMinutesSpent += entity.MinutesSpent.Value;
             ticket.Customer.SupportMinutesPurchased -= entity.MinutesSpent.Value;
             SupportMinutesLeft = ticket.Customer.SupportMinutesPurchased;
+            var ticketCustomerViewModel = AppGlobals.MainViewModel.CustomerViewModels
+                .FirstOrDefault(p => p.Id == ticket.CustomerId);
+            if (ticketCustomerViewModel != null)
+            {
+                ticketCustomerViewModel.SupportMinutesLeft = SupportMinutesLeft;
+            }
+
+            var customerPrimaryKey = AppGlobals.LookupContext.Customer.GetPrimaryKeyValueFromEntity(
+                ticket.Customer);
+            GblMethods.DoRecordLock(customerPrimaryKey);
             
             var ticketUser = ticket.SupportTicketUsers.FirstOrDefault(p => p.UserId == user.Id);
             if (ticketUser != null)
