@@ -558,6 +558,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
             TimeOffGridManager = new UserTimeOffGridManager(this);
 
+            GroupsManager = new UsersGroupsManager(this);
+
+            BillabilityGridManager.MakeGrid();
+
             //var timeClockLookup = new LookupDefinition<TimeClockLookup, TimeClock>(AppGlobals.LookupContext.TimeClocks);
             //timeClockLookup.AddVisibleColumnDefinition(p => p.PunchInDate, p => p.PunchInDate);
             //timeClockLookup.AddVisibleColumnDefinition(p => p.MinutesSpent, p => p.MinutesSpent);
@@ -602,10 +606,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             DepartmentAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.DepartmentId));
             DefaultChartAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.DefaultChartId));
             SupervisorAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.SupervisorId));
-
-            GroupsManager = new UsersGroupsManager( this);
-
-            BillabilityGridManager.MakeGrid();
 
             if (LookupAddViewArgs != null && LookupAddViewArgs.ParentWindowPrimaryKeyValue != null)
             {
