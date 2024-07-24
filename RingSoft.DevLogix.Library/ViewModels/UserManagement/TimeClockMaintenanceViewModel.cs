@@ -831,6 +831,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                         .FirstOrDefault(p => p.Id == entity.ProjectTaskId.Value);
                     if (projectTask != null)
                     {
+                        projectTask.UtFillOutEntity();
                         result = UpdateProjectTask(entity, projectTask, context, user);
                         if (result && projectTask.Project.IsBillable)
                         {
@@ -851,6 +852,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                         .FirstOrDefault(p => p.Id == entity.ErrorId.Value);
                     if (error != null)
                     {
+                        error.UtFillOutEntity();
                         result = UpdateError(entity, error, context, user);
                     }
                 }
@@ -863,6 +865,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                         .FirstOrDefault(p => p.Id == entity.TestingOutlineId.Value);
                     if (testingOutline != null)
                     {
+                        testingOutline.UtFillOutEntity();
                         result = UpdateTestingOutline(entity, testingOutline, context, user);
                     }
                 }
@@ -874,6 +877,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                         .FirstOrDefault(p => p.Id == entity.CustomerId.Value);
                     if (customer != null)
                     {
+                        customer.UtFillOutEntity();
                         result = UpdateCustomer(entity, customer, context, user);
                     }
                 }
@@ -888,6 +892,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                         .FirstOrDefault(p => p.Id == entity.SupportTicketId.Value);
                     if (ticket != null)
                     {
+                        ticket.UtFillOutEntity();
                         customerId = ticket.CustomerId;
                         result = UpdateTicket(entity, ticket, context, user);
                     }
@@ -1039,7 +1044,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
             if (result)
             {
-                result = UpdateProductCost(context, error.Product, entity, user);
+                result = UpdateProductCost(context, error.Product, entity);
             }
 
             var errorViewModels = AppGlobals.MainViewModel.ErrorViewModels
@@ -1073,7 +1078,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
             if (result)
             {
-                result = UpdateProductCost(context, testingOutline.Product, entity, user);
+                result = UpdateProductCost(context, testingOutline.Product, entity);
             }
 
 
@@ -1162,7 +1167,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
             if (result)
             {
-                result = UpdateProductCost(context, ticket.Product, entity, user);
+                result = UpdateProductCost(context, ticket.Product, entity);
             }
             var ticketViewModels = AppGlobals.MainViewModel.SupportTicketViewModels
                 .Where(p => p.Id == ticket.Id);
@@ -1205,7 +1210,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
                 if (result)
                 {
-                    result = UpdateProductCost(context, projectTask.Project.Product, entity, user);
+                    result = UpdateProductCost(context, projectTask.Project.Product, entity);
                 }
             }
             if (result)
@@ -1422,12 +1427,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             return result;
         }
 
-        private bool UpdateProductCost(IDbContext context, Product product, TimeClock timeClock, User user)
+        private bool UpdateProductCost(IDbContext context, Product product, TimeClock timeClock)
         {
             if (product != null && timeClock != null)
             {
                 var hoursSpent = timeClock.MinutesSpent / 60;
-                var cost = hoursSpent * user.HourlyRate;
+                var cost = hoursSpent * timeClock.User.HourlyRate;
                 product.Cost += cost;
 
                 return context.SaveNoCommitEntity(product, "Saving new cost.");

@@ -1170,6 +1170,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 {
                     return;
                 }
+
+                var test = this;
                 user.User = AppGlobals.LoggedInUser;
                 ErrorUserGridManager.AddUserRow(user);
             }
