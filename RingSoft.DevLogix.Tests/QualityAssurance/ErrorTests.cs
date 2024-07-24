@@ -86,6 +86,15 @@ namespace RingSoft.DevLogix.Tests.QualityAssurance
 
             Globals.ViewModel.PunchInCommand.Execute(null);
             Assert.AreNotEqual(AppGlobals.MainViewModel.ActiveTimeClockId, 0);
+
+            var activeTimeClock = AppGlobals.MainViewModel.TimeClockMaintenanceViewModel;
+            var tcUser = activeTimeClock.UserAutoFillValue.GetEntity<User>();
+            Assert.AreEqual(tcUser.Id, (int)TestUsers.DaveSmittyPD);
+
+            Assert.AreEqual(activeTimeClock.ErrorAutoFillValue.GetEntity<Error>().Id
+            , (int)TestErrors.E1);
+
+            Globals.PunchOut(activeTimeClock, 20);
         }
     }
 }

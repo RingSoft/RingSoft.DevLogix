@@ -4,7 +4,9 @@ using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels;
+using RingSoft.DevLogix.Library.ViewModels.UserManagement;
 using RingSoft.DevLogix.Sqlite;
+using RingSoft.DevLogix.Tests.UserManagement;
 
 namespace RingSoft.DevLogix.Tests
 {
@@ -237,6 +239,7 @@ namespace RingSoft.DevLogix.Tests
                 Id = (int)TestUsers.DaveSmittyPD,
                 Name = "Dave Smitty (PD)",
                 DepartmentId = pdDept.Id,
+                HourlyRate = 80,
             };
 
             context.SaveEntity(user, "Saving User");
@@ -246,6 +249,7 @@ namespace RingSoft.DevLogix.Tests
                 Id = (int)TestUsers.JohnDoeQA,
                 Name = "John Doe (QA)",
                 DepartmentId = qaDept.Id,
+                HourlyRate = 80,
             };
 
             context.SaveEntity(user, "Saving User");
@@ -255,6 +259,7 @@ namespace RingSoft.DevLogix.Tests
                 Id = (int)TestUsers.AnnaSmallsaTS,
                 Name = "Anna Smallsa (Support)",
                 DepartmentId = supportDept.Id,
+                HourlyRate = 80,
             };
 
             context.SaveEntity(user, "Saving User");
@@ -264,6 +269,7 @@ namespace RingSoft.DevLogix.Tests
                 Id = (int)TestUsers.PeterBlankardAdmin,
                 Name = "Peter Blankard (Admin)",
                 DepartmentId = adminDept.Id,
+                HourlyRate = 100,
             };
 
             context.SaveEntity(user, "Saving User");
@@ -369,6 +375,15 @@ namespace RingSoft.DevLogix.Tests
             var result = table
                 .FirstOrDefault(p => p.Id == (int)versionType);
             return result;
+        }
+
+        public void PunchOut(TimeClockMaintenanceViewModel viewModel, double minutes)
+        {
+            if (viewModel.View is TestTimeClockView testTimeClockView)
+            {
+                testTimeClockView.PunchOutMinutes = minutes;
+                viewModel.ManualPunchOutCommand.Execute(null);
+            }
         }
     }
 }

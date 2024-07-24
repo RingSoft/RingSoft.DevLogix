@@ -1,9 +1,11 @@
-﻿using RingSoft.DevLogix.Library.ViewModels.UserManagement;
+﻿using RingSoft.DbLookup;
+using RingSoft.DevLogix.Library.ViewModels.UserManagement;
 
 namespace RingSoft.DevLogix.Tests.UserManagement
 {
     public class TestTimeClockView : ITimeClockView
     {
+        public double PunchOutMinutes { get; set; } = 0;
         public void ResetViewForNewRecord()
         {
             
@@ -36,7 +38,9 @@ namespace RingSoft.DevLogix.Tests.UserManagement
 
         public bool GetManualPunchOutDate(out DateTime? punchInDate, out DateTime? punchOutDate)
         {
-            throw new NotImplementedException();
+            punchOutDate = GblMethods.NowDate();
+            punchInDate = punchOutDate.Value.AddMinutes(-PunchOutMinutes);
+            return true;
         }
     }
 }

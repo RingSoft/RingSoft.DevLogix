@@ -1039,7 +1039,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
             if (result)
             {
-                result = UpdateProductCost(context, error.Product, entity);
+                result = UpdateProductCost(context, error.Product, entity, user);
             }
 
             var errorViewModels = AppGlobals.MainViewModel.ErrorViewModels
@@ -1073,7 +1073,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
             if (result)
             {
-                result = UpdateProductCost(context, testingOutline.Product, entity);
+                result = UpdateProductCost(context, testingOutline.Product, entity, user);
             }
 
 
@@ -1162,7 +1162,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
             if (result)
             {
-                result = UpdateProductCost(context, ticket.Product, entity);
+                result = UpdateProductCost(context, ticket.Product, entity, user);
             }
             var ticketViewModels = AppGlobals.MainViewModel.SupportTicketViewModels
                 .Where(p => p.Id == ticket.Id);
@@ -1205,7 +1205,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
                 if (result)
                 {
-                    result = UpdateProductCost(context, projectTask.Project.Product, entity);
+                    result = UpdateProductCost(context, projectTask.Project.Product, entity, user);
                 }
             }
             if (result)
@@ -1422,12 +1422,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             return result;
         }
 
-        private bool UpdateProductCost(IDbContext context, Product product, TimeClock timeClock)
+        private bool UpdateProductCost(IDbContext context, Product product, TimeClock timeClock, User user)
         {
             if (product != null && timeClock != null)
             {
                 var hoursSpent = timeClock.MinutesSpent / 60;
-                var cost = hoursSpent * timeClock.User.HourlyRate;
+                var cost = hoursSpent * user.HourlyRate;
                 product.Cost += cost;
 
                 return context.SaveNoCommitEntity(product, "Saving new cost.");
