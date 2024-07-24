@@ -95,6 +95,53 @@ namespace RingSoft.DevLogix.Tests.QualityAssurance
             , (int)TestErrors.E1);
 
             Globals.PunchOut(activeTimeClock, 20);
+            var userTable = context.GetTable<User>();
+            var user = userTable.FirstOrDefault(p => p.Id == (int)TestUsers.DaveSmittyPD);
+            Assert.AreEqual(20, user.ErrorsMinutesSpent);
+            var cost = Math.Round(user.HourlyRate / 3, 2);
+
+            e1Error = table
+                .FirstOrDefault(p => p.Id == (int)TestErrors.E1);
+            e1Error.UtFillOutEntity();
+            var errorUser = e1Error.Users.FirstOrDefault(p => p.UserId == (int)TestUsers.DaveSmittyPD);
+            Assert.AreEqual(20, errorUser.MinutesSpent);
+            Assert.AreEqual(cost, errorUser.Cost);
+
+            var userRow = Globals.ViewModel
+                .ErrorUserGridManager
+                .Rows.OfType<ErrorUserRow>()
+                .FirstOrDefault(p => p.UserId == (int)TestUsers.DaveSmittyPD);
+            Assert.AreEqual(20, userRow.MinutesSpent);
+            Assert.AreEqual(cost, userRow.Cost);
+
+            Globals.ViewModel.PunchInCommand.Execute(null);
+
+            activeTimeClock = AppGlobals.MainViewModel.TimeClockMaintenanceViewModel;
+            tcUser = activeTimeClock.UserAutoFillValue.GetEntity<User>();
+            Assert.AreEqual(tcUser.Id, (int)TestUsers.DaveSmittyPD);
+
+            Assert.AreEqual(activeTimeClock.ErrorAutoFillValue.GetEntity<Error>().Id
+                , (int)TestErrors.E1);
+
+            Globals.PunchOut(activeTimeClock, 20);
+            userTable = context.GetTable<User>();
+            user = userTable.FirstOrDefault(p => p.Id == (int)TestUsers.DaveSmittyPD);
+            Assert.AreEqual(40, user.ErrorsMinutesSpent);
+            cost = 53.33;
+
+            e1Error = table
+                .FirstOrDefault(p => p.Id == (int)TestErrors.E1);
+            e1Error.UtFillOutEntity();
+            errorUser = e1Error.Users.FirstOrDefault(p => p.UserId == (int)TestUsers.DaveSmittyPD);
+            Assert.AreEqual(40, errorUser.MinutesSpent);
+            Assert.AreEqual(cost, errorUser.Cost);
+
+            userRow = Globals.ViewModel
+                .ErrorUserGridManager
+                .Rows.OfType<ErrorUserRow>()
+                .FirstOrDefault(p => p.UserId == (int)TestUsers.DaveSmittyPD);
+            Assert.AreEqual(40, userRow.MinutesSpent);
+            Assert.AreEqual(cost, userRow.Cost);
         }
     }
 }
