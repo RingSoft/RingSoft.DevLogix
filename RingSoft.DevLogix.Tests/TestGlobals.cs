@@ -53,11 +53,18 @@ namespace RingSoft.DevLogix.Tests
         First = 1,
     }
 
+    public enum TestErrors
+    {
+        E1 = 1,
+    }
+
     public class TestGlobals<TViewModel, TView> : DbMaintenanceTestGlobals<TViewModel, TView>
         where TViewModel : DbMaintenanceViewModelBase
         where TView : IDbMaintenanceView, new()
     {
         public new DevLogixTestDataRepository DataRepository { get; } 
+
+        private bool _initRun = false;
             
         public TestGlobals() : base(new DevLogixTestDataRepository(new TestDataRegistry()))
         {
@@ -70,8 +77,8 @@ namespace RingSoft.DevLogix.Tests
             AppGlobals.Initialize();
             AppGlobals.DataRepository = DataRepository;
             AppGlobals.LookupContext.Initialize(new DevLogixSqliteDbContext(), DbPlatforms.Sqlite);
-            AppGlobals.MainViewModel = new MainViewModel();
             AppGlobals.LoggedInUser = new User();
+            AppGlobals.MainViewModel = new MainViewModel();
             SystemGlobals.Rights = new AppRights(new DevLogixRights());
 
             base.Initialize();
@@ -289,6 +296,28 @@ namespace RingSoft.DevLogix.Tests
             };
 
             context.SaveEntity(versionDept, "Saving Product Version Department");
+
+            var error1 = new Error
+            {
+                Id = (int)TestErrors.E1,
+                ErrorId = "E-1",
+                ErrorDate = DateTime.Today,
+                ErrorStatusId = (int)TestErrorStatuses.PendingCorrection,
+                ProductId = (int)TestProducts.DevLogix,
+                ErrorPriorityId = (int)TestErrorPriorities.Procedural,
+                FoundVersionId = (int)TestVersions.First,
+                FoundByUserId = (int)TestUsers.DaveSmittyPD,
+                Description = "Test",
+            };
+
+            context.SaveEntity(error1, "Saving Error");
+
+            if (!_initRun)
+            {
+                _initRun = true;
+                var mainView = new TestMainView();
+                AppGlobals.MainViewModel.Initialize(mainView);
+            }
         }
 
         public void LoginToUser(TestUsers userType)

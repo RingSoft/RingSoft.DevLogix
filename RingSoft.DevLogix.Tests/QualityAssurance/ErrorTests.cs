@@ -42,14 +42,14 @@ namespace RingSoft.DevLogix.Tests.QualityAssurance
 
             var context = SystemGlobals.DataRepository.GetDataContext();
             var table = context.GetTable<Error>();
-            var error = table.FirstOrDefault();
+            var error = table.LastOrDefault();
 
-            Assert.AreEqual("E-1", error.ErrorId);
+            Assert.AreEqual("E-2", error.ErrorId);
 
             Globals.ViewModel.NewCommand.Execute(null);
             Globals.ViewModel.OnRecordSelected(error);
             
-            Assert.AreEqual("E-1", Globals.ViewModel.KeyAutoFillValue.Text);
+            Assert.AreEqual("E-2", Globals.ViewModel.KeyAutoFillValue.Text);
 
             Globals.ViewModel.WriteOffCommand.Execute(null);
             Globals.ViewModel.SaveCommand.Execute(null);
@@ -67,6 +67,25 @@ namespace RingSoft.DevLogix.Tests.QualityAssurance
             Globals.ViewModel.FailCommand.Execute(null);
             errorStatus = Globals.ViewModel.StatusAutoFillValue.GetEntity<ErrorStatus>();
             Assert.AreEqual(AppGlobals.LoggedInUser.Department.ErrorFailStatusId, errorStatus.Id);
+        }
+
+        [TestMethod]
+        public void TestErrorPunchIn()
+        {
+            Globals.ClearData();
+
+            Globals.LoginToUser(TestUsers.DaveSmittyPD);
+
+            Globals.ViewModel.NewCommand.Execute(null);
+            var context = SystemGlobals.DataRepository.GetDataContext();
+            var table = context.GetTable<Error>();
+
+            var e1Error = table
+                .FirstOrDefault(p => p.Id == (int)TestErrors.E1);
+            Globals.ViewModel.OnRecordSelected(e1Error);
+
+            Globals.ViewModel.PunchInCommand.Execute(null);
+            Assert.AreNotEqual(AppGlobals.MainViewModel.ActiveTimeClockId, 0);
         }
     }
 }

@@ -37,6 +37,7 @@ namespace RingSoft.DevLogix.Tests
             DataContext.AddEntity(new DataRepositoryRegistryItem<ErrorDeveloper>());
             DataContext.AddEntity(new DataRepositoryRegistryItem<ErrorQa>());
             DataContext.AddEntity(new DataRepositoryRegistryItem<ErrorUser>());
+            DataContext.AddEntity(new DataRepositoryRegistryItem<TimeClock>());
         }
 
         public DataAccess.IDbContext GetDataContext()
