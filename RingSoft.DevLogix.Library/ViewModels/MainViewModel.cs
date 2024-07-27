@@ -403,7 +403,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
                         "You must first create a master user.  Make sure this user has full User table maintenance rights and don't forget the password.";
                     var caption = "Create User";
                     ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Information);
-                    MainView.ShowDbMaintenanceDialog(AppGlobals.LookupContext.Users);
+                    SystemGlobals.TableRegistry.ShowDialog(AppGlobals.LookupContext.Users);
                     if (!query.Any())
                     {
                         AppGlobals.LoggedInOrganization = null;
