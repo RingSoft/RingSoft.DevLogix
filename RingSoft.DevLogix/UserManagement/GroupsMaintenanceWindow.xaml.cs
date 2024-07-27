@@ -24,6 +24,7 @@ namespace RingSoft.DevLogix.UserManagement
     /// </summary>
     public partial class GroupsMaintenanceWindow : IGroupView
     {
+        public override Control MaintenanceButtonsControl => TopHeaderControl;
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "User";
         public override DbMaintenanceViewModelBase ViewModel => GroupMaintenanceViewModel;

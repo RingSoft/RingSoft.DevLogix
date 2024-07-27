@@ -22,6 +22,7 @@ namespace RingSoft.DevLogix.CustomerManagement
     /// </summary>
     public partial class CustomerStatusMaintenanceWindow
     {
+        public override Control MaintenanceButtonsControl => TopHeaderControl;
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Customer Status";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;

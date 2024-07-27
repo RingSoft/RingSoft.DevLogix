@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using RingSoft.DbLookup.Controls.WPF;
 
 namespace RingSoft.DevLogix
 {
@@ -86,10 +87,10 @@ namespace RingSoft.DevLogix
             WindowRegistry.RegisterWindow<DevLogixChartMaintenanceWindow>(AppGlobals.LookupContext.DevLogixChartBars);
             WindowRegistry.RegisterWindow<SystemPreferencesWindow>(AppGlobals.LookupContext.SystemPreferences);
 
-            WindowRegistry.RegisterWindow<UserMaintenanceWindow>(AppGlobals.LookupContext.Users);
+            LookupControlsGlobals.WindowRegistry.RegisterWindow<UserMaintenanceWindow>(AppGlobals.LookupContext.Users);
             WindowRegistry.RegisterWindow<UserMaintenanceWindow>(AppGlobals.LookupContext.UsersTimeOff);
             WindowRegistry.RegisterWindow<UserMaintenanceWindow>(AppGlobals.LookupContext.UseerMonthlySales);
-            WindowRegistry.RegisterWindow<GroupsMaintenanceWindow>(AppGlobals.LookupContext.Groups);
+            LookupControlsGlobals.WindowRegistry.RegisterWindow<GroupsMaintenanceWindow>(AppGlobals.LookupContext.Groups);
             WindowRegistry.RegisterWindow<DepartmentMaintenanceWindow>(AppGlobals.LookupContext.Departments);
             WindowRegistry.RegisterWindow<TimeClockMaintenanceWindow>(AppGlobals.LookupContext.TimeClocks);
             WindowRegistry.RegisterWindow<UserTrackerMaintenanceWindow>(AppGlobals.LookupContext.UserTracker);
@@ -219,7 +220,7 @@ namespace RingSoft.DevLogix
             };
             AppGlobals.AppSplashProgress -= AppGlobals_AppSplashProgress;
 
-            var devLogixDbMaintenanceFactory = new DevLogixDbMaintenanceFactory();
+            //var devLogixDbMaintenanceFactory = new DevLogixDbMaintenanceFactory();
             var devLogixLookupSearchFactory = new DevLogixLookupSearchFactory();
             var devLogixGridCellFactory = new DevLogixGridCellFactory();
 
@@ -249,11 +250,11 @@ namespace RingSoft.DevLogix
 
             maintenanceWindow.ViewModel.InitializeFromLookupData(e);
 
-            maintenanceWindow.Loaded += (sender, args) =>
-            {
-                var processor = maintenanceWindow.ViewModel.Processor as AppDbMaintenanceWindowProcessor;
-                processor.CheckAddOnFlyAfterLoaded();
-            };
+            //maintenanceWindow.Loaded += (sender, args) =>
+            //{
+            //    var processor = maintenanceWindow.ViewModel.Processor as AppDbMaintenanceWindowProcessor;
+            //    processor.CheckAddOnFlyAfterLoaded();
+            //};
             if (e.InputParameter is DialogInput dialogInput)
             {
                 var inputResult = maintenanceWindow.ShowDialog();

@@ -2,6 +2,7 @@
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.Library;
 using System.Windows;
+using System.Windows.Controls;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using RingSoft.DevLogix.Library.ViewModels.UserManagement;
@@ -14,6 +15,7 @@ namespace RingSoft.DevLogix.UserManagement
     /// </summary>
     public partial class DepartmentMaintenanceWindow : IDepartmentView
     {
+        public override Control MaintenanceButtonsControl => TopHeaderControl;
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Department";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;

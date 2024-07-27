@@ -11,6 +11,7 @@ using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup;
 using System.Windows.Media;
+using Control = System.Windows.Controls.Control;
 
 namespace RingSoft.DevLogix.QualityAssurance
 {
@@ -40,6 +41,7 @@ namespace RingSoft.DevLogix.QualityAssurance
     /// </summary>
     public partial class ProductMaintenanceWindow : IProductView
     {
+        public override Control MaintenanceButtonsControl => TopHeaderControl;
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Product";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;

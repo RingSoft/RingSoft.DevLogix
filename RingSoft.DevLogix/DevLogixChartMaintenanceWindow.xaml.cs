@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using RingSoft.App.Controls;
@@ -13,6 +14,7 @@ namespace RingSoft.DevLogix
     /// </summary>
     public partial class DevLogixChartMaintenanceWindow : IChartWindowView
     {
+        public override Control MaintenanceButtonsControl => TopHeaderControl;
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Chart";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;

@@ -8,6 +8,7 @@ using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 using RingSoft.DevLogix.Library.ViewModels.UserManagement;
 using System;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using Customer = RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Customer;
 using SupportTicket = RingSoft.DevLogix.DataAccess.Model.CustomerManagement.SupportTicket;
@@ -39,6 +40,7 @@ namespace RingSoft.DevLogix.UserManagement
     /// </summary>
     public partial class TimeClockMaintenanceWindow : ITimeClockView
     {
+        public override Control MaintenanceButtonsControl => TopHeaderControl;
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Time Clock Entry";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;

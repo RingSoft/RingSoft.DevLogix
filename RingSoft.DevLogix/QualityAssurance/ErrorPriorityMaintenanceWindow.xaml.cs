@@ -24,6 +24,7 @@ namespace RingSoft.DevLogix.QualityAssurance
     /// </summary>
     public partial class ErrorPriorityMaintenanceWindow
     {
+        public override Control MaintenanceButtonsControl => TopHeaderControl;
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Error Priority";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;

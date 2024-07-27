@@ -6,6 +6,7 @@ using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels.CustomerManagement;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace RingSoft.DevLogix.CustomerManagement
 {
@@ -35,6 +36,7 @@ namespace RingSoft.DevLogix.CustomerManagement
     /// </summary>
     public partial class SupportTicketMaintenanceWindow : ISupportTicketView
     {
+        public override Control MaintenanceButtonsControl => TopHeaderControl;
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Support Ticket";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;

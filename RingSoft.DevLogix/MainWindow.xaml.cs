@@ -734,6 +734,11 @@ namespace RingSoft.DevLogix
         public void ShowDbMaintenanceWindow(TableDefinitionBase tableDefinition)
         {
             var dbMaintenanceWindow = WindowRegistry.GetMaintenanceWindow(tableDefinition);
+            if (dbMaintenanceWindow == null)
+            {
+                LookupControlsGlobals.WindowRegistry.ShowDbMaintenanceWindow(tableDefinition, WPFControlsGlobals.ActiveWindow);
+                return;
+            }
             if (dbMaintenanceWindow != null)
             {
                 ShowWindow(dbMaintenanceWindow);

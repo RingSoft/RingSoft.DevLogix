@@ -4,6 +4,7 @@ using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.Library.ViewModels.UserManagement;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace RingSoft.DevLogix.UserManagement
 {
@@ -30,6 +31,7 @@ namespace RingSoft.DevLogix.UserManagement
     /// </summary>
     public partial class UserTrackerMaintenanceWindow : IUserTrackerView
     {
+        public override Control MaintenanceButtonsControl => TopHeaderControl;
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "User Tracker";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;

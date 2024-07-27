@@ -44,6 +44,7 @@ namespace RingSoft.DevLogix.ProjectManagement
     /// </summary>
     public partial class ProjectTaskMaintenanceWindow : IProjectTaskView
     {
+        public override Control MaintenanceButtonsControl => TopHeaderControl;
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Project Task";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;

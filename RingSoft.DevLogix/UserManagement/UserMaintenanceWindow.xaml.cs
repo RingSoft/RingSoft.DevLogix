@@ -42,6 +42,7 @@ namespace RingSoft.DevLogix.UserManagement
     /// </summary>
     public partial class UserMaintenanceWindow : IUserView
     {
+        public override Control MaintenanceButtonsControl => TopHeaderControl;
         public RecalcProcedure RecalcProcedure { get; set; }
 
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;

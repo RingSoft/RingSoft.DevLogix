@@ -9,6 +9,7 @@ using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels.ProjectManagement;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace RingSoft.DevLogix.ProjectManagement
 {
@@ -37,6 +38,7 @@ namespace RingSoft.DevLogix.ProjectManagement
     /// </summary>
     public partial class ProjectMaterialMaintenanceWindow : IProjectMaterialView
     {
+        public override Control MaintenanceButtonsControl => TopHeaderControl;
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Project Material";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;

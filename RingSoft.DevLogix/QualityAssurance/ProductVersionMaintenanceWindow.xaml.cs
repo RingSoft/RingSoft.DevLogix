@@ -70,6 +70,7 @@ namespace RingSoft.DevLogix.QualityAssurance
     /// </summary>
     public partial class ProductVersionMaintenanceWindow : IProductVersionView
     {
+        public override Control MaintenanceButtonsControl => TopHeaderControl;
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Product Version";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;

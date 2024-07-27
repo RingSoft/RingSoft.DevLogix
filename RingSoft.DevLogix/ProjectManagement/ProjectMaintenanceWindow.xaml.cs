@@ -7,6 +7,7 @@ using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels.ProjectManagement;
 using System;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace RingSoft.DevLogix.ProjectManagement
 {
@@ -35,6 +36,7 @@ namespace RingSoft.DevLogix.ProjectManagement
     /// </summary>
     public partial class ProjectMaintenanceWindow : IProjectView
     {
+        public override Control MaintenanceButtonsControl => TopHeaderControl;
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Project";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;

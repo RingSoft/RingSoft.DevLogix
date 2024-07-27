@@ -27,6 +27,7 @@ namespace RingSoft.DevLogix.CustomerManagement
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Computer";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;
+        public override Control MaintenanceButtonsControl => TopHeaderControl;
         public override DbMaintenanceStatusBar DbStatusBar => StatusBar;
 
         public CustomerComputerMaintenanceWindow()

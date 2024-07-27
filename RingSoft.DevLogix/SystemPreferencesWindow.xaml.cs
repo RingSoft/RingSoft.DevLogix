@@ -23,6 +23,7 @@ namespace RingSoft.DevLogix
     /// </summary>
     public partial class SystemPreferencesWindow
     {
+        public override Control MaintenanceButtonsControl => TopHeaderControl;
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "System Preferences";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;

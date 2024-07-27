@@ -30,6 +30,7 @@ namespace RingSoft.DevLogix.QualityAssurance
     /// </summary>
     public partial class TestingTemplatesMaintenanceWindow
     {
+        public override Control MaintenanceButtonsControl => TopHeaderControl;
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Testing Template";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;

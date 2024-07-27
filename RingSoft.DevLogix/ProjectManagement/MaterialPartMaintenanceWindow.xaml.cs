@@ -22,6 +22,7 @@ namespace RingSoft.DevLogix.ProjectManagement
     /// </summary>
     public partial class MaterialPartMaintenanceWindow
     {
+        public override Control MaintenanceButtonsControl => TopHeaderControl;
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Material Part";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;

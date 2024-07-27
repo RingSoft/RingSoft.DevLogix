@@ -41,6 +41,7 @@ namespace RingSoft.DevLogix.QualityAssurance
     /// </summary>
     public partial class ErrorMaintenanceWindow : IErrorView
     {
+        public override Control MaintenanceButtonsControl => TopHeaderControl;
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Error";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;

@@ -52,6 +52,7 @@ namespace RingSoft.DevLogix.CustomerManagement
         public override string ItemText => "Customer";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;
         public override DbMaintenanceStatusBar DbStatusBar => StatusBar;
+        public override Control MaintenanceButtonsControl => TopHeaderControl;
 
         public RecalcProcedure RecalcProcedure { get; set; }
 
