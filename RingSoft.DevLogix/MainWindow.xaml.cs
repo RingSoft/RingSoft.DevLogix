@@ -510,16 +510,7 @@ namespace RingSoft.DevLogix
 
         public void ShowDbMaintenanceDialog(TableDefinitionBase tableDefinition)
         {
-            var dbMaintenanceWindow = WindowRegistry.GetMaintenanceWindow(tableDefinition);
-            if (dbMaintenanceWindow == null)
-            {
-                return;
-            }
-
-            dbMaintenanceWindow.Owner = this;
-            dbMaintenanceWindow.ShowInTaskbar = false;
-            dbMaintenanceWindow.ShowDialog();
-
+            LookupControlsGlobals.WindowRegistry.ShowDbMaintenanceWindow(tableDefinition);
         }
 
         public void ShowAdvancedFindWindow()
@@ -733,16 +724,7 @@ namespace RingSoft.DevLogix
 
         public void ShowDbMaintenanceWindow(TableDefinitionBase tableDefinition)
         {
-            var dbMaintenanceWindow = WindowRegistry.GetMaintenanceWindow(tableDefinition);
-            if (dbMaintenanceWindow == null)
-            {
-                LookupControlsGlobals.WindowRegistry.ShowDbMaintenanceWindow(tableDefinition, WPFControlsGlobals.ActiveWindow);
-                return;
-            }
-            if (dbMaintenanceWindow != null)
-            {
-                ShowWindow(dbMaintenanceWindow);
-            }
+            LookupControlsGlobals.WindowRegistry.ShowDbMaintenanceWindow(tableDefinition);
         }
 
         public void PunchIn(Error error)
