@@ -379,6 +379,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             ProjectAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ProjectId));
 
             ProjectTotalsManager = new ProjectTotalsManager();
+            ProjectTotalsManager.Initialize();
+            ActualRow = new ProjectTotalsRow(ProjectTotalsManager);
+            ActualRow.RowTitle = "Actual";
+            ProjectTotalsManager.InsertRow(ActualRow);
+
+            StatusRow = new ProjectTotalsRow(ProjectTotalsManager);
+            StatusRow.RowTitle = "Status";
+            StatusRow.NegativeDisplayStyleId = ProjectTotalsManager.NegativeDisplayStyleId;
+            StatusRow.PositiveDisplayStyleId = ProjectTotalsManager.PositiveDisplayStyleId;
+            ProjectTotalsManager.InsertRow(StatusRow);
 
             LaborPartsManager = new ProjectTaskLaborPartsManager(this);
             ProjectTaskDependencyManager = new ProjectTaskDependencyManager(this);
@@ -420,16 +430,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                             project.Id.ToString());
                 }
             }
-            ProjectTotalsManager.Initialize();
-            ActualRow = new ProjectTotalsRow(ProjectTotalsManager);
-            ActualRow.RowTitle = "Actual";
-            ProjectTotalsManager.InsertRow(ActualRow);
-
-            StatusRow = new ProjectTotalsRow(ProjectTotalsManager);
-            StatusRow.RowTitle = "Status";
-            StatusRow.NegativeDisplayStyleId = ProjectTotalsManager.NegativeDisplayStyleId;
-            StatusRow.PositiveDisplayStyleId = ProjectTotalsManager.PositiveDisplayStyleId;
-            ProjectTotalsManager.InsertRow(StatusRow);
 
             base.Initialize();
         }
