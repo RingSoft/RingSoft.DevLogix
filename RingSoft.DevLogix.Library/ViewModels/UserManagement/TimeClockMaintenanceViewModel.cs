@@ -13,6 +13,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Net.Sockets;
 using System.Timers;
+using RingSoft.App.Library;
 using IDbContext = RingSoft.DevLogix.DataAccess.IDbContext;
 
 namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
@@ -38,10 +39,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         bool GetManualPunchOutDate(out DateTime? punchInDate, out DateTime? punchOutDate);
     }
 
-    public class TimeClockMaintenanceViewModel : DevLogixDbMaintenanceViewModel<TimeClock>
+    public class TimeClockMaintenanceViewModel : AppDbMaintenanceViewModel<TimeClock>
     {
-        public override TableDefinition<TimeClock> TableDefinition => AppGlobals.LookupContext.TimeClocks;
-
         private int _id;
 
         public int Id

@@ -163,7 +163,7 @@ namespace RingSoft.DevLogix.UserManagement
                         "Punch Out via Manual Time Entry.";
                 }
 
-                if (Processor is AppDbMaintenanceWindowProcessor processor)
+                if (Processor is NewDbMaintProcessor processor)
                 {
                     if (processor.MaintenanceButtonsControl is DbMaintenanceTopHeaderControl buttonsControl)
                     {

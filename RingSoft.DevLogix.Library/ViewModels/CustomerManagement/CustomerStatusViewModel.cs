@@ -6,6 +6,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 {
     public  class CustomerStatusViewModel : DevLogixDbMaintenanceViewModel<CustomerStatus>
     {
+        #region Properties
+
+        
+
+        #endregion
         private int _id;
 
         public int Id

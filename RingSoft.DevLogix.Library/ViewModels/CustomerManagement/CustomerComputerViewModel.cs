@@ -1,15 +1,14 @@
-﻿using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using RingSoft.App.Library;
-using RingSoft.DataEntryControls.Engine;
-using RingSoft.DbLookup;
+﻿using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
+using System.Linq;
 
 namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 {
     public class CustomerComputerViewModel : DevLogixDbMaintenanceViewModel<CustomerComputer>
     {
+        #region Properties
+
         private int _id;
 
         public int Id
@@ -221,6 +220,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
         }
 
+        #endregion
+
         public AutoFillValue DefaultCustomerAutoFillValue { get; private set; }
         public CustomerComputerViewModel()
         {
@@ -252,17 +253,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         protected override void PopulatePrimaryKeyControls(CustomerComputer newEntity, PrimaryKeyValue primaryKeyValue)
         {
             Id = newEntity.Id;
-        }
-
-        protected override CustomerComputer GetEntityFromDb(CustomerComputer newEntity, PrimaryKeyValue primaryKeyValue)
-        {
-            var context = AppGlobals.DataRepository.GetDataContext();
-            var table = context.GetTable<CustomerComputer>();
-            var result = table
-                .Include(p => p.Customer)
-                .FirstOrDefault(p => p.Id == newEntity.Id);
-
-            return result;
         }
 
         protected override void LoadFromEntity(CustomerComputer entity)
@@ -318,25 +308,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             DatabasePlatform = null;
             Printer = null;
             Notes = null;
-        }
-
-        protected override bool SaveEntity(CustomerComputer entity)
-        {
-            var context = AppGlobals.DataRepository.GetDataContext();
-            return context.SaveEntity(entity, "Saving Customer Computer");
-        }
-
-        protected override bool DeleteEntity()
-        {
-            var result = true;
-            var context = AppGlobals.DataRepository.GetDataContext();
-            var table = context.GetTable<CustomerComputer>();
-            var entity = table.FirstOrDefault(p => p.Id == Id);
-            if (entity != null)
-            {
-                result = context.DeleteEntity(entity, "Deleting Customer Computer");
-            }
-            return result;
         }
     }
 }

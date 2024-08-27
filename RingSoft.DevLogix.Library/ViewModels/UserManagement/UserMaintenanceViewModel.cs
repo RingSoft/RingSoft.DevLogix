@@ -102,12 +102,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         }
     }
-    public class UserMaintenanceViewModel : DevLogixDbMaintenanceViewModel<User>
+    public class UserMaintenanceViewModel : AppDbMaintenanceViewModel<User>
     {
-        public override TableDefinition<User> TableDefinition => AppGlobals.LookupContext.Users;
-
-        public override bool SetReadOnlyMode => false;
-
         private int _id;
 
         public int Id
