@@ -17,6 +17,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.DevLogix.SqlServer
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.DevLogix.Tests", "RingSoft.DevLogix.Tests\RingSoft.DevLogix.Tests.csproj", "{FDE1961B-D5A5-415E-B34B-9B190893AF48}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.DbLookup", "..\RingSoft.DbLookup\RingSoft.DbLookup\RingSoft.DbLookup.csproj", "{2C6CE80A-DE32-4C21-8726-A61DB6EB511E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.DbMaintenance", "..\RingSoft.DbLookup\RingSoft.DbMaintenance\RingSoft.DbMaintenance.csproj", "{BCD05EA3-5C78-4C1A-B329-B7D30FB577D4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +55,14 @@ Global
 		{FDE1961B-D5A5-415E-B34B-9B190893AF48}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FDE1961B-D5A5-415E-B34B-9B190893AF48}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FDE1961B-D5A5-415E-B34B-9B190893AF48}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C6CE80A-DE32-4C21-8726-A61DB6EB511E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C6CE80A-DE32-4C21-8726-A61DB6EB511E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C6CE80A-DE32-4C21-8726-A61DB6EB511E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C6CE80A-DE32-4C21-8726-A61DB6EB511E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BCD05EA3-5C78-4C1A-B329-B7D30FB577D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCD05EA3-5C78-4C1A-B329-B7D30FB577D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCD05EA3-5C78-4C1A-B329-B7D30FB577D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCD05EA3-5C78-4C1A-B329-B7D30FB577D4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
