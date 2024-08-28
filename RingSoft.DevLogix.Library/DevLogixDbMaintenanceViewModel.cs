@@ -9,22 +9,22 @@ namespace RingSoft.DevLogix.Library
 
         public virtual bool AllowEdit { get; } = true;
 
-        protected override void Initialize()
-        {
-            base.Initialize();
-            if (Processor is IAppDbMaintenanceProcessor appDbMaintenanceProcessor)
-            {
-                if (TableDefinitionBase.HasRight(RightTypes.AllowEdit) && AllowEdit)
-                {
-                    SaveButtonEnabled = true;
-                }
-                else
-                {
-                    appDbMaintenanceProcessor.WindowReadOnlyMode = SetReadOnlyMode;
-                    ReadOnlyMode = SetReadOnlyMode;
-                }
-            }
-        }
+        //protected override void Initialize()
+        //{
+        //    base.Initialize();
+        //    //if (Processor is IAppDbMaintenanceProcessor appDbMaintenanceProcessor)
+        //    //{
+        //    //    if (TableDefinitionBase.HasRight(RightTypes.AllowEdit) && AllowEdit)
+        //    //    {
+        //    //        SaveButtonEnabled = true;
+        //    //    }
+        //    //    else
+        //    //    {
+        //    //        appDbMaintenanceProcessor.WindowReadOnlyMode = SetReadOnlyMode;
+        //    //        ReadOnlyMode = SetReadOnlyMode;
+        //    //    }
+        //    //}
+        //}
 
         protected override bool CheckKeyValueTextChanged()
         {
