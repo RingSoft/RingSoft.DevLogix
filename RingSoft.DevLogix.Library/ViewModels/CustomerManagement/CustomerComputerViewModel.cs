@@ -2,10 +2,11 @@
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
 using System.Linq;
+using RingSoft.DbMaintenance;
 
 namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 {
-    public class CustomerComputerViewModel : DevLogixDbMaintenanceViewModel<CustomerComputer>
+    public class CustomerComputerViewModel : DbMaintenanceViewModel<CustomerComputer>
     {
         #region Properties
 

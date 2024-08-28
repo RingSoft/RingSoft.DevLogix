@@ -35,8 +35,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         void UpdateRecalcProcedure(int currentCustomer, int totalCustomers, string currentCustomerText);
     }
 
-    public class CustomerViewModel : DevLogixDbMaintenanceViewModel<Customer>
+    public class CustomerViewModel : DbMaintenanceViewModel<Customer>
     {
+        #region Properties
+
         private int _id;
 
         public int Id
@@ -375,21 +377,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
         }
 
-        private LookupCommand _orderLookupCommand;
-
-        public LookupCommand OrderLookupCommand
-        {
-            get => _orderLookupCommand;
-            set
-            {
-                if (_orderLookupCommand == value)
-                    return;
-
-                _orderLookupCommand = value;
-                OnPropertyChanged(null, false);
-            }
-        }
-
         private LookupDefinition<TimeClockLookup, TimeClock> _timeClockLookup;
 
         public LookupDefinition<TimeClockLookup, TimeClock> TimeClockLookup
@@ -402,21 +389,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
                 _timeClockLookup = value;
                 OnPropertyChanged();
-            }
-        }
-
-        private LookupCommand _timeClockLookupCommand;
-
-        public LookupCommand TimeClockLookupCommand
-        {
-            get => _timeClockLookupCommand;
-            set
-            {
-                if (_timeClockLookupCommand == value)
-                    return;
-
-                _timeClockLookupCommand = value;
-                OnPropertyChanged(null, false);
             }
         }
 
@@ -435,21 +407,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
         }
 
-        private LookupCommand _computerLookupCommand;
-
-        public LookupCommand ComputerLookupCommand
-        {
-            get => _computerLookupCommand;
-            set
-            {
-                if (_computerLookupCommand == value)
-                    return;
-
-                _computerLookupCommand = value;
-                OnPropertyChanged(null, false);
-            }
-        }
-
         private LookupDefinition<SupportTicketLookup, SupportTicket> _supportTicketLookup;
 
         public LookupDefinition<SupportTicketLookup, SupportTicket> SupportTicketLookup
@@ -465,20 +422,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
         }
 
-        private LookupCommand _supportTicketLookupCommand;
-
-        public LookupCommand SupportTicketLookupCommand
-        {
-            get => _supportTicketLookupCommand;
-            set
-            {
-                if (_supportTicketLookupCommand == value)
-                    return;
-
-                _supportTicketLookupCommand = value;
-                OnPropertyChanged(null, false);
-            }
-        }
 
         private string? _notes;
 
@@ -614,6 +557,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
         }
 
+        #endregion
 
         public RelayCommand PunchInCommand { get; private set; }
 
@@ -651,11 +595,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
             CustomerUserGridManager = new CustomerCostManager(this);
 
-            TablesToDelete.Add(AppGlobals.LookupContext.CustomerProduct);
             TablesToDelete.Add(AppGlobals.LookupContext.CustomerUser);
 
-            OrderLookupDefinition = AppGlobals.LookupContext.OrderLookup.Clone();
-            OrderLookupDefinition.InitialOrderByType = OrderByTypes.Descending;
+            RegisterGrid(ProductManager);
 
             AddModifyOrderLookupCommand = new RelayCommand(AddModifyOrder);
 
@@ -672,13 +614,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 SupportMinutesLeft += NewSupportTime;
             }));
 
-            //var timeClockLookup = new LookupDefinition<TimeClockLookup, TimeClock>(AppGlobals.LookupContext.TimeClocks);
-            //timeClockLookup.AddVisibleColumnDefinition(p => p.PunchInDate, p => p.PunchInDate);
-            //timeClockLookup.Include(p => p.User)
-            //    .AddVisibleColumnDefinition(p => p.UserName, p => p.Name);
-            //timeClockLookup.AddVisibleColumnDefinition(p => p.MinutesSpent, p => p.MinutesSpent);
-            //TimeClockLookup = timeClockLookup;
-            //TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
             TimeClockLookup = AppGlobals.LookupContext.TimeClockTabLookup.Clone();
             TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
 
@@ -686,6 +621,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
             SupportTicketLookup = AppGlobals.LookupContext.SupportTicketLookup.Clone();
             SupportTicketLookup.InitialOrderByType = OrderByTypes.Descending;
+
+            OrderLookupDefinition = AppGlobals.LookupContext.OrderLookup.Clone();
+            OrderLookupDefinition.InitialOrderByType = OrderByTypes.Descending;
+
+            RegisterLookup(OrderLookupDefinition);
+            RegisterLookup(TimeClockLookup);
+            RegisterLookup(ComputerLookup);
+            RegisterLookup(SupportTicketLookup);
         }
 
         protected override void Initialize()
@@ -701,22 +644,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         protected override void PopulatePrimaryKeyControls(Customer newEntity, PrimaryKeyValue primaryKeyValue)
         {
             Id = newEntity.Id;
-
-            OrderLookupDefinition.FilterDefinition.ClearFixedFilters();
-            OrderLookupDefinition.FilterDefinition.AddFixedFilter(p => p.CustomerId, Conditions.Equals, Id);
-            OrderLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
-
-            TimeClockLookup.FilterDefinition.ClearFixedFilters();
-            TimeClockLookup.FilterDefinition.AddFixedFilter(p => p.CustomerId, Conditions.Equals, Id);
-            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
-
-            ComputerLookup.FilterDefinition.ClearFixedFilters();
-            ComputerLookup.FilterDefinition.AddFixedFilter(p => p.CustomerId, Conditions.Equals, Id);
-            ComputerLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
-
-            SupportTicketLookup.FilterDefinition.ClearFixedFilters();
-            SupportTicketLookup.FilterDefinition.AddFixedFilter(p => p.CustomerId, Conditions.Equals, Id);
-            SupportTicketLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
         }
 
         protected override Customer GetEntityFromDb(Customer newEntity, PrimaryKeyValue primaryKeyValue)
@@ -728,7 +655,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         private static Customer? GetCustomer(int customerId)
         {
-            var context = AppGlobals.DataRepository.GetDataContext();
+            var context = SystemGlobals.DataRepository.GetDataContext();
             var table = context.GetTable<Customer>();
             var result = table
                 .Include(p => p.Status)
@@ -758,8 +685,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             TerritoryAutoFillValue = entity.Territory.GetAutoFillValue();
             EmailAddress = entity.EmailAddress;
             WebAddress = entity.WebAddress;
-            ProductManager.LoadGrid(entity.CustomerProducts);
-            CustomerUserGridManager.LoadGrid(entity.Users);
             SupportMinutesLeft = entity.SupportMinutesPurchased;
             MinutesSpent = entity.MinutesSpent;
             MinutesSpent = entity.MinutesSpent;
@@ -774,6 +699,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             {
                 LastContactDate = LastContactDate.Value.ToLocalTime();
             }
+            CustomerUserGridManager.LoadGrid(entity.Users);
 
             _loading = false;
             UpdateTotals();
@@ -798,7 +724,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             DateTime? lastContactDate = null;
             if (Id > 0)
             {
-                var context = AppGlobals.DataRepository.GetDataContext();
+                var context = SystemGlobals.DataRepository.GetDataContext();
                 var table = context.GetTable<Customer>();
                 var oldCustomer = table
                     .FirstOrDefault(p => p.Id == Id);
@@ -846,29 +772,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             return result;
         }
 
-        protected override bool ValidateEntity(Customer entity)
-        {
-            var result = base.ValidateEntity(entity);
-            if (result)
-            {
-                if (entity.StatusId == null)
-                {
-                    Processor.HandleAutoFillValFail(new DbAutoFillMap(StatusAutoFillSetup, StatusAutoFillValue));
-                    return false;
-                }
-            }
-
-            if (result)
-            {
-                if (!ProductManager.ValidateGrid())
-                {
-                    result = false;
-                }
-            }
-
-            return result;
-        }
-
         protected override void ClearData()
         {
             Id = 0;
@@ -886,12 +789,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             TerritoryAutoFillValue = null;
             EmailAddress = null;
             WebAddress = null;
-            ProductManager.SetupForNewRecord();
-            CustomerUserGridManager.SetupForNewRecord();
-            OrderLookupCommand = GetLookupCommand(LookupCommands.Clear);
-            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Clear);
-            ComputerLookupCommand = GetLookupCommand(LookupCommands.Clear);
-            SupportTicketLookupCommand = GetLookupCommand(LookupCommands.Clear);
             SupportMinutesLeft = null;
             Notes = null;
             TotalCost = 0;
@@ -903,67 +800,26 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             SalesDifference = 0;
             LastContactDate = null;
             StatusAutoFillValue = null;
+            CustomerUserGridManager.SetupForNewRecord();
             RefreshView();
-        }
-
-        protected override bool SaveEntity(Customer entity)
-        {
-            var customerProducts = ProductManager.GetEntityList();
-            var context = AppGlobals.DataRepository.GetDataContext();
-            var result = context.SaveEntity(entity, "Saving Customer");
-
-            var table = context.GetTable<CustomerProduct>();
-            var existingProducts = table.Where(
-                p => p.CustomerId == entity.Id).ToList();
-
-            if (result)
-            {
-                foreach (var customerProduct in customerProducts)
-                {
-                    customerProduct.CustomerId = entity.Id;
-                }
-
-                context.RemoveRange(existingProducts);
-                context.AddRange(customerProducts);
-            }
-
-            if (result)
-            {
-                result = context.Commit("Finalizing Customer Save");
-            }
-
-            return result;
         }
 
         protected override bool DeleteEntity()
         {
-            var result = true;
-            var context = AppGlobals.DataRepository.GetDataContext();
-            var table = (context.GetTable<Customer>());
-            var delCustomer = table.FirstOrDefault(p => p.Id == Id);
-            if (delCustomer != null)
-            {
-                var productTable = context.GetTable<CustomerProduct>();
-                var existingProducts = productTable.Where(
-                    p => p.CustomerId == Id).ToList();
+            var context = SystemGlobals.DataRepository.GetDataContext();
+            var usersTable = context.GetTable<CustomerUser>();
+            var existingUsers = usersTable.Where(
+                p => p.CustomerId == Id).ToList();
 
-                context.RemoveRange(existingProducts);
+            context.RemoveRange(existingUsers);
+            context.Commit("");
 
-                var usersTable = context.GetTable<CustomerUser>();
-                var existingUsers = usersTable.Where(
-                    p => p.CustomerId == Id).ToList();
-
-                context.RemoveRange(existingUsers);
-
-                result = context.DeleteEntity(delCustomer, "Deleting Customer");
-            }
-
-            return result;
+            return base.DeleteEntity();
         }
 
         private void PunchIn()
         {
-            var context = AppGlobals.DataRepository.GetDataContext();
+            var context = SystemGlobals.DataRepository.GetDataContext();
             var table = context.GetTable<CustomerUser>();
             var user = table.FirstOrDefault(p => p.CustomerId == Id
                                                  && p.UserId == AppGlobals.LoggedInUser.Id);
@@ -1018,7 +874,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         public void RefreshSupportLookup()
         {
-            SupportTicketLookupCommand = GetLookupCommand(LookupCommands.Refresh);
+            var command = GetLookupCommand(LookupCommands.Refresh);
+            SupportTicketLookup.SetCommand(command);
         }
 
         private void GetTotals()
@@ -1056,7 +913,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         {
             var result = string.Empty;
             var lookupData = TableDefinition.LookupDefinition.GetLookupDataMaui(lookupToFilter, false);
-            var context = AppGlobals.DataRepository.GetDataContext();
+            var context = SystemGlobals.DataRepository.GetDataContext();
             DbDataProcessor.DontDisplayExceptions = true;
 
             var totalCustomers = lookupData.GetRecordCount();
@@ -1094,7 +951,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         private string ProcessCurrentCustomer(
             PrimaryKeyValue primaryKeyValue
-            , DataAccess.IDbContext context, int totalCustomers
+            , DbLookup.IDbContext context, int totalCustomers
             , int currentCustomerIndex
             , AppProcedure procedure)
         {
@@ -1137,7 +994,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             , Customer currentCustomer
             , IQueryable<TimeClock> timeClocksTable
             , IQueryable<User> usersTable
-            , DataAccess.IDbContext context
+            , DbLookup.IDbContext context
             , AppProcedure procedure)
         {
             View.UpdateRecalcProcedure(currentCustomerIndex, totalCustomers, currentCustomer.CompanyName);
@@ -1193,7 +1050,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         private static void UpdateCustomerSalesValues(
             Customer currentCustomer
-            , IDbContext context)
+            , DbLookup.IDbContext context)
         {
             var ordersTable = context.GetTable<Order>();
 
@@ -1208,7 +1065,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             Customer currentCustomer
             , IQueryable<TimeClock> timeClocksTable
             , IQueryable<User> usersTable
-            , IDbContext context
+            , DbLookup.IDbContext context
             , int timeClockUser
             , List<CustomerUser> customerUsers
             , AppProcedure procedure)
@@ -1304,20 +1161,23 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         private void AddModifyOrder()
         {
+            var command = GetLookupCommand(LookupCommands.AddModify);
             if (ExecuteAddModifyCommand() == DbMaintenanceResults.Success)
-                OrderLookupCommand = GetLookupCommand(LookupCommands.AddModify);
+                OrderLookupDefinition.SetCommand(command);
         }
 
         private void AddModifyComputer()
         {
+            var command = GetLookupCommand(LookupCommands.AddModify);
             if (ExecuteAddModifyCommand() == DbMaintenanceResults.Success)
-                ComputerLookupCommand = GetLookupCommand(LookupCommands.AddModify);
+                ComputerLookup.SetCommand(command);
         }
 
         private void AddModifySupportTicket()
         {
+            var command = GetLookupCommand(LookupCommands.AddModify);
             if (ExecuteAddModifyCommand() == DbMaintenanceResults.Success)
-                SupportTicketLookupCommand = GetLookupCommand(LookupCommands.AddModify);
+                SupportTicketLookup.SetCommand(command);
         }
 
         public override void OnWindowClosing(CancelEventArgs e)
@@ -1328,7 +1188,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         public void RefreshTimeClockLookup()
         {
-            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh);
+            TimeClockLookup.SetCommand(GetLookupCommand(LookupCommands.Refresh));
         }
 
         public void RefreshView()
