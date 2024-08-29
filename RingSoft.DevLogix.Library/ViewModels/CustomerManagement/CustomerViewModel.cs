@@ -598,6 +598,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             TablesToDelete.Add(AppGlobals.LookupContext.CustomerUser);
 
             RegisterGrid(ProductManager);
+            RegisterGrid(CustomerUserGridManager, true);
 
             AddModifyOrderLookupCommand = new RelayCommand(AddModifyOrder);
 
@@ -699,7 +700,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             {
                 LastContactDate = LastContactDate.Value.ToLocalTime();
             }
-            CustomerUserGridManager.LoadGrid(entity.Users);
 
             _loading = false;
             UpdateTotals();
@@ -800,21 +800,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             SalesDifference = 0;
             LastContactDate = null;
             StatusAutoFillValue = null;
-            CustomerUserGridManager.SetupForNewRecord();
             RefreshView();
-        }
-
-        protected override bool DeleteEntity()
-        {
-            var context = SystemGlobals.DataRepository.GetDataContext();
-            var usersTable = context.GetTable<CustomerUser>();
-            var existingUsers = usersTable.Where(
-                p => p.CustomerId == Id).ToList();
-
-            context.RemoveRange(existingUsers);
-            context.Commit("");
-
-            return base.DeleteEntity();
         }
 
         private void PunchIn()
