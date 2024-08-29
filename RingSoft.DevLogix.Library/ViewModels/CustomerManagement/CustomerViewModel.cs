@@ -1,25 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Net.NetworkInformation;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.Lookup;
-using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.LookupModel;
 using RingSoft.DevLogix.DataAccess.LookupModel.CustomerManagement;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
-using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using IDbContext = RingSoft.DevLogix.DataAccess.IDbContext;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using TimeZone = RingSoft.DevLogix.DataAccess.Model.CustomerManagement.TimeZone;
 
 namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
@@ -592,10 +587,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             RecalcCommand = new RelayCommand(Recalc);
 
             ProductManager = new CustomerProductManager(this);
-
             CustomerUserGridManager = new CustomerCostManager(this);
-
-            TablesToDelete.Add(AppGlobals.LookupContext.CustomerUser);
 
             RegisterGrid(ProductManager);
             RegisterGrid(CustomerUserGridManager, true);

@@ -17,9 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.DevLogix.SqlServer
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.DevLogix.Tests", "RingSoft.DevLogix.Tests\RingSoft.DevLogix.Tests.csproj", "{FDE1961B-D5A5-415E-B34B-9B190893AF48}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.DbLookup", "..\RingSoft.DbLookup\RingSoft.DbLookup\RingSoft.DbLookup.csproj", "{F2B1AFAC-5AD1-4AFA-A4CA-0CC2B93D5E2E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.DbLookup", "..\RingSoft.DbLookup\RingSoft.DbLookup\RingSoft.DbLookup.csproj", "{536D3FB3-43F6-4A72-9DDE-FC221B35D0D1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.DbMaintenance", "..\RingSoft.DbLookup\RingSoft.DbMaintenance\RingSoft.DbMaintenance.csproj", "{A8BE1165-9228-4605-892D-F1307B2D0201}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.DbMaintenance", "..\RingSoft.DbLookup\RingSoft.DbMaintenance\RingSoft.DbMaintenance.csproj", "{7F8DF9EC-8134-4854-8E09-414BB8F271A3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,14 +55,14 @@ Global
 		{FDE1961B-D5A5-415E-B34B-9B190893AF48}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FDE1961B-D5A5-415E-B34B-9B190893AF48}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FDE1961B-D5A5-415E-B34B-9B190893AF48}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F2B1AFAC-5AD1-4AFA-A4CA-0CC2B93D5E2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F2B1AFAC-5AD1-4AFA-A4CA-0CC2B93D5E2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F2B1AFAC-5AD1-4AFA-A4CA-0CC2B93D5E2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F2B1AFAC-5AD1-4AFA-A4CA-0CC2B93D5E2E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A8BE1165-9228-4605-892D-F1307B2D0201}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A8BE1165-9228-4605-892D-F1307B2D0201}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A8BE1165-9228-4605-892D-F1307B2D0201}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A8BE1165-9228-4605-892D-F1307B2D0201}.Release|Any CPU.Build.0 = Release|Any CPU
+		{536D3FB3-43F6-4A72-9DDE-FC221B35D0D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{536D3FB3-43F6-4A72-9DDE-FC221B35D0D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{536D3FB3-43F6-4A72-9DDE-FC221B35D0D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{536D3FB3-43F6-4A72-9DDE-FC221B35D0D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F8DF9EC-8134-4854-8E09-414BB8F271A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F8DF9EC-8134-4854-8E09-414BB8F271A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F8DF9EC-8134-4854-8E09-414BB8F271A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F8DF9EC-8134-4854-8E09-414BB8F271A3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

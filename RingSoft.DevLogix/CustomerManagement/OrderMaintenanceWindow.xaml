@@ -51,7 +51,7 @@
 
             <Label Grid.Row="1" Grid.Column="0" Content="Customer"/>
 
-            <lc:AutoFillControl Grid.Row="1" Grid.Column="1" x:Name="CustomerControl" Width="200" HorizontalAlignment="Left" Setup="{Binding CustomerAutoFillSetup}" Value="{Binding CustomerAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <lc:AutoFillControl Grid.Row="1" Grid.Column="1" x:Name="CustomerControl" Width="200" HorizontalAlignment="Left" Setup="{Binding CustomerAutoFillSetup}" Value="{Binding CustomerAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" UiCommand="{Binding CustomerUiCommand}"/>
 
 
             <Label Grid.Row="1" Grid.Column="2" Content="Salesperson"/>

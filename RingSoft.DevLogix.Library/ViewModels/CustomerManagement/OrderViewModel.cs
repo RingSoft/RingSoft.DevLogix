@@ -18,6 +18,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 {
     public class OrderViewModel : DevLogixDbMaintenanceViewModel<Order>
     {
+        #region Properties
+
         private int _id;
 
         public int Id
@@ -328,7 +330,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
         }
 
+        #endregion
+
         public AutoFillValue DefaultCustomerAutoFillValue { get; private set; }
+
+        public UiCommand CustomerUiCommand { get; }
 
         private bool _loading;
         private double _oldTotal;
@@ -341,9 +347,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             SalespersonAutoFillSetup = new AutoFillSetup(
                 TableDefinition.GetFieldDefinition(p => p.SalespersonId));
 
-            TablesToDelete.Add(AppGlobals.LookupContext.OrderDetail);
             DetailsManager = new OrderDetailsManager(this);
+            RegisterGrid(DetailsManager);
+
             PrintProcessingHeader += OrderViewModel_PrintProcessingHeader;
+
+            CustomerUiCommand = new UiCommand();
         }
 
         protected override void Initialize()
@@ -421,7 +430,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             TotalDiscount = entity.TotalDiscount.GetValueOrDefault();
             Total = entity.Total.GetValueOrDefault();
             _oldTotal = entity.Total.GetValueOrDefault();
-            DetailsManager.LoadGrid(entity.Details);
             _loading = false;
         }
 
@@ -460,21 +468,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             return result;
         }
 
-        protected override bool ValidateEntity(Order entity)
-        {
-            var result = base.ValidateEntity(entity);
-            if (result && !DetailsManager.ValidateGrid())
-            {
-                result = false;
-            }
-
-            if (!result && MaintenanceMode == DbMaintenanceModes.AddMode)
-            {
-                KeyAutoFillValue = null;
-            }
-            return result;
-        }
-
         protected override void ClearData()
         {
             Id = 0;
@@ -493,7 +486,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             Freight = 0;
             TotalDiscount = 0;
             Total = 0;
-            DetailsManager.SetupForNewRecord();
             CustomerAutoFillValue = DefaultCustomerAutoFillValue;
             SalespersonAutoFillValue = AppGlobals.LoggedInUser.GetAutoFillValue();
             if (CustomerAutoFillValue != null)
@@ -501,6 +493,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 LoadCustomer();
             }
             _oldTotal = 0;
+        }
+
+        public override void OnNewButton()
+        {
+            base.OnNewButton();
+            CustomerUiCommand.SetFocus();
         }
 
         protected override bool SaveEntity(Order entity)
@@ -517,6 +515,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             {
                 entity.OrderId = $"O-{entity.Id}";
                 result = context.SaveEntity(entity, "Updating Order ID");
+                KeyAutoFillValue = entity.GetAutoFillValue();
             }
 
             var newTotal = entity.Total.GetValueOrDefault() - _oldTotal;
@@ -611,24 +610,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                         result = context.SaveEntity(monthEndSales, "Updating Monthly Sales");
                     }
                 }
-            }
-            return result;
-        }
-
-        protected override bool DeleteEntity()
-        {
-            var result = true;
-            var context = AppGlobals.DataRepository.GetDataContext();
-            var table = context.GetTable<Order>();
-            var order = table.FirstOrDefault(p => p.Id == Id);
-            if (order != null)
-            {
-                var detailsTable = context.GetTable<OrderDetail>();
-                var existingDetails = detailsTable
-                    .Where(p => p.OrderId == Id).ToList();
-                context.RemoveRange(existingDetails);
-
-                result = context.DeleteEntity(order, "Deleting Order");
             }
             return result;
         }
