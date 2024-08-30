@@ -39,7 +39,7 @@
 
             <lc:AutoFillControl Grid.Row="1" Grid.Column="1" x:Name="DescriptionControl" Width="200" HorizontalAlignment="Left"/>
 
-            <Label Grid.Row="2" Grid.Column="0" Content="Hours To GMT(Zulu Time)"/>
+            <Label Grid.Row="2" Grid.Column="0" Content="Hours From GMT(Zulu Time)"/>
 
             <dec:IntegerEditControl Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left" Value="{Binding HoursFromGMT, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="75"/>
 

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging.Abstractions;
+﻿using Microsoft.EntityFrameworkCore;
 using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
@@ -15,8 +10,10 @@ using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.LookupModel;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
-using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
-using RingSoft.DevLogix.Library.ViewModels.QualityAssurance;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using IDbContext = RingSoft.DevLogix.DataAccess.IDbContext;
 
 namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
@@ -31,8 +28,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
     }
 
-    public class SupportTicketViewModel : DevLogixDbMaintenanceViewModel<SupportTicket>
+    public class SupportTicketViewModel : DbMaintenanceViewModel<SupportTicket>
     {
+        #region Properties
+
         private int _id;
 
         public int Id
@@ -112,6 +111,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 }
             }
         }
+
+        private string _currentCustomerTime;
+
+        public string CurrentCustomerTime
+        {
+            get { return _currentCustomerTime; }
+            set
+            {
+                if (_currentCustomerTime == value)
+                    return;
+
+                _currentCustomerTime = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         private DateTime _createDate;
 
@@ -325,22 +340,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
         }
 
-        private LookupCommand _timeClockLookupCommand;
-
-        public LookupCommand TimeClockLookupCommand
-        {
-            get => _timeClockLookupCommand;
-            set
-            {
-                if (_timeClockLookupCommand == value)
-                    return;
-
-                _timeClockLookupCommand = value;
-                OnPropertyChanged(null, false);
-            }
-        }
-
-
         private SupportTicketCostManager _ticketUserGridManager;
 
         public SupportTicketCostManager TicketUserGridManager
@@ -371,6 +370,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
         }
 
+        #endregion
+
         public RelayCommand PunchInCommand { get; set; }
 
         public RelayCommand RecalcCommand { get; set; }
@@ -381,13 +382,19 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         public new ISupportTicketView View { get; private set; }
 
+        public UiCommand CustomerUiCommand { get; }
+
         private bool _loading;
 
         public SupportTicketViewModel()
         {
             AppGlobals.MainViewModel.SupportTicketViewModels.Add(this);
-            TablesToDelete.Add(AppGlobals.LookupContext.SupportTicketUser);
-            TablesToDelete.Add(AppGlobals.LookupContext.SupportTicketError);
+
+            TicketUserGridManager = new SupportTicketCostManager(this);
+            TicketErrorGridManager = new SupportTicketErrorManager(this);
+
+            RegisterGrid(TicketUserGridManager, true);
+            RegisterGrid(TicketErrorGridManager);
 
             StatusAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.StatusId));
             CustomerAutoFillSetup = new AutoFillSetup(
@@ -399,18 +406,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             AssignedUserAutoFillSetup = new AutoFillSetup(
                 TableDefinition.GetFieldDefinition(p => p.AssignedToUserId));
 
-            //var timeClockLookup = new LookupDefinition<TimeClockLookup, TimeClock>(AppGlobals.LookupContext.TimeClocks);
-            //timeClockLookup.AddVisibleColumnDefinition(p => p.PunchInDate, p => p.PunchInDate);
-            //timeClockLookup.Include(p => p.User)
-            //    .AddVisibleColumnDefinition(p => p.UserName, p => p.Name);
-            //timeClockLookup.AddVisibleColumnDefinition(p => p.MinutesSpent, p => p.MinutesSpent);
-            //TimeClockLookup = timeClockLookup;
-            //TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
             TimeClockLookup = AppGlobals.LookupContext.TimeClockTabLookup.Clone();
             TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
+            RegisterLookup(TimeClockLookup);
 
             PunchInCommand = new RelayCommand(PunchIn);
             RecalcCommand = new RelayCommand(Recalc);
+            CustomerUiCommand = new UiCommand();
         }
 
         protected override void Initialize()
@@ -429,15 +431,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                         AppGlobals.LookupContext.Customer.GetEntityFromPrimaryKeyValue(LookupAddViewArgs
                             .ParentWindowPrimaryKeyValue);
 
-                    var context = AppGlobals.DataRepository.GetDataContext();
+                    var context = SystemGlobals.DataRepository.GetDataContext();
                     var table = context.GetTable<Customer>();
                     customer = table.FirstOrDefault(p => p.Id == customer.Id);
                     DefaultCustomerAutoFillValue = customer.GetAutoFillValue();
                 }
             }
 
-            TicketUserGridManager = new SupportTicketCostManager(this);
-            TicketErrorGridManager = new SupportTicketErrorManager(this);
             base.Initialize();
         }
 
@@ -446,10 +446,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         {
             Id = newEntity.Id;
             PunchInCommand.IsEnabled = true;
-
-            TimeClockLookup.FilterDefinition.ClearFixedFilters();
-            TimeClockLookup.FilterDefinition.AddFixedFilter(p => p.SupportTicketId, Conditions.Equals, Id);
-            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
         }
 
         protected override SupportTicket GetEntityFromDb(SupportTicket newEntity, PrimaryKeyValue primaryKeyValue)
@@ -460,10 +456,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         public SupportTicket GetTicket(int ticketId)
         {
-            var context = AppGlobals.DataRepository.GetDataContext();
+            var context = SystemGlobals.DataRepository.GetDataContext();
             var table = context.GetTable<SupportTicket>();
             return table
                 .Include(p => p.Customer)
+                .ThenInclude(p => p.TimeZone)
                 .Include(p => p.Status)
                 .Include(p => p.CreateUser)
                 .Include(p => p.Product)
@@ -480,14 +477,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             _loading = true;
             StatusAutoFillValue = entity.Status.GetAutoFillValue();
             CustomerAutoFillValue = entity.Customer.GetAutoFillValue();
+            UpdateCurrentCustomerTime(entity.Customer);
             CreateDate = entity.CreateDate.ToLocalTime();
             CreateUserAutoFillValue = entity.CreateUser.GetAutoFillValue();
             ProductAutoFillValue = entity.Product.GetAutoFillValue();
             AssignedUserAutoFillValue = entity.AssignedToUser.GetAutoFillValue();
             PhoneNumber = entity.PhoneNumber;
             Notes = entity.Notes;
-            TicketUserGridManager.LoadGrid(entity.SupportTicketUsers);
-            TicketErrorGridManager.LoadGrid(entity.Errors);
             MinutesSpent = entity.MinutesSpent;
             ContactName = entity.ContactName;
 
@@ -499,16 +495,30 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         {
             if (CustomerAutoFillValue.IsValid())
             {
-                var context = AppGlobals.DataRepository.GetDataContext();
+                var context = SystemGlobals.DataRepository.GetDataContext();
                 var table = context.GetTable<Customer>();
                 var customer = CustomerAutoFillValue.GetEntity<Customer>();
-                customer = table.FirstOrDefault(p => p.Id == customer.Id);
+                customer = table
+                    .Include(p => p.TimeZone)
+                    .FirstOrDefault(p => p.Id == customer.Id);
                 if (customer != null)
                 {
+                    UpdateCurrentCustomerTime(customer);
                     PhoneNumber = customer.Phone;
                     ContactName = customer.ContactName;
                 }
             }
+            else
+            {
+                CurrentCustomerTime = string.Empty;
+            }
+        }
+
+        private void UpdateCurrentCustomerTime(Customer customer)
+        {
+            var now = DateTime.UtcNow;
+            now = now.AddHours(customer.TimeZone.HourToGMT);
+            CurrentCustomerTime = now.ToLongTimeString();
         }
 
 
@@ -516,7 +526,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         {
             var minutesSpent = (double)0;
 
-            var context = AppGlobals.DataRepository.GetDataContext();
+            var context = SystemGlobals.DataRepository.GetDataContext();
             var table = context.GetTable<SupportTicket>();
             var existTicket = table
                 .FirstOrDefault(p => p.Id == Id);
@@ -559,20 +569,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             return result;
         }
 
-        protected override bool ValidateEntity(SupportTicket entity)
+        public override void OnNewButton()
         {
-            if (entity.StatusId == null)
-            {
-                Processor.HandleAutoFillValFail(new DbAutoFillMap(StatusAutoFillSetup, StatusAutoFillValue));
-                return false;
-            }
-
-            if (!TicketErrorGridManager.ValidateGrid())
-            {
-                return false;
-            }
-
-            return base.ValidateEntity(entity);
+            base.OnNewButton();
+            CustomerUiCommand.SetFocus();
         }
 
         protected override void ClearData()
@@ -591,9 +591,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             Notes = null;
             PunchInCommand.IsEnabled = false;
             LoadCustomer();
-            TicketUserGridManager.SetupForNewRecord();
-            TicketErrorGridManager.SetupForNewRecord();
-            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Clear);
             MinutesSpent = 0;
             StatusAutoFillValue = null;
             _loading = false;
@@ -602,13 +599,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         public void RefreshTimeClockLookup()
         {
-            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh);
+            TimeClockLookup.SetCommand(GetLookupCommand(LookupCommands.Refresh));
         }
 
         protected override bool SaveEntity(SupportTicket entity)
         {
             var makeTicketId = entity.Id == 0 && entity.TicketId.IsNullOrEmpty();
-            var context = AppGlobals.DataRepository.GetDataContext();
+            var context = SystemGlobals.DataRepository.GetDataContext();
             if (makeTicketId)
             {
                 entity.TicketId = Guid.NewGuid().ToString();
@@ -619,54 +616,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             {
                 entity.TicketId = $"ST-{entity.Id}";
                 result = context.SaveEntity(entity, "Updating Ticket ID");
+                if (result)
+                {
+                    KeyAutoFillValue = entity.GetAutoFillValue();
+                }
             }
 
             if (result)
             {
-                var errorsTable = context.GetTable<SupportTicketError>();
-                var oldErrors = errorsTable
-                    .Where(p => p.SupportTicketId == Id);
-
-                if (oldErrors.Any())
-                {
-                    context.RemoveRange(oldErrors);
-                }
-
-                var list = TicketErrorGridManager.GetEntityList();
-                foreach (var supportTicketError in list)
-                {
-                    supportTicketError.SupportTicketId = entity.Id;
-                }
-
-                context.AddRange(list);
+                TicketErrorGridManager.SaveNoCommitData(entity, context);
                 result = context.Commit("Saving Errors");
-            }
-
-            return result;
-        }
-
-        protected override bool DeleteEntity()
-        {
-            var result = true;
-            var context = AppGlobals.DataRepository.GetDataContext();
-            var table = context.GetTable<SupportTicket>();
-            var entity = table.FirstOrDefault(p => p.Id == Id);
-            if (entity != null)
-            {
-                var errorsTable = context.GetTable<SupportTicketError>();
-                var oldErrors = errorsTable
-                    .Where(p => p.SupportTicketId == Id);
-
-                if (oldErrors.Any())
-                {
-                    context.RemoveRange(oldErrors);
-                }
-
-                var usersQuery = context.GetTable<SupportTicketUser>();
-                var users = usersQuery.Where(p => p.SupportTicketId == Id);
-                context.RemoveRange(users);
-
-                result = context.DeleteEntity(entity, "Deleting Ticket");
             }
 
             return result;
@@ -674,7 +633,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         private void PunchIn()
         {
-            var context = AppGlobals.DataRepository.GetDataContext();
+            var context = SystemGlobals.DataRepository.GetDataContext();
             var timeClocksTable = context.GetTable<TimeClock>();
             var timeClock = timeClocksTable
                 .Include(p => p.User)
@@ -765,7 +724,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         {
             var result = string.Empty;
             var lookupData = TableDefinition.LookupDefinition.GetLookupDataMaui(lookupToFilter, false);
-            var context = AppGlobals.DataRepository.GetDataContext();
+            var context = SystemGlobals.DataRepository.GetDataContext();
             DbDataProcessor.DontDisplayExceptions = true;
 
             var totalTickets = lookupData.GetRecordCount();
@@ -805,7 +764,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         private string ProcessCurrentTicket(
             PrimaryKeyValue primaryKeyValue
-            , DataAccess.IDbContext context, int totalCustomers
+            , DbLookup.IDbContext context, int totalCustomers
             , int currentTicketIndex
             , AppProcedure procedure)
         {
@@ -847,7 +806,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
     , SupportTicket currentTicket
     , IQueryable<TimeClock> timeClocksTable
     , IQueryable<User> usersTable
-    , DataAccess.IDbContext context
+    , DbLookup.IDbContext context
     , AppProcedure procedure)
         {
             View.UpdateRecalcProcedure(currentTicketIndex, totalTickets, currentTicket.TicketId);
@@ -893,7 +852,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
               SupportTicket currentTicket
             , IQueryable<TimeClock> timeClocksTable
             , IQueryable<User> usersTable
-            , IDbContext context
+            , DbLookup.IDbContext context
             , int timeClockUser
             , List<SupportTicketUser> ticketUsers
             , AppProcedure procedure)

@@ -73,12 +73,6 @@ namespace RingSoft.DevLogix.CustomerManagement
 
         }
 
-        public override void ResetViewForNewRecord()
-        {
-            CustomerControl.Focus();
-            base.ResetViewForNewRecord();
-        }
-
         public bool SetupRecalcFilter(LookupDefinitionBase lookupDefinition)
         {
             var genericInput = new GenericReportLookupFilterInput

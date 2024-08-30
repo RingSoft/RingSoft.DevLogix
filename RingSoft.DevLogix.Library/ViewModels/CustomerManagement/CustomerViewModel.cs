@@ -229,6 +229,22 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                     return;
 
                 _timeZoneAutoFillValue = value;
+                UpdateCurrentCustomerTime();
+                OnPropertyChanged();
+            }
+        }
+
+        private string _currentCustomerTime;
+
+        public string CurrentCustomerTime
+        {
+            get { return _currentCustomerTime; }
+            set
+            {
+                if (_currentCustomerTime == value)
+                    return;
+
+                _currentCustomerTime = value;
                 OnPropertyChanged();
             }
         }
@@ -632,6 +648,26 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
 
             base.Initialize();
+        }
+
+        private void UpdateCurrentCustomerTime()
+        {
+            if (TimeZoneAutoFillValue.IsValid())
+            {
+                var timeZoneId = TimeZoneAutoFillValue.GetEntity<TimeZone>().Id;
+                var context = SystemGlobals.DataRepository.GetDataContext();
+                var table = context.GetTable<TimeZone>();
+                var timeZone = table
+                    .FirstOrDefault(p => p.Id == timeZoneId);
+
+                var now = DateTime.UtcNow;
+                now = now.AddHours(timeZone.HourToGMT);
+                CurrentCustomerTime = now.ToLongTimeString();
+            }
+            else
+            {
+                CurrentCustomerTime = string.Empty;
+            }
         }
 
         protected override void PopulatePrimaryKeyControls(Customer newEntity, PrimaryKeyValue primaryKeyValue)

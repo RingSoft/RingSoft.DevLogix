@@ -16,7 +16,7 @@ using RingSoft.Printing.Interop;
 
 namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 {
-    public class OrderViewModel : DevLogixDbMaintenanceViewModel<Order>
+    public class OrderViewModel : DbMaintenanceViewModel<Order>
     {
         #region Properties
 
@@ -504,7 +504,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         protected override bool SaveEntity(Order entity)
         {
             var makeOrderId = entity.Id == 0 && entity.OrderId.IsNullOrEmpty();
-            var context = AppGlobals.DataRepository.GetDataContext();
+            var context = SystemGlobals.DataRepository.GetDataContext();
             if (makeOrderId)
             {
                 entity.OrderId = Guid.NewGuid().ToString();

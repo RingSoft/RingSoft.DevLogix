@@ -1,16 +1,16 @@
-﻿using System.Linq;
-using System.Net.Sockets;
-using Microsoft.EntityFrameworkCore;
-using RingSoft.App.Library;
-using RingSoft.DbLookup;
+﻿using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
+using System.Linq;
+using RingSoft.DbMaintenance;
 
 namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 {
-    public class TerritoryViewModel : DevLogixDbMaintenanceViewModel<Territory>
+    public class TerritoryViewModel : DbMaintenanceViewModel<Territory>
     {
+        #region Properties
+
         private int _id;
 
         public int Id
@@ -57,6 +57,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
         }
 
+        #endregion
+
         public TerritoryViewModel()
         {
             SalespersonAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.SalespersonId));
@@ -87,27 +89,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         protected override void ClearData()
         {
             Id = 0;
-            KeyAutoFillValue = null;
             SalespersonAutoFillValue = null;
-        }
-
-        protected override bool SaveEntity(Territory entity)
-        {
-            var context = AppGlobals.DataRepository.GetDataContext();
-            return context.SaveEntity(entity, "Saving Territory");
-        }
-
-        protected override bool DeleteEntity()
-        {
-            var context = AppGlobals.DataRepository.GetDataContext();
-            var table = context.GetTable<Territory>();
-            var entity = table.FirstOrDefault(p => p.Id == Id);
-            var result = true;
-            if (entity != null)
-            {
-                result = context.DeleteEntity(entity, "Deleting Territory");
-            }
-            return result;
         }
     }
 }

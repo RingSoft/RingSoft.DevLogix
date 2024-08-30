@@ -1,11 +1,12 @@
 ﻿using RingSoft.DbLookup;
+using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
-using System.Linq;
 
 namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 {
-    public class SupportTicketStatusViewModel : DevLogixDbMaintenanceViewModel<SupportTicketStatus>
+    public class SupportTicketStatusViewModel : DbMaintenanceViewModel<SupportTicketStatus>
     {
+        #region Properties
         private int _id;
 
         public int Id
@@ -21,7 +22,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 OnPropertyChanged();
             }
         }
-
+        #endregion
         protected override void PopulatePrimaryKeyControls(SupportTicketStatus newEntity, PrimaryKeyValue primaryKeyValue)
         {
             Id = newEntity.Id;
@@ -46,21 +47,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         protected override void ClearData()
         {
             Id = 0;
-            KeyAutoFillValue = null;
-        }
-
-        protected override bool SaveEntity(SupportTicketStatus entity)
-        {
-            var context = AppGlobals.DataRepository.GetDataContext();
-            return context.SaveEntity(entity, $"Saving Support Ticket Status '{entity.Description}'");
-        }
-
-        protected override bool DeleteEntity()
-        {
-            var query = AppGlobals.DataRepository.GetDataContext().GetTable<SupportTicketStatus>();
-            var entity = query.FirstOrDefault(p => p.Id == Id);
-            var context = AppGlobals.DataRepository.GetDataContext();
-            return entity != null && context.DeleteEntity(entity, $"Deleting Support Ticket Status '{entity.Description}'");
         }
     }
 }

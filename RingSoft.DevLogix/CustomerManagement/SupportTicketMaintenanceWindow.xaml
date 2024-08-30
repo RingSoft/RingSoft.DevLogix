@@ -76,6 +76,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
@@ -96,7 +97,7 @@
 
             <Label Grid.Row="1" Grid.Column="0" Content="Customer"/>
 
-            <lc:AutoFillControl Grid.Row="1" Grid.Column="1" x:Name="CustomerControl" Width="200" HorizontalAlignment="Left" Setup="{Binding CustomerAutoFillSetup}" Value="{Binding CustomerAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <lc:AutoFillControl Grid.Row="1" Grid.Column="1" Width="200" HorizontalAlignment="Left" Setup="{Binding CustomerAutoFillSetup}" Value="{Binding CustomerAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" UiCommand="{Binding CustomerUiCommand}"/>
 
             <Label Grid.Row="1" Grid.Column="2" Content="Date"/>
 
@@ -119,7 +120,11 @@
 
             <lc:AutoFillControl Grid.Row="3" Grid.Column="3" Width="200" HorizontalAlignment="Left" Setup="{Binding StatusAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding StatusAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-            <TabControl Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="5">
+            <Label Grid.Row="4" Grid.Column="0" Content="Current Customer Time"/>
+
+            <dec:StringReadOnlyBox Grid.Row="4" Grid.Column="1" Text="{Binding CurrentCustomerTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" HorizontalAlignment="Left"/>
+
+            <TabControl Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="5">
 
                 <TabItem Header="Details">
 

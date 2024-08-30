@@ -1,11 +1,14 @@
 ﻿using System.Linq;
 using RingSoft.DbLookup;
+using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
 
 namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 {
-    public class TimeZoneViewModel : DevLogixDbMaintenanceViewModel<TimeZone>
+    public class TimeZoneViewModel : DbMaintenanceViewModel<TimeZone>
     {
+        #region Properties
+
         private int _id;
 
         public int Id
@@ -39,6 +42,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
         }
 
+        #endregion
 
         protected override void PopulatePrimaryKeyControls(TimeZone newEntity, PrimaryKeyValue primaryKeyValue)
         {
@@ -66,24 +70,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             Id = 0;
             KeyAutoFillValue = null;
             HoursFromGMT = 0;
-        }
-
-        protected override bool SaveEntity(TimeZone entity)
-        {
-            var context = AppGlobals.DataRepository.GetDataContext();
-            return context.SaveEntity(entity, "Saving Time Zone");
-        }
-
-        protected override bool DeleteEntity()
-        {
-            var context = AppGlobals.DataRepository.GetDataContext();
-            var table = context.GetTable<TimeZone>();
-            var timeZone = table.FirstOrDefault(p => p.Id == Id);
-            if (timeZone != null)
-            {
-                return context.DeleteEntity(timeZone, "Deleting Time Zone");
-            }
-            return true;
         }
     }
 }
