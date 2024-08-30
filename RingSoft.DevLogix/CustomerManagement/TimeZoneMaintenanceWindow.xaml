@@ -25,6 +25,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -39,9 +40,13 @@
 
             <lc:AutoFillControl Grid.Row="1" Grid.Column="1" x:Name="DescriptionControl" Width="200" HorizontalAlignment="Left"/>
 
-            <Label Grid.Row="2" Grid.Column="0" Content="Hours From GMT(Zulu Time)"/>
+            <Label Grid.Row="2" Grid.Column="0" Content="Local Time Zone Hours&#10;From GMT(Zulu Time)"/>
 
-            <dec:IntegerEditControl Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left" Value="{Binding HoursFromGMT, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="75"/>
+            <dec:StringReadOnlyBox Grid.Row="2" Grid.Column="1" Text="{Binding CurrentHoursFromGmt}" Width="50" HorizontalAlignment="Left"/>
+
+            <Label Grid.Row="3" Grid.Column="0" Content="Hours From GMT(Zulu Time)"/>
+
+            <dec:IntegerEditControl Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left" Value="{Binding HoursFromGMT, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="75"/>
 
         </Grid>
     </DockPanel>

@@ -1,13 +1,14 @@
-﻿using System.Linq;
-using RingSoft.App.Library;
-using RingSoft.DbLookup;
+﻿using RingSoft.DbLookup;
 using RingSoft.DbLookup.ModelDefinition;
+using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 
 namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 {
-    public class LaborPartViewModel : DevLogixDbMaintenanceViewModel<LaborPart>
+    public class LaborPartViewModel : DbMaintenanceViewModel<LaborPart>
     {
+        #region Properties
+
         public override TableDefinition<LaborPart> TableDefinition => AppGlobals.LookupContext.LaborParts;
 
         private int _id;
@@ -56,6 +57,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
+        #endregion
+
         protected override void PopulatePrimaryKeyControls(LaborPart newEntity, PrimaryKeyValue primaryKeyValue)
         {
             Id = newEntity.Id;
@@ -84,24 +87,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             Id = 0;
             MinutesCost = 0;
             Comment = null;
-        }
-
-        protected override bool SaveEntity(LaborPart entity)
-        {
-            var context = AppGlobals.DataRepository.GetDataContext();
-            return context.SaveEntity(entity, "Saving Labor Part");
-        }
-
-        protected override bool DeleteEntity()
-        {
-            var context = AppGlobals.DataRepository.GetDataContext();
-            var laborPart = context.GetTable<LaborPart>().FirstOrDefault(p => p.Id == Id);
-            if (laborPart != null)
-            {
-                return context.DeleteEntity(laborPart, "Deleting Labor Part");
-            }
-
-            return true;
         }
     }
 }
