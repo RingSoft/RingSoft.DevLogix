@@ -57,7 +57,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             {
                 State = DataEntryGridCellStates.ReadOnly
             };
-            //return base.GetCellStyle(columnId);
         }
     }
 }

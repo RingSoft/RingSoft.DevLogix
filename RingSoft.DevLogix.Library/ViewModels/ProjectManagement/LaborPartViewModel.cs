@@ -1,5 +1,4 @@
 ﻿using RingSoft.DbLookup;
-using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 
@@ -8,8 +7,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
     public class LaborPartViewModel : DbMaintenanceViewModel<LaborPart>
     {
         #region Properties
-
-        public override TableDefinition<LaborPart> TableDefinition => AppGlobals.LookupContext.LaborParts;
 
         private int _id;
 
@@ -66,7 +63,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         protected override void LoadFromEntity(LaborPart entity)
         {
-            KeyAutoFillValue = entity.GetAutoFillValue();
             MinutesCost = entity.MinutesCost;
             Comment = entity.Comment;
         }
