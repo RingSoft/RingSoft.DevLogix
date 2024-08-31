@@ -367,7 +367,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                         AppGlobals.LookupContext.Customer.GetEntityFromPrimaryKeyValue(LookupAddViewArgs
                             .ParentWindowPrimaryKeyValue);
 
-                    var context = AppGlobals.DataRepository.GetDataContext();
+                    var context = SystemGlobals.DataRepository.GetDataContext();
                     var table = context.GetTable<Customer>();
                     customer = table.FirstOrDefault(p => p.Id == customer.Id);
                     DefaultCustomerAutoFillValue = customer.GetAutoFillValue();
@@ -382,22 +382,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             Id = newEntity.Id;
         }
 
-        //protected override Order GetEntityFromDb(Order newEntity, PrimaryKeyValue primaryKeyValue)
-        //{
-        //    var order = GetOrder(newEntity.Id);
-        //    return order;
-        //}
-
         private static Order? GetOrder(int orderId)
         {
-            var context = AppGlobals.DataRepository.GetDataContext();
+            var context = SystemGlobals.DataRepository.GetDataContext();
             var table = context.GetTable<Order>();
 
             var order = table
-                //.Include(p => p.Customer)
-                //.Include(p => p.Details)
-                //.ThenInclude(p => p.Product)
-                //.Include(p => p.Salesperson)
                 .FirstOrDefault(p => p.Id == orderId);
             return order;
         }
@@ -503,21 +493,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         protected override bool SaveEntity(Order entity)
         {
-            var makeOrderId = entity.Id == 0 && entity.OrderId.IsNullOrEmpty();
             var context = SystemGlobals.DataRepository.GetDataContext();
-            if (makeOrderId)
-            {
-                entity.OrderId = Guid.NewGuid().ToString();
-            }
-
-            var result = context.SaveEntity(entity, "Saving Order");
-            if (result && makeOrderId)
-            {
-                entity.OrderId = $"O-{entity.Id}";
-                result = context.SaveEntity(entity, "Updating Order ID");
-                KeyAutoFillValue = entity.GetAutoFillValue();
-            }
-
+            GenerateKeyValue("O", entity);
+            var result = true;
             var newTotal = entity.Total.GetValueOrDefault() - _oldTotal;
             var productsTable = context.GetTable<Product>();
 
@@ -621,7 +599,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 return;
             }
             var customer = CustomerAutoFillValue.GetEntity<Customer>();
-            var context = AppGlobals.DataRepository.GetDataContext();
+            var context = SystemGlobals.DataRepository.GetDataContext();
             var table = context.GetTable<Customer>();
             customer = table.FirstOrDefault(p => p.Id == customer.Id);
             if (customer != null)

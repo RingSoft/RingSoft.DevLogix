@@ -449,27 +449,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             PunchInCommand.IsEnabled = true;
         }
 
-        //protected override SupportTicket GetEntityFromDb(SupportTicket newEntity, PrimaryKeyValue primaryKeyValue)
-        //{
-        //    var result = GetTicket(newEntity.Id);
-        //    return result;
-        //}
-
         public SupportTicket GetTicket(int ticketId)
         {
             var context = SystemGlobals.DataRepository.GetDataContext();
             var table = context.GetTable<SupportTicket>();
             return table
-                //.Include(p => p.Customer)
-                //.ThenInclude(p => p.TimeZone)
-                //.Include(p => p.Status)
-                //.Include(p => p.CreateUser)
-                //.Include(p => p.Product)
-                //.Include(p => p.AssignedToUser)
-                //.Include(p => p.SupportTicketUsers)
-                //.ThenInclude(p => p.User)
-                //.Include(p => p.Errors)
-                //.ThenInclude(p => p.Error)
                 .FirstOrDefault(p => p.Id == ticketId);
         }
 
@@ -613,29 +597,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         protected override bool SaveEntity(SupportTicket entity)
         {
-            var makeTicketId = entity.Id == 0 && entity.TicketId.IsNullOrEmpty();
+            GenerateKeyValue("ST", entity);
             var context = SystemGlobals.DataRepository.GetDataContext();
-            if (makeTicketId)
-            {
-                entity.TicketId = Guid.NewGuid().ToString();
-            }
-
-            var result = context.SaveEntity(entity, "Saving Ticket");
-            if (result && makeTicketId)
-            {
-                entity.TicketId = $"ST-{entity.Id}";
-                result = context.SaveEntity(entity, "Updating Ticket ID");
-                if (result)
-                {
-                    KeyAutoFillValue = entity.GetAutoFillValue();
-                }
-            }
-
-            if (result)
-            {
-                TicketErrorGridManager.SaveNoCommitData(entity, context);
-                result = context.Commit("Saving Errors");
-            }
+            TicketErrorGridManager.SaveNoCommitData(entity, context);
+            var result = context.Commit("Saving Errors");
 
             return result;
         }
