@@ -69,11 +69,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             TimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
         }
 
-        public override bool ValidateRow()
-        {
-            throw new System.NotImplementedException();
-        }
-
         public override void SaveToEntity(ErrorUser entity, int rowIndex)
         {
             throw new System.NotImplementedException();

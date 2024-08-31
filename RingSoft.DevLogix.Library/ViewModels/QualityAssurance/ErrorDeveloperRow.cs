@@ -56,11 +56,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             RowId = entity.Id;
         }
 
-        public override bool ValidateRow()
-        {
-            throw new System.NotImplementedException();
-        }
-
         public override void SaveToEntity(ErrorDeveloper entity, int rowIndex)
         {
             entity.ErrorId = Manager.ViewModel.Id;

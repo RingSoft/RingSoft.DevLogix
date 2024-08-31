@@ -382,11 +382,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             Id = newEntity.Id;
         }
 
-        protected override Order GetEntityFromDb(Order newEntity, PrimaryKeyValue primaryKeyValue)
-        {
-            var order = GetOrder(newEntity.Id);
-            return order;
-        }
+        //protected override Order GetEntityFromDb(Order newEntity, PrimaryKeyValue primaryKeyValue)
+        //{
+        //    var order = GetOrder(newEntity.Id);
+        //    return order;
+        //}
 
         private static Order? GetOrder(int orderId)
         {
@@ -394,10 +394,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             var table = context.GetTable<Order>();
 
             var order = table
-                .Include(p => p.Customer)
-                .Include(p => p.Details)
-                .ThenInclude(p => p.Product)
-                .Include(p => p.Salesperson)
+                //.Include(p => p.Customer)
+                //.Include(p => p.Details)
+                //.ThenInclude(p => p.Product)
+                //.Include(p => p.Salesperson)
                 .FirstOrDefault(p => p.Id == orderId);
             return order;
         }

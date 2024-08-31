@@ -625,10 +625,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             ErrorQaManager = new ErrorQaManager(this);
             SupportTicketManager = new ErrorSupportTicketManager(this);
 
-            TablesToDelete.Add(AppGlobals.LookupContext.ErrorDevelopers);
-            TablesToDelete.Add(AppGlobals.LookupContext.ErrorTesters);
-            TablesToDelete.Add(AppGlobals.LookupContext.ErrorUsers);
-            TablesToDelete.Add(AppGlobals.LookupContext.SupportTicketError);
+            RegisterGrid(ErrorUserGridManager, true);
+            RegisterGrid(DeveloperManager, true);
+            RegisterGrid(ErrorQaManager, true);
+            RegisterGrid(SupportTicketManager);
+
+            //TablesToDelete.Add(AppGlobals.LookupContext.ErrorDevelopers);
+            //TablesToDelete.Add(AppGlobals.LookupContext.ErrorTesters);
+            //TablesToDelete.Add(AppGlobals.LookupContext.ErrorUsers);
+            //TablesToDelete.Add(AppGlobals.LookupContext.SupportTicketError);
 
             if (LookupAddViewArgs != null && LookupAddViewArgs.ParentWindowPrimaryKeyValue != null)
             {
@@ -709,24 +714,24 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
         }
 
-        protected override Error GetEntityFromDb(Error newEntity, PrimaryKeyValue primaryKeyValue)
-        {
-            var result = GetError(newEntity.Id);
-            if (result != null)
-            {
-                //if (_makeErrorIdContext != null && _makeErrorId)
-                //{
-                //    var errorId = $"E-{result.Id}";
-                //    result.ErrorId = errorId;
-                //    _makeErrorIdContext.SaveEntity(result, "Updating ErrorId");
-                //}
-                _makeErrorIdContext = null;
-                _makeErrorId = false;
-                KeyAutoFillValue = result.GetAutoFillValue();
-            }
+        //protected override Error GetEntityFromDb(Error newEntity, PrimaryKeyValue primaryKeyValue)
+        //{
+        //    var result = GetError(newEntity.Id);
+        //    if (result != null)
+        //    {
+        //        //if (_makeErrorIdContext != null && _makeErrorId)
+        //        //{
+        //        //    var errorId = $"E-{result.Id}";
+        //        //    result.ErrorId = errorId;
+        //        //    _makeErrorIdContext.SaveEntity(result, "Updating ErrorId");
+        //        //}
+        //        _makeErrorIdContext = null;
+        //        _makeErrorId = false;
+        //        KeyAutoFillValue = result.GetAutoFillValue();
+        //    }
 
-            return result;
-        }
+        //    return result;
+        //}
 
         private static Error GetError(int errorId)
         {
@@ -734,24 +739,24 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             var context = AppGlobals.DataRepository.GetDataContext();
             var errorTable = context.GetTable<Error>();
             var result = errorTable.Include(p => p.Developers)
-                .ThenInclude(p => p.Developer)
-                .Include(p => p.Testers)
-                .ThenInclude(p => p.Tester)
-                .Include(p => p.Testers)
-                .ThenInclude(p => p.NewErrorStatus)
-                .Include(p => p.ErrorStatus)
-                .Include(p => p.Product)
-                .Include(p => p.ErrorPriority)
-                .Include(p => p.FoundVersion)
-                .Include(p => p.FixedVersion)
-                .Include(p => p.FoundByUser)
-                .Include(p => p.AssignedDeveloper)
-                .Include(p => p.AssignedTester)
-                .Include(p => p.Users)
-                .ThenInclude(p => p.User)
-                .Include(p => p.TestingOutline)
-                .Include(p => p.SupportTickets)
-                .ThenInclude(p => p.SupportTicket)
+                //.ThenInclude(p => p.Developer)
+                //.Include(p => p.Testers)
+                //.ThenInclude(p => p.Tester)
+                //.Include(p => p.Testers)
+                //.ThenInclude(p => p.NewErrorStatus)
+                //.Include(p => p.ErrorStatus)
+                //.Include(p => p.Product)
+                //.Include(p => p.ErrorPriority)
+                //.Include(p => p.FoundVersion)
+                //.Include(p => p.FixedVersion)
+                //.Include(p => p.FoundByUser)
+                //.Include(p => p.AssignedDeveloper)
+                //.Include(p => p.AssignedTester)
+                //.Include(p => p.Users)
+                //.ThenInclude(p => p.User)
+                //.Include(p => p.TestingOutline)
+                //.Include(p => p.SupportTickets)
+                //.ThenInclude(p => p.SupportTicket)
                 .FirstOrDefault(p => p.Id == errorId);
             return result;
         }
@@ -778,11 +783,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
             Description = entity.Description;
             Resolution = entity.Resolution;
-            DeveloperManager.LoadGrid(entity.Developers);
+            //DeveloperManager.LoadGrid(entity.Developers);
             CurrentTestingOutlineAutoFillValue = TestingOutlineAutoFillValue = entity.TestingOutline.GetAutoFillValue();
-            ErrorQaManager.LoadGrid(entity.Testers);
-            ErrorUserGridManager.LoadGrid(entity.Users);
-            SupportTicketManager.LoadGrid(entity.SupportTickets);
+            //ErrorQaManager.LoadGrid(entity.Testers);
+            //ErrorUserGridManager.LoadGrid(entity.Users);
+            //SupportTicketManager.LoadGrid(entity.SupportTickets);
             MinutesSpent = entity.MinutesSpent;
             TotalCost = entity.Cost;
             TotalTimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
@@ -894,10 +899,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 //SetErrorText(GetUser());
             }
 
-            DeveloperManager.SetupForNewRecord();
-            ErrorQaManager.SetupForNewRecord();
-            ErrorUserGridManager.SetupForNewRecord();
-            SupportTicketManager.SetupForNewRecord();
+            //DeveloperManager.SetupForNewRecord();
+            //ErrorQaManager.SetupForNewRecord();
+            //ErrorUserGridManager.SetupForNewRecord();
+            //SupportTicketManager.SetupForNewRecord();
 
             WriteOffCommand.IsEnabled = ClipboardCopyCommand.IsEnabled = PassCommand.IsEnabled = FailCommand.IsEnabled = PunchInCommand.IsEnabled = false;
             TimeClockLookupCommand = GetLookupCommand(LookupCommands.Clear);
@@ -909,90 +914,97 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         protected override bool SaveEntity(Error entity)
         {
-            var makeErrorId = entity.Id == 0 && entity.ErrorId.IsNullOrEmpty();
-            var result = false;
-            var context = AppGlobals.DataRepository.GetDataContext();
-            if (context != null)
-            {
-                if (makeErrorId)
-                {
-                    entity.ErrorId = Guid.NewGuid().ToString();
-                }
-                result = context.SaveEntity(entity, "Saving Error");
+            GenerateKeyValue("E", entity);
+            return base.SaveEntity(entity);
+            //var makeErrorId = entity.Id == 0 && entity.ErrorId.IsNullOrEmpty();
+            //var result = false;
+            //var context = SystemGlobals.DataRepository.GetDataContext();
+            //if (context != null)
+            //{
+            //    if (makeErrorId)
+            //    {
+            //        entity.ErrorId = Guid.NewGuid().ToString();
+            //    }
+            //    result = context.SaveEntity(entity, "Saving Error");
 
-                if (result && makeErrorId)
-                {
-                    var errorId = $"E-{entity.Id}";
-                    entity.ErrorId = errorId;
-                    result = context.SaveEntity(entity, "Updating Error Id");
-                }
+            //    if (result && makeErrorId)
+            //    {
+            //        var errorId = $"E-{entity.Id}";
+            //        entity.ErrorId = errorId;
+            //        result = context.SaveEntity(entity, "Updating Error Id");
+            //        if (result)
+            //        {
+            //            KeyAutoFillValue = entity.GetAutoFillValue();
+            //        }
+            //    }
 
-                if (result)
-                {
-                    var supportTicketTable = context.GetTable<SupportTicketError>();
-                    if (supportTicketTable != null)
-                    {
-                        var oldTickets = supportTicketTable
-                            .Where(p => p.ErrorId == Id);
+            //    if (result)
+            //    {
+            //        SupportTicketManager.SaveNoCommitData(entity, context);
+            //        //var supportTicketTable = context.GetTable<SupportTicketError>();
+            //        //if (supportTicketTable != null)
+            //        //{
+            //        //    var oldTickets = supportTicketTable
+            //        //        .Where(p => p.ErrorId == Id);
 
-                        if (oldTickets.Any())
-                        {
-                            context.RemoveRange(oldTickets);
-                        }
+            //        //    if (oldTickets.Any())
+            //        //    {
+            //        //        context.RemoveRange(oldTickets);
+            //        //    }
 
-                        var list = SupportTicketManager.GetEntityList();
-                        foreach (var supportTicketError in list)
-                        {
-                            supportTicketError.ErrorId = entity.Id;
-                        }
-                        context.AddRange(list);
-                        result = context.Commit("Saving Support Tickets");
-                    }
-                }
-            }
+            //        //    var list = SupportTicketManager.GetEntityList();
+            //        //    foreach (var supportTicketError in list)
+            //        //    {
+            //        //        supportTicketError.ErrorId = entity.Id;
+            //        //    }
+            //        //    context.AddRange(list);
+            //        result = context.Commit("Saving Support Tickets");
+            //        //}
+            //    }
+            //}
 
             //if (MaintenanceMode == DbMaintenanceModes.AddMode)
             //{
             //    _makeErrorIdContext = context as IDbContext;
             //}
 
-            return result;
+            //return result;
         }
 
-        protected override bool DeleteEntity()
-        {
-            var context = AppGlobals.DataRepository.GetDataContext();
-            if (context != null)
-            {
-                var developerQuery = context.GetTable<ErrorDeveloper>();
-                var developers = developerQuery.Where(p => p.ErrorId == Id);
-                context.RemoveRange(developers);
+        //protected override bool DeleteEntity()
+        //{
+        //    var context = SystemGlobals.DataRepository.GetDataContext();
+        //    if (context != null)
+        //    {
+        //        var entity = context.GetTable<Error>().FirstOrDefault(p => p.Id == Id);
+        //        var developerQuery = context.GetTable<ErrorDeveloper>();
+        //        var developers = developerQuery.Where(p => p.ErrorId == Id);
+        //        context.RemoveRange(developers);
 
-                var testersQuery = context.GetTable<ErrorQa>();
-                var testers = testersQuery.Where(p => p.ErrorId == Id);
-                context.RemoveRange(testers);
+        //        var testersQuery = context.GetTable<ErrorQa>();
+        //        var testers = testersQuery.Where(p => p.ErrorId == Id);
+        //        context.RemoveRange(testers);
 
-                var usersQuery = context.GetTable<ErrorUser>();
-                var users = usersQuery.Where(p => p.ErrorId == Id);
-                context.RemoveRange(users);
+        //        var usersQuery = context.GetTable<ErrorUser>();
+        //        var users = usersQuery.Where(p => p.ErrorId == Id);
+        //        context.RemoveRange(users);
 
-                var supportTicketTable = context.GetTable<SupportTicketError>();
-                var oldTickets = supportTicketTable
-                    .Where(p => p.ErrorId == Id);
+        //        var supportTicketTable = context.GetTable<SupportTicketError>();
+        //        var oldTickets = supportTicketTable
+        //            .Where(p => p.ErrorId == Id);
 
-                if (oldTickets.Any())
-                {
-                    context.RemoveRange(oldTickets);
-                }
+        //        if (oldTickets.Any())
+        //        {
+        //            context.RemoveRange(oldTickets);
+        //        }
 
-                var table = TableDefinition;
-                var entity = context.GetTable<Error>().FirstOrDefault(p => p.Id == Id);
-                return context.DeleteEntity(entity, "Deleting Error");
-            }
+        //        var table = TableDefinition;
+        //        return context.DeleteEntity(entity, "Deleting Error");
+        //    }
 
-            return false;
+        //    return false;
 
-        }
+        //}
 
         private void PassError()
         {

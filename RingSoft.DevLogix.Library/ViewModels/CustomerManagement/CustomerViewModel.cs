@@ -675,25 +675,25 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             Id = newEntity.Id;
         }
 
-        protected override Customer GetEntityFromDb(Customer newEntity, PrimaryKeyValue primaryKeyValue)
-        {
-            var result = GetCustomer(newEntity.Id);
+        //protected override Customer GetEntityFromDb(Customer newEntity, PrimaryKeyValue primaryKeyValue)
+        //{
+        //    var result = GetCustomer(newEntity.Id);
 
-            return result;
-        }
+        //    return result;
+        //}
 
         private static Customer? GetCustomer(int customerId)
         {
             var context = SystemGlobals.DataRepository.GetDataContext();
             var table = context.GetTable<Customer>();
             var result = table
-                .Include(p => p.Status)
-                .Include(p => p.TimeZone)
-                .Include(p => p.Territory)
-                .Include(p => p.CustomerProducts)
-                .ThenInclude(p => p.Product)
-                .Include(p => p.Users)
-                .ThenInclude(p => p.User)
+                //.Include(p => p.Status)
+                //.Include(p => p.TimeZone)
+                //.Include(p => p.Territory)
+                //.Include(p => p.CustomerProducts)
+                //.ThenInclude(p => p.Product)
+                //.Include(p => p.Users)
+                //.ThenInclude(p => p.User)
                 .FirstOrDefault(p => p.Id == customerId);
             return result;
         }
