@@ -9,7 +9,6 @@
                         xmlns:ac="clr-namespace:RingSoft.App.Controls;assembly=RingSoft.App.Controls"
                         xmlns:dl="clr-namespace:RingSoft.DevLogix"
                         xmlns:vm="clr-namespace:RingSoft.DevLogix.Library.ViewModels.CustomerManagement;assembly=RingSoft.DevLogix.Library"
-                        xmlns:customerManagement="clr-namespace:RingSoft.DevLogix.DataAccess.LookupModel.CustomerManagement;assembly=RingSoft.DevLogix.DataAccess"
                         xmlns:lm="clr-namespace:RingSoft.DevLogix.DataAccess.LookupModel.CustomerManagement;assembly=RingSoft.DevLogix.DataAccess"
                         xmlns:local="clr-namespace:RingSoft.DevLogix.CustomerManagement"
                         xmlns:lookupModel="clr-namespace:RingSoft.DevLogix.DataAccess.LookupModel;assembly=RingSoft.DevLogix.DataAccess"
@@ -122,7 +121,7 @@
 
                     <Button Content="_Add/Modify" x:Name="AddModifyOrderButton" Command="{Binding AddModifyOrderLookupCommand}" Height="20"  DockPanel.Dock="Left" VerticalAlignment="Top"/>
 
-                    <lc:LookupControl LookupDefinition="{Binding OrderLookupDefinition}" Command="{Binding OrderLookupCommand}" >
+                    <lc:LookupControl LookupDefinition="{Binding OrderLookupDefinition}">
 
                         <lc:LookupControl.LookupColumns>
 
@@ -260,7 +259,7 @@
 
                         <Button Grid.Row="1" Grid.Column="0"  Content="_Add/Modify" x:Name="AddModifyTicketsButton" Command="{Binding AddModifySupportTicketCommand}" Height="20"  DockPanel.Dock="Left" VerticalAlignment="Top"/>
 
-                        <lc:LookupControl Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4" Grid.RowSpan="2" LookupDefinition="{Binding SupportTicketLookup}" Command="{Binding SupportTicketLookupCommand}" >
+                        <lc:LookupControl Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4" Grid.RowSpan="2" LookupDefinition="{Binding SupportTicketLookup}">
 
                             <lc:LookupControl.LookupColumns>
 
@@ -282,7 +281,7 @@
 
                         <Button Content="_Add/Modify" x:Name="AddModifyComputerButton" Command="{Binding AddModifyComputerLookupCommand}" Height="20"  DockPanel.Dock="Left" VerticalAlignment="Top"/>
 
-                        <lc:LookupControl LookupDefinition="{Binding ComputerLookup}" Command="{Binding ComputerLookupCommand}" >
+                        <lc:LookupControl LookupDefinition="{Binding ComputerLookup}">
 
                             <lc:LookupControl.LookupColumns>
 
@@ -299,7 +298,7 @@
 
                     <DockPanel>
 
-                        <lc:LookupControl LookupDefinition="{Binding TimeClockLookup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Command="{Binding TimeClockLookupCommand, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <lc:LookupControl LookupDefinition="{Binding TimeClockLookup}">
 
                             <lc:LookupControl.LookupColumns>
 

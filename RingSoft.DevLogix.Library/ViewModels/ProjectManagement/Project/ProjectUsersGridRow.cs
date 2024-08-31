@@ -4,6 +4,7 @@ using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbMaintenance;
+using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 
 namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
@@ -315,11 +316,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public override void SaveToEntity(ProjectUser entity, int rowIndex)
         {
-            entity.UserId = UserAutoFillValue.GetEntity(AppGlobals.LookupContext.Users).Id;
+            entity.UserId = UserAutoFillValue.GetEntity<User>().Id;
             entity.MinutesSpent = MinutesSpent;
             entity.Cost = Cost;
             entity.IsStandard = IsStandard;
-            //if (!IsStandard)
             {
                 entity.SundayMinutes = SundayMinutes;
                 entity.MondayMinutes = MondayMinutes;

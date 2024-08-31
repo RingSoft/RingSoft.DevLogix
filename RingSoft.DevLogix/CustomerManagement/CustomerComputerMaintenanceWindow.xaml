@@ -8,7 +8,6 @@
                         xmlns:ac="clr-namespace:RingSoft.App.Controls;assembly=RingSoft.App.Controls"
                         xmlns:vm="clr-namespace:RingSoft.DevLogix.Library.ViewModels.CustomerManagement;assembly=RingSoft.DevLogix.Library"
                         xmlns:dl="clr-namespace:RingSoft.DevLogix"
-                        xmlns:local="clr-namespace:RingSoft.DevLogix.CustomerManagement"
                         mc:Ignorable="d"
                         Style="{StaticResource BaseWindowStyle}"
                         Title="Customer Computer Maintenance Window" Height="450" Width="800">
