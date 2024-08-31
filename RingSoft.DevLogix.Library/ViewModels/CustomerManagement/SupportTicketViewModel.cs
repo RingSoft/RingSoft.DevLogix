@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using IDbContext = RingSoft.DevLogix.DataAccess.IDbContext;
+using TimeZone = RingSoft.DevLogix.DataAccess.Model.CustomerManagement.TimeZone;
 
 namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 {
@@ -448,27 +449,27 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             PunchInCommand.IsEnabled = true;
         }
 
-        protected override SupportTicket GetEntityFromDb(SupportTicket newEntity, PrimaryKeyValue primaryKeyValue)
-        {
-            var result = GetTicket(newEntity.Id);
-            return result;
-        }
+        //protected override SupportTicket GetEntityFromDb(SupportTicket newEntity, PrimaryKeyValue primaryKeyValue)
+        //{
+        //    var result = GetTicket(newEntity.Id);
+        //    return result;
+        //}
 
         public SupportTicket GetTicket(int ticketId)
         {
             var context = SystemGlobals.DataRepository.GetDataContext();
             var table = context.GetTable<SupportTicket>();
             return table
-                .Include(p => p.Customer)
-                .ThenInclude(p => p.TimeZone)
-                .Include(p => p.Status)
-                .Include(p => p.CreateUser)
-                .Include(p => p.Product)
-                .Include(p => p.AssignedToUser)
-                .Include(p => p.SupportTicketUsers)
-                .ThenInclude(p => p.User)
-                .Include(p => p.Errors)
-                .ThenInclude(p => p.Error)
+                //.Include(p => p.Customer)
+                //.ThenInclude(p => p.TimeZone)
+                //.Include(p => p.Status)
+                //.Include(p => p.CreateUser)
+                //.Include(p => p.Product)
+                //.Include(p => p.AssignedToUser)
+                //.Include(p => p.SupportTicketUsers)
+                //.ThenInclude(p => p.User)
+                //.Include(p => p.Errors)
+                //.ThenInclude(p => p.Error)
                 .FirstOrDefault(p => p.Id == ticketId);
         }
 
@@ -516,8 +517,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         private void UpdateCurrentCustomerTime(Customer customer)
         {
+            var timeZone = customer.TimeZone;
+            if (timeZone == null)
+            {
+                var context = SystemGlobals.DataRepository.GetDataContext();
+                var table = context.GetTable<TimeZone>();
+                timeZone = table
+                    .FirstOrDefault(p => p.Id == customer.TimeZoneId);
+            }
             var now = DateTime.UtcNow;
-            now = now.AddHours(customer.TimeZone.HourToGMT);
+            now = now.AddHours(timeZone.HourToGMT);
             CurrentCustomerTime = now.ToLongTimeString();
         }
 
