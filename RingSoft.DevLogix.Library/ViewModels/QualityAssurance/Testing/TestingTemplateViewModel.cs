@@ -1,18 +1,15 @@
-﻿using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using RingSoft.DataEntryControls.Engine;
+﻿using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
-using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 {
-    public class TestingTemplateViewModel : DevLogixDbMaintenanceViewModel<TestingTemplate>
+    public class TestingTemplateViewModel : DbMaintenanceViewModel<TestingTemplate>
     {
-        public override TableDefinition<TestingTemplate> TableDefinition => AppGlobals.LookupContext.TestingTemplates;
+        #region Properties
 
         private int _id;
 
@@ -91,6 +88,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             }
         }
 
+        #endregion
+
         public RelayCommand UpdateOutlinesCommand { get; set; }
 
 
@@ -101,8 +100,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
             UpdateOutlinesCommand = new RelayCommand(UpdateTestingOutlines);
             TestingTemplateItemManager = new TestingTemplateItemManager(this);
-
-            TablesToDelete.Add(AppGlobals.LookupContext.TestingTemplatesItems);
+            RegisterGrid(TestingTemplateItemManager);
         }
 
         protected override void PopulatePrimaryKeyControls(TestingTemplate newEntity, PrimaryKeyValue primaryKeyValue)
@@ -114,23 +112,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             BaseAutoFillSetup.LookupDefinition.FilterDefinition.AddFixedFilter(idField, Conditions.NotEquals, Id);
         }
 
-        protected override TestingTemplate GetEntityFromDb(TestingTemplate newEntity, PrimaryKeyValue primaryKeyValue)
-        {
-            var context = AppGlobals.DataRepository.GetDataContext();
-            var table = context.GetTable<TestingTemplate>();
-            var result = table
-                .Include(p => p.BaseTemplate)
-                .Include(p => p.Items)
-                .FirstOrDefault(p => p.Id == newEntity.Id);
-
-            return result;
-        }
-
         protected override void LoadFromEntity(TestingTemplate entity)
         {
-            KeyAutoFillValue = entity.GetAutoFillValue();
             BaseAutoFillValue = entity.BaseTemplate.GetAutoFillValue();
-            TestingTemplateItemManager.LoadGrid(entity.Items);
             Notes = entity.Notes;
         }
 
@@ -155,41 +139,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             Id = 0;
             BaseAutoFillValue = null;
             BaseAutoFillSetup.LookupDefinition.FilterDefinition.ClearFixedFilters();
-            TestingTemplateItemManager.SetupForNewRecord();
-        }
-
-        protected override bool SaveEntity(TestingTemplate entity)
-        {
-            var context = AppGlobals.DataRepository.GetDataContext();
-            var result = context.SaveEntity(entity, "Saving Testing Template");
-            if (result)
-            {
-                var items = TestingTemplateItemManager.GetEntityList();
-                foreach (var item in items)
-                {
-                    item.TestingTemplateId = entity.Id;
-                }
-
-                var existingItems = context.GetTable<TestingTemplateItem>()
-                    .Where(p => p.TestingTemplateId == Id);
-                context.RemoveRange(existingItems);
-                context.AddRange(items);
-                result = context.Commit("Saving Items");
-            }
-            return result;
-        }
-
-        protected override bool DeleteEntity()
-        {
-            var context = AppGlobals.DataRepository.GetDataContext();
-            var table = context.GetTable<TestingTemplate>();
-            var entity = table.FirstOrDefault(p => p.Id == Id);
-
-            var existingItems = context.GetTable<TestingTemplateItem>()
-                .Where(p => p.TestingTemplateId == Id);
-            context.RemoveRange(existingItems);
-
-            return context.DeleteEntity(entity, "Deleting Testing Template");
         }
 
         private void UpdateTestingOutlines()

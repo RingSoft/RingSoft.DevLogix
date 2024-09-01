@@ -46,7 +46,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
         public void UpdateTestingOutlines()
         {
-            var context = AppGlobals.DataRepository.GetDataContext();
+            var context = SystemGlobals.DataRepository.GetDataContext();
             var templatesTable = context.GetTable<TestingTemplate>();
             var template = templatesTable
                 .Include(p => p.Items)

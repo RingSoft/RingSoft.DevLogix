@@ -37,11 +37,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             Description = entity.Description;
         }
 
-        public override bool ValidateRow()
-        {
-            throw new System.NotImplementedException();
-        }
-
         public override void SaveToEntity(TestingTemplateItem entity, int rowIndex)
         {
             entity.Description = Description;

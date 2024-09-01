@@ -30,7 +30,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
         public void GenerateDetails()
         {
-            var context = AppGlobals.DataRepository.GetDataContext();
+            var context = SystemGlobals.DataRepository.GetDataContext();
             var table = context.GetTable<TestingTemplate>();
             var testingOutline = ViewModel.GetTestingOutline(ViewModel.Id, context);
 
@@ -80,7 +80,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
         private List<TestingOutlineDetails> GenerateDetails(
             int templateId
-            , DataAccess.IDbContext context
+            , DbLookup.IDbContext context
             , IQueryable<TestingTemplate> table
             , TestingOutline testingOutline
             , int startRowIndex)

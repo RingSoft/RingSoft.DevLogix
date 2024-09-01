@@ -1,22 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.Lookup;
-using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbMaintenance;
-using RingSoft.DevLogix.DataAccess;
 using RingSoft.DevLogix.DataAccess.LookupModel;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 {
@@ -30,9 +27,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
         void UpdateRecalcProcedure(int currentOutline, int totalOutlines, string currentOutlineText);
     }
-    public class TestingOutlineViewModel : DevLogixDbMaintenanceViewModel<TestingOutline>
+    public class TestingOutlineViewModel : DbMaintenanceViewModel<TestingOutline>
     {
-        public override TableDefinition<TestingOutline> TableDefinition => AppGlobals.LookupContext.TestingOutlines;
+        #region Properties
 
         private int _id;
 
@@ -276,21 +273,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             }
         }
 
-        private LookupCommand _errorLookupCommand;
-
-        public LookupCommand ErrorLookupCommand
-        {
-            get => _errorLookupCommand;
-            set
-            {
-                if (_errorLookupCommand == value)
-                    return;
-
-                _errorLookupCommand = value;
-                OnPropertyChanged();
-            }
-        }
-
         private LookupDefinition<TimeClockLookup, TimeClock> _timeClockLookup;
 
         public LookupDefinition<TimeClockLookup, TimeClock> TimeClockLookup
@@ -306,21 +288,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             }
         }
 
-        private LookupCommand _timeClockLookupCommand;
-
-        public LookupCommand TimeClockLookupCommand
-        {
-            get => _timeClockLookupCommand;
-            set
-            {
-                if (_timeClockLookupCommand == value)
-                    return;
-
-                _timeClockLookupCommand = value;
-                OnPropertyChanged(null, false);
-            }
-        }
-
+        #endregion
 
         public new ITestingOutlineView  View { get; private set; }
 
@@ -356,10 +324,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
             DetailsGridManager = new TestingOutlineDetailsGridManager(this);
             TemplatesGridManager = new TestingOutlineTemplatesGridManager(this);
-
-            TablesToDelete.Add(AppGlobals.LookupContext.TestingOutlineDetails);
-            TablesToDelete.Add(AppGlobals.LookupContext.TestingOutlineTemplates);
             TestingOutlineCostManager = new TestingOutlineCostManager(this);
+
+            RegisterGrid(DetailsGridManager);
+            RegisterGrid(TemplatesGridManager);
+            RegisterGrid(TestingOutlineCostManager, true);
 
             CurrentUserAutoFillValue = AppGlobals.LoggedInUser.GetAutoFillValue();
 
@@ -376,15 +345,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
             ErrorLookup = errorLookup;
 
-            //var timeClockLookup = new LookupDefinition<TimeClockLookup, TimeClock>(AppGlobals.LookupContext.TimeClocks);
-            //timeClockLookup.AddVisibleColumnDefinition(p => p.PunchInDate, p => p.PunchInDate);
-            //timeClockLookup.Include(p => p.User)
-            //    .AddVisibleColumnDefinition(p => p.UserName, p => p.Name);
-            //timeClockLookup.AddVisibleColumnDefinition(p => p.MinutesSpent, p => p.MinutesSpent);
-
-            //TimeClockLookup = timeClockLookup;
             TimeClockLookup = AppGlobals.LookupContext.TimeClockTabLookup.Clone();
             TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
+
+            RegisterLookup(ErrorLookup);
+            RegisterLookup(TimeClockLookup);
         }
 
         protected override void Initialize()
@@ -415,41 +380,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
         {
             Id = newEntity.Id;
             PunchInCommand.IsEnabled = true;
-
-            ErrorLookup.FilterDefinition.ClearFixedFilters();
-            ErrorLookup.FilterDefinition.AddFixedFilter(p => p.TestingOutlineId, Conditions.Equals, Id);
-            ErrorLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
-
-            TimeClockLookup.FilterDefinition.ClearFixedFilters();
-            TimeClockLookup.FilterDefinition.AddFixedFilter(p => p.TestingOutlineId, Conditions.Equals, Id);
-            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
         }
 
-        protected override TestingOutline GetEntityFromDb(TestingOutline newEntity, PrimaryKeyValue primaryKeyValue)
-        {
-            var result = GetTestingOutline(newEntity.Id);
-            return result;
-        }
-
-        public TestingOutline? GetTestingOutline(int id, DataAccess.IDbContext context = null)
+        public TestingOutline? GetTestingOutline(int id, DbLookup.IDbContext context = null)
         {
             if (context == null)
             {
-                context = AppGlobals.DataRepository.GetDataContext();
+                context = SystemGlobals.DataRepository.GetDataContext();
             }
             var table = context.GetTable<TestingOutline>();
             var result = table
-                .Include(p => p.Product)
-                .Include(p => p.CreatedByUser)
-                .Include(p => p.AssignedToUser)
-                .Include(p => p.Details)
-                .ThenInclude(p => p.CompletedVersion)
-                .Include(p => p.Details)
-                .ThenInclude(p => p.TestingTemplate)
-                .Include(p => p.Templates)
-                .ThenInclude(p => p.TestingTemplate)
-                .Include(p => p.Costs)
-                .ThenInclude(p => p.User)
                 .FirstOrDefault(p => p.Id == id);
             return result;
         }
@@ -467,9 +407,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             }
 
             PercentComplete = AppGlobals.CalcPercentComplete(entity.Details);
-            DetailsGridManager.LoadGrid(entity.Details);
-            TemplatesGridManager.LoadGrid(entity.Templates);
-            TestingOutlineCostManager.LoadGrid(entity.Costs);
             MinutesSpent = entity.MinutesSpent;
             TotalCost = entity.TotalCost;
             TotalTimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
@@ -502,16 +439,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             return result;
         }
 
-        protected override bool ValidateEntity(TestingOutline entity)
-        {
-            if (!base.ValidateEntity(entity))
-            {
-                return false;
-            }
-
-            return TemplatesGridManager.ValidateGrid();
-        }
-
         protected override void ClearData()
         {
             Id = 0;
@@ -521,75 +448,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             DueDate = null;
             PercentComplete = 0;
             Notes = null;
-            DetailsGridManager.SetupForNewRecord();
-            TemplatesGridManager.SetupForNewRecord();
-            TestingOutlineCostManager.SetupForNewRecord();
             PunchInCommand.IsEnabled = false;
             MinutesSpent = 0;
             TotalCost = 0;
             TotalTimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
-            ErrorLookupCommand = GetLookupCommand(LookupCommands.Clear);
-            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Clear);
-        }
-
-        protected override bool SaveEntity(TestingOutline entity)
-        {
-            var context = AppGlobals.DataRepository.GetDataContext();
-            var result = context.SaveEntity(entity, "Saving Testing Outline");
-            if (result)
-            {
-                var details = DetailsGridManager.GetEntityList();
-                if (details != null)
-                {
-                    foreach (var detail in details)
-                    {
-                        detail.TestingOutlineId = entity.Id;
-                    }
-                }
-
-                var templates = TemplatesGridManager.GetEntityList();
-                if (templates != null)
-                {
-                    foreach (var template in templates)
-                    {
-                        template.TestingOutlineId = entity.Id;
-                    }
-                }
-
-                var existingDetails = context.GetTable<TestingOutlineDetails>()
-                    .Where(p => p.TestingOutlineId == entity.Id);
-                context.RemoveRange(existingDetails);
-                context.AddRange(details);
-
-                var existingTemplates = context.GetTable<TestingOutlineTemplate>()
-                    .Where(p => p.TestingOutlineId == entity.Id);
-                context.RemoveRange(existingTemplates);
-                context.AddRange(templates);
-
-                result = context.Commit("Saving Grids");
-            }
-            return result;
-        }
-
-        protected override bool DeleteEntity()
-        {
-            var result = true;
-            var context = AppGlobals.DataRepository.GetDataContext();
-            var table = context.GetTable<TestingOutline>();
-            var existOutline = table.FirstOrDefault(p => p.Id == Id);
-            if (existOutline != null)
-            {
-                var existingDetails = context.GetTable<TestingOutlineDetails>()
-                    .Where(p => p.TestingOutlineId == existOutline.Id);
-                context.RemoveRange(existingDetails);
-
-                var existingTemplates = context.GetTable<TestingOutlineTemplate>()
-                    .Where(p => p.TestingOutlineId == Id);
-                context.RemoveRange(existingTemplates);
-
-                result = context.DeleteEntity(existOutline, "Deleting Testing Outline");
-            }
-            return result;
         }
 
         private void GenerateDetails()
@@ -615,7 +477,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
         private void PunchIn()
         {
-            var context = AppGlobals.DataRepository.GetDataContext();
+            var context = SystemGlobals.DataRepository.GetDataContext();
             var table = context.GetTable<TestingOutlineCost>();
             var user = table.FirstOrDefault(p => p.TestingOutlineId == Id
                                                  && p.UserId == AppGlobals.LoggedInUser.Id);
@@ -685,7 +547,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             var result = string.Empty;
             var lookupUi = new LookupUserInterface { PageSize = 10 };
             var lookupData = TableDefinition.LookupDefinition.GetLookupDataMaui(lookupToFilter, false);
-            var context = AppGlobals.DataRepository.GetDataContext();
+            var context = SystemGlobals.DataRepository.GetDataContext();
             var outlinesTable = context.GetTable<TestingOutline>();
             var usersTable = context.GetTable<User>();
             var timeClocksTable = context.GetTable<TimeClock>();
@@ -825,12 +687,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
         private void OnErrorAddModify()
         {
             if (ExecuteAddModifyCommand() == DbMaintenanceResults.Success)
-                ErrorLookupCommand = GetLookupCommand(LookupCommands.AddModify);
+                ErrorLookup.SetCommand(GetLookupCommand(LookupCommands.AddModify));
         }
 
         public void RefreshTimeClockLookup()
         {
-            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh);
+            TimeClockLookup.SetCommand(GetLookupCommand(LookupCommands.Refresh));
         }
 
     }
