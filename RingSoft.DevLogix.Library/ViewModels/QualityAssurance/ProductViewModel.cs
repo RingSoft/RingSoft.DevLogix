@@ -1,24 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using RingSoft.DbLookup;
-using RingSoft.DbLookup.Lookup;
-using RingSoft.DbLookup.ModelDefinition;
-using RingSoft.DevLogix.DataAccess.Model;
-using System.Linq;
+﻿using Microsoft.EntityFrameworkCore;
+using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
+using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.DataProcessor;
+using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.QueryBuilder;
-using RingSoft.DevLogix.DataAccess.LookupModel;
 using RingSoft.DbMaintenance;
-using RingSoft.DevLogix.DataAccess.LookupModel.QualityAssurance;
-using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
-using RingSoft.App.Library;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
-using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using RingSoft.DevLogix.DataAccess.LookupModel;
+using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
+using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 {
@@ -41,9 +37,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         void UpdateRecalcProcedure(int currentProduct, int totalProducts, string currentProductText);
     }
 
-    public class ProductViewModel : DevLogixDbMaintenanceViewModel<Product>
+    public class ProductViewModel : DbMaintenanceViewModel<Product>
     {
-        public override TableDefinition<Product> TableDefinition => AppGlobals.LookupContext.Products;
+        #region Properties
 
         private int _id;
 
@@ -91,21 +87,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
                 _productVersionLookupDefinition = value;
                 OnPropertyChanged();
-            }
-        }
-
-        private LookupCommand _productVersionLookupCommand;
-
-        public LookupCommand ProductVersionLookupCommand
-        {
-            get => _productVersionLookupCommand;
-            set
-            {
-                if (_productVersionLookupCommand == value)
-                    return;
-
-                _productVersionLookupCommand = value;
-                OnPropertyChanged(null, false);
             }
         }
 
@@ -270,21 +251,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             }
         }
 
-        private LookupCommand _testingOutlineLookupCommand;
-
-        public LookupCommand TestingOutlineLookupCommand
-        {
-            get => _testingOutlineLookupCommand;
-            set
-            {
-                if (_testingOutlineLookupCommand == value)
-                    return;
-
-                _testingOutlineLookupCommand = value;
-                OnPropertyChanged(null, false);
-            }
-        }
-
         private double? _price;
 
         public double? Price
@@ -345,6 +311,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             }
         }
 
+        #endregion
 
         public RelayCommand VersionsAddModifyCommand { get; set; }
 
@@ -382,6 +349,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                     , "Assigned To"
                     , p => p.Name, 50);
             TestingOutlineLookup = testOutlineLookup;
+            ProductVersionLookupDefinition = AppGlobals.LookupContext.ProductVersionLookup.Clone();
+
+            RegisterLookup(TestingOutlineLookup);
         }
 
         protected override void Initialize()
@@ -392,8 +362,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             }
 
             var lookupDefinition = AppGlobals.LookupContext.ProductVersionLookup.Clone();
-            //lookupDefinition.InitialSortColumnDefinition = lookupDefinition.VisibleColumns[1];
-
             ProductVersionLookupDefinition = lookupDefinition;
 
             CreateDepartmentAutoFillSetup =
@@ -422,7 +390,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                     var department = DepartmentFilterAutoFillValue.GetEntity<Department>();
                     if (department != null)
                     {
-                        var context = AppGlobals.DataRepository.GetDataContext();
+                        var context = SystemGlobals.DataRepository.GetDataContext();
                         var table = context.GetTable<Department>();
                         department = table.FirstOrDefault(p => p.Id == department.Id);
                         if (department != null)
@@ -437,7 +405,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 }
             }
 
-            ProductVersionLookupCommand = GetLookupCommand(LookupCommands.Refresh);
+            ProductVersionLookupDefinition.SetCommand(GetLookupCommand(LookupCommands.Refresh));
         }
 
 
@@ -445,15 +413,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         {
             ProductVersionLookupDefinition.FilterDefinition.ClearFixedFilters();
             Id = newEntity.Id;
-
-            TestingOutlineLookup.FilterDefinition.ClearFixedFilters();
-            TestingOutlineLookup.FilterDefinition.AddFixedFilter(p => p.ProductId, Conditions.Equals, Id);
-            TestingOutlineLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
         }
 
         protected override Product GetEntityFromDb(Product newEntity, PrimaryKeyValue primaryKeyValue)
         {
-            var query = AppGlobals.DataRepository.GetDataContext().GetTable<Product>();
+            var query = SystemGlobals.DataRepository.GetDataContext().GetTable<Product>();
             var result = query.FirstOrDefault(p => p.Id == newEntity.Id);
             if (result != null)
             {
@@ -471,10 +435,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             InstallerFileName = entity.InstallerFileName;
             ArchivePath = entity.ArchivePath;
             AppGuid = entity.AppGuid;
-            CreateDepartmentAutoFillValue =
-                CreateDepartmentAutoFillSetup.GetAutoFillValueForIdValue(entity.CreateDepartmentId);
-            ArchiveDepartmentAutoFillValue =
-                ArchiveDepartmentAutoFillSetup.GetAutoFillValueForIdValue(entity.ArchiveDepartmentId);
+            CreateDepartmentAutoFillValue = entity.CreateDepartment.GetAutoFillValue();
+            ArchiveDepartmentAutoFillValue = entity.ArchiveDepartment.GetAutoFillValue();
             Price = entity.Price;
             TotalRevenue = entity.Revenue.GetValueOrDefault();
             TotalCost = entity.Cost.GetValueOrDefault();
@@ -484,7 +446,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         protected override Product GetEntityData()
         {
-            var context = AppGlobals.DataRepository.GetDataContext();
+            var context = SystemGlobals.DataRepository.GetDataContext();
             var table = context.GetTable<Product>();
             var existProduct = table
                 .FirstOrDefault(p => p.Id == Id);
@@ -521,11 +483,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         {
             Id = 0;
             Notes = null;
-            ProductVersionLookupCommand = GetLookupCommand(LookupCommands.Clear);
+            ProductVersionLookupDefinition.SetCommand(GetLookupCommand(LookupCommands.Clear));
             UpdateVersionsCommand.IsEnabled = false;
             InstallerFileName = ArchivePath = AppGuid = null;
-            CreateDepartmentAutoFillValue = ArchiveDepartmentAutoFillValue = null;
-            TestingOutlineLookupCommand = GetLookupCommand(LookupCommands.Clear);
+            CreateDepartmentAutoFillValue = ArchiveDepartmentAutoFillValue = null; ;
             Price = null;
             TotalRevenue = TotalCost = Difference = 0;
             View.RefreshView();
@@ -533,7 +494,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         protected override bool SaveEntity(Product entity)
         {
-            var context = AppGlobals.DataRepository.GetDataContext();
+            var context = SystemGlobals.DataRepository.GetDataContext();
             if (context != null)
             {
                 var result = context.SaveEntity(entity, $"Saving Product '{entity.Description}'");
@@ -549,7 +510,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         }
 
-        private bool CreateNewVersion(DataAccess.IDbContext context, Product product)
+        private bool CreateNewVersion(IDbContext context, Product product)
         {
             var newVersion = new ProductVersion
             {
@@ -588,7 +549,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         protected override bool DeleteEntity()
         {
-            var context = AppGlobals.DataRepository.GetDataContext();
+            var context = SystemGlobals.DataRepository.GetDataContext();
             var query = context.GetTable<Product>();
             if (query != null)
             {
@@ -607,14 +568,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         private void OnVersionsAddModify()
         {
             if (ExecuteAddModifyCommand() == DbMaintenanceResults.Success)
-                ProductVersionLookupCommand = GetLookupCommand(LookupCommands.AddModify);
+                ProductVersionLookupDefinition.SetCommand(GetLookupCommand(LookupCommands.AddModify));
 
         }
 
         private void OnTestOutlineAddModify()
         {
             if (ExecuteAddModifyCommand() == DbMaintenanceResults.Success)
-                TestingOutlineLookupCommand = GetLookupCommand(LookupCommands.AddModify);
+                TestingOutlineLookup.SetCommand(GetLookupCommand(LookupCommands.AddModify));
         }
 
         private void UpdateVersions()
@@ -661,7 +622,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         {
             var result = string.Empty;
             var lookupData = TableDefinition.LookupDefinition.GetLookupDataMaui(lookupToFilter, false);
-            var context = AppGlobals.DataRepository.GetDataContext();
+            var context = SystemGlobals.DataRepository.GetDataContext();
             DbDataProcessor.DontDisplayExceptions = true;
 
             var totalProducts = lookupData.GetRecordCount();
@@ -700,7 +661,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         private string ProcessCurrentProduct(
             PrimaryKeyValue primaryKeyValue
-            , DataAccess.IDbContext context
+            , DbLookup.IDbContext context
             , int totalProducts
             , int currentProductIndex
             , AppProcedure procedure)
@@ -750,7 +711,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             , Product currentProduct
             , IQueryable<TimeClock> timeClocksTable
             , IQueryable<OrderDetail> orderDetailsTable
-            , DataAccess.IDbContext context
+            , DbLookup.IDbContext context
             , AppProcedure procedure)
         {
             View.UpdateRecalcProcedure(currentCustomerIndex, totalProducts, currentProduct.Description);

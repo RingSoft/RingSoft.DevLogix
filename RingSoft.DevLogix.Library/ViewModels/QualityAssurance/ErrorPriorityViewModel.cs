@@ -2,13 +2,14 @@
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.ModelDefinition;
+using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 {
-    public class ErrorPriorityViewModel : DevLogixDbMaintenanceViewModel<ErrorPriority>
+    public class ErrorPriorityViewModel : DbMaintenanceViewModel<ErrorPriority>
     {
-        public override TableDefinition<ErrorPriority> TableDefinition => AppGlobals.LookupContext.ErrorPriorities;
+        #region Properties
 
         private int _id;
 
@@ -41,6 +42,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 OnPropertyChanged();
             }
         }
+
+        #endregion
 
         public UiCommand LevelUiCommand { get; } = new UiCommand();
 
@@ -82,22 +85,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         protected override void ClearData()
         {
             Id = 0;
-            KeyAutoFillValue = null;
             Level = null;
-        }
-
-        protected override bool SaveEntity(ErrorPriority entity)
-        {
-            var context = AppGlobals.DataRepository.GetDataContext();
-            return context.SaveEntity(entity, $"'{entity.Description}' Error Priority");
-        }
-
-        protected override bool DeleteEntity()
-        {
-            var errorPrioritySet = AppGlobals.DataRepository.GetDataContext().GetTable<ErrorPriority>();
-            var errorPriority = errorPrioritySet.FirstOrDefault(p => p.Id == Id);
-            var context = AppGlobals.DataRepository.GetDataContext();
-            return context.DeleteEntity(errorPriority, $"Deleting Error Priority '{errorPriority.Description}'");
         }
     }
 }

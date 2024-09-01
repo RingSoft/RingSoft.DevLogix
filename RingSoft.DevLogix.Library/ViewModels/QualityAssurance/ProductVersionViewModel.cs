@@ -1,12 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using RingSoft.App.Interop;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.Lookup;
-using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model;
@@ -34,9 +32,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
     {
         public string Status { get; set; }
     }
-    public class ProductVersionViewModel : DevLogixDbMaintenanceViewModel<ProductVersion>
+    public class ProductVersionViewModel : DbMaintenanceViewModel<ProductVersion>
     {
-        public override TableDefinition<ProductVersion> TableDefinition => AppGlobals.LookupContext.ProductVersions;
+        #region Properties
 
         private int _id;
 
@@ -196,7 +194,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             }
         }
 
-
+        #endregion
 
         public new IProductVersionView View { get; private set; }
 
@@ -225,6 +223,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             DeployCommand = new RelayCommand(DeployToDepartment);
 
             CreateVersionCommand = new RelayCommand(CreateVersion);
+
+            DepartmentsManager = new ProductVersionDepartmentsManager(this);
+            RegisterGrid(DepartmentsManager);
         }
 
         protected override void Initialize()
@@ -240,7 +241,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             }
             ProductAutoFillSetup =
                 new AutoFillSetup(AppGlobals.LookupContext.ProductVersions.GetFieldDefinition(p => p.ProductId));
-            DepartmentsManager = new ProductVersionDepartmentsManager(this);
 
             var departmentLookup = AppGlobals.LookupContext.DepartmentLookup.Clone();
             departmentLookup.FilterDefinition.AddFixedFilter(p => p.FtpAddress, Conditions.NotEqualsNull, "");
@@ -255,10 +255,18 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                     var product =
                         AppGlobals.LookupContext.Products.GetEntityFromPrimaryKeyValue(LookupAddViewArgs
                             .ParentWindowPrimaryKeyValue);
-                    DefaultProductAutoFillValue =
-                        AppGlobals.LookupContext.OnAutoFillTextRequest(AppGlobals.LookupContext.Products,
-                            product.Id.ToString());
+                    product = product.FillOutProperties(false);
+                    DefaultProductAutoFillValue = product.GetAutoFillValue();
                 }
+            }
+
+            if (DefaultProductAutoFillValue.IsValid())
+            {
+                var defaultLookup = AppGlobals.LookupContext.ProductVersionLookup.Clone();
+                var taskColumn = defaultLookup.GetColumnDefinition(p => p.Product);
+                defaultLookup.DeleteVisibleColumn(taskColumn);
+                FindButtonLookupDefinition = defaultLookup;
+                KeyAutoFillSetup.LookupDefinition = defaultLookup;
             }
 
             FindButtonLookupDefinition.InitialOrderByType = OrderByTypes.Descending;
@@ -309,7 +317,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                     entity.ProductId.ToString());
 
             Notes = entity.Notes;
-            DepartmentsManager.LoadGrid(entity.ProductVersionDepartments);
             if (entity.ArchiveDateTime == null)
             {
                 ArchiveDateTime = null;
@@ -328,6 +335,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 Id = Id,
                 Description = KeyAutoFillValue.Text,
                 Notes = Notes,
+                ProductId = ProductAutoFillValue.GetEntity<Product>().Id,
             };
 
             var list = DepartmentsManager.GetEntityList()
@@ -346,11 +354,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 result.ArchiveDateTime = ArchiveDateTime.Value.ToUniversalTime();
             }
 
-            if (ProductAutoFillValue.IsValid())
-            {
-                result.ProductId = AppGlobals.LookupContext.Products
-                    .GetEntityFromPrimaryKeyValue(ProductAutoFillValue.PrimaryKeyValue).Id;
-            }
             return result;
         }
 
@@ -359,7 +362,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             Id = 0;
             ProductAutoFillValue = DefaultProductAutoFillValue;
             Notes = null;
-            DepartmentsManager.SetupForNewRecord();
             DepartmentAutoFillValue = null;
             ArchiveDateTime = null;
             CheckArchiveButtonState();
@@ -380,21 +382,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             }
 
             return base.ValidateEntity(entity);
-        }
-
-        protected override bool SaveEntity(ProductVersion entity)
-        {
-            var context = SystemGlobals.DataRepository.GetDataContext();
-            if (context != null)
-            {
-                if (context.SaveEntity(entity, $"Saving Product Version '{entity.Description}'"))
-                {
-                    DepartmentsManager.SaveNoCommitData(entity, context);
-                    return context.Commit("Saving Product Version Details");
-                }
-            }
-            return false;
-
         }
 
         protected override bool DeleteEntity()
@@ -422,14 +409,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             var table = context.GetTable<ProductVersion>();
             var query = table.Where(p => p.ProductId == _originalProductId);
 
-            //var selectQuery = new SelectQuery(TableDefinition.TableName);
-            //selectQuery.SetMaxRecords(2);
-            //selectQuery.AddWhereItem(TableDefinition.GetFieldDefinition(p => p.ProductId).FieldName,
-            //    Conditions.Equals, _originalProductId);
-            //var result = TableDefinition.Context.DataProcessor.GetData(selectQuery);
-            //if (result.ResultCode == GetDataResultCodes.Success)
-            //{
-            //}
             if (query.Count() < 2)
             {
                 var message = "You cannot delete the version or change the product for only version of this product.";

@@ -84,9 +84,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         public override void LoadFromEntity(ProductVersionDepartment entity)
         {
-            DepartmentAutoFillValue =
-                AppGlobals.LookupContext.OnAutoFillTextRequest(AppGlobals.LookupContext.Departments,
-                    entity.DepartmentId.ToString());
+            DepartmentAutoFillValue = entity.Department.GetAutoFillValue();
             ReleaseDateTime = entity.ReleaseDateTime.ToLocalTime();
             DepartmentId = entity.DepartmentId;
         }

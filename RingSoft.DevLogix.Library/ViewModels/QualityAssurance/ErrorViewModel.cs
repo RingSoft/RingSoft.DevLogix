@@ -5,7 +5,6 @@ using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.Lookup;
-using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.LookupModel;
@@ -17,7 +16,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Linq;
-using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 {
@@ -27,8 +25,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         void CopyToClipboard(string text);
 
-        //void PunchIn(Error error);
-
         bool ProcessRecalcLookupFilter(LookupDefinitionBase lookup);
 
         string StartRecalcProcedure(LookupDefinitionBase lookup);
@@ -36,9 +32,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         void UpdateRecalcProcedure(int currentError, int totalErrors, string currentErrorText);
     }
 
-    public class ErrorViewModel :DevLogixDbMaintenanceViewModel<Error>
+    public class ErrorViewModel :DbMaintenanceViewModel<Error>
     {
-        public override TableDefinition<Error> TableDefinition => AppGlobals.LookupContext.Errors;
+        #region Properties
 
         private int _id;
 
@@ -423,21 +419,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             }
         }
 
-        private LookupCommand _timeClockLookupCommand;
-
-        public LookupCommand TimeClockLookupCommand
-        {
-            get => _timeClockLookupCommand;
-            set
-            {
-                if (_timeClockLookupCommand == value)
-                    return;
-
-                _timeClockLookupCommand = value;
-                OnPropertyChanged(null, false);
-            }
-        }
-
         private ErrorUserGridManager _errorUserGridManager;
 
         public ErrorUserGridManager ErrorUserGridManager
@@ -532,6 +513,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             }
         }
 
+        #endregion
+
         public RelayCommand ClipboardCopyCommand { get; set; }
 
         public RelayCommand WriteOffCommand { get; set; }
@@ -591,21 +574,18 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             TimeClockLookup = AppGlobals.LookupContext.TimeClockTabLookup.Clone();
             //TimeClockLookup = timeClockLookup;
             TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
-        }
+            RegisterLookup(TimeClockLookup);
 
-        protected override void Initialize()
-        {
-            AppGlobals.MainViewModel.ErrorViewModels.Add(this);
-            
-            if (base.View is IErrorView errorView)
-            {
-                View = errorView;
-            }
+            ErrorUserGridManager = new ErrorUserGridManager(this);
+            DeveloperManager = new ErrorDeveloperManager(this);
+            ErrorQaManager = new ErrorQaManager(this);
+            SupportTicketManager = new ErrorSupportTicketManager(this);
 
-            MapFieldToUiCommand(DescriptionUiCommand, TableDefinition.GetFieldDefinition(p => p.Description));
-            MapFieldToUiCommand(ResolutionUiCommand, TableDefinition.GetFieldDefinition(p => p.Resolution));
+            RegisterGrid(ErrorUserGridManager, true);
+            RegisterGrid(DeveloperManager, true);
+            RegisterGrid(ErrorQaManager, true);
+            RegisterGrid(SupportTicketManager);
 
-            ViewLookupDefinition.InitialOrderByField = TableDefinition.GetFieldDefinition(p => p.Id);
             StatusAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ErrorStatusId));
             ProductAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ProductId));
             PriorityAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ErrorPriorityId));
@@ -620,20 +600,19 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             AssignedQualityAssuranceAutoFillSetup =
                 new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.AssignedTesterId));
 
-            ErrorUserGridManager = new ErrorUserGridManager(this);
-            DeveloperManager = new ErrorDeveloperManager(this);
-            ErrorQaManager = new ErrorQaManager(this);
-            SupportTicketManager = new ErrorSupportTicketManager(this);
+        }
 
-            RegisterGrid(ErrorUserGridManager, true);
-            RegisterGrid(DeveloperManager, true);
-            RegisterGrid(ErrorQaManager, true);
-            RegisterGrid(SupportTicketManager);
+        protected override void Initialize()
+        {
+            AppGlobals.MainViewModel.ErrorViewModels.Add(this);
+            
+            if (base.View is IErrorView errorView)
+            {
+                View = errorView;
+            }
 
-            //TablesToDelete.Add(AppGlobals.LookupContext.ErrorDevelopers);
-            //TablesToDelete.Add(AppGlobals.LookupContext.ErrorTesters);
-            //TablesToDelete.Add(AppGlobals.LookupContext.ErrorUsers);
-            //TablesToDelete.Add(AppGlobals.LookupContext.SupportTicketError);
+            MapFieldToUiCommand(DescriptionUiCommand, TableDefinition.GetFieldDefinition(p => p.Description));
+            MapFieldToUiCommand(ResolutionUiCommand, TableDefinition.GetFieldDefinition(p => p.Resolution));
 
             if (LookupAddViewArgs != null && LookupAddViewArgs.ParentWindowPrimaryKeyValue != null)
             {
@@ -650,6 +629,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 }
             }
 
+            ViewLookupDefinition.InitialOrderByField = TableDefinition.GetFieldDefinition(p => p.Id);
 
             base.Initialize();
         }
@@ -673,11 +653,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                     AppGlobals.LookupContext.ProductVersions.GetFieldDefinition(p => p.ProductId), Conditions.Equals,
                 product.Id);
 
-                //Peter Ringering -02 / 17 / 2023 12:49:33 AM - E - 13
-                //if (MaintenanceMode == DbMaintenanceModes.AddMode)
-                //{
-                //    FoundVersionAutoFillValue = GetVersionForUser();
-                //}
                 if (!_loading)
                 {
                     FoundVersionAutoFillValue = GetVersionForUser();
@@ -708,55 +683,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 WriteOffCommand.IsEnabled = ClipboardCopyCommand.IsEnabled =
                     PassCommand.IsEnabled = FailCommand.IsEnabled = PunchInCommand.IsEnabled = true;
             }
-
-            TimeClockLookup.FilterDefinition.ClearFixedFilters();
-            TimeClockLookup.FilterDefinition.AddFixedFilter(p => p.ErrorId, Conditions.Equals, Id);
-            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
         }
-
-        //protected override Error GetEntityFromDb(Error newEntity, PrimaryKeyValue primaryKeyValue)
-        //{
-        //    var result = GetError(newEntity.Id);
-        //    if (result != null)
-        //    {
-        //        //if (_makeErrorIdContext != null && _makeErrorId)
-        //        //{
-        //        //    var errorId = $"E-{result.Id}";
-        //        //    result.ErrorId = errorId;
-        //        //    _makeErrorIdContext.SaveEntity(result, "Updating ErrorId");
-        //        //}
-        //        _makeErrorIdContext = null;
-        //        _makeErrorId = false;
-        //        KeyAutoFillValue = result.GetAutoFillValue();
-        //    }
-
-        //    return result;
-        //}
 
         private static Error GetError(int errorId)
         {
             Error newEntity;
-            var context = AppGlobals.DataRepository.GetDataContext();
+            var context = SystemGlobals.DataRepository.GetDataContext();
             var errorTable = context.GetTable<Error>();
             var result = errorTable.Include(p => p.Developers)
-                //.ThenInclude(p => p.Developer)
-                //.Include(p => p.Testers)
-                //.ThenInclude(p => p.Tester)
-                //.Include(p => p.Testers)
-                //.ThenInclude(p => p.NewErrorStatus)
-                //.Include(p => p.ErrorStatus)
-                //.Include(p => p.Product)
-                //.Include(p => p.ErrorPriority)
-                //.Include(p => p.FoundVersion)
-                //.Include(p => p.FixedVersion)
-                //.Include(p => p.FoundByUser)
-                //.Include(p => p.AssignedDeveloper)
-                //.Include(p => p.AssignedTester)
-                //.Include(p => p.Users)
-                //.ThenInclude(p => p.User)
-                //.Include(p => p.TestingOutline)
-                //.Include(p => p.SupportTickets)
-                //.ThenInclude(p => p.SupportTicket)
                 .FirstOrDefault(p => p.Id == errorId);
             return result;
         }
@@ -783,11 +717,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
             Description = entity.Description;
             Resolution = entity.Resolution;
-            //DeveloperManager.LoadGrid(entity.Developers);
             CurrentTestingOutlineAutoFillValue = TestingOutlineAutoFillValue = entity.TestingOutline.GetAutoFillValue();
-            //ErrorQaManager.LoadGrid(entity.Testers);
-            //ErrorUserGridManager.LoadGrid(entity.Users);
-            //SupportTicketManager.LoadGrid(entity.SupportTickets);
             MinutesSpent = entity.MinutesSpent;
             TotalCost = entity.Cost;
             TotalTimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
@@ -819,7 +749,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             }
             if (Id > 0)
             {
-                var context = AppGlobals.DataRepository.GetDataContext();
+                var context = SystemGlobals.DataRepository.GetDataContext();
                 var error = context.GetTable<Error>()
                     .FirstOrDefault(p => p.Id == Id);
                 if (error != null)
@@ -896,16 +826,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             if (AppGlobals.LoggedInUser != null)
             {
                 FoundUserAutoFillValue = FoundUserAutoFillSetup.GetAutoFillValueForIdValue(AppGlobals.LoggedInUser.Id);
-                //SetErrorText(GetUser());
             }
 
-            //DeveloperManager.SetupForNewRecord();
-            //ErrorQaManager.SetupForNewRecord();
-            //ErrorUserGridManager.SetupForNewRecord();
-            //SupportTicketManager.SetupForNewRecord();
-
             WriteOffCommand.IsEnabled = ClipboardCopyCommand.IsEnabled = PassCommand.IsEnabled = FailCommand.IsEnabled = PunchInCommand.IsEnabled = false;
-            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Clear);
             TotalCost = 0;
             MinutesSpent = 0;
             TotalTimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
@@ -916,95 +839,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         {
             GenerateKeyValue("E", entity);
             return base.SaveEntity(entity);
-            //var makeErrorId = entity.Id == 0 && entity.ErrorId.IsNullOrEmpty();
-            //var result = false;
-            //var context = SystemGlobals.DataRepository.GetDataContext();
-            //if (context != null)
-            //{
-            //    if (makeErrorId)
-            //    {
-            //        entity.ErrorId = Guid.NewGuid().ToString();
-            //    }
-            //    result = context.SaveEntity(entity, "Saving Error");
-
-            //    if (result && makeErrorId)
-            //    {
-            //        var errorId = $"E-{entity.Id}";
-            //        entity.ErrorId = errorId;
-            //        result = context.SaveEntity(entity, "Updating Error Id");
-            //        if (result)
-            //        {
-            //            KeyAutoFillValue = entity.GetAutoFillValue();
-            //        }
-            //    }
-
-            //    if (result)
-            //    {
-            //        SupportTicketManager.SaveNoCommitData(entity, context);
-            //        //var supportTicketTable = context.GetTable<SupportTicketError>();
-            //        //if (supportTicketTable != null)
-            //        //{
-            //        //    var oldTickets = supportTicketTable
-            //        //        .Where(p => p.ErrorId == Id);
-
-            //        //    if (oldTickets.Any())
-            //        //    {
-            //        //        context.RemoveRange(oldTickets);
-            //        //    }
-
-            //        //    var list = SupportTicketManager.GetEntityList();
-            //        //    foreach (var supportTicketError in list)
-            //        //    {
-            //        //        supportTicketError.ErrorId = entity.Id;
-            //        //    }
-            //        //    context.AddRange(list);
-            //        result = context.Commit("Saving Support Tickets");
-            //        //}
-            //    }
-            //}
-
-            //if (MaintenanceMode == DbMaintenanceModes.AddMode)
-            //{
-            //    _makeErrorIdContext = context as IDbContext;
-            //}
-
-            //return result;
         }
-
-        //protected override bool DeleteEntity()
-        //{
-        //    var context = SystemGlobals.DataRepository.GetDataContext();
-        //    if (context != null)
-        //    {
-        //        var entity = context.GetTable<Error>().FirstOrDefault(p => p.Id == Id);
-        //        var developerQuery = context.GetTable<ErrorDeveloper>();
-        //        var developers = developerQuery.Where(p => p.ErrorId == Id);
-        //        context.RemoveRange(developers);
-
-        //        var testersQuery = context.GetTable<ErrorQa>();
-        //        var testers = testersQuery.Where(p => p.ErrorId == Id);
-        //        context.RemoveRange(testers);
-
-        //        var usersQuery = context.GetTable<ErrorUser>();
-        //        var users = usersQuery.Where(p => p.ErrorId == Id);
-        //        context.RemoveRange(users);
-
-        //        var supportTicketTable = context.GetTable<SupportTicketError>();
-        //        var oldTickets = supportTicketTable
-        //            .Where(p => p.ErrorId == Id);
-
-        //        if (oldTickets.Any())
-        //        {
-        //            context.RemoveRange(oldTickets);
-        //        }
-
-        //        var table = TableDefinition;
-        //        return context.DeleteEntity(entity, "Deleting Error");
-        //    }
-
-        //    return false;
-
-        //}
 
         private void PassError()
         {
@@ -1042,17 +877,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         private User GetUser()
         {
-            //if (AppGlobals.LoggedInUser != null)
-            //{
-            //    var context = AppGlobals.DataRepository.GetDataContext();
-            //    if (context != null)
-            //    {
-            //        var user = context.GetTable<User>().Include(p => p.Department)
-            //            .FirstOrDefault(p => p.Id == AppGlobals.LoggedInUser.Id);
-            //        return user;
-            //    }
-            //}
-
             return AppGlobals.LoggedInUser;
         }
 
@@ -1120,7 +944,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         private void ErrorViewModel_PrintProcessingHeader(object? sender, PrinterDataProcessedEventArgs e)
         {
             var errorId = TableDefinition.GetEntityFromPrimaryKeyValue(e.PrimaryKey).Id;
-            var context = AppGlobals.DataRepository.GetDataContext();
+            var context = SystemGlobals.DataRepository.GetDataContext();
             var errorTableQuery = context.GetTable<Error>();
 
             var error = errorTableQuery.Include(p => p.Developers)
@@ -1163,7 +987,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         private void PunchIn()
         {
-            var context = AppGlobals.DataRepository.GetDataContext();
+            var context = SystemGlobals.DataRepository.GetDataContext();
             var table = context.GetTable<ErrorUser>();
             var user = table.FirstOrDefault(p => p.ErrorId == Id
                                                  && p.UserId == AppGlobals.LoggedInUser.Id);
@@ -1203,7 +1027,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         public void RefreshTimeClockLookup()
         {
-            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh);
+            TimeClockLookup.SetCommand(GetLookupCommand(LookupCommands.Refresh));
         }
 
         private void GetTotals()
@@ -1235,7 +1059,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         {
             var result = string.Empty;
             var lookupData = TableDefinition.LookupDefinition.GetLookupDataMaui(lookupToFilter, false);
-            var context = AppGlobals.DataRepository.GetDataContext();
+            var context = SystemGlobals.DataRepository.GetDataContext();
             var errorsTable = context.GetTable<Error>();
             var usersTable = context.GetTable<User>();
             var timeClocksTable = context.GetTable<TimeClock>();
