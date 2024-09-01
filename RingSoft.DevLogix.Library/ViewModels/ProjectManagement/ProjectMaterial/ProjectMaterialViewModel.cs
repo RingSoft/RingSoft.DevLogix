@@ -1,25 +1,22 @@
-﻿using System.ComponentModel;
-using System.Data;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.Lookup;
-using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbMaintenance;
-using RingSoft.DevLogix.DataAccess.LookupModel;
 using RingSoft.DevLogix.DataAccess.LookupModel.ProjectManagement;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
+using System.ComponentModel;
+using System.Linq;
 
 namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 {
     public interface IProjectMaterialView : IDbMaintenanceView
     {
-        void GetNewLineType(string text, out PrimaryKeyValue materialPartPkValue, out MaterialPartLineTypes lineType);
+        bool GetNewLineType(string text, out PrimaryKeyValue materialPartPkValue, out MaterialPartLineTypes lineType);
 
         bool ShowCommentEditor(DataEntryGridMemoValue comment);
 
@@ -38,9 +35,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         AllowMaterialPost = 1,
     }
 
-    public class ProjectMaterialViewModel : DevLogixDbMaintenanceViewModel<ProjectMaterial>
+    public class ProjectMaterialViewModel : DbMaintenanceViewModel<ProjectMaterial>
     {
-        public override TableDefinition<ProjectMaterial> TableDefinition => AppGlobals.LookupContext.ProjectMaterials;
+        #region Properties
 
         private int _id;
 
@@ -184,22 +181,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
-        private LookupCommand _historyLookupCommand;
-
-        public LookupCommand HistoryLookupCommand
-        {
-            get => _historyLookupCommand;
-            set
-            {
-                if (_historyLookupCommand == value)
-                    return;
-
-                _historyLookupCommand = value;
-                OnPropertyChanged(null, false);
-            }
-        }
-
-
         private string? _notes;
 
         public string? Notes
@@ -214,6 +195,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 OnPropertyChanged();
             }
         }
+
+        #endregion
 
         public new IProjectMaterialView View { get; private set; }
 
@@ -230,6 +213,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         {
             ProjectAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ProjectId));
             ProjectMaterialPartManager = new ProjectMaterialPartManager(this);
+            RegisterGrid(ProjectMaterialPartManager);
 
             RecalcCommand = new RelayCommand(Recalc);
 
@@ -253,9 +237,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     var project =
                         AppGlobals.LookupContext.Projects.GetEntityFromPrimaryKeyValue(LookupAddViewArgs
                             .ParentWindowPrimaryKeyValue);
-                    DefaultProjectAutoFillValue =
-                        AppGlobals.LookupContext.OnAutoFillTextRequest(AppGlobals.LookupContext.Projects,
-                            project.Id.ToString());
+                    DefaultProjectAutoFillValue = project.GetAutoFillValue();
                 }
             }
             AppGlobals.MainViewModel.MaterialViewModels.Add(this);
@@ -271,33 +253,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             historyLookup.InitialOrderByType = OrderByTypes.Descending;
             HistoryLookup = historyLookup;
 
+            RegisterLookup(HistoryLookup);
+
             base.Initialize();
         }
 
         protected override void PopulatePrimaryKeyControls(ProjectMaterial newEntity, PrimaryKeyValue primaryKeyValue)
         {
             Id = newEntity.Id;
-        }
-
-        protected override ProjectMaterial GetEntityFromDb(ProjectMaterial newEntity, PrimaryKeyValue primaryKeyValue)
-        {
-            var result = new ProjectMaterial();
-            var context = AppGlobals.DataRepository.GetDataContext();
-            result = context.GetTable<ProjectMaterial>()
-                .Include(p => p.Project)
-                .Include(p => p.Parts)
-                .ThenInclude(p => p.MaterialPart)
-                .FirstOrDefault(p => p.Id == newEntity.Id);
-            if (result != null)
-            {
-                HistoryLookup.FilterDefinition.ClearFixedFilters();
-                HistoryLookup.FilterDefinition.AddFixedFilter(p => p.ProjectMaterialId, Conditions.Equals, Id);
-                HistoryLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
-                PostCommand.IsEnabled = true;
-            }
-
-            return result;
-
         }
 
         protected override void LoadFromEntity(ProjectMaterial entity)
@@ -308,14 +271,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             ActualCost = entity.ActualCost;
             IsCostEdited = entity.IsCostEdited;
             Notes = entity.Notes;
-            ProjectMaterialPartManager.LoadGrid(entity.Parts);
             ProjectMaterialPartManager.CalculateTotalCost();
             _loading = false;
         }
 
         protected override ProjectMaterial GetEntityData()
         {
-            var context = AppGlobals.DataRepository.GetDataContext();
+            var context = SystemGlobals.DataRepository.GetDataContext();
             var table = context.GetTable<ProjectMaterial>();
             var existingMaterial = table.FirstOrDefault(p => p.Id == Id);
             if (existingMaterial != null)
@@ -342,18 +304,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             IsCostEdited = false;
             ActualCost = 0;
             Notes = string.Empty;
-            ProjectMaterialPartManager.SetupForNewRecord();
             PostCommand.IsEnabled = ProjectAutoFillValue.IsValid();
-            HistoryLookupCommand = GetLookupCommand(LookupCommands.Clear);
-        }
-
-        protected override bool ValidateEntity(ProjectMaterial entity)
-        {
-            if (!ProjectMaterialPartManager.ValidateGrid())
-            {
-                return false;
-            }
-            return base.ValidateEntity(entity);
         }
 
         public void SetTotalCost(double total)
@@ -366,47 +317,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
 
             _calculating = false;
-        }
-
-
-        protected override bool SaveEntity(ProjectMaterial entity)
-        {
-            var context = AppGlobals.DataRepository.GetDataContext();
-            var result = context.SaveEntity(entity, "Saving Project Material");
-            if (result)
-            {
-                var parts = ProjectMaterialPartManager.GetEntityList();
-                foreach (var projectMaterialPart in parts)
-                {
-                    projectMaterialPart.ProjectMaterialId = entity.Id;
-                }
-
-                var origParts = context.GetTable<ProjectMaterialPart>()
-                    .Where(p => p.ProjectMaterialId == Id).ToList();
-                context.RemoveRange(origParts);
-                context.AddRange(parts);
-
-            }
-
-            result = context.Commit("Committing Project Material");
-            return result;
-        }
-
-        protected override bool DeleteEntity()
-        {
-            var context = AppGlobals.DataRepository.GetDataContext();
-            var table = context.GetTable<ProjectMaterial>();
-            var entity = table.FirstOrDefault(p => p.Id == Id);
-            if (entity != null)
-            {
-                var origParts = context.GetTable<ProjectMaterialPart>()
-                    .Where(p => p.ProjectMaterialId == Id).ToList();
-                context.RemoveRange(origParts);
-
-                return context.DeleteEntity(entity, "Deleting Project Material");
-            }
-
-            return true;
         }
 
         public void Recalc()
@@ -434,14 +344,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             var lookupData = TableDefinition.LookupDefinition.GetLookupDataMaui(recalcFilter, false);
             var recordCount = lookupData.GetRecordCount();
             var currentProjectMaterial = 1;
-            var context = AppGlobals.DataRepository.GetDataContext();
+            var context = SystemGlobals.DataRepository.GetDataContext();
             var projectMaterialTable = context.GetTable<ProjectMaterial>();
             
             lookupData.PrintOutput += (sender, args) =>
             {
+                var total = args.Result.Count;
+                var index = 0;
                 foreach (var primaryKeyValue in args.Result)
                 {
-                    //projectMaterialPrimaryKey.PopulateFromDataRow(tableRow);
+                    index++;
                     if (primaryKeyValue.IsValid())
                     {
                         var projectMaterial = TableDefinition.GetEntityFromPrimaryKeyValue(primaryKeyValue);
@@ -450,6 +362,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                             .FirstOrDefault(p => p.Id == projectMaterial.Id);
                         if (projectMaterial != null)
                         {
+                            View.UpdateRecalcProcedure(
+                                index
+                                , total
+                                , $"Recalculating {projectMaterial.Name}");
                             var historyItems = projectMaterial.History.ToList();
                             projectMaterial.ActualCost = historyItems.Sum(p => p.Quantity * p.Cost);
                             if (!context.SaveNoCommitEntity(projectMaterial, "Saving Project Material"))
@@ -494,7 +410,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         {
             ActualCost = cost;
             var primaryKey = TableDefinition.GetPrimaryKeyValueFromEntity(Entity);
-            HistoryLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKey);
+            HistoryLookup.SetCommand(GetLookupCommand(LookupCommands.Refresh, primaryKey));
         }
         public override void OnWindowClosing(CancelEventArgs e)
         {

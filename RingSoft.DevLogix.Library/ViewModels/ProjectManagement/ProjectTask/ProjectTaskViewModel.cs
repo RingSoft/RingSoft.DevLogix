@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbLookup;
@@ -48,11 +49,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         void SetFocusToGrid(ProjectTaskGrids grid);
     }
-    public class ProjectTaskViewModel : DevLogixDbMaintenanceViewModel<ProjectTask>
+    public class ProjectTaskViewModel : DbMaintenanceViewModel<ProjectTask>
     {
-        public override TableDefinition<ProjectTask> TableDefinition => AppGlobals.LookupContext.ProjectTasks;
-
-        public override bool SetReadOnlyMode => false;
+        #region Properties
 
         private int _id;
 
@@ -299,22 +298,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
-        private LookupCommand _timeClockLookupCommand;
-
-        public LookupCommand TimeClockLookupCommand
-        {
-            get => _timeClockLookupCommand;
-            set
-            {
-                if (_timeClockLookupCommand == value)
-                    return;
-
-                _timeClockLookupCommand = value;
-                OnPropertyChanged(null, false);
-            }
-        }
-
-
         private string? _notes;
 
         public string? Notes
@@ -345,6 +328,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
+        #endregion
 
         public AutoFillValue DefaultProjectAutoFillValue { get; private set; }
 
@@ -362,9 +346,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         private bool _calculating;
         private bool _loading;
-        private int _originalProjectId;
         private int _dependencyRowFocusId = -1;
         private int _laborPartRowFocus = -1;
+        private int _originalProjectId;
 
         public ProjectTaskViewModel()
         {
@@ -396,15 +380,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             TablesToDelete.Add(AppGlobals.LookupContext.ProjectTaskLaborParts);
             TablesToDelete.Add(AppGlobals.LookupContext.ProjectTaskDependency);
 
-            //var timeClockLookup = new LookupDefinition<TimeClockLookup, TimeClock>(AppGlobals.LookupContext.TimeClocks);
-            //timeClockLookup.AddVisibleColumnDefinition(p => p.PunchInDate, p => p.PunchInDate);
-            //timeClockLookup.Include(p => p.User)
-            //    .AddVisibleColumnDefinition(p => p.UserName, p => p.Name);
-            //var column = timeClockLookup.AddVisibleColumnDefinition(p => p.MinutesSpent, p => p.MinutesSpent);
-            //column.HasSearchForHostId(DevLogixLookupContext.TimeSpentHostId);
-
             TimeClockLookup = AppGlobals.LookupContext.TimeClockTabLookup.Clone();
             TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
+
+            RegisterLookup(TimeClockLookup);
 
             UserUiCommand = new UiCommand();
         }
@@ -464,10 +443,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         {
             Id = newEntity.Id;
 
-            TimeClockLookup.FilterDefinition.ClearFixedFilters();
-            TimeClockLookup.FilterDefinition.AddFixedFilter(p => p.ProjectTaskId, Conditions.Equals, Id);
-            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
-
             PunchInCommand.IsEnabled = true;
         }
 
@@ -515,28 +490,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             return result;
         }
 
-
-        //private void SetUserFilter()
-        //{
-        //    UserAutoFillSetup.LookupDefinition.FilterDefinition.ClearFixedFilters();
-        //    if (ProjectAutoFillValue.IsValid())
-        //    {
-        //        var project = ProjectAutoFillValue.GetEntity<Project>();
-        //        if (project != null)
-        //        {
-        //            var formula = string.Empty;
-        //            var selectQuery = new SelectQuery(AppGlobals.LookupContext.ProjectUsers.TableName);
-        //            selectQuery.AddSelectColumn(AppGlobals.LookupContext.ProjectUsers.GetFieldDefinition(p => p.UserId).FieldName);
-        //            selectQuery.AddWhereItem(AppGlobals.LookupContext.ProjectUsers.GetFieldDefinition(p => p.ProjectId).FieldName
-        //                , Conditions.Equals, project.Id.ToString(), false, ValueTypes.Numeric);
-        //            var selectStatement =
-        //                TableDefinition.Context.DataProcessor.SqlGenerator.GenerateSelectStatement(selectQuery);
-        //            formula = $"{AppGlobals.LookupContext.Users.GetFieldDefinition(p => p.Id).GetSqlFormatObject()} IN ({selectStatement})";
-        //            UserAutoFillSetup.LookupDefinition.FilterDefinition.AddFixedFilter("User", null, "", formula);
-
-        //        }
-        //    }
-        //}
         protected override void LoadFromEntity(ProjectTask entity)
         {
             _loading = true;
@@ -602,17 +555,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         protected override bool ValidateEntity(ProjectTask entity)
         {
-            //if (entity.UserId == 0)
-            //{
-            //    var message =
-            //        "The Assigned To User is invalid.  Please select a valid User that is added to this project.";
-            //    var caption = "Invalid Assigned To User";
-
-            //    View.OnValidationFail(TableDefinition.GetFieldDefinition(p => p.UserId),
-            //        message, caption);
-            //    return false;
-            //}
-
             if (entity.ProjectId == 0)
             {
                 return base.ValidateEntity(entity);
@@ -658,7 +600,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             UserAutoFillValue = null;
             ActualRow.ClearData();
             StatusRow.ClearData();
-            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Clear);
             MinutesCost = 0;
             PercentComplete = 0;
             Notes = string.Empty;
@@ -674,42 +615,36 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         protected override bool SaveEntity(ProjectTask entity)
         {
+            var result = base.SaveEntity(entity);
+            if (!result)
+            {
+                return result;
+            }
             var details = LaborPartsManager.GetEntityList();
             var dependencies = ProjectTaskDependencyManager.GetEntityList();
 
-            var context = AppGlobals.DataRepository.GetDataContext();
-            var result = context.SaveEntity(entity, "Saving Project Task");
+            var context = SystemGlobals.DataRepository.GetDataContext();
+
+            foreach (var projectTaskDependency in dependencies)
+            {
+                projectTaskDependency.ProjectTaskId = entity.Id;
+            }
+
+            var dependencyTable = context.GetTable<ProjectTaskDependency>();
+            context.RemoveRange(dependencyTable.Where(p => p.ProjectTaskId == entity.Id));
+            context.AddRange(dependencies);
+
+            LaborPartsManager.SaveNoCommitData(entity, context);
+
+            result = context.Commit("Saving Project Task");
 
             if (result)
             {
-                foreach (var projectTaskLaborPart in details)
+                var projectId = ProjectAutoFillValue.GetEntity<Project>().Id;
+                var projectViewModels = AppGlobals.MainViewModel.ProjectViewModels.Where(p => p.Id == projectId);
+                foreach (var projectMaintenanceViewModel in projectViewModels)
                 {
-                    projectTaskLaborPart.ProjectTaskId = entity.Id;
-                }
-
-                foreach (var projectTaskDependency in dependencies)
-                {
-                    projectTaskDependency.ProjectTaskId = entity.Id;
-                }
-
-                var table = context.GetTable<ProjectTaskLaborPart>();
-                context.RemoveRange(table.Where(p => p.ProjectTaskId == entity.Id));
-                context.AddRange(details);
-
-                var dependencyTable = context.GetTable<ProjectTaskDependency>();
-                context.RemoveRange(dependencyTable.Where(p => p.ProjectTaskId == entity.Id));
-                context.AddRange(dependencies);
-
-                result = context.Commit("Saving Project Task");
-
-                if (result)
-                {
-                    var projectId = ProjectAutoFillValue.GetEntity<Project>().Id;
-                    var projectViewModels = AppGlobals.MainViewModel.ProjectViewModels.Where(p => p.Id == projectId);
-                    foreach (var projectMaintenanceViewModel in projectViewModels)
-                    {
-                        projectMaintenanceViewModel.CalcTotals();
-                    }
+                    projectMaintenanceViewModel.CalcTotals();
                 }
             }
 
@@ -718,13 +653,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         protected override bool DeleteEntity()
         {
-            var context = AppGlobals.DataRepository.GetDataContext();
+            var context = SystemGlobals.DataRepository.GetDataContext();
 
             var entity = context.GetTable<ProjectTask>()
                 .FirstOrDefault(p => p.Id == Id);
 
-            var table = context.GetTable<ProjectTaskLaborPart>();
-            context.RemoveRange(table.Where(p => p.ProjectTaskId == entity.Id));
+            LaborPartsManager.DeleteNoCommitData(entity, context);
 
             var dependencyTable = context.GetTable<ProjectTaskDependency>();
             context.RemoveRange(dependencyTable.Where(p => p.ProjectTaskId == entity.Id));
@@ -916,7 +850,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         }
         public void RefreshTimeClockLookup()
         {
-            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh);
+            TimeClockLookup.SetCommand(GetLookupCommand(LookupCommands.Refresh));
         }
 
     }

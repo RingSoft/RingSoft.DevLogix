@@ -1,25 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using RingSoft.App.Library;
-using RingSoft.DbLookup;
+﻿using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.Lookup;
-using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbLookup.TableProcessing;
+using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.LookupModel.ProjectManagement;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 {
-    public class ProjectMaterialHistoryViewModel : DevLogixDbMaintenanceViewModel<ProjectMaterialHistory>
+    public class ProjectMaterialHistoryViewModel : DbMaintenanceViewModel<ProjectMaterialHistory>
     {
-        public override TableDefinition<ProjectMaterialHistory> TableDefinition =>
-            AppGlobals.LookupContext.ProjectMaterialHistory;
-
-        public override bool AllowEdit => false;
+        #region Properties
 
         private int _id;
 
@@ -175,6 +170,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
+        #endregion
 
         public ProjectMaterialHistoryViewModel()
         {
@@ -182,6 +178,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ProjectMaterialId));
 
             UserAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.UserId));
+        }
+
+        protected override void Initialize()
+        {
+            ReadOnlyMode = true;
+            base.Initialize();
         }
 
         protected override void PopulatePrimaryKeyControls(ProjectMaterialHistory newEntity,
@@ -207,16 +209,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         protected override void ClearData()
         {
-        }
-
-        protected override bool SaveEntity(ProjectMaterialHistory entity)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        protected override bool DeleteEntity()
-        {
-            throw new System.NotImplementedException();
         }
 
         protected override void PrintOutput()
@@ -262,11 +254,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             };
 
             AppGlobals.MainViewModel.MainView.ShowHistoryPrintFilterWindow(callBack);
-        }
-
-        public override void ProcessPrintOutputData(PrinterSetupArgs printerSetupArgs)
-        {
-            base.ProcessPrintOutputData(printerSetupArgs);
         }
     }
 }

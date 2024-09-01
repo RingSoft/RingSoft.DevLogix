@@ -47,6 +47,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public IMaterialPartView View { get; private set; }
 
+        public bool Result { get; private set; } = true;
+
         public ProjectMaterialPartSelectorViewModel()
         {
             AddNewMaterialPartCommand = new RelayCommand(() =>
@@ -80,7 +82,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
             CancelCommand = new RelayCommand(() =>
             {
-                NewLineType = MaterialPartLineTypes.Comment;
+                Result = false;
                 View.CloseWindow();
             });
 

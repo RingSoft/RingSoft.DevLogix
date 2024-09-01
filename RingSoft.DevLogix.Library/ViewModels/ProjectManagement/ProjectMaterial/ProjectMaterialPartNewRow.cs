@@ -74,57 +74,72 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                         else
                         {
                             var item = string.Empty;
-                            if (autoFillCellProps.AutoFillValue!= null)
+                            if (autoFillCellProps.AutoFillValue != null)
                             {
                                 item = autoFillCellProps.AutoFillValue.Text;
                             }
-                            Manager.ViewModel.View.GetNewLineType(item, 
+
+                            var result = Manager.ViewModel.View.GetNewLineType(item,
                                 out var materialPartPkValue, out var lineType);
-                            var newRow = Manager.ConstructRowFromLineType(lineType);
-                            Manager.ReplaceRow(this, newRow);
-                            switch (lineType)
+                            if (result)
                             {
-                                case MaterialPartLineTypes.NewRow:
-                                    autoFillCellProps.OverrideCellMovement = true;
-                                    break;
-                                case MaterialPartLineTypes.MaterialPart:
-                                    var materialPart =
-                                        AppGlobals.LookupContext.MaterialParts.GetEntityFromPrimaryKeyValue(
-                                            materialPartPkValue);
+                                var newRow = Manager.ConstructRowFromLineType(lineType);
+                                Manager.ReplaceRow(this, newRow);
+                                switch (lineType)
+                                {
+                                    case MaterialPartLineTypes.NewRow:
+                                        autoFillCellProps.OverrideCellMovement = true;
+                                        break;
+                                    case MaterialPartLineTypes.MaterialPart:
+                                        var materialPart =
+                                            AppGlobals.LookupContext.MaterialParts.GetEntityFromPrimaryKeyValue(
+                                                materialPartPkValue);
 
-                                    if (materialPart != null && newRow is ProjectMaterialPartMaterialPartRow materialPartRow)
-                                    {
-                                        var context = AppGlobals.DataRepository.GetDataContext();
-                                        materialPart = context.GetTable<MaterialPart>()
-                                            .FirstOrDefault(p => p.Id == materialPart.Id);
-                                        var autoFillValue = materialPart.GetAutoFillValue();
-                                        materialPartRow.SetAutoFillValue(autoFillValue);
-                                    }
-                                    break;
-                                case MaterialPartLineTypes.Overhead:
-                                    if (newRow is ProjectMaterialPartOverheadRow newOverheadRow)
-                                    {
-                                        newOverheadRow.SetDescription(autoFillCellProps.AutoFillValue.Text);
-                                    }
-                                    break;
+                                        if (materialPart != null &&
+                                            newRow is ProjectMaterialPartMaterialPartRow materialPartRow)
+                                        {
+                                            var context = AppGlobals.DataRepository.GetDataContext();
+                                            materialPart = context.GetTable<MaterialPart>()
+                                                .FirstOrDefault(p => p.Id == materialPart.Id);
+                                            var autoFillValue = materialPart.GetAutoFillValue();
+                                            materialPartRow.SetAutoFillValue(autoFillValue);
+                                        }
 
-                                case MaterialPartLineTypes.Miscellaneous:
-                                    if (newRow is ProjectMaterialPartMiscRow newMiscRow)
-                                    {
-                                        newMiscRow.SetDescription(autoFillCellProps.AutoFillValue.Text);
-                                    }
-                                    break;
-                                case MaterialPartLineTypes.Comment:
-                                    if (newRow is ProjectMaterialPartCommentRow commentRow)
-                                    {
-                                        commentRow.SetComment(autoFillCellProps.AutoFillValue.Text);
-                                    }
-                                    break;
-                                default:
-                                    throw new ArgumentOutOfRangeException();
+                                        break;
+                                    case MaterialPartLineTypes.Overhead:
+                                        if (newRow is ProjectMaterialPartOverheadRow newOverheadRow)
+                                        {
+                                            newOverheadRow.SetDescription(autoFillCellProps.AutoFillValue.Text);
+                                        }
+
+                                        break;
+
+                                    case MaterialPartLineTypes.Miscellaneous:
+                                        if (newRow is ProjectMaterialPartMiscRow newMiscRow)
+                                        {
+                                            newMiscRow.SetDescription(autoFillCellProps.AutoFillValue.Text);
+                                        }
+
+                                        break;
+                                    case MaterialPartLineTypes.Comment:
+                                        if (newRow is ProjectMaterialPartCommentRow commentRow)
+                                        {
+                                            commentRow.SetComment(autoFillCellProps.AutoFillValue.Text);
+                                        }
+
+                                        break;
+                                    default:
+                                        throw new ArgumentOutOfRangeException();
+                                }
+
+                                Manager.Grid?.UpdateRow(newRow);
+
                             }
-                            Manager.Grid?.UpdateRow(newRow);
-
+                            else
+                            {
+                                MaterialPartAutoFillValue = null;
+                                value.OverrideCellMovement = true;
+                            }
                         }
                     }
                     break;

@@ -79,7 +79,7 @@ namespace RingSoft.DevLogix.ProjectManagement
             RegisterFormKeyControl(KeyControl);
         }
 
-        public void GetNewLineType(string text, out PrimaryKeyValue materialPartPkValue, out MaterialPartLineTypes lineType)
+        public bool GetNewLineType(string text, out PrimaryKeyValue materialPartPkValue, out MaterialPartLineTypes lineType)
         {
             var result = MaterialPartLineTypes.MaterialPart;
             var window = new ProjectMaterialPartSelectorWindow(text);
@@ -88,7 +88,7 @@ namespace RingSoft.DevLogix.ProjectManagement
             window.ShowDialog();
             materialPartPkValue = window.ViewModel.NewMaterialPartPkValue;
             lineType = window.ViewModel.NewLineType;
-
+            return window.ViewModel.Result;
         }
 
         public bool ShowCommentEditor(DataEntryGridMemoValue comment)

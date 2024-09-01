@@ -20,6 +20,10 @@ namespace RingSoft.DevLogix.ProjectManagement
         public ProjectMaterialHistoryWindow()
         {
             InitializeComponent();
+            Loaded += (sender, args) =>
+            {
+                StatusBar.Visibility = Visibility.Collapsed;
+            };
         }
     }
 }

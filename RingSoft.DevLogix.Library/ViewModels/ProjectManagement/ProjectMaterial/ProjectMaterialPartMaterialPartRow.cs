@@ -158,10 +158,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         {
             if (!MaterialPartAutoFillValue.IsValid())
             {
-                Manager.ViewModel.View.GotoGrid();
+                //Manager.ViewModel.View.GotoGrid();
                 var message = "Invalid Task Dependency";
                 ControlsGlobals.UserInterface.ShowMessageBox(message, message, RsMessageBoxIcons.Exclamation);
-                Manager.Grid?.GotoCell(this, ProjectMaterialPartManager.MaterialPartColumnId);
+                Manager.GotoCell(this, ProjectMaterialPartManager.MaterialPartColumnId);
                 return false;
             }
             return true;
