@@ -240,7 +240,7 @@
 
                         <Button Grid.Row="0" Grid.Column="0" x:Name="AddModifyButton" Content="Add/Modify" Command="{Binding TasksAddModifyCommand}"/>
 
-                        <lc:LookupControl  Grid.Row="0" Grid.Column="1" Grid.RowSpan="2"  LookupDefinition="{Binding TaskLookup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Command="{Binding TaskLookupCommand, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <lc:LookupControl  Grid.Row="0" Grid.Column="1" Grid.RowSpan="2"  LookupDefinition="{Binding TaskLookup}">
 
                             <lc:LookupControl.LookupColumns>
 
@@ -273,7 +273,7 @@
 
                         <Button Grid.Row="0" Grid.Column="0" x:Name="MaterialsAddModifyButton" Content="Add/Modify" Command="{Binding MaterialsAddModifyCommand}"/>
 
-                        <lc:LookupControl  Grid.Row="0" Grid.Column="1" Grid.RowSpan="2"  LookupDefinition="{Binding MaterialLookup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Command="{Binding MaterialLookupCommand, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <lc:LookupControl  Grid.Row="0" Grid.Column="1" Grid.RowSpan="2"  LookupDefinition="{Binding MaterialLookup}">
 
                             <lc:LookupControl.LookupColumns>
 
@@ -295,7 +295,7 @@
 
                     <DockPanel>
 
-                        <lc:LookupControl LookupDefinition="{Binding TimeClockLookup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Command="{Binding TimeClockLookupCommand, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <lc:LookupControl LookupDefinition="{Binding TimeClockLookup}">
 
                             <lc:LookupControl.LookupColumns>
 
@@ -319,7 +319,7 @@
 
                     <DockPanel>
 
-                        <lc:LookupControl LookupDefinition="{Binding HistoryLookup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Command="{Binding HistoryLookupCommand, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <lc:LookupControl LookupDefinition="{Binding HistoryLookup}">
 
                             <lc:LookupControl.LookupColumns>
 

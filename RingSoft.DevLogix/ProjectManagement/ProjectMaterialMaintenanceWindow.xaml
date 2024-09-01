@@ -208,7 +208,7 @@
 
                     <DockPanel>
 
-                        <lc:LookupControl LookupDefinition="{Binding HistoryLookup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Command="{Binding HistoryLookupCommand, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <lc:LookupControl LookupDefinition="{Binding HistoryLookup}">
 
                             <lc:LookupControl.LookupColumns>
 

@@ -450,7 +450,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             TaskLookup = AppGlobals.LookupContext.ProjectTaskLookup.Clone();
             MaterialLookup = AppGlobals.LookupContext.ProjectMaterialLookup.Clone();
 
-            RegisterLookup(TimeClockLookup);
             RegisterLookup(HistoryLookup);
             RegisterLookup(TaskLookup);
             RegisterLookup(MaterialLookup);
@@ -488,6 +487,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         protected override void PopulatePrimaryKeyControls(Project newEntity, PrimaryKeyValue primaryKeyValue)
         {
             Id = newEntity.Id;
+
+            TimeClockLookup.FilterDefinition.ClearFixedFilters();
+            TimeClockLookup.FilterDefinition.Include(p => p.ProjectTask)
+                .AddFixedFilter(p => p.ProjectId, Conditions.Equals, Id);
+
+            TimeClockLookup.SetCommand(GetLookupCommand(LookupCommands.Refresh, primaryKeyValue));
 
             CalculateDeadlineCommand.IsEnabled = true;
         }
@@ -564,6 +569,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             ProjectTotalsManager.ClearTotals();
             ProjectDaysGridManager.Clear();
             CalculateDeadlineCommand.IsEnabled = false;
+            TimeClockLookup.SetCommand(GetLookupCommand(LookupCommands.Clear));
         }
 
         private void Recalc()

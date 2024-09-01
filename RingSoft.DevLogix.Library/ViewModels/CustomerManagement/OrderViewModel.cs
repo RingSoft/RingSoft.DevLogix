@@ -374,6 +374,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 }
             }
 
+            if (DefaultCustomerAutoFillValue.IsValid())
+            {
+                var defaultLookup = AppGlobals.LookupContext.OrderLookup.Clone();
+                var delkColumn = defaultLookup.GetColumnDefinition(p => p.Customer);
+                defaultLookup.DeleteVisibleColumn(delkColumn);
+                FindButtonLookupDefinition = defaultLookup;
+                KeyAutoFillSetup.LookupDefinition = defaultLookup;
+            }
+
             base.Initialize();
         }
 

@@ -1,20 +1,16 @@
-﻿using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.Lookup;
-using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbMaintenance;
-using RingSoft.DevLogix.DataAccess;
 using RingSoft.DevLogix.DataAccess.LookupModel;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using System.ComponentModel;
-using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -404,12 +400,19 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     var project =
                         AppGlobals.LookupContext.Projects.GetEntityFromPrimaryKeyValue(LookupAddViewArgs
                             .ParentWindowPrimaryKeyValue);
-                    DefaultProjectAutoFillValue = 
-                        AppGlobals.LookupContext.OnAutoFillTextRequest(AppGlobals.LookupContext.Projects,
-                            project.Id.ToString());
+                    project = project.FillOutProperties(false);
+                    DefaultProjectAutoFillValue = project.GetAutoFillValue();
                 }
             }
 
+            if (DefaultProjectAutoFillValue.IsValid())
+            {
+                var defaultLookup = AppGlobals.LookupContext.ProjectTaskLookup.Clone();
+                var taskColumn = defaultLookup.GetColumnDefinition(p => p.ProjectName);
+                defaultLookup.DeleteVisibleColumn(taskColumn);
+                FindButtonLookupDefinition = defaultLookup;
+                KeyAutoFillSetup.LookupDefinition = defaultLookup;
+            }
             base.Initialize();
         }
 
