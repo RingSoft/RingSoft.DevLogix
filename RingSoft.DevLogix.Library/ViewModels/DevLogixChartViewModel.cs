@@ -14,7 +14,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
         public void OnValGridFail();
     }
 
-    public class DevLogixChartViewModel : DevLogixDbMaintenanceViewModel<DevLogixChart>
+    public class DevLogixChartViewModel : DbMaintenanceViewModel<DevLogixChart>
     {
         private int _id;
 

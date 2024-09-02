@@ -8,7 +8,7 @@ using RingSoft.DevLogix.DataAccess.Model;
 
 namespace RingSoft.DevLogix.Library.ViewModels
 {
-    public class SystemPreferencesViewModel : DevLogixDbMaintenanceViewModel<SystemPreferences>
+    public class SystemPreferencesViewModel : DbMaintenanceViewModel<SystemPreferences>
     {
         public override TableDefinition<SystemPreferences> TableDefinition =>
             AppGlobals.LookupContext.SystemPreferences;

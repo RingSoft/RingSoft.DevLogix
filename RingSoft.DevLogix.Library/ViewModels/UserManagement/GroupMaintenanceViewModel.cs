@@ -26,7 +26,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         public void ResetRights();
     }
 
-    public class GroupMaintenanceViewModel : DevLogixDbMaintenanceViewModel<Group>
+    public class GroupMaintenanceViewModel : DbMaintenanceViewModel<Group>
     {
         public override TableDefinition<Group> TableDefinition => AppGlobals.LookupContext.Groups;
 

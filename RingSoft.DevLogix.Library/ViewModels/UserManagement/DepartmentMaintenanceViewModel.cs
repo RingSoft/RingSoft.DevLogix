@@ -20,7 +20,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
     {
         string FtpPassword { get; set; }
     }
-    public class DepartmentMaintenanceViewModel : DevLogixDbMaintenanceViewModel<Department>
+    public class DepartmentMaintenanceViewModel : DbMaintenanceViewModel<Department>
     {
         public override TableDefinition<Department> TableDefinition => AppGlobals.LookupContext.Departments;
 

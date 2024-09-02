@@ -102,7 +102,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         }
     }
-    public class UserMaintenanceViewModel : AppDbMaintenanceViewModel<User>
+    public class UserMaintenanceViewModel : DbMaintenanceViewModel<User>
     {
         private int _id;
 

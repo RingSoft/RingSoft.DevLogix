@@ -39,7 +39,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         bool GetManualPunchOutDate(out DateTime? punchInDate, out DateTime? punchOutDate);
     }
 
-    public class TimeClockMaintenanceViewModel : AppDbMaintenanceViewModel<TimeClock>
+    public class TimeClockMaintenanceViewModel : DbMaintenanceViewModel<TimeClock>
     {
         private int _id;
 

@@ -22,7 +22,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         void RefreshGrid();
     }
-    public class UserTrackerViewModel  : DevLogixDbMaintenanceViewModel<UserTracker>
+    public class UserTrackerViewModel  : DbMaintenanceViewModel<UserTracker>
     {
         public override TableDefinition<UserTracker> TableDefinition => AppGlobals.LookupContext.UserTracker;
 

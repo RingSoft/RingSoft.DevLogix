@@ -211,7 +211,7 @@
 
                     <DockPanel>
 
-                        <lc:LookupControl LookupDefinition="{Binding TimeClockLookup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Command="{Binding TimeClockLookupCommand, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <lc:LookupControl LookupDefinition="{Binding TimeClockLookup}">
 
                             <lc:LookupControl.LookupColumns>
 
