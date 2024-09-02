@@ -5,7 +5,6 @@
                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                 xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
                 xmlns:vm="clr-namespace:RingSoft.DevLogix.Library.ViewModels;assembly=RingSoft.DevLogix.Library"
-                xmlns:local="clr-namespace:RingSoft.DevLogix"
                 mc:Ignorable="d"
                 Style="{StaticResource BaseWindowStyle}"
                 Title="Memory Control Popup Window" SizeToContent="WidthAndHeight">

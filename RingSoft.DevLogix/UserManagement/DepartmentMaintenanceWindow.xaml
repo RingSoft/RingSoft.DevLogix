@@ -134,7 +134,7 @@
 
                         <Button Content="_Add/Modify" x:Name="AddModifyUserButton" Command="{Binding AddModifyUserLookupCommand}" Height="20"  DockPanel.Dock="Left" VerticalAlignment="Top"/>
 
-                        <lc:LookupControl LookupDefinition="{Binding UserLookupDefinition}" Command="{Binding UserLookupCommand}" >
+                        <lc:LookupControl LookupDefinition="{Binding UserLookupDefinition}">
 
                             <lc:LookupControl.LookupColumns>
 

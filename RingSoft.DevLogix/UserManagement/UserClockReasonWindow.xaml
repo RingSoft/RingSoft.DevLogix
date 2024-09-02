@@ -3,7 +3,6 @@
                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                        xmlns:local="clr-namespace:RingSoft.DevLogix.UserManagement"
                         xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
                         xmlns:vm="clr-namespace:RingSoft.DevLogix.Library.ViewModels.UserManagement;assembly=RingSoft.DevLogix.Library"
                         xmlns:lib ="clr-namespace:RingSoft.DevLogix.DataAccess.Model;assembly=RingSoft.DevLogix.DataAccess"

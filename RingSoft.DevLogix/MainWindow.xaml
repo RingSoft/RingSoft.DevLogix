@@ -9,7 +9,6 @@
                   xmlns:vm="clr-namespace:RingSoft.DevLogix.Library.ViewModels;assembly=RingSoft.DevLogix.Library"
                   xmlns:local="clr-namespace:RingSoft.DevLogix"
                   mc:Ignorable="d"
-
                   Style="{StaticResource BaseWindowStyle}"
                   Width="500"
                   Height="500"
