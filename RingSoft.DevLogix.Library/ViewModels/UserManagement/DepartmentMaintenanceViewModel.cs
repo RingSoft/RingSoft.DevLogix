@@ -1,18 +1,12 @@
-﻿using System;
-using System.Linq;
-using System.Net;
-using RingSoft.App.Interop;
+﻿using RingSoft.App.Interop;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
-using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.Lookup;
-using RingSoft.DbLookup.ModelDefinition;
-using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
-using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.LookupModel;
 using RingSoft.DevLogix.DataAccess.Model;
+using System;
 
 namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 {
@@ -22,7 +16,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
     }
     public class DepartmentMaintenanceViewModel : DbMaintenanceViewModel<Department>
     {
-        public override TableDefinition<Department> TableDefinition => AppGlobals.LookupContext.Departments;
+        #region Properties
 
         private int _id;
 
@@ -183,20 +177,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
         }
 
-        private LookupCommand _userLookupCommand;
-
-        public LookupCommand UserLookupCommand
-        {
-            get => _userLookupCommand;
-            set
-            {
-                if (_userLookupCommand == value) return;
-                _userLookupCommand = value;
-                OnPropertyChanged(null, false);
-            }
-        }
-
-
         private string? _notes;
 
         public string? Notes
@@ -253,6 +233,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
         }
 
+        #endregion
 
         public new IDepartmentView View { get; private set; }
 
@@ -261,6 +242,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         public DepartmentMaintenanceViewModel()
         {
             AddModifyUserLookupCommand = new RelayCommand(AddViewUser);
+            FixStatusAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ErrorFixStatusId));
+            PassStatusAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ErrorPassStatusId));
+            FailStatusAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ErrorFailStatusId));
+            UserLookupDefinition = AppGlobals.LookupContext.UserLookup.Clone();
+            RegisterLookup(UserLookupDefinition);
         }
 
         protected override void Initialize()
@@ -274,47 +260,19 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 throw new Exception("Invalid View");
             }
             
-            FixStatusAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ErrorFixStatusId));
-            PassStatusAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ErrorPassStatusId));
-            FailStatusAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ErrorFailStatusId));
-            UserLookupDefinition = AppGlobals.LookupContext.UserLookup.Clone();
-
             base.Initialize();
         }
 
         protected override void PopulatePrimaryKeyControls(Department newEntity, PrimaryKeyValue primaryKeyValue)
         {
             Id = newEntity.Id;
-
-            UserLookupDefinition.FilterDefinition.ClearFixedFilters();
-            UserLookupDefinition.FilterDefinition.AddFixedFilter(p => p.DepartmentId, Conditions.Equals, Id);
-            UserLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
         }
 
         protected override void LoadFromEntity(Department entity)
         {
-            if (entity.ErrorFixStatusId != null)
-            {
-                FixStatusAutoFillValue =
-                    AppGlobals.LookupContext.OnAutoFillTextRequest(AppGlobals.LookupContext.ErrorStatuses,
-                        entity.ErrorFixStatusId.ToString());
-            }
-
-            if (entity.ErrorPassStatusId != null)
-            {
-                PassStatusAutoFillValue =
-                    AppGlobals.LookupContext.OnAutoFillTextRequest(AppGlobals.LookupContext.ErrorStatuses,
-                        entity.ErrorPassStatusId.ToString());
-            }
-
-            if (entity.ErrorFailStatusId != null)
-            {
-                FailStatusAutoFillValue =
-                    AppGlobals.LookupContext.OnAutoFillTextRequest(AppGlobals.LookupContext.ErrorStatuses,
-                        entity.ErrorFailStatusId.ToString());
-            }
-
-
+            FixStatusAutoFillValue = entity.ErrorFixStatus.GetAutoFillValue();
+            PassStatusAutoFillValue = entity.ErrorPassStatus.GetAutoFillValue();
+            FailStatusAutoFillValue = entity.ErrorFailStatus.GetAutoFillValue();
             FixStatusText = entity.FixText;
             PassStatusText = entity.PassText;
             FailStatusText = entity.FailText;
@@ -341,6 +299,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 FtpAddress = FtpAddress,
                 FtpUsername = FtpUserName,
                 ReleaseLevel = ReleaseLevel,
+                ErrorFixStatusId = FixStatusAutoFillValue.GetEntity<ErrorStatus>().Id,
+                ErrorPassStatusId = PassStatusAutoFillValue.GetEntity<ErrorStatus>().Id,
+                ErrorFailStatusId = FailStatusAutoFillValue.GetEntity<ErrorStatus>().Id
             };
 
             if (!View.FtpPassword.IsNullOrEmpty())
@@ -348,22 +309,19 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 result.FtpPassword = View.FtpPassword.Encrypt();
             }
 
-            if (FixStatusAutoFillValue.IsValid())
+            if (result.ErrorFixStatusId == 0)
             {
-                result.ErrorFixStatusId = AppGlobals.LookupContext.ErrorStatuses
-                    .GetEntityFromPrimaryKeyValue(FixStatusAutoFillValue.PrimaryKeyValue).Id;
+                result.ErrorFixStatusId = null;
             }
 
-            if (PassStatusAutoFillValue.IsValid())
+            if (result.ErrorPassStatusId == 0)
             {
-                result.ErrorPassStatusId = AppGlobals.LookupContext.ErrorStatuses
-                    .GetEntityFromPrimaryKeyValue(PassStatusAutoFillValue.PrimaryKeyValue).Id;
+                result.ErrorPassStatusId = null;
             }
 
-            if (FailStatusAutoFillValue.IsValid())
+            if (result.ErrorFailStatusId == 0)
             {
-                result.ErrorFailStatusId = AppGlobals.LookupContext.ErrorStatuses
-                    .GetEntityFromPrimaryKeyValue(FailStatusAutoFillValue.PrimaryKeyValue).Id;
+                result.ErrorFailStatusId = null;
             }
 
             return result;
@@ -378,61 +336,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             FixStatusText = PassStatusText = FailStatusText = string.Empty;
             FtpAddress = FtpUserName = null;
             View.FtpPassword = string.Empty;
-            UserLookupCommand = GetLookupCommand(LookupCommands.Clear);
             Notes = null;
             ReleaseLevel = 0;
-        }
-
-        protected override AutoFillValue GetAutoFillValueForNullableForeignKeyField(FieldDefinition fieldDefinition)
-        {
-            if (fieldDefinition == TableDefinition.GetFieldDefinition(p => p.ErrorFixStatusId))
-            {
-                return FixStatusAutoFillValue;
-            }
-
-            if (fieldDefinition == TableDefinition.GetFieldDefinition(p => p.ErrorPassStatusId))
-            {
-                return PassStatusAutoFillValue;
-            }
-
-            if (fieldDefinition == TableDefinition.GetFieldDefinition(p => p.ErrorFailStatusId))
-            {
-                return FailStatusAutoFillValue;
-            }
-
-            return base.GetAutoFillValueForNullableForeignKeyField(fieldDefinition);
-        }
-
-        protected override bool SaveEntity(Department entity)
-        {
-            var context = AppGlobals.DataRepository.GetDataContext();
-            if (context != null)
-            {
-                return context.SaveEntity(entity, $"Saving Department '{entity.Description}'");
-            }
-            return false;
-        }
-
-        protected override bool DeleteEntity()
-        {
-            var query = AppGlobals.DataRepository.GetDataContext().GetTable<Department>();
-            if (query != null)
-            {
-                var department = query.FirstOrDefault(p => p.Id == Id);
-                var context = AppGlobals.DataRepository.GetDataContext();
-                if (context != null && department != null)
-                {
-                    return context.DeleteEntity(department, $"Deleting Department '{department.Description}'");
-                }
-            }
-            return false;
-
         }
 
         private void AddViewUser()
         {
             if (ExecuteAddModifyCommand() == DbMaintenanceResults.Success)
-                UserLookupCommand = GetLookupCommand(LookupCommands.AddModify);
+                UserLookupDefinition.SetCommand(GetLookupCommand(LookupCommands.AddModify));
 
         }
     }
