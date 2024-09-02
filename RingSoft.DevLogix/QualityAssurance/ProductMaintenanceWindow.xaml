@@ -113,7 +113,7 @@
                         
                         <Button Grid.Row="0" Grid.Column="0" x:Name="AddModifyButton" Content="Add/Modify" Command="{Binding VersionsAddModifyCommand}"/>
 
-                        <lc:LookupControl Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" x:Name="VersionLookupControl" LookupDefinition="{Binding ProductVersionLookupDefinition}" Command="{Binding ProductVersionLookupCommand}">
+                        <lc:LookupControl Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" x:Name="VersionLookupControl" LookupDefinition="{Binding ProductVersionLookupDefinition}">
 
                             <lc:LookupControl.LookupColumns>
 
@@ -248,7 +248,7 @@
 
                         <Button Grid.Row="0" Grid.Column="0" x:Name="TestOutlinesAddModifyButton" Content="Add/Modify" Command="{Binding TestOutlinesAddModifyCommand}"/>
 
-                        <lc:LookupControl Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" x:Name="TestOutlinesLookupControl" LookupDefinition="{Binding TestingOutlineLookup}" Command="{Binding TestingOutlineLookupCommand}">
+                        <lc:LookupControl Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" x:Name="TestOutlinesLookupControl" LookupDefinition="{Binding TestingOutlineLookup}">
 
                             <lc:LookupControl.LookupColumns>
 

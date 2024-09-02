@@ -220,7 +220,7 @@
 
                         <Button Grid.Row="0" Grid.Column="0" x:Name="ErrorsAddModifyButton" Content="Add/Modify" Command="{Binding ErrorAddModifyCommand}"/>
 
-                        <lc:LookupControl Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" x:Name="ErrorsLookupControl" LookupDefinition="{Binding ErrorLookup}" Command="{Binding ErrorLookupCommand}">
+                        <lc:LookupControl Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" x:Name="ErrorsLookupControl" LookupDefinition="{Binding ErrorLookup}">
 
                             <lc:LookupControl.LookupColumns>
 
@@ -243,7 +243,7 @@
 
                     <DockPanel>
 
-                        <lc:LookupControl LookupDefinition="{Binding TimeClockLookup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Command="{Binding TimeClockLookupCommand, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <lc:LookupControl LookupDefinition="{Binding TimeClockLookup}">
 
                             <lc:LookupControl.LookupColumns>
 
