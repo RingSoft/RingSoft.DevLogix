@@ -470,7 +470,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         protected override void ClearData()
         {
             Id = 0;
-            KeyAutoFillValue = null;
             OrderDate = GblMethods.NowDate();
             ShippedDate = GblMethods.NowDate();
             CompanyName = string.Empty;

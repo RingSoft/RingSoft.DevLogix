@@ -14,6 +14,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
     }
     public class UserClockReasonViewModel : INotifyPropertyChanged
     {
+        #region Properties
+
         private ClockOutReasons _clockOutReason;
 
         public ClockOutReasons ClockOutReason
@@ -46,6 +48,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 OnPropertyChanged();
             }
         }
+
+        #endregion
 
         public bool DialogResult { get; private set; }
 

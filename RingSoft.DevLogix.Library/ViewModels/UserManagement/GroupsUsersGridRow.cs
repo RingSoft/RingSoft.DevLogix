@@ -42,16 +42,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         public override void LoadFromEntity(UsersGroup entity)
         {
-            AutoFillValue =
-                AppGlobals.LookupContext.OnAutoFillTextRequest(AppGlobals.LookupContext.Users,
-                    entity.UserId.ToString());
+            AutoFillValue = entity.User.GetAutoFillValue();
         }
 
         public override void SaveToEntity(UsersGroup entity, int rowIndex)
         {
-            entity.UserId = AppGlobals.LookupContext.Users.GetEntityFromPrimaryKeyValue(AutoFillValue.PrimaryKeyValue)
-                .Id;
-            entity.GroupId = Manager.ViewModel.Id;
+            entity.UserId = AutoFillValue.GetEntity<User>().Id;
 
         }
     }

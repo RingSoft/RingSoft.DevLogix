@@ -24,23 +24,5 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         {
             return new GroupsUsersGridRow(this);
         }
-
-        public List<UsersGroup> GetList()
-        {
-            var result = new List<UsersGroup>();
-
-            var rows = Rows.OfType<GroupsUsersGridRow>();
-            foreach (var row in rows)
-            {
-                if (!row.IsNew)
-                {
-                    var item = new UsersGroup();
-                    row.SaveToEntity(item, 0);
-                    result.Add(item);
-                }
-            }
-            return result;
-        }
-
     }
 }

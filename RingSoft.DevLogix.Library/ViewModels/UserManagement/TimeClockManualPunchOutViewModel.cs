@@ -12,6 +12,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
     }
     public class TimeClockManualPunchOutViewModel : INotifyPropertyChanged
     {
+
+        #region Properties
+
         private DateTime _punchInDateTime;
 
         public DateTime PunchInDate
@@ -42,6 +45,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 OnPropertyChanged();
             }
         }
+
+        #endregion
 
         public DateTime PunchOutDate { get; private set; }
         public RelayCommand OkCommand { get; }

@@ -70,17 +70,5 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
             Grid?.RefreshGridView();
         }
-
-        public double GetMinutesSpent(UserBillabilityRows rowType)
-        {
-            var rows = Rows.OfType<UserBillabilityGridRow>();
-            var row = rows.FirstOrDefault(p => p.RowType == rowType);
-            if (row != null)
-            {
-                return row.MinutesSpent;
-            }
-
-            return 0;
-        }
     }
 }

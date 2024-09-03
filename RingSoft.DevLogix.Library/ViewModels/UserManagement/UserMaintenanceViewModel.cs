@@ -104,6 +104,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
     }
     public class UserMaintenanceViewModel : DbMaintenanceViewModel<User>
     {
+        #region Properties
+
         private int _id;
 
         public int Id
@@ -337,21 +339,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
         }
 
-        private LookupCommand _timeClockLookupCommand;
-
-        public LookupCommand TimeClockLookupCommand
-        {
-            get => _timeClockLookupCommand;
-            set
-            {
-                if (_timeClockLookupCommand == value)
-                    return;
-
-                _timeClockLookupCommand = value;
-                OnPropertyChanged(null, false);
-            }
-        }
-
         private LookupDefinition<UserMonthlySalesLookup, UserMonthlySales> _userMonthlySalesLookup;
 
         public LookupDefinition<UserMonthlySalesLookup, UserMonthlySales> UserMonthlySalesLookup
@@ -366,22 +353,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 OnPropertyChanged();
             }
         }
-
-        private LookupCommand _userMonthlySalesLookupCommand;
-
-        public LookupCommand UserMonthlySalesLookupCommand
-        {
-            get => _userMonthlySalesLookupCommand;
-            set
-            {
-                if (_userMonthlySalesLookupCommand == value)
-                    return;
-
-                _userMonthlySalesLookupCommand = value;
-                OnPropertyChanged(null, false);
-            }
-        }
-
 
         private UsersGroupsManager _groupsManager;
 
@@ -460,6 +431,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
         }
 
+        #endregion
+
         public new IUserView View { get; set; }
 
         public RelayCommand ChangeChartCommand { get; private set; }
@@ -483,8 +456,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         public UserMaintenanceViewModel()
         {
             TablesToDelete.Add(AppGlobals.LookupContext.UseerMonthlySales);
-            TablesToDelete.Add(AppGlobals.LookupContext.UsersGroups);
-            TablesToDelete.Add(AppGlobals.LookupContext.UsersTimeOff);
+            //TablesToDelete.Add(AppGlobals.LookupContext.UsersGroups);
+            //TablesToDelete.Add(AppGlobals.LookupContext.UsersTimeOff);
             
             SetMasterUserId();
             ClockReasonFieldTranslation = new EnumFieldTranslation();
@@ -537,7 +510,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 var recordDirty = RecordDirty;
                 if (AppGlobals.MainViewModel.PunchOut(true, Id))
                 {
-                    var context = AppGlobals.DataRepository.GetDataContext();
+                    var context = SystemGlobals.DataRepository.GetDataContext();
                     var user = context.GetTable<User>().FirstOrDefault(p => p.Id == Id);
                     ClockDateTime = user.ClockDate.Value.ToLocalTime();
                     PopulateClockReason(user);
@@ -555,6 +528,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             TimeOffGridManager = new UserTimeOffGridManager(this);
 
             GroupsManager = new UsersGroupsManager(this);
+
+            RegisterGrid(TimeOffGridManager);
+            RegisterGrid(GroupsManager);
 
             BillabilityGridManager.MakeGrid();
 
@@ -576,12 +552,20 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 .DoShowPositiveValuesInGreen();
             UserMonthlySalesLookup = salesLookup;
 
+            RegisterLookup(TimeClockLookup);
+            RegisterLookup(UserMonthlySalesLookup);
+
             PrintProcessingHeader += UserMaintenanceViewModel_PrintProcessingHeader;
+
+            DepartmentAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.DepartmentId));
+            DefaultChartAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.DefaultChartId));
+            SupervisorAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.SupervisorId));
+
         }
 
         private void SetMasterUserId()
         {
-            var context = AppGlobals.DataRepository.GetDataContext();
+            var context = SystemGlobals.DataRepository.GetDataContext();
             var masterUser = context.GetTable<User>().FirstOrDefault();
             if (masterUser != null)
             {
@@ -598,10 +582,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             View.LocalViewModel = this;
 
             AppGlobals.MainViewModel.UserViewModels.Add(this);
-
-            DepartmentAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.DepartmentId));
-            DefaultChartAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.DefaultChartId));
-            SupervisorAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.SupervisorId));
 
             if (LookupAddViewArgs != null && LookupAddViewArgs.ParentWindowPrimaryKeyValue != null)
             {
@@ -645,16 +625,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
             ChangeChartCommand.IsEnabled = true;
 
-            TimeClockLookup.FilterDefinition.ClearFixedFilters();
-            TimeClockLookup.FilterDefinition.AddFixedFilter(p => p.UserId, Conditions.Equals, Id);
-            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
+            //TimeClockLookup.FilterDefinition.ClearFixedFilters();
+            //TimeClockLookup.FilterDefinition.AddFixedFilter(p => p.UserId, Conditions.Equals, Id);
+            //TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
 
-            UserMonthlySalesLookup.FilterDefinition.ClearFixedFilters();
-            UserMonthlySalesLookup.FilterDefinition.AddFixedFilter(
-                p => p.UserId
-                , Conditions.Equals
-                , newEntity.Id);
-            UserMonthlySalesLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
+            //UserMonthlySalesLookup.FilterDefinition.ClearFixedFilters();
+            //UserMonthlySalesLookup.FilterDefinition.AddFixedFilter(
+            //    p => p.UserId
+            //    , Conditions.Equals
+            //    , newEntity.Id);
+            //UserMonthlySalesLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
 
             if (!TableDefinition.HasRight(RightTypes.AllowEdit))
             {
@@ -666,7 +646,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         protected override User GetEntityFromDb(User newEntity, PrimaryKeyValue primaryKeyValue)
         {
-            IQueryable<User> query = AppGlobals.DataRepository.GetDataContext().GetTable<User>();
+            IQueryable<User> query = SystemGlobals.DataRepository.GetDataContext().GetTable<User>();
 
             var result = query
                 .Include(p => p.UserTimeOff)
@@ -741,7 +721,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             View.LoadRights(entity.Rights.Decrypt());
             EmailAddress = entity.Email;
             PhoneNumber = entity.PhoneNumber;
-            GroupsManager.LoadGrid(entity.UserGroups);
+            //GroupsManager.LoadGrid(entity.UserGroups);
             
             Notes = entity.Notes;
             DefaultChartAutoFillValue = DefaultChartAutoFillSetup.GetAutoFillValueForIdValue(entity.DefaultChartId);
@@ -754,7 +734,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             {
                 ClockDateTime = null;
             }
-            TimeOffGridManager.LoadGrid(entity.UserTimeOff);
+            //TimeOffGridManager.LoadGrid(entity.UserTimeOff);
             if (_rowFocusId >= 0)
             {
                 View.SetExistRecordFocus(UserGrids.TimeOff, _rowFocusId);
@@ -800,7 +780,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         protected override User GetEntityData()
         {
-            var context = AppGlobals.DataRepository.GetDataContext();
+            var context = SystemGlobals.DataRepository.GetDataContext();
             var table = context.GetTable<User>();
             var user = new User
             {
@@ -885,16 +865,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             DefaultChartAutoFillValue = null;
             SupervisorAutoFillValue = null;
             View.ResetRights();
-            GroupsManager.SetupForNewRecord();
+            //GroupsManager.SetupForNewRecord();
             ClockOutCommand.IsEnabled = false;
             ChangeChartCommand.IsEnabled = false;
-            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Clear);
-            UserMonthlySalesLookupCommand = GetLookupCommand(LookupCommands.Clear);
+            //TimeClockLookupCommand = GetLookupCommand(LookupCommands.Clear);
+            //UserMonthlySalesLookupCommand = GetLookupCommand(LookupCommands.Clear);
             Notes = null;
             HourlyRate = 0;
             ClockDateTime = null;
             ClockReason = string.Empty;
-            TimeOffGridManager.SetupForNewRecord();
+            //TimeOffGridManager.SetupForNewRecord();
             SetMasterUserId();
             MasterMode = MasterUserId == 0;
             View.RefreshView();
@@ -923,15 +903,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
 
             _oldPassword = entity.Password;
-            if (!GroupsManager.ValidateGrid())
-            {
-                return false;
-            }
+            //if (!GroupsManager.ValidateGrid())
+            //{
+            //    return false;
+            //}
 
-            if (!TimeOffGridManager.ValidateGrid())
-            {
-                return false;
-            }
+            //if (!TimeOffGridManager.ValidateGrid())
+            //{
+            //    return false;
+            //}
 
             return base.ValidateEntity(entity);
         }
@@ -941,32 +921,34 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             var context = SystemGlobals.DataRepository.GetDataContext();
             if (context.SaveEntity(entity, $"Saving User '{entity.Name}.'"))
             {
-                var ugQuery = context.GetTable<UsersGroup>();
-                var userGroups = ugQuery.Where(p => p.UserId == Id).ToList();
-                context.RemoveRange(userGroups);
-                userGroups = GroupsManager.GetList();
-                if (userGroups != null)
-                {
-                    foreach (var userGroup in userGroups)
-                    {
-                        userGroup.UserId = entity.Id;
-                    }
+                GroupsManager.SaveNoCommitData(entity, context);
+                TimeOffGridManager.SaveNoCommitData(entity, context);
+                //var ugQuery = context.GetTable<UsersGroup>();
+                //var userGroups = ugQuery.Where(p => p.UserId == Id).ToList();
+                //context.RemoveRange(userGroups);
+                //userGroups = GroupsManager.GetList();
+                //if (userGroups != null)
+                //{
+                //    foreach (var userGroup in userGroups)
+                //    {
+                //        userGroup.UserId = entity.Id;
+                //    }
 
-                    context.AddRange(userGroups);
-                }
+                //    context.AddRange(userGroups);
+                //}
 
-                var timeOffQuery = context.GetTable<UserTimeOff>();
-                var userTimeOff = timeOffQuery.Where(p => p.UserId == Id).ToList();
-                context.RemoveRange(userTimeOff);
-                userTimeOff = TimeOffGridManager.GetEntityList();
-                if (userTimeOff != null)
-                {
-                    foreach (var timeOff in userTimeOff)
-                    {
-                        timeOff.UserId = entity.Id;
-                    }
-                    context.AddRange(userTimeOff);
-                }
+                //var timeOffQuery = context.GetTable<UserTimeOff>();
+                //var userTimeOff = timeOffQuery.Where(p => p.UserId == Id).ToList();
+                //context.RemoveRange(userTimeOff);
+                //userTimeOff = TimeOffGridManager.GetEntityList();
+                //if (userTimeOff != null)
+                //{
+                //    foreach (var timeOff in userTimeOff)
+                //    {
+                //        timeOff.UserId = entity.Id;
+                //    }
+                //    context.AddRange(userTimeOff);
+                //}
 
                 var result = context.Commit("Saving User");
 
@@ -1014,18 +996,20 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         protected override bool DeleteEntity()
         {
-            var context = AppGlobals.DataRepository.GetDataContext();
+            var context = SystemGlobals.DataRepository.GetDataContext();
             var query = context.GetTable<User>();
             var user = query.FirstOrDefault(f => f.Id == Id);
             if (user != null)
             {
-                var ugQuery = context.GetTable<UsersGroup>();
-                var userGroups = ugQuery.Where(p => p.UserId == Id).ToList();
-                context.RemoveRange(userGroups);
+                //var ugQuery = context.GetTable<UsersGroup>();
+                //var userGroups = ugQuery.Where(p => p.UserId == Id).ToList();
+                //context.RemoveRange(userGroups);
 
-                var userTimeOffQuery = context.GetTable<UserTimeOff>();
-                var userTimeOffs = userTimeOffQuery.Where(p => p.UserId == Id).ToList();
-                context.RemoveRange(userTimeOffs);
+                //var userTimeOffQuery = context.GetTable<UserTimeOff>();
+                //var userTimeOffs = userTimeOffQuery.Where(p => p.UserId == Id).ToList();
+                //context.RemoveRange(userTimeOffs);
+                GroupsManager.DeleteNoCommitData(user, context);
+                TimeOffGridManager.DeleteNoCommitData(user, context);
 
                 var userSalesQuery = context.GetTable<UserMonthlySales>();
                 var userMonthlySales = userSalesQuery.Where(p => p.UserId == Id).ToList();
@@ -1045,7 +1029,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             , AppProcedure procedure)
         {
             var result = string.Empty;
-            var context = AppGlobals.DataRepository.GetDataContext();
+            var context = SystemGlobals.DataRepository.GetDataContext();
             var query = context.GetTable<User>();
             var lookupUi = new LookupUserInterface { PageSize = 10 };
             var lookupData = SystemGlobals.DataRepository.GetDataContext()
@@ -1163,7 +1147,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         private string CalcUserMonthlySalesFromOrders(User user, AppProcedure procedure)
         {
             var result = string.Empty;
-            var context = AppGlobals.DataRepository.GetDataContext();
+            var context = SystemGlobals.DataRepository.GetDataContext();
 
             var userMonthlySales = user.UserMonthlySales;
 
@@ -1234,7 +1218,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             if (result.IsNullOrEmpty())
             {
                 ControlsGlobals.UserInterface.ShowMessageBox("Recalculation Complete.", "Recalculation Complete", RsMessageBoxIcons.Information);
-                UserMonthlySalesLookupCommand = GetLookupCommand(LookupCommands.Refresh);
+                UserMonthlySalesLookup.SetCommand(GetLookupCommand(LookupCommands.Refresh));
             }
             else
             {
@@ -1279,7 +1263,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         private void UserMaintenanceViewModel_PrintProcessingHeader(object? sender, PrinterDataProcessedEventArgs e)
         {
             var primaryKey = e.PrimaryKey;
-            var context = AppGlobals.DataRepository.GetDataContext();
+            var context = SystemGlobals.DataRepository.GetDataContext();
             var table = context.GetTable<User>();
             var percentSetup = new DecimalEditControlSetup
             {
@@ -1332,7 +1316,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         public void RefreshTimeClockLookup()
         {
-            TimeClockLookupCommand = GetLookupCommand(LookupCommands.Refresh);
+            TimeClockLookup.SetCommand(GetLookupCommand(LookupCommands.Refresh));
         }
     }
 }
