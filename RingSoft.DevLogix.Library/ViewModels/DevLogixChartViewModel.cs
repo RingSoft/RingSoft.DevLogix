@@ -48,8 +48,6 @@ namespace RingSoft.DevLogix.Library.ViewModels
             }
         }
 
-        public override TableDefinition<DevLogixChart> TableDefinition => AppGlobals.LookupContext.DevLogixCharts;
-
         public new IChartWindowView View { get; set; }
 
         public ChartBarsViewModel ChartViewModel { get; set; }

@@ -41,7 +41,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         public UserTrackerUserRow(UserTrackerUserManager manager) : base(manager)
         {
             Manager = manager;
-            UserAutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.UserLookup);
+            UserAutoFillSetup = new AutoFillSetup(
+                TableDefinition.GetFieldDefinition(p => p.UserId));
         }
 
         public override DataEntryGridCellProps GetCellProps(int columnId)
@@ -142,6 +143,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 case UserTrackerColumns.User:
                     if (value is DataEntryGridAutoFillCellProps autoFillCellProps)
                     {
+                        if (autoFillCellProps.AutoFillValue == null && UserAutoFillValue == null)
+                        {
+                            return;
+                        }
                         UserAutoFillValue = autoFillCellProps.AutoFillValue;
                         UserId = UserAutoFillValue.GetEntity<User>().Id;
                         if (UserId > 0)

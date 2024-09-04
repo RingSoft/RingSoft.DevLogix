@@ -24,9 +24,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
     {
         #region Properties
 
-        
-
-        #endregion
         private int _id;
 
         public int Id
@@ -192,7 +189,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
         }
 
-
+        #endregion
 
         public new IUserTrackerView View { get; private set; }
 
@@ -210,8 +207,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 Refresh();
             });
             UserManager = new UserTrackerUserManager(this);
-
-            TablesToDelete.Add(AppGlobals.LookupContext.UserTrackerUsers);
+            RegisterGrid(UserManager);
+            //TablesToDelete.Add(AppGlobals.LookupContext.UserTrackerUsers);
             _timer.Interval = 1000;
             _timer.Elapsed += _timer_Elapsed;
             _timer.Enabled = true;
@@ -251,7 +248,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             RefreshValue = entity.RefreshInterval;
             RedAlertMinutes = entity.RedMinutes;
             YellowAlertMinutes = entity.YellowMinutes;
-            UserManager.LoadGrid(entity.Users.OrderBy(p => p.User.Name));
+            //UserManager.LoadGrid(entity.Users.OrderBy(p => p.User.Name));
             Refresh();
         }
 
@@ -275,65 +272,65 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             RefreshValue = 0;
             RedAlertMinutes = null;
             YellowAlertMinutes = null;
-            UserManager.SetupForNewRecord();
+            //UserManager.SetupForNewRecord();
             LastRefresh = null;
             UpdateRefreshText();
         }
 
-        protected override bool SaveEntity(UserTracker entity)
-        {
-            var context = AppGlobals.DataRepository.GetDataContext();
-            if (context.SaveEntity(entity, "Saving User Tracker"))
-            {
-                var existUsers = context.GetTable<UserTrackerUser>()
-                    .Where(p => p.UserTrackerId == Id).ToList();
-                if (existUsers.Any())
-                {
-                    context.RemoveRange(existUsers);
-                }
-                var users = UserManager.GetEntityList();
-                var newUsers = new List<UserTrackerUser>();
-                if (users != null)
-                {
-                    foreach (var userTrackerUser in users)
-                    {
-                        if (userTrackerUser.UserId == 0)
-                        {
-                            continue;
-                        }
-                        userTrackerUser.UserTrackerId = entity.Id;
-                        newUsers.Add(userTrackerUser);
-                    }
-                    context.AddRange(newUsers);
-                }
-                return context.Commit("Saving User Tracker Users");
-            }
+        //protected override bool SaveEntity(UserTracker entity)
+        //{
+        //    var context = AppGlobals.DataRepository.GetDataContext();
+        //    if (context.SaveEntity(entity, "Saving User Tracker"))
+        //    {
+        //        var existUsers = context.GetTable<UserTrackerUser>()
+        //            .Where(p => p.UserTrackerId == Id).ToList();
+        //        if (existUsers.Any())
+        //        {
+        //            context.RemoveRange(existUsers);
+        //        }
+        //        var users = UserManager.GetEntityList();
+        //        var newUsers = new List<UserTrackerUser>();
+        //        if (users != null)
+        //        {
+        //            foreach (var userTrackerUser in users)
+        //            {
+        //                if (userTrackerUser.UserId == 0)
+        //                {
+        //                    continue;
+        //                }
+        //                userTrackerUser.UserTrackerId = entity.Id;
+        //                newUsers.Add(userTrackerUser);
+        //            }
+        //            context.AddRange(newUsers);
+        //        }
+        //        return context.Commit("Saving User Tracker Users");
+        //    }
 
-            return false;
-        }
+        //    return false;
+        //}
 
-        protected override bool DeleteEntity()
-        {
-            var result = false;
-            var context = AppGlobals.DataRepository.GetDataContext();
+        //protected override bool DeleteEntity()
+        //{
+        //    var result = false;
+        //    var context = AppGlobals.DataRepository.GetDataContext();
 
-            var existUsers = context.GetTable<UserTrackerUser>()
-                .Where(p => p.UserTrackerId == Id).ToList();
-            if (existUsers.Any())
-            {
-                context.RemoveRange(existUsers);
-            }
+        //    var existUsers = context.GetTable<UserTrackerUser>()
+        //        .Where(p => p.UserTrackerId == Id).ToList();
+        //    if (existUsers.Any())
+        //    {
+        //        context.RemoveRange(existUsers);
+        //    }
 
-            var table = context.GetTable<UserTracker>();
-            var entity = table.FirstOrDefault(p => p.Id == Id);
-            if (entity != null)
-            {
-                result = context.DeleteEntity(entity, "Deleting User Tracker");
-            }
-            return result;
-        }
+        //    var table = context.GetTable<UserTracker>();
+        //    var entity = table.FirstOrDefault(p => p.Id == Id);
+        //    if (entity != null)
+        //    {
+        //        result = context.DeleteEntity(entity, "Deleting User Tracker");
+        //    }
+        //    return result;
+        //}
 
-        private void Refresh()
+        public void Refresh()
         {
             if (LastRefresh == null)
             {
