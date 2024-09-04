@@ -651,6 +651,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             var result = query
                 .Include(p => p.UserTimeOff)
                 .Include(p => p.UserGroups)
+                .ThenInclude(p => p.Group)
                 .FirstOrDefault(p => p.Id == newEntity.Id);
 
             if (AppGlobals.LoggedInUser == null)
