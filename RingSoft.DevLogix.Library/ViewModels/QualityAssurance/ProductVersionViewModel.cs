@@ -15,6 +15,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using RingSoft.DbLookup.TableProcessing;
 using IDbContext = RingSoft.DevLogix.DataAccess.IDbContext;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
@@ -265,6 +266,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 var defaultLookup = AppGlobals.LookupContext.ProductVersionLookup.Clone();
                 var taskColumn = defaultLookup.GetColumnDefinition(p => p.Product);
                 defaultLookup.DeleteVisibleColumn(taskColumn);
+                foreach (var fixedFilter in ViewLookupDefinition.FilterDefinition.FixedFilters)
+                {
+                    if (fixedFilter is FieldFilterDefinition fieldFilter)
+                    {
+                        defaultLookup.FilterDefinition.AddFixedFieldFilter(
+                            fieldFilter.FieldDefinition
+                            , fieldFilter.Condition
+                            , fieldFilter.Value);
+                    }
+                }
                 FindButtonLookupDefinition = defaultLookup;
                 KeyAutoFillSetup.LookupDefinition = defaultLookup;
             }
