@@ -418,10 +418,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         protected override Product GetEntityFromDb(Product newEntity, PrimaryKeyValue primaryKeyValue)
         {
             var query = SystemGlobals.DataRepository.GetDataContext().GetTable<Product>();
-            var result = query.FirstOrDefault(p => p.Id == newEntity.Id);
+            var result = query
+                .Include(p => p.CreateDepartment)
+                .Include(p => p.ArchiveDepartment)
+                .FirstOrDefault(p => p.Id == newEntity.Id);
             if (result != null)
             {
-                KeyAutoFillValue = AppGlobals.LookupContext.OnAutoFillTextRequest(TableDefinition, Id.ToString());
                 FilterVersions();
                 UpdateVersionsCommand.IsEnabled = true;
             }
