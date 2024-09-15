@@ -38,7 +38,7 @@ namespace RingSoft.DevLogix.DataAccess
         public const int SpeedHostId = 200;
         public const int MemoryHostId = 300;
         public override DbDataProcessor DataProcessor => _dbDataProcessor;
-        protected override DbContext DbContext => _dbContext;
+        //protected override DbContext DbContext => _dbContext;
 
         public TableDefinition<SystemMaster> SystemMaster { get; set; }
         public TableDefinition<DevLogixChart> DevLogixCharts { get; set; }
@@ -161,7 +161,7 @@ namespace RingSoft.DevLogix.DataAccess
         public event EventHandler<UserAutoFillArgs> GetUserAutoFillEvent;
 
 
-        private DbContext _dbContext;
+        //private DbContext _dbContext;
         private DbDataProcessor _dbDataProcessor;
         private bool _initialized;
 
@@ -190,7 +190,7 @@ namespace RingSoft.DevLogix.DataAccess
         public void Initialize(IDevLogixDbContext dbContext, DbPlatforms dbPlatform)
         {
             dbContext.SetLookupContext(this);
-            _dbContext = dbContext.DbContext;
+            SetDbContext(dbContext.DbContext);
 
             SetProcessor(dbPlatform);
             if (_initialized)
