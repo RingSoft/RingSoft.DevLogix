@@ -15,7 +15,7 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "7.0.1");
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.0");
 
             modelBuilder.Entity("RingSoft.DbLookup.AdvancedFind.AdvancedFind", b =>
                 {
@@ -1622,6 +1622,11 @@ namespace RingSoft.DevLogix.Sqlite.Migrations
             modelBuilder.Entity("RingSoft.DevLogix.DataAccess.Model.SystemMaster", b =>
                 {
                     b.Property<string>("OrganizationName")
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("AppGuid")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
 

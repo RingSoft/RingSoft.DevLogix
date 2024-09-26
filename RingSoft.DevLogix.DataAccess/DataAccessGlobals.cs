@@ -7,6 +7,7 @@ using System.Linq;
 using RingSoft.DevLogix.DataAccess.Configurations.ProjectManagement;
 using RingSoft.DevLogix.DataAccess.Configurations.QualityAssurance;
 using Microsoft.EntityFrameworkCore.Migrations;
+using RingSoft.App.Library;
 using RingSoft.DbLookup;
 using RingSoft.DevLogix.DataAccess.Configurations.CustomerManagement;
 using RingSoft.DevLogix.DataAccess.Configurations.UserManagement;
@@ -149,5 +150,12 @@ namespace RingSoft.DevLogix.DataAccess
         {
             return DbContext.DeleteNoCommitEntity(DbContext.Set<TEntity>(), entity, message);
         }
+
+        public static void MigrateAppGuid(MigrationBuilder migrationBuilder)
+        {
+            var sql = $"UPDATE SystemMaster SET AppGuid = '{RingSoftAppGlobals.AppGuid}'";
+            migrationBuilder.Sql(sql);
+        }
+
     }
 }

@@ -173,7 +173,11 @@ namespace RingSoft.DevLogix.Library
                         }
 
                         context.DbContext.Database.Migrate();
-                        systemMaster = new SystemMaster { OrganizationName = organization.Name };
+                        systemMaster = new SystemMaster
+                        {
+                            OrganizationName = organization.Name,
+                            AppGuid = RingSoftAppGlobals.AppGuid,
+                        };
                         context.DbContext.AddNewEntity(context.SystemMaster, systemMaster, "Saving SystemMaster");
 
                     }
@@ -215,7 +219,11 @@ namespace RingSoft.DevLogix.Library
 
                     if (systemMaster == null)
                     {
-                        systemMaster = new SystemMaster { OrganizationName = organization.Name };
+                        systemMaster = new SystemMaster
+                        {
+                            OrganizationName = organization.Name,
+                            AppGuid = RingSoftAppGlobals.AppGuid,
+                        };
                         context.DbContext.AddNewEntity(context.SystemMaster, systemMaster, "Saving SystemMaster");
                     }
                     LookupContext.Initialize(context, DbPlatform);
@@ -249,6 +257,7 @@ namespace RingSoft.DevLogix.Library
             var sysMaster = new SystemMaster()
             {
                 OrganizationName = Guid.NewGuid().ToString(),
+                AppGuid = RingSoftAppGlobals.AppGuid,
             };
 
             var sysMasters = new List<SystemMaster>();
