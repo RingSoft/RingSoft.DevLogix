@@ -257,6 +257,5 @@ namespace RingSoft.DevLogix.Library.ViewModels
             var caption = "Invalid Database";
             ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
         }
-
     }
 }

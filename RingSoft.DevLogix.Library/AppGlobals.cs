@@ -198,6 +198,17 @@ namespace RingSoft.DevLogix.Library
                         }
                         else
                         {
+                            var context1 = SystemGlobals.DataRepository.GetDataContext();
+                            var sysMasterTable = context1.GetTable<SystemMaster>();
+                            try
+                            {
+                                var sysMasterRecord = sysMasterTable.FirstOrDefault();
+                                var appGuid = sysMasterRecord.AppGuid;
+                            }
+                            catch (Exception e)
+                            {
+                                MigrateContext(migrateContext);
+                            }
                             migrate = AllowMigrate();
 
                             if (migrate)

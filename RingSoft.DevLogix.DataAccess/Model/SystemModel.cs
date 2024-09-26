@@ -12,6 +12,5 @@ namespace RingSoft.DevLogix.DataAccess.Model
         [MaxLength(50)]
         [Required]
         public string AppGuid { get; set; }
-
     }
 }
