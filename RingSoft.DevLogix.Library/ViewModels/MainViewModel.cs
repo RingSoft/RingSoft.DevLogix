@@ -51,7 +51,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         void PunchIn(SupportTicket ticket);
 
-        void ShowMainChart(bool show = true);
+        void ShowChart(DevLogixChart chart);
 
         object GetOwnerWindow();
 
@@ -339,7 +339,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
                     }
                 }
 
-                SetChartId(0);
+                ShowChartId(0);
                 AppGlobals.LoggedInOrganization = null;
                 SetupTimer(null, null);
 
@@ -513,17 +513,12 @@ namespace RingSoft.DevLogix.Library.ViewModels
             ChartViewModel = chartBarsViewModel;
         }
 
-        public void SetChartId(int chartId)
+        public void ShowChartId(int chartId)
         {
-            MainView.ShowMainChart(chartId != 0);
-            if (chartId == 0)
-            {
-                ChartViewModel.Clear(true);
-            }
-            else
-            {
-                ChartViewModel.SetChartBars(chartId);
-            }
+            var context = SystemGlobals.DataRepository.GetDataContext();
+            var table = context.GetTable<DevLogixChart>();
+            var chart = table.FirstOrDefault(p => p.Id == chartId);
+            if (chart != null) MainView.ShowChart(chart);
         }
 
         private void RefreshChart()

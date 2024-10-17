@@ -5,6 +5,7 @@ using RingSoft.DbLookup;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Controls.WPF.AdvancedFind;
 using RingSoft.DbLookup.ModelDefinition;
+using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 using RingSoft.DevLogix.Library;
@@ -41,6 +42,9 @@ namespace RingSoft.DevLogix
         {
             InitializeComponent();
 
+            LookupControlsGlobals.SetTabSwitcherWindow(this, TabControl);
+            TabControl.SetDestionationAsFirstTab = false;
+
             SetupToolbar();
 
             ContentRendered += (sender, args) =>
@@ -59,11 +63,11 @@ namespace RingSoft.DevLogix
 #endif
                 //ViewModel.SetChartId(AppGlobals.LoggedInOrganization.DefaultChartId);
             };
-            MainChart.Loaded += (s, e) =>
-            {
-                ViewModel.InitChart(MainChart.ViewModel);
-                ChartGrid.Visibility = Visibility.Collapsed;
-            };
+            //MainChart.Loaded += (s, e) =>
+            //{
+            //    ViewModel.InitChart(MainChart.ViewModel);
+            //    ChartGrid.Visibility = Visibility.Collapsed;
+            //};
 
             Closing += (sender, args) =>
             {
@@ -497,11 +501,11 @@ namespace RingSoft.DevLogix
                 {
                     if (AppGlobals.LoggedInUser.DefaultChartId.HasValue)
                     {
-                        ViewModel.SetChartId(AppGlobals.LoggedInUser.DefaultChartId.Value);
+                        ViewModel.ShowChartId(AppGlobals.LoggedInUser.DefaultChartId.Value);
                     }
                     else
                     {
-                        ViewModel.SetChartId(0);
+                        ViewModel.ShowChartId(0);
                     }
                 }
             }
@@ -757,9 +761,22 @@ namespace RingSoft.DevLogix
             ShowTimeClockWindow(timeClockWindow);
         }
 
-        public void ShowMainChart(bool show = true)
+        public void ShowChart(DevLogixChart chart)
         {
-            ChartGrid.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+            if (TabControl.ShowTableControl(AppGlobals.LookupContext.DevLogixCharts) is
+                DevLogixChartMaintenanceUserControl
+                devLogixChart)
+            {
+                devLogixChart.Loaded += (sender, args) =>
+                {
+                    if (chart != null)
+                    {
+                        var pkValue = AppGlobals.LookupContext.DevLogixCharts
+                            .GetPrimaryKeyValueFromEntity(chart);
+                        devLogixChart.LocalViewModel.OnRecordSelected(pkValue);
+                    }
+                };
+            }
         }
 
         public object GetOwnerWindow()
@@ -865,15 +882,21 @@ namespace RingSoft.DevLogix
             timeClockWindow.Show();
         }
 
-        protected override void OnPreviewKeyDown(KeyEventArgs e)
-        {
-            MainChart.ProcessKeyDown(e);
-            base.OnPreviewKeyDown(e);
-        }
+        //protected override void OnPreviewKeyDown(KeyEventArgs e)
+        //{
+        //    MainChart.ProcessKeyDown(e);
+        //    base.OnPreviewKeyDown(e);
+        //}
 
         protected async override void OnClosing(CancelEventArgs e)
         {
             if (!await ViewModel.ValidateWindowClose())
+            {
+                e.Cancel = true;
+                return;
+            }
+
+            if (!TabControl.CloseAllTabs())
             {
                 e.Cancel = true;
                 return;

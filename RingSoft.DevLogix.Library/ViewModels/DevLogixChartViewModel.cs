@@ -87,15 +87,15 @@ namespace RingSoft.DevLogix.Library.ViewModels
                 return;
             }
             ChartViewModel.SetChartBars(BarsManager.GetRowsList());
-            if (AppGlobals.MainViewModel.ChartViewModel.ChartId == Id)
-            {
-                AppGlobals.MainViewModel.ChartViewModel.SetChartBars(Id);
-            }
+            //if (AppGlobals.MainViewModel.ChartViewModel.ChartId == Id)
+            //{
+            //    AppGlobals.MainViewModel.ChartViewModel.SetChartBars(Id);
+            //}
         }
 
         protected override void PopulatePrimaryKeyControls(DevLogixChart newEntity, PrimaryKeyValue primaryKeyValue)
         {
-            AppGlobals.MainViewModel.ChartViewModel.DisableBalloons(AppGlobals.MainViewModel.ChartViewModel.ChartId == Id);
+            //AppGlobals.MainViewModel.ChartViewModel.DisableBalloons(AppGlobals.MainViewModel.ChartViewModel.ChartId == Id);
         }
 
         protected override DevLogixChart GetEntityFromDb(DevLogixChart newEntity, PrimaryKeyValue primaryKeyValue)
@@ -162,7 +162,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
                 {
                     if (AppGlobals.MainViewModel.ChartViewModel.ChartId == Id)
                     {
-                        AppGlobals.MainViewModel.SetChartId(Id);
+                        AppGlobals.MainViewModel.ShowChartId(Id);
                     }
                     return true;
                 }
@@ -185,7 +185,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
                 {
                     if (chart.Id == AppGlobals.MainViewModel.ChartViewModel.ChartId)
                     {
-                        AppGlobals.MainViewModel.SetChartId(0);
+                        AppGlobals.MainViewModel.ShowChartId(0);
                     }
                 }
 
@@ -195,10 +195,10 @@ namespace RingSoft.DevLogix.Library.ViewModels
             return false;
         }
 
-        public override void OnWindowClosing(CancelEventArgs e)
-        {
-            AppGlobals.MainViewModel.ChartViewModel.DisableBalloons(false);
-            base.OnWindowClosing(e);
-        }
+        //public override void OnWindowClosing(CancelEventArgs e)
+        //{
+        //    AppGlobals.MainViewModel.ChartViewModel.DisableBalloons(false);
+        //    base.OnWindowClosing(e);
+        //}
     }
 }

@@ -9,6 +9,11 @@ namespace RingSoft.DevLogix
     {
         protected override void OnStartup(StartupEventArgs e)
         {
+            FrameworkElement.StyleProperty.OverrideMetadata(typeof(Window), new FrameworkPropertyMetadata
+            {
+                DefaultValue = FindResource(typeof(Window))
+            });
+
             var appStart = new DevLogixAppStart(this);
             appStart.Start();
 

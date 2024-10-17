@@ -125,7 +125,8 @@
 				</StackPanel>
 
             </StatusBar>
-            <Grid x:Name="ChartGrid">
+            <lc:DbMaintenanceTabControl x:Name="TabControl" VerticalAlignment="Stretch"/>
+            <!--<Grid x:Name="ChartGrid">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
@@ -139,7 +140,7 @@
 
                     <Button Content="_Edit" Margin="5,0,0,0" Width="50" Command="{Binding EditChartCommand}"/>
                 </StackPanel>
-            </Grid>
+            </Grid>-->
         </DockPanel>
     </DockPanel>
 </ac:AppMainWindow>

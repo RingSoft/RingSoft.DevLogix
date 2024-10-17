@@ -101,6 +101,9 @@ namespace RingSoft.DevLogix
             LookupControlsGlobals.WindowRegistry.RegisterWindow<CustomerStatusMaintenanceWindow>(AppGlobals.LookupContext.CustomerStatus);
             LookupControlsGlobals.WindowRegistry.RegisterWindow<SupportTicketStatusMaintenanceWindow>(AppGlobals.LookupContext.SupportTicketStatus);
 
+            LookupControlsGlobals.WindowRegistry.RegisterUserControl<DevLogixChartMaintenanceUserControl, DevLogixChart>();
+            LookupControlsGlobals.WindowRegistry.RegisterUserControl<DevLogixChartMaintenanceUserControl, DevLogixChartBar>();
+
             AppGlobals.LookupContext.FormatSearchForEvent += (sender, args) =>
             {
                 if (args.SearchForHostId == DevLogixLookupContext.TimeSpentHostId)

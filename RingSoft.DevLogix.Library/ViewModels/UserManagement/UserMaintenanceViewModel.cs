@@ -497,7 +497,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
                     if (AppGlobals.LoggedInUser.Id == user.Id)
                     {
-                        AppGlobals.MainViewModel.SetChartId(newChart.Id);
+                        AppGlobals.MainViewModel.ShowChartId(newChart.Id);
                     }
 
                     RecordDirty = recordDirty;
@@ -959,11 +959,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     {
                         if (entity.DefaultChartId.HasValue)
                         {
-                            AppGlobals.MainViewModel.SetChartId(entity.DefaultChartId.Value);
+                            AppGlobals.MainViewModel.ShowChartId(entity.DefaultChartId.Value);
                         }
                         else
                         {
-                            AppGlobals.MainViewModel.SetChartId(0);
+                            AppGlobals.MainViewModel.ShowChartId(0);
                         }
                     }
                 }

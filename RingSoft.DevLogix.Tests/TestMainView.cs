@@ -82,7 +82,7 @@ namespace RingSoft.DevLogix.Tests
             _timeClockViewModel.PunchIn(ticket);
         }
 
-        public void ShowMainChart(bool show = true)
+        public void ShowChart(DevLogixChart chart)
         {
             
         }
