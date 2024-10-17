@@ -160,10 +160,6 @@ namespace RingSoft.DevLogix.Library.ViewModels
                 context.AddRange(bars);
                 if (context.Commit("Saving Bars"))
                 {
-                    if (AppGlobals.MainViewModel.ChartViewModel.ChartId == Id)
-                    {
-                        AppGlobals.MainViewModel.ShowChartId(Id);
-                    }
                     return true;
                 }
             }
@@ -181,24 +177,10 @@ namespace RingSoft.DevLogix.Library.ViewModels
             if (context.DeleteNoCommitEntity(chart, "Deleting Chart"))
             {
                 var result= context.Commit("Deleting Chart");
-                if (result)
-                {
-                    if (chart.Id == AppGlobals.MainViewModel.ChartViewModel.ChartId)
-                    {
-                        AppGlobals.MainViewModel.ShowChartId(0);
-                    }
-                }
-
                 return result;
             }
 
             return false;
         }
-
-        //public override void OnWindowClosing(CancelEventArgs e)
-        //{
-        //    AppGlobals.MainViewModel.ChartViewModel.DisableBalloons(false);
-        //    base.OnWindowClosing(e);
-        //}
     }
 }

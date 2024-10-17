@@ -193,7 +193,6 @@ namespace RingSoft.DevLogix.Library.ViewModels
         public RelayCommand SupportTicketsCommand { get; }
         public RelayCommand UpgradeCommand { get; }
         public RelayCommand AboutCommand { get; }
-        public ChartBarsViewModel ChartViewModel { get; private set; }
 
         public string? SupportTimeLeft { get; private set; }
 
@@ -321,8 +320,6 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
 
             ShowMaintenanceWindowCommand = new RelayCommand<TableDefinitionBase>(ShowMaintenanceWindow);
-            RefreshChartCommand = new RelayCommand(RefreshChart);
-            EditChartCommand = new RelayCommand(EditChart);
             ChangeOrgCommand = new RelayCommand(( async () =>
             {
                 if (AppGlobals.LoggedInUser.ClockOutReason == (byte)ClockOutReasons.ClockedIn)
@@ -508,36 +505,12 @@ namespace RingSoft.DevLogix.Library.ViewModels
             }
         }
 
-        public void InitChart(ChartBarsViewModel chartBarsViewModel)
-        {
-            ChartViewModel = chartBarsViewModel;
-        }
-
         public void ShowChartId(int chartId)
         {
             var context = SystemGlobals.DataRepository.GetDataContext();
             var table = context.GetTable<DevLogixChart>();
             var chart = table.FirstOrDefault(p => p.Id == chartId);
             if (chart != null) MainView.ShowChart(chart);
-        }
-
-        private void RefreshChart()
-        {
-            ChartViewModel.SetChartBars(ChartViewModel.ChartId);
-            var message = "Chart Refreshed.";
-            ControlsGlobals.UserInterface.ShowMessageBox(message, message, RsMessageBoxIcons.Information);
-        }
-
-        private void EditChart()
-        {
-            var devLogixChart = new DevLogixChart
-            {
-                Id = ChartViewModel.ChartId
-            };
-
-            var primaryKey = AppGlobals.LookupContext.DevLogixCharts.GetPrimaryKeyValueFromEntity(devLogixChart);
-            var lookup = AppGlobals.LookupContext.DevLogixChartLookup.Clone();
-            lookup.ShowAddOnTheFlyWindow(primaryKey, null, MainView.GetOwnerWindow());
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
