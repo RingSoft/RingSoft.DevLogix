@@ -10,7 +10,7 @@
              xmlns:vm="clr-namespace:RingSoft.DevLogix.Library.ViewModels;assembly=RingSoft.DevLogix.Library"
              xmlns:local="clr-namespace:RingSoft.DevLogix"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800" WindowHeight="450" WindowWidth="800">
 
     <UserControl.DataContext>
         <vm:DevLogixChartViewModel x:Name="LocalViewModel"/>
