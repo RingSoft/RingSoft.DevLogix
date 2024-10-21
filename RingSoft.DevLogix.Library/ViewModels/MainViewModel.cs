@@ -1,11 +1,14 @@
-﻿using RingSoft.App.Library;
+﻿using Microsoft.EntityFrameworkCore;
+using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
+using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
+using RingSoft.DevLogix.Library.ViewModels.CustomerManagement;
 using RingSoft.DevLogix.Library.ViewModels.ProjectManagement;
 using RingSoft.DevLogix.Library.ViewModels.QualityAssurance;
 using RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing;
@@ -17,10 +20,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Timers;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using RingSoft.DbLookup;
-using RingSoft.DevLogix.Library.ViewModels.CustomerManagement;
 using IDbContext = RingSoft.DevLogix.DataAccess.IDbContext;
 
 namespace RingSoft.DevLogix.Library.ViewModels
@@ -35,7 +34,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         void ShowDbMaintenanceWindow(TableDefinitionBase tableDefinition);
 
-        void ShowDbMaintenanceDialog(TableDefinitionBase tableDefinition);
+        void ShowMaintenanceTab(TableDefinitionBase tableDefinition);
 
         void ShowAdvancedFindWindow();
 
@@ -175,6 +174,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
         public RelayCommand LogoutCommand { get; set; }
         public RelayCommand RepairDatesCommand { get; set; }
         public RelayCommand<TableDefinitionBase> ShowMaintenanceWindowCommand { get; }
+        public RelayCommand<TableDefinitionBase> ShowMaintenanceTabCommand { get; }
         public RelayCommand ExitCommand { get; }
         public RelayCommand AdvancedFindCommand { get; }
         public RelayCommand ChartCommand { get; }
@@ -320,6 +320,9 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
 
             ShowMaintenanceWindowCommand = new RelayCommand<TableDefinitionBase>(ShowMaintenanceWindow);
+
+            ShowMaintenanceTabCommand = new RelayCommand<TableDefinitionBase>(ShowMaintenanceTab);
+
             ChangeOrgCommand = new RelayCommand(( async () =>
             {
                 if (AppGlobals.LoggedInUser.ClockOutReason == (byte)ClockOutReasons.ClockedIn)
@@ -459,6 +462,11 @@ namespace RingSoft.DevLogix.Library.ViewModels
         private void ShowMaintenanceWindow(TableDefinitionBase tableDefinition)
         {
             MainView.ShowDbMaintenanceWindow(tableDefinition);
+        }
+
+        private void ShowMaintenanceTab(TableDefinitionBase tableDefinition)
+        {
+            MainView.ShowMaintenanceTab(tableDefinition);
         }
 
         private void ShowAdvancedFind()

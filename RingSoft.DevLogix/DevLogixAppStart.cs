@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using RingSoft.DbLookup.Controls.WPF;
+using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
 
 namespace RingSoft.DevLogix
 {
@@ -101,8 +102,13 @@ namespace RingSoft.DevLogix
             LookupControlsGlobals.WindowRegistry.RegisterWindow<CustomerStatusMaintenanceWindow>(AppGlobals.LookupContext.CustomerStatus);
             LookupControlsGlobals.WindowRegistry.RegisterWindow<SupportTicketStatusMaintenanceWindow>(AppGlobals.LookupContext.SupportTicketStatus);
 
-            LookupControlsGlobals.WindowRegistry.RegisterUserControl<DevLogixChartMaintenanceUserControl, DevLogixChart>();
-            LookupControlsGlobals.WindowRegistry.RegisterUserControl<DevLogixChartMaintenanceUserControl, DevLogixChartBar>();
+            LookupControlsGlobals.WindowRegistry.RegisterUserControl
+                <DevLogixChartMaintenanceUserControl, DevLogixChart>();
+            LookupControlsGlobals.WindowRegistry.RegisterUserControl
+                <DevLogixChartMaintenanceUserControl, DevLogixChartBar>();
+
+            LookupControlsGlobals.WindowRegistry.RegisterUserControl
+                <CustomerComputerMaintenanceUserControl, CustomerComputer>();
 
             AppGlobals.LookupContext.FormatSearchForEvent += (sender, args) =>
             {

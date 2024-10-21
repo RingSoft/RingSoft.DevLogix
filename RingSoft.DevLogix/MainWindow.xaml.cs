@@ -22,7 +22,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Customer = RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Customer;
 using Error = RingSoft.DevLogix.DataAccess.Model.Error;
-using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using SupportTicket = RingSoft.DevLogix.DataAccess.Model.CustomerManagement.SupportTicket;
 using TimeClock = RingSoft.DevLogix.DataAccess.Model.TimeClock;
 using User = RingSoft.DevLogix.DataAccess.Model.User;
@@ -208,7 +207,7 @@ namespace RingSoft.DevLogix
                     menuItem.Items.Add(new MenuItem()
                     {
                         Header = "Add/Edit C_ustomer Computers...",
-                        Command = ViewModel.ShowMaintenanceWindowCommand,
+                        Command = ViewModel.ShowMaintenanceTabCommand,
                         CommandParameter = AppGlobals.LookupContext.CustomerComputer,
                     });
                 }
@@ -515,6 +514,11 @@ namespace RingSoft.DevLogix
         public void ShowDbMaintenanceDialog(TableDefinitionBase tableDefinition)
         {
             LookupControlsGlobals.WindowRegistry.ShowDbMaintenanceWindow(tableDefinition);
+        }
+
+        public void ShowMaintenanceTab(TableDefinitionBase tableDefinition)
+        {
+            TabControl.ShowTableControl(tableDefinition, false);
         }
 
         public void ShowAdvancedFindWindow()

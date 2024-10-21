@@ -32,6 +32,11 @@ namespace RingSoft.DevLogix.Tests
         {
         }
 
+        public void ShowMaintenanceTab(TableDefinitionBase tableDefinition)
+        {
+            
+        }
+
         public void ShowDbMaintenanceDialog(TableDefinitionBase tableDefinition)
         {
         }
