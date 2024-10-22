@@ -110,6 +110,8 @@ namespace RingSoft.DevLogix
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
                 <CustomerMaintenanceUserControl, Customer>();
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
+                <OrderMaintenanceUserControl, Order>();
+            LookupControlsGlobals.WindowRegistry.RegisterUserControl
                 <CustomerComputerMaintenanceUserControl, CustomerComputer>();
 
             AppGlobals.LookupContext.FormatSearchForEvent += (sender, args) =>

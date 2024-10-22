@@ -289,7 +289,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
             OrdersCommand = new RelayCommand((() =>
             {
-                MainView.ShowDbMaintenanceWindow(AppGlobals.LookupContext.Order);
+                MainView.ShowMaintenanceTab(AppGlobals.LookupContext.Order);
             }));
 
             SupportTicketsCommand = new RelayCommand((() =>
