@@ -108,6 +108,8 @@ namespace RingSoft.DevLogix
                 <DevLogixChartMaintenanceUserControl, DevLogixChartBar>();
 
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
+                <CustomerMaintenanceUserControl, Customer>();
+            LookupControlsGlobals.WindowRegistry.RegisterUserControl
                 <CustomerComputerMaintenanceUserControl, CustomerComputer>();
 
             AppGlobals.LookupContext.FormatSearchForEvent += (sender, args) =>

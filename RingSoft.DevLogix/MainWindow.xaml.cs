@@ -142,11 +142,11 @@ namespace RingSoft.DevLogix
 
         private void MakeCustomersMenu()
         {
-            var userCategory =
+            var customerCategory =
                 SystemGlobals.Rights.UserRights.Categories.FirstOrDefault(p =>
                     p.MenuCategoryId == (int)MenuCategories.Customers);
 
-            var items = userCategory.Items.Where(p => p.TableDefinition.HasRight(RightTypes.AllowView));
+            var items = customerCategory.Items.Where(p => p.TableDefinition.HasRight(RightTypes.AllowView));
             if (items.Any())
             {
                 var menuItem = new MenuItem() { Header = "_Customer Management" };
@@ -157,7 +157,7 @@ namespace RingSoft.DevLogix
                     menuItem.Items.Add(new MenuItem()
                     {
                         Header = "Add/Edit _Customers...",
-                        Command = ViewModel.ShowMaintenanceWindowCommand,
+                        Command = ViewModel.ShowMaintenanceTabCommand,
                         CommandParameter = AppGlobals.LookupContext.Customer,
                     });
                 }
