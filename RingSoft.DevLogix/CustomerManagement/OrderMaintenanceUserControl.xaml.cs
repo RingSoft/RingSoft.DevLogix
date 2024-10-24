@@ -55,7 +55,7 @@ namespace RingSoft.DevLogix.CustomerManagement
 
         protected override void ShowRecordTitle()
         {
-            Host.ChangeTitle($"Order {LocalViewModel.CustomerAutoFillValue.Text}");
+            Host.ChangeTitle($"Order - {LocalViewModel.CustomerAutoFillValue.Text}");
         }
     }
 }
