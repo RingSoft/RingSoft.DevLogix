@@ -19,6 +19,7 @@ using System.Linq;
 using System.Windows;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
+using TimeZone = RingSoft.DevLogix.DataAccess.Model.CustomerManagement.TimeZone;
 
 namespace RingSoft.DevLogix
 {
@@ -111,6 +112,9 @@ namespace RingSoft.DevLogix
                 <CustomerMaintenanceUserControl, Customer>();
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
                 <OrderMaintenanceUserControl, Order>();
+            LookupControlsGlobals.WindowRegistry.RegisterUserControl
+                <TimeZoneMaintenanceUserControl, TimeZone>();
+
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
                 <CustomerComputerMaintenanceUserControl, CustomerComputer>();
 
