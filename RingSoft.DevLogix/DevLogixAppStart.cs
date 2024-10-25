@@ -116,6 +116,9 @@ namespace RingSoft.DevLogix
                 <TimeZoneMaintenanceUserControl, TimeZone>();
 
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
+                <TerritoryMaintenanceUserControl, Territory>();
+
+            LookupControlsGlobals.WindowRegistry.RegisterUserControl
                 <CustomerComputerMaintenanceUserControl, CustomerComputer>();
 
             AppGlobals.LookupContext.FormatSearchForEvent += (sender, args) =>
