@@ -114,9 +114,11 @@ namespace RingSoft.DevLogix
                 <OrderMaintenanceUserControl, Order>();
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
                 <TimeZoneMaintenanceUserControl, TimeZone>();
-
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
                 <TerritoryMaintenanceUserControl, Territory>();
+            LookupControlsGlobals.WindowRegistry.RegisterUserControl
+                <CustomerStatusMaintenanceUserControl, CustomerStatus>();
+
 
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
                 <CustomerComputerMaintenanceUserControl, CustomerComputer>();
