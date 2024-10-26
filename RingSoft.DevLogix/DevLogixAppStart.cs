@@ -98,8 +98,10 @@ namespace RingSoft.DevLogix
             LookupControlsGlobals.WindowRegistry.RegisterWindow<OrderMaintenanceWindow>(AppGlobals.LookupContext.Order);
             LookupControlsGlobals.WindowRegistry.RegisterWindow<OrderMaintenanceWindow>(AppGlobals.LookupContext.OrderDetail);
             LookupControlsGlobals.WindowRegistry.RegisterWindow<CustomerComputerMaintenanceWindow>(AppGlobals.LookupContext.CustomerComputer);
-            LookupControlsGlobals.WindowRegistry.RegisterWindow<SupportTicketMaintenanceWindow>(AppGlobals.LookupContext.SupportTicket);
-            LookupControlsGlobals.WindowRegistry.RegisterWindow<SupportTicketMaintenanceWindow>(AppGlobals.LookupContext.SupportTicketUser);
+            LookupControlsGlobals.WindowRegistry.RegisterWindow
+                <SupportTicketMaintenanceWindow>(AppGlobals.LookupContext.SupportTicket);
+            LookupControlsGlobals.WindowRegistry.RegisterWindow
+                <SupportTicketMaintenanceWindow>(AppGlobals.LookupContext.SupportTicketUser);
             LookupControlsGlobals.WindowRegistry.RegisterWindow<CustomerStatusMaintenanceWindow>(AppGlobals.LookupContext.CustomerStatus);
             LookupControlsGlobals.WindowRegistry.RegisterWindow<SupportTicketStatusMaintenanceWindow>(AppGlobals.LookupContext.SupportTicketStatus);
 
@@ -118,10 +120,13 @@ namespace RingSoft.DevLogix
                 <TerritoryMaintenanceUserControl, Territory>();
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
                 <CustomerStatusMaintenanceUserControl, CustomerStatus>();
-
-
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
                 <CustomerComputerMaintenanceUserControl, CustomerComputer>();
+
+            LookupControlsGlobals.WindowRegistry.RegisterUserControl
+                <SupportTicketMaintenanceUserControl, SupportTicket>();
+            LookupControlsGlobals.WindowRegistry.RegisterUserControl
+                <SupportTicketMaintenanceUserControl, SupportTicketUser>();
 
             AppGlobals.LookupContext.FormatSearchForEvent += (sender, args) =>
             {

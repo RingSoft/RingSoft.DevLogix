@@ -294,7 +294,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
             SupportTicketsCommand = new RelayCommand((() =>
             {
-                MainView.ShowDbMaintenanceWindow(AppGlobals.LookupContext.SupportTicket);
+                MainView.ShowMaintenanceTab(AppGlobals.LookupContext.SupportTicket);
             }));
 
             AdvancedFindCommand = new RelayCommand(ShowAdvancedFind);

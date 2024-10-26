@@ -1,0 +1,106 @@
+﻿using System.Windows;
+using System.Windows.Controls;
+using RingSoft.DbLookup;
+using RingSoft.DbLookup.Controls.WPF;
+using RingSoft.DbLookup.Lookup;
+using RingSoft.DbMaintenance;
+using RingSoft.DevLogix.Library.ViewModels.CustomerManagement;
+
+namespace RingSoft.DevLogix.CustomerManagement
+{
+    /// <summary>
+    /// Interaction logic for SupportTicketMaintenanceUserControl.xaml
+    /// </summary>
+    public partial class SupportTicketMaintenanceUserControl : ISupportTicketView
+    {
+        public RecalcProcedure RecalcProcedure { get; set; }
+
+        public SupportTicketMaintenanceUserControl()
+        {
+            InitializeComponent();
+            TopHeaderControl.Loaded += (sender, args) =>
+            {
+                if (TopHeaderControl.CustomPanel is SupportTicketHeaderControl supportTicketHeaderControl)
+                {
+                    supportTicketHeaderControl.PunchInButton.Command =
+                        LocalViewModel.PunchInCommand;
+
+                    supportTicketHeaderControl.PunchInButton.ToolTip.HeaderText = "Punch In (Alt + U)";
+                    supportTicketHeaderControl.PunchInButton.ToolTip.DescriptionText = "Punch into this Ticket. ";
+
+                    supportTicketHeaderControl.RecalcButton.ToolTip.HeaderText = "Recalculate Cost (Alt + R)";
+                    supportTicketHeaderControl.RecalcButton.ToolTip.DescriptionText =
+                        "Recalculate the cost values for a range of support tickets.";
+
+
+                    if (!LocalViewModel.TableDefinition.HasRight(RightTypes.AllowEdit))
+                    {
+                        supportTicketHeaderControl.RecalcButton.Visibility = Visibility.Collapsed;
+                    }
+
+                    supportTicketHeaderControl.RecalcButton.Command = LocalViewModel.RecalcCommand;
+                }
+            };
+            RegisterFormKeyControl(TicketIdControl);
+        }
+
+        protected override DbMaintenanceViewModelBase OnGetViewModel()
+        {
+            return LocalViewModel;
+        }
+
+        protected override Control OnGetMaintenanceButtons()
+        {
+            return TopHeaderControl;
+        }
+
+        protected override DbMaintenanceStatusBar OnGetStatusBar()
+        {
+            return StatusBar;
+        }
+
+        protected override string GetTitle()
+        {
+            return "Support Ticket";
+        }
+
+        protected override void ShowRecordTitle()
+        {
+            Host.ChangeTitle($"{Title} - {LocalViewModel.CustomerAutoFillValue.Text}");
+        }
+
+        public bool SetupRecalcFilter(LookupDefinitionBase lookup)
+        {
+            var genericInput = new GenericReportLookupFilterInput
+            {
+                LookupDefinitionToFilter = lookup,
+                CodeNameToFilter = "Support Ticket",
+                KeyAutoFillValue = LocalViewModel.KeyAutoFillValue,
+                ProcessText = "Recalculate"
+            };
+            var genericWindow = new GenericReportFilterWindow(genericInput);
+            genericWindow.Owner = OwnerWindow;
+            genericWindow.ShowInTaskbar = false;
+            genericWindow.ShowDialog();
+            return genericWindow.ViewModel.DialogReesult;
+        }
+
+        public string StartRecalcProcedure(LookupDefinitionBase lookup)
+        {
+            var result = string.Empty;
+            RecalcProcedure = new RecalcProcedure();
+            RecalcProcedure.StartRecalculate += (sender, args) =>
+            {
+                result = LocalViewModel.StartRecalcProcedure(lookup, RecalcProcedure);
+            };
+            RecalcProcedure.Start();
+            return result;
+        }
+
+        public void UpdateRecalcProcedure(int currentSupportTicket, int totalSupportTickets, string currentSupportTicketText)
+        {
+            var progress = $"Recalculating Support Ticket {currentSupportTicketText} {currentSupportTicket} / {totalSupportTickets}";
+            RecalcProcedure.SplashWindow.SetProgress(progress);
+        }
+    }
+}
