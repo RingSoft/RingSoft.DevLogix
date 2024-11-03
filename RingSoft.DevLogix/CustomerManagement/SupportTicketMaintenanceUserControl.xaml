@@ -121,7 +121,7 @@
 
             <dec:StringReadOnlyBox Grid.Row="4" Grid.Column="1" Text="{Binding CurrentCustomerTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" HorizontalAlignment="Left"/>
 
-            <TabControl Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="5">
+            <dec:DataEntryTabControl Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="5">
 
                 <TabItem Header="Details">
 
@@ -229,7 +229,7 @@
                     </DockPanel>
                 </TabItem>
 
-            </TabControl>
+            </dec:DataEntryTabControl>
         </Grid>
 
     </DockPanel>

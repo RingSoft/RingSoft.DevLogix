@@ -127,6 +127,8 @@ namespace RingSoft.DevLogix
                 <SupportTicketMaintenanceUserControl, SupportTicket>();
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
                 <SupportTicketMaintenanceUserControl, SupportTicketUser>();
+            LookupControlsGlobals.WindowRegistry.RegisterUserControl
+                <SupportTicketStatusMaintenanceUserControl, SupportTicketStatus>();
 
             AppGlobals.LookupContext.FormatSearchForEvent += (sender, args) =>
             {

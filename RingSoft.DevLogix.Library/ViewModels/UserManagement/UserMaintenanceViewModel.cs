@@ -953,20 +953,20 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
                 var result = context.Commit("Saving User");
 
-                if (result)
-                {
-                    if (AppGlobals.LoggedInUser != null && AppGlobals.LoggedInUser.Id == Id)
-                    {
-                        if (entity.DefaultChartId.HasValue)
-                        {
-                            AppGlobals.MainViewModel.ShowChartId(entity.DefaultChartId.Value);
-                        }
-                        else
-                        {
-                            AppGlobals.MainViewModel.ShowChartId(0);
-                        }
-                    }
-                }
+                //if (result)
+                //{
+                //    if (AppGlobals.LoggedInUser != null && AppGlobals.LoggedInUser.Id == Id)
+                //    {
+                //        if (entity.DefaultChartId.HasValue)
+                //        {
+                //            AppGlobals.MainViewModel.ShowChartId(entity.DefaultChartId.Value);
+                //        }
+                //        else
+                //        {
+                //            AppGlobals.MainViewModel.ShowChartId(0);
+                //        }
+                //    }
+                //}
                 return result;
             }
 
