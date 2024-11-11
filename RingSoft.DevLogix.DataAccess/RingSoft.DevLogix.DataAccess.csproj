@@ -9,8 +9,4 @@
     <PackageReference Include="RingSoft.App.Library" Version="8.18.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\RingSoft.DbLookup\RingSoft.DbMaintenance\RingSoft.DbMaintenance.csproj" />
-  </ItemGroup>
-
 </Project>

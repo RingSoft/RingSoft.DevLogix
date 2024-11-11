@@ -300,7 +300,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
             AdvancedFindCommand = new RelayCommand(ShowAdvancedFind);
             ChartCommand = new RelayCommand((() =>
             {
-                MainView.ShowDbMaintenanceWindow(AppGlobals.LookupContext.DevLogixCharts);
+                MainView.ShowMaintenanceTab(AppGlobals.LookupContext.DevLogixCharts);
             }));
 
             UpgradeCommand = new RelayCommand(() =>
