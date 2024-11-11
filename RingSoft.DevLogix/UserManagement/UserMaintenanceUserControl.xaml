@@ -1,0 +1,296 @@
+﻿<lc:DbMaintenanceUserControl x:Class="RingSoft.DevLogix.UserManagement.UserMaintenanceUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:userl="clr-namespace:RingSoft.DevLogix.UserManagement"
+             xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
+             xmlns:lc="clr-namespace:RingSoft.DbLookup.Controls.WPF;assembly=RingSoft.DbLookup.Controls.WPF"
+             xmlns:ac="clr-namespace:RingSoft.App.Controls;assembly=RingSoft.App.Controls"
+             xmlns:vm="clr-namespace:RingSoft.DevLogix.Library.ViewModels.UserManagement;assembly=RingSoft.DevLogix.Library"
+             xmlns:dataEntryGrid="clr-namespace:RingSoft.DataEntryControls.WPF.DataEntryGrid;assembly=RingSoft.DataEntryControls.WPF"
+             xmlns:lm="clr-namespace:RingSoft.DevLogix.DataAccess.LookupModel;assembly=RingSoft.DevLogix.DataAccess"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800" WindowWidth="650" WindowHeight="500">
+
+    <UserControl.Resources>
+
+        <Style TargetType="{x:Type userl:UserHeaderControl}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type userl:UserHeaderControl}">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+
+                            <Grid VerticalAlignment="Stretch">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <ac:DbMaintenanceButton Grid.Row="0" Grid.Column="0" x:Name="ClockOutButton" Content="C_lock Out" ImageSource="{StaticResource ClockImage}" Style="{StaticResource SubButton}" HorizontalContentAlignment="Left"/>
+
+                                <ac:DbMaintenanceButton Grid.Row="0" Grid.Column="1" x:Name="RecalcButton" Content="_Recalcalculate" ImageSource="{StaticResource DecimalEditImage}" Style="{StaticResource SubButton}" HorizontalContentAlignment="Left"/>
+
+                            </Grid>
+
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="{x:Type ac:DbMaintenanceTopHeaderControl}" BasedOn="{StaticResource {x:Type ac:DbMaintenanceTopHeaderControl}}">
+
+            <Setter Property="CustomPanel">
+                <Setter.Value>
+                    <userl:UserHeaderControl/>
+                </Setter.Value>
+            </Setter>
+
+        </Style>
+    </UserControl.Resources>
+
+    <UserControl.DataContext>
+        <vm:UserMaintenanceViewModel x:Name="UserMaintenanceViewModel"/>
+    </UserControl.DataContext>
+
+    <DockPanel>
+        <ac:DbMaintenanceTopHeaderControl x:Name="TopHeaderControl" DockPanel.Dock="Top"/>
+        <lc:DbMaintenanceStatusBar x:Name="StatusBar" DockPanel.Dock="Bottom"/>
+        <Grid Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Row="0" Grid.Column="0" Content="User ID"/>
+
+            <dec:StringReadOnlyBox Grid.Row="0" Grid.Column="1" Text="{Binding Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="50" HorizontalAlignment="Left"/>
+
+            <Label Grid.Row="0" Grid.Column="2" Content="Name"/>
+
+            <lc:AutoFillControl Grid.Row="0" Grid.Column="3" x:Name="NameControl" Setup="{Binding KeyAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding KeyAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left"/>
+
+
+            <dec:DataEntryTabControl Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="5" x:Name="TabControl" VerticalAlignment="Stretch" >
+
+                <TabItem x:Name="DetailsTabItem" Header="Details" VerticalAlignment="Stretch">
+
+                    <DockPanel>
+
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Label Grid.Row="0" Grid.Column="0" Content="Department"/>
+
+                            <lc:AutoFillControl Grid.Row="0" Grid.Column="1" x:Name="DepartmentControl" Setup="{Binding DepartmentAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding DepartmentAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left"/>
+
+                            <Label Grid.Row="0" Grid.Column="2" Content="Default Chart"/>
+
+                            <lc:AutoFillControl Grid.Row="0" Grid.Column="3" x:Name="DefaultChartControl"  Width="200" HorizontalAlignment="Left" Setup="{Binding DefaultChartAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding DefaultChartAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                            <Label Grid.Row="1" Grid.Column="0" Content="Supervisor"/>
+
+                            <lc:AutoFillControl Grid.Row="1" Grid.Column="1" x:Name="SupervisorControl" Width="200" Setup="{Binding SupervisorAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding SupervisorAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+
+                            <Label Grid.Row="1" Grid.Column="2" Content="Clock Date/Time"/>
+
+                            <dec:DateReadOnlyBox Grid.Row="1" Grid.Column="3" HorizontalAlignment="Left" Width="200" DateFormatType="DateTime" Value="{Binding ClockDateTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                            <Label Grid.Row="2" Grid.Column="0" Content="Password"/>
+
+                            <PasswordBox Grid.Row="2" Grid.Column="1" x:Name="PasswordBox" HorizontalAlignment="Left" Width="200" Background="{StaticResource ControlBackgroundBrush}" Height="22" VerticalContentAlignment="Center" MaxLength="50"/>
+
+                            <Label Grid.Row="2" Grid.Column="2" Content="Clock Reason"/>
+
+                            <dec:StringReadOnlyBox Grid.Row="2" Grid.Column="3" Width="200" Text="{Binding ClockReason, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left"/>
+
+                            <Label Grid.Row="3" Grid.Column="0" Content="Email Address"/>
+
+                            <dec:StringEditControl Grid.Row="3" Grid.Column="1" x:Name="EmailAddressControl" HorizontalAlignment="Left" Text="{Binding EmailAddress, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Width="200" MaxLength="50"/>
+
+                            <TextBlock Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" x:Name="SendEmailControl" Text="Send Email" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"/>
+
+                            <Label Grid.Row="4" Grid.Column="0" Content="Phone Number"/>
+
+                            <dec:StringEditControl Grid.Row="4" Grid.Column="1" x:Name="PhoneControl" HorizontalAlignment="Left" Text="{Binding PhoneNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" MaxLength="50"/>
+
+                            <Label Grid.Row="4" Grid.Column="2" Content="Hourly Rate"/>
+
+                            <dec:DecimalEditControl Grid.Row="4" Grid.Column="3" x:Name="HourlyRateControl" HorizontalAlignment="Left" Width="100" FormatType="Currency" Value="{Binding HourlyRate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MinimumValue="0"/>
+
+                            <Label Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Left" Content="Billability"/>
+
+                            <dataEntryGrid:DataEntryGrid Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="4" x:Name="BillabilityGrid" HorizontalAlignment="Left" Manager="{Binding BillabilityGridManager}" DataEntryCanUserAddRows="False">
+
+                                <dataEntryGrid:DataEntryGrid.Columns>
+
+                                    <dataEntryGrid:DataEntryGridTextColumn Header="Item Type" ColumnId="{x:Static vm:UserBillabilityGridManager.NameColumnId}" Width="150"/>
+
+                                    <dataEntryGrid:DataEntryGridTextColumn Header="Time Spent" ColumnId="{x:Static vm:UserBillabilityGridManager.TimeSpentColumnId}" Width="150"/>
+
+                                    <dataEntryGrid:DataEntryGridTextColumn Header="Billability" ColumnId="{x:Static vm:UserBillabilityGridManager.BillabilityColumnId}"/>
+
+                                </dataEntryGrid:DataEntryGrid.Columns>
+
+                            </dataEntryGrid:DataEntryGrid>
+
+                        </Grid>
+                    </DockPanel>
+                </TabItem>
+
+                <TabItem Header="Rights" x:Name="RightsTab" VerticalAlignment="Stretch">
+
+                    <DockPanel>
+
+                        <lc:RightsTree x:Name="RightsTree" DataChanged="{Binding RightsChanged, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    </DockPanel>
+
+                </TabItem>
+
+                <TabItem Header="Time Clocks" x:Name="TimeClockTab" VerticalAlignment="Stretch">
+
+                    <DockPanel>
+
+                        <lc:LookupControl LookupDefinition="{Binding TimeClockLookup}">
+
+                            <lc:LookupControl.LookupColumns>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf PunchInDate, Type={x:Type lm:TimeClockLookup}}" Header="Punch In Date" Width="350"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf MinutesSpent, Type={x:Type lm:TimeClockLookup}}" Header="Time Spent" Width="150"/>
+
+                            </lc:LookupControl.LookupColumns>
+
+                        </lc:LookupControl>
+
+                    </DockPanel>
+
+                </TabItem>
+
+                <TabItem Header="Groups" x:Name="GroupsTab" VerticalAlignment="Stretch">
+
+                    <DockPanel>
+
+                        <dataEntryGrid:DataEntryGrid x:Name="GroupsGrid" Manager="{Binding GroupsManager}">
+
+                            <dataEntryGrid:DataEntryGrid.Columns>
+
+                                <dataEntryGrid:DataEntryGridTextColumn ColumnId="0" Header="Group" Width="200"/>
+
+                            </dataEntryGrid:DataEntryGrid.Columns>
+
+                        </dataEntryGrid:DataEntryGrid>
+
+                    </DockPanel>
+
+                </TabItem>
+
+                <TabItem Header="Sales">
+
+                    <Grid>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Grid.Row="0" Grid.Column="0" Content="Monthly Sales Quota"/>
+
+                        <dec:DecimalEditControl Grid.Row="0" Grid.Column="1" Width="150" Value="{Binding MonthlySalesQuota, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency" TextAlignment="Left"/>
+
+                        <Label Grid.Row="0" Grid.Column="2" Content="Total Sales" HorizontalAlignment="Left"/>
+
+                        <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="3" Width="150" Value="{Binding TotalSales, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency" TextAlignment="Left" HorizontalAlignment="Left"/>
+
+                        <lc:LookupControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" LookupDefinition="{Binding UserMonthlySalesLookup}" HideUserDoubleClickRowMessage="True">
+
+                            <lc:LookupControl.LookupColumns>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf MonthEnding, Type={x:Type lm:UserMonthlySalesLookup}}" Header="Month End Date" Width="100"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf TotalSales, Type={x:Type lm:UserMonthlySalesLookup}}" Header="Total Sales" Width="150" TextAlignment="Right"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf SalesQuota, Type={x:Type lm:UserMonthlySalesLookup}}" Header="Sales Quota" Width="150" TextAlignment="Right"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf Difference, Type={x:Type lm:UserMonthlySalesLookup}}" Header="Difference" Width="100" TextAlignment="Right"/>
+
+                            </lc:LookupControl.LookupColumns>
+
+                        </lc:LookupControl>
+
+                    </Grid>
+                </TabItem>
+
+                <TabItem Header="Time Off" x:Name="TimeOffTab" VerticalAlignment="Stretch">
+
+                    <DockPanel>
+
+                        <dataEntryGrid:DataEntryGrid x:Name="TimeOffGrid" Manager="{Binding TimeOffGridManager}">
+
+                            <dataEntryGrid:DataEntryGrid.Columns>
+
+                                <dataEntryGrid:DataEntryGridTextColumn ColumnId="{x:Static vm:UserTimeOffGridManager.StartDateColumnId}" Width="175" Header="Start Date"/>
+
+                                <dataEntryGrid:DataEntryGridTextColumn ColumnId="{x:Static vm:UserTimeOffGridManager.EndDateColumnId}" Width="175" Header="End Date"/>
+
+                                <dataEntryGrid:DataEntryGridTextColumn ColumnId="{x:Static vm:UserTimeOffGridManager.DescriptionColumnId}" Width="200" Header="Description"/>
+
+                            </dataEntryGrid:DataEntryGrid.Columns>
+                        </dataEntryGrid:DataEntryGrid>
+                    </DockPanel>
+                </TabItem>
+
+                <dec:DataEntryMemoTabItem Header="Notes" VerticalAlignment="Stretch">
+                    <DockPanel>
+
+                        <dec:DataEntryMemoEditor x:Name="NotesControl" Text="{Binding Path=Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    </DockPanel>
+                </dec:DataEntryMemoTabItem>
+
+            </dec:DataEntryTabControl>
+        </Grid>
+    </DockPanel>
+</lc:DbMaintenanceUserControl>

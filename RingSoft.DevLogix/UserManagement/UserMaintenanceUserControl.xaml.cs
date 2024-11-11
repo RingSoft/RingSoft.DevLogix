@@ -3,7 +3,6 @@ using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Lookup;
-using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels.UserManagement;
@@ -12,29 +11,42 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
-using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 
 namespace RingSoft.DevLogix.UserManagement
 {
+    public class UserHeaderControl : DbMaintenanceCustomPanel
+    {
+        public DbMaintenanceButton ClockOutButton { get; set; }
+
+        public DbMaintenanceButton RecalcButton { get; set; }
+
+        static UserHeaderControl()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(UserHeaderControl), new FrameworkPropertyMetadata(typeof(UserHeaderControl)));
+        }
+
+        public override void OnApplyTemplate()
+        {
+            ClockOutButton = GetTemplateChild(nameof(ClockOutButton)) as DbMaintenanceButton;
+
+            RecalcButton = GetTemplateChild(nameof(RecalcButton)) as DbMaintenanceButton;
+
+            base.OnApplyTemplate();
+        }
+    }
 
     /// <summary>
-    /// Interaction logic for UserMaintenanceWindow.xaml
+    /// Interaction logic for UserMaintenanceUserControl.xaml
     /// </summary>
-    public partial class UserMaintenanceWindow : IUserView
+    public partial class UserMaintenanceUserControl : IUserView
     {
-        public override Control MaintenanceButtonsControl => TopHeaderControl;
-        public RecalcProcedure RecalcProcedure { get; set; }
-
-        public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
-        public override string ItemText => "User";
-        public override DbMaintenanceViewModelBase ViewModel => UserMaintenanceViewModel;
-        public override DbMaintenanceStatusBar DbStatusBar => StatusBar;
-
         public UserMaintenanceViewModel LocalViewModel { get; set; }
+
+        public RecalcProcedure RecalcProcedure { get; set; }
 
         private int _timeOffRowFocus = -1;
 
-        public UserMaintenanceWindow()
+        public UserMaintenanceUserControl()
         {
             InitializeComponent();
 
@@ -58,11 +70,6 @@ namespace RingSoft.DevLogix.UserManagement
                 }
             };
 
-            Loaded += (sender, args) =>
-            {
-                var test = Processor;
-            };
-
             TimeOffGrid.Loaded += (sender, args) =>
             {
                 if (_timeOffRowFocus >= 0)
@@ -75,6 +82,26 @@ namespace RingSoft.DevLogix.UserManagement
             };
 
             RegisterFormKeyControl(NameControl);
+        }
+
+        protected override DbMaintenanceViewModelBase OnGetViewModel()
+        {
+            return UserMaintenanceViewModel;
+        }
+
+        protected override Control OnGetMaintenanceButtons()
+        {
+            return TopHeaderControl;
+        }
+
+        protected override DbMaintenanceStatusBar OnGetStatusBar()
+        {
+            return StatusBar;
+        }
+
+        protected override string GetTitle()
+        {
+            return "User";
         }
 
         public override void ResetViewForNewRecord()
@@ -160,7 +187,7 @@ namespace RingSoft.DevLogix.UserManagement
                 ProcessText = "Recalculate"
             };
             var genericWindow = new GenericReportFilterWindow(genericInput);
-            genericWindow.Owner = this;
+            genericWindow.Owner = OwnerWindow;
             genericWindow.ShowInTaskbar = false;
             genericWindow.ShowDialog();
             return genericWindow.ViewModel.DialogReesult;
@@ -202,7 +229,7 @@ namespace RingSoft.DevLogix.UserManagement
         {
             _timeOffRowFocus = rowId;
         }
-    
+
         public string GetPassword()
         {
             return PasswordBox.Password;
@@ -223,15 +250,15 @@ namespace RingSoft.DevLogix.UserManagement
         }
 
 
-        public override void OnValidationFail(FieldDefinition fieldDefinition, string text, string caption)
-        {
-            if (fieldDefinition == UserMaintenanceViewModel.TableDefinition.GetFieldDefinition(p => p.DepartmentId))
-            {
-                TabControl.SelectedItem = DetailsTabItem;
-                TabControl.UpdateLayout();
-                DepartmentControl.Focus();
-            }
-            base.OnValidationFail(fieldDefinition, text, caption);
-        }
+        //public override void OnValidationFail(FieldDefinition fieldDefinition, string text, string caption)
+        //{
+        //    if (fieldDefinition == UserMaintenanceViewModel.TableDefinition.GetFieldDefinition(p => p.DepartmentId))
+        //    {
+        //        TabControl.SelectedItem = DetailsTabItem;
+        //        TabControl.UpdateLayout();
+        //        DepartmentControl.Focus();
+        //    }
+        //    base.OnValidationFail(fieldDefinition, text, caption);
+        //}
     }
 }
