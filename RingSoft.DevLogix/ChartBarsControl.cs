@@ -254,9 +254,13 @@ namespace RingSoft.DevLogix
             }
             Dispatcher.Invoke(() =>
             {
-                var message = viewModel.LookupRefresher.GetRecordCountMessage(viewModel.Count, viewModel.ChartBar.Name);
-                LookupControlsGlobals.LookupWindowFactory.SetAlertLevel(level, viewModel.LookupRefresher.Disabled
-                    , Window.GetWindow(this), message);
+                var win = Window.GetWindow(this);
+                if (win != null)
+                {
+                    var message = viewModel.LookupRefresher.GetRecordCountMessage(viewModel.Count, viewModel.ChartBar.Name);
+                    LookupControlsGlobals.LookupWindowFactory.SetAlertLevel(level, viewModel.LookupRefresher.Disabled
+                        , win, message);
+                }
             });
         }
 

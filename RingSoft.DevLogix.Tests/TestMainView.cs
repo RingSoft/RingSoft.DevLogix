@@ -138,5 +138,10 @@ namespace RingSoft.DevLogix.Tests
         {
             
         }
+
+        public bool CloseAllTabs()
+        {
+            return true;
+        }
     }
 }

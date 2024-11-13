@@ -937,5 +937,10 @@ namespace RingSoft.DevLogix
             };
             procedure.Start();
         }
+
+        public bool CloseAllTabs()
+        {
+            return TabControl.CloseAllTabs();
+        }
     }
 }

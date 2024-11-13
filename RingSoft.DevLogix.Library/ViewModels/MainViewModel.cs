@@ -69,6 +69,8 @@ namespace RingSoft.DevLogix.Library.ViewModels
         void ShowAbout();
 
         void RepairDates();
+
+        bool CloseAllTabs();
     }
 
     public class MainViewModel : INotifyPropertyChanged
@@ -339,6 +341,11 @@ namespace RingSoft.DevLogix.Library.ViewModels
                     }
                 }
 
+                if (!MainView.CloseAllTabs())
+                {
+                    return;
+                }
+
                 ShowChartId(0);
                 AppGlobals.LoggedInOrganization = null;
                 SetupTimer(null, null);
@@ -503,6 +510,11 @@ namespace RingSoft.DevLogix.Library.ViewModels
             if (cont)
             {
                 SetupTimer(null, null);
+
+                if (!MainView.CloseAllTabs())
+                {
+                    return;
+                }
 
                 if (MainView.LoginUser())
                 {
