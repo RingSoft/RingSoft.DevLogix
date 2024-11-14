@@ -266,7 +266,7 @@ namespace RingSoft.DevLogix
                     menuItem.Items.Add(new MenuItem()
                     {
                         Header = "Add/Edit _Groups...",
-                        Command = ViewModel.ShowMaintenanceWindowCommand,
+                        Command = ViewModel.ShowMaintenanceTabCommand,
                         CommandParameter = AppGlobals.LookupContext.Groups,
                     });
                 }
