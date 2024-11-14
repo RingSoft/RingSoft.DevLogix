@@ -139,6 +139,8 @@ namespace RingSoft.DevLogix
                 <UserMaintenanceUserControl, UserMonthlySales>();
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
                 <GroupsMaintenanceUserControl, Group>();
+            LookupControlsGlobals.WindowRegistry.RegisterUserControl
+                <DepartmentMaintenanceUserControl, Department>();
 
             AppGlobals.LookupContext.FormatSearchForEvent += (sender, args) =>
             {
