@@ -1,36 +1,49 @@
-﻿using RingSoft.App.Controls;
+﻿using System.Windows;
+using System.Windows.Forms;
+using System.Windows.Media;
+using RingSoft.App.Controls;
 using RingSoft.DataEntryControls.Engine;
+using RingSoft.DbLookup;
+using RingSoft.DbLookup.Controls.WPF;
+using RingSoft.DbLookup.Lookup;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels.QualityAssurance;
-using System.Windows;
-using System.Windows.Forms;
-using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
-using Button = System.Windows.Controls.Button;
-using RingSoft.DbLookup.Controls.WPF;
-using RingSoft.DbLookup.Lookup;
-using RingSoft.DbLookup;
-using System.Windows.Media;
 using Control = System.Windows.Controls.Control;
 
 namespace RingSoft.DevLogix.QualityAssurance
 {
-    /// <summary>
-    /// Interaction logic for ProductMaintenanceWindow.xaml
-    /// </summary>
-    public partial class ProductMaintenanceWindow : IProductView
+    public class ProductHeaderControl : DbMaintenanceCustomPanel
     {
-        public override Control MaintenanceButtonsControl => TopHeaderControl;
-        public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
-        public override string ItemText => "Product";
-        public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;
-        public override DbMaintenanceStatusBar DbStatusBar => StatusBar;
+        public DbMaintenanceButton UpdateVersionsButton { get; set; }
+
+        public DbMaintenanceButton RecalculateButton { get; set; }
+
+        static ProductHeaderControl()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(ProductHeaderControl), new FrameworkPropertyMetadata(typeof(ProductHeaderControl)));
+        }
+
+        public override void OnApplyTemplate()
+        {
+            UpdateVersionsButton = GetTemplateChild(nameof(UpdateVersionsButton)) as DbMaintenanceButton;
+            RecalculateButton = GetTemplateChild(nameof(RecalculateButton)) as DbMaintenanceButton;
+            ;
+
+            base.OnApplyTemplate();
+        }
+    }
+
+    /// <summary>
+    /// Interaction logic for ProductMaintenanceUserControl.xaml
+    /// </summary>
+    public partial class ProductMaintenanceUserControl : IProductView
+    {
         public RecalcProcedure RecalcProcedure { get; set; }
 
-        public ProductMaintenanceWindow()
+        public ProductMaintenanceUserControl()
         {
             InitializeComponent();
-
             TopHeaderControl.Loaded += (sender, args) =>
             {
                 if (TopHeaderControl.CustomPanel is ProductHeaderControl productHeaderControl)
@@ -55,38 +68,45 @@ namespace RingSoft.DevLogix.QualityAssurance
 
                 }
             };
+            Loaded += (sender, args) =>
+            {
+                if (!AppGlobals.LookupContext.ProductVersions.HasRight(RightTypes.AllowAdd))
+                {
+                    AddModifyButton.Visibility = Visibility.Collapsed;
+                }
+                if (!AppGlobals.LookupContext.ProductVersions.HasRight(RightTypes.AllowView))
+                {
+                    VersionsTabItem.Visibility = Visibility.Collapsed;
+                    TabControl.SelectedItem = NotesTabItem;
+                }
+            };
             RegisterFormKeyControl(DescriptionControl);
         }
 
-        protected override void OnLoaded()
+        protected override DbMaintenanceViewModelBase OnGetViewModel()
         {
-            if (!AppGlobals.LookupContext.ProductVersions.HasRight(RightTypes.AllowAdd))
-            {
-                AddModifyButton.Visibility = Visibility.Collapsed;
-            }
-            if (!AppGlobals.LookupContext.ProductVersions.HasRight(RightTypes.AllowView))
-            {
-                VersionsTabItem.Visibility = Visibility.Collapsed;
-                TabControl.SelectedItem = NotesTabItem;
-            }
-            base.OnLoaded();
+            return LocalViewModel;
         }
 
-        public override void OnValidationFail(FieldDefinition fieldDefinition, string text, string caption)
+        protected override Control OnGetMaintenanceButtons()
         {
-            if (fieldDefinition == LocalViewModel.TableDefinition.GetFieldDefinition(p => p.CreateDepartmentId))
-            {
-                TabControl.SelectedItem = DeploymentTabItem;
-                TabControl.UpdateLayout();
-                CreateDepartmentControl.Focus();
-            }
-            base.OnValidationFail(fieldDefinition, text, caption);
+            return TopHeaderControl;
+        }
+
+        protected override DbMaintenanceStatusBar OnGetStatusBar()
+        {
+            return StatusBar;
+        }
+
+        protected override string GetTitle()
+        {
+            return "Product";
         }
 
         public bool UpdateVersions(ProductViewModel viewModel)
         {
             var window = new ProductUpdateVersionsWindow(viewModel);
-            window.Owner = this;
+            window.Owner = OwnerWindow;
             window.ShowInTaskbar = false;
             window.ShowDialog();
             if (window.DialogResult.HasValue)
@@ -94,6 +114,7 @@ namespace RingSoft.DevLogix.QualityAssurance
                 return window.DialogResult.Value;
             }
             return false;
+
         }
 
         public string GetInstallerName()
@@ -106,7 +127,7 @@ namespace RingSoft.DevLogix.QualityAssurance
                     fileDialog.InitialDirectory = file.DirectoryName;
                     fileDialog.FileName = file.Name;
                 }
-                
+
                 var dialogResult = fileDialog.ShowDialog();
                 if (dialogResult == System.Windows.Forms.DialogResult.OK && !fileDialog.FileName.IsNullOrEmpty())
                 {
@@ -165,7 +186,7 @@ namespace RingSoft.DevLogix.QualityAssurance
                 ProcessText = "Recalculate"
             };
             var genericWindow = new GenericReportFilterWindow(genericInput);
-            genericWindow.Owner = this;
+            genericWindow.Owner = OwnerWindow;
             genericWindow.ShowInTaskbar = false;
             genericWindow.ShowDialog();
             return genericWindow.ViewModel.DialogReesult;
@@ -188,6 +209,5 @@ namespace RingSoft.DevLogix.QualityAssurance
             var progress = $"Recalculating Customer {currentProductText} {currentProduct} / {totalProducts}";
             RecalcProcedure.SplashWindow.SetProgress(progress);
         }
-
     }
 }
