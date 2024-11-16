@@ -144,6 +144,9 @@ namespace RingSoft.DevLogix
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
                 <UserTrackerMaintenanceUserControl, UserTracker>();
 
+            LookupControlsGlobals.WindowRegistry.RegisterUserControl
+                <ErrorStatusMaintenanceUserControl, ErrorStatus>();
+
             AppGlobals.LookupContext.FormatSearchForEvent += (sender, args) =>
             {
                 if (args.SearchForHostId == DevLogixLookupContext.TimeSpentHostId)
