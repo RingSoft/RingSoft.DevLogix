@@ -146,6 +146,8 @@ namespace RingSoft.DevLogix
 
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
                 <ErrorStatusMaintenanceUserControl, ErrorStatus>();
+            LookupControlsGlobals.WindowRegistry.RegisterUserControl
+                <ErrorPriorityMaintenanceUserControl, ErrorPriority>();
 
             AppGlobals.LookupContext.FormatSearchForEvent += (sender, args) =>
             {
