@@ -8,23 +8,6 @@ using System.Windows.Controls;
 
 namespace RingSoft.DevLogix.UserManagement
 {
-    public class UserTrackerHeaderControl : DbMaintenanceCustomPanel
-    {
-        public DbMaintenanceButton RefreshNowButton { get; set; }
-
-        static UserTrackerHeaderControl()
-        {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(UserTrackerHeaderControl)
-                , new FrameworkPropertyMetadata(typeof(UserTrackerHeaderControl)));
-        }
-
-        public override void OnApplyTemplate()
-        {
-            RefreshNowButton = GetTemplateChild(nameof(RefreshNowButton)) as DbMaintenanceButton;
-
-            base.OnApplyTemplate();
-        }
-    }
 
     /// <summary>
     /// Interaction logic for UserTrackerMaintenanceWindow.xaml

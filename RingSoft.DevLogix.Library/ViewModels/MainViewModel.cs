@@ -261,7 +261,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
             UserTrackerCommand = new RelayCommand((() =>
             {
-                MainView.ShowDbMaintenanceWindow(AppGlobals.LookupContext.UserTracker);
+                MainView.ShowMaintenanceTab(AppGlobals.LookupContext.UserTracker);
             }));
 
             ProductsCommand = new RelayCommand((() =>
