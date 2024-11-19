@@ -356,7 +356,7 @@ namespace RingSoft.DevLogix
                     menuItem.Items.Add(new MenuItem()
                     {
                         Header = "Add/Edit Product _Errors...",
-                        Command = ViewModel.ShowMaintenanceWindowCommand,
+                        Command = ViewModel.ShowMaintenanceTabCommand,
                         CommandParameter = AppGlobals.LookupContext.Errors,
                     });
                 }

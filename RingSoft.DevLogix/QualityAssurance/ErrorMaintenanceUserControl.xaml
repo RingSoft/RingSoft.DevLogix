@@ -1,0 +1,338 @@
+﻿<lc:DbMaintenanceUserControl x:Class="RingSoft.DevLogix.QualityAssurance.ErrorMaintenanceUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
+             xmlns:deg="clr-namespace:RingSoft.DataEntryControls.WPF.DataEntryGrid;assembly=RingSoft.DataEntryControls.WPF"
+             xmlns:lc="clr-namespace:RingSoft.DbLookup.Controls.WPF;assembly=RingSoft.DbLookup.Controls.WPF"
+             xmlns:ac="clr-namespace:RingSoft.App.Controls;assembly=RingSoft.App.Controls"
+             xmlns:vm="clr-namespace:RingSoft.DevLogix.Library.ViewModels.QualityAssurance;assembly=RingSoft.DevLogix.Library"
+             xmlns:lm="clr-namespace:RingSoft.DevLogix.DataAccess.LookupModel;assembly=RingSoft.DevLogix.DataAccess"
+             xmlns:local="clr-namespace:RingSoft.DevLogix.QualityAssurance"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800" WindowWidth="650" WindowHeight="650">
+
+    <UserControl.Resources>
+        <Style TargetType="{x:Type local:ErrorHeaderControl}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type local:ErrorHeaderControl}">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+
+                            <Grid VerticalAlignment="Stretch">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <ac:DbMaintenanceButton Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" x:Name="PunchInButton" Content="P_unch In" ImageSource="{StaticResource ClockImage}" Style="{StaticResource SubButton}" HorizontalContentAlignment="Left"/>
+
+                                <ac:DbMaintenanceButton Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" x:Name="RecalculateButton" Content="_Recalculate" ImageSource="{StaticResource DecimalEditImage}" Style="{StaticResource SubButton}" HorizontalContentAlignment="Left"/>
+
+                            </Grid>
+
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="{x:Type ac:DbMaintenanceTopHeaderControl}" BasedOn="{StaticResource {x:Type ac:DbMaintenanceTopHeaderControl}}">
+
+            <Setter Property="CustomPanel">
+                <Setter.Value>
+                    <local:ErrorHeaderControl/>
+                </Setter.Value>
+            </Setter>
+
+        </Style>
+    </UserControl.Resources>
+
+    <UserControl.DataContext>
+        <vm:ErrorViewModel x:Name="LocalViewModel"/>
+    </UserControl.DataContext>
+
+    <DockPanel>
+        <ac:DbMaintenanceTopHeaderControl x:Name="TopHeaderControl" DockPanel.Dock="Top"/>
+        <lc:DbMaintenanceStatusBar x:Name="StatusBar" DockPanel.Dock="Bottom"/>
+
+        <Grid Margin="5">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Row="0" Grid.Column="0" Content="Error Database ID"/>
+
+            <dec:StringReadOnlyBox Grid.Row="0" Grid.Column="1" Text="{Binding Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="50" HorizontalAlignment="Left"/>
+
+            <Label Grid.Row="0" Grid.Column="2" Content="Error ID"/>
+
+            <lc:AutoFillControl Grid.Row="0" Grid.Column="3" x:Name="ErrorIdControl" Setup="{Binding KeyAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding KeyAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left" RsIsTabStop="False"/>
+
+            <Label Grid.Row="1" Grid.Column="0" Content="Date"/>
+
+            <dec:DateEditControl Grid.Row="1" Grid.Column="1" Value="{Binding ErrorDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DateFormatType="DateTime" Width="200" HorizontalAlignment="Left" RsIsTabStop="False"/>
+
+            <Label Grid.Row="1" Grid.Column="2" Content="Status"/>
+
+            <lc:AutoFillControl Grid.Row="1" Grid.Column="3" x:Name="StatusControl" Setup="{Binding StatusAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding StatusAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left"/>
+
+            <Label Grid.Row="2" Grid.Column="0" Content="Product"/>
+
+            <lc:AutoFillControl Grid.Row="2" Grid.Column="1"  Setup="{Binding ProductAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding ProductAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left"/>
+
+            <Label Grid.Row="2" Grid.Column="2" Content="Priority"/>
+
+            <lc:AutoFillControl Grid.Row="2" Grid.Column="3" Setup="{Binding PriorityAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding PriorityAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left"/>
+
+            <Label Grid.Row="3" Grid.Column="0" Content="Found Version"/>
+
+            <lc:AutoFillControl Grid.Row="3" Grid.Column="1"  Setup="{Binding FoundVersionAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding FoundVersionAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left" RsIsTabStop="False"/>
+
+            <Label Grid.Row="3" Grid.Column="2" Content="Found By"/>
+
+            <lc:AutoFillControl Grid.Row="3" Grid.Column="3"  Setup="{Binding FoundUserAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding FoundUserAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left" RsIsTabStop="False"/>
+
+            <Label Grid.Row="4" Grid.Column="0" Content="Fixed Version"/>
+
+            <lc:AutoFillControl Grid.Row="4" Grid.Column="1" Setup="{Binding FixedVersionAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding FixedVersionAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left" RsIsTabStop="False"/>
+
+            <GroupBox Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" x:Name="PdGroupBox" Header="Product Development" IsTabStop="False">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.Row="0" Grid.Column="0" Content="Assigned To"/>
+
+                    <lc:AutoFillControl Grid.Row="0" Grid.Column="1" x:Name="PdAutoFillControl" Setup="{Binding AssignedDeveloperAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding AssignedDeveloperAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left" RsIsTabStop="False"/>
+
+                    <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" x:Name="PdButtonsPanel" Orientation="Horizontal" HorizontalAlignment="Center">
+
+                        <Button Content="_Clipboard Copy" Width="100" IsTabStop="False" Command="{Binding ClipboardCopyCommand}"/>
+
+                        <Button Content="_Write Off" Margin="5,0,0,0" Width="100" IsTabStop="False" Command="{Binding WriteOffCommand}"/>
+
+                    </StackPanel>
+
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Grid.Row="5" Grid.Column="2" Grid.ColumnSpan="2" x:Name="QaGroupBox" Header="Quality Assurance" Margin="5,0,0,0" IsTabStop="False">
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.Row="0" Grid.Column="0" Content="Assigned To"/>
+
+                    <lc:AutoFillControl Grid.Row="0" Grid.Column="1" x:Name="QaAutoFillControl" Setup="{Binding AssignedQualityAssuranceAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding AssignedQualityAssuranceAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left" RsIsTabStop="False"/>
+
+                    <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" x:Name="QaButtonsPanel" Orientation="Horizontal" HorizontalAlignment="Center">
+
+                        <Button Content="Pa_ss" Width="100" IsTabStop="False" Command="{Binding PassCommand}"/>
+
+                        <Button Content="F_ail" Margin="5,0,0,0" Width="100" IsTabStop="False" Command="{Binding FailCommand}"/>
+
+                    </StackPanel>
+
+                </Grid>
+            </GroupBox>
+            <Label Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="5" HorizontalAlignment="Left" Content="(Ctrl + T to set focus)"/>
+            <dec:DataEntryTabControl Grid.Row="7" Grid.Column="0" x:Name="TabControl" Grid.ColumnSpan="5" VerticalAlignment="Stretch">
+
+                <TabItem  Header="Details" VerticalAlignment="Stretch">
+
+                    <Grid x:Name="DetailsGrid">
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Grid.Row="0" Grid.Column="0" Content="Description" HorizontalAlignment="Left"/>
+
+                        <TextBox Grid.Row="1" Grid.Column="0" x:Name="DescriptionTextBox" TextWrapping="Wrap" VerticalContentAlignment="Top" AcceptsReturn="True" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalScrollBarVisibility="Visible"/>
+
+                        <Label Grid.Row="0" Grid.Column="1" Content="Resolution" HorizontalAlignment="Left" Margin="5,0,0,0"/>
+
+                        <TextBox Grid.Row="1" Grid.Column="1" x:Name="ResolutionTextBox" TextWrapping="Wrap" VerticalContentAlignment="Top" AcceptsReturn="True" Text="{Binding Resolution, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalScrollBarVisibility="Visible"/>
+
+                    </Grid>
+
+                </TabItem>
+
+                <TabItem Header="Time Clocks" x:Name="TimeClockTab" VerticalAlignment="Stretch">
+
+                    <DockPanel>
+
+                        <lc:LookupControl LookupDefinition="{Binding TimeClockLookup}">
+
+                            <lc:LookupControl.LookupColumns>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf PunchInDate, Type={x:Type lm:TimeClockLookup}}" Header="Punch In Date" Width="200"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf UserName, Type={x:Type lm:TimeClockLookup}}" Header="User" Width="200"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf MinutesSpent, Type={x:Type lm:TimeClockLookup}}" Header="Time Spent" Width="150"/>
+
+                            </lc:LookupControl.LookupColumns>
+
+                        </lc:LookupControl>
+
+                    </DockPanel>
+
+                </TabItem>
+
+                <TabItem Header="Cost">
+
+                    <Grid>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Grid.Row="0" Grid.Column="0" Content="Total Time Spent"/>
+
+                        <dec:StringReadOnlyBox Grid.Row="0" Grid.Column="1" Width="100" Text="{Binding TotalTimeSpent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        <Label Grid.Row="0" Grid.Column="2" Content="Total Cost"/>
+
+                        <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="3" Width="100" Value="{Binding TotalCost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency"/>
+
+                        <deg:DataEntryGrid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" DataEntryCanUserAddRows="False" CanUserDeleteRows="False" Manager="{Binding ErrorUserGridManager}">
+
+                            <deg:DataEntryGrid.Columns>
+
+                                <deg:DataEntryGridTextColumn Header="User" Width="200" ColumnId="{x:Static vm:ErrorUserGridManager.UserColumnId}"/>
+
+                                <deg:DataEntryGridTextColumn Header="Time Spent" Width="100" ColumnId="{x:Static vm:ErrorUserGridManager.TimeSpentColumnId}"/>
+
+                                <deg:DataEntryGridTextColumn Header="Cost" Width="100" Alignment="Right" ColumnId="{x:Static vm:ErrorUserGridManager.CostColumnId}"/>
+
+                            </deg:DataEntryGrid.Columns>
+
+                        </deg:DataEntryGrid>
+                    </Grid>
+                </TabItem>
+
+                <TabItem Header="Developers">
+
+                    <DockPanel>
+
+                        <deg:DataEntryGrid Manager="{Binding DeveloperManager}" DataEntryCanUserAddRows="False" CanUserDeleteRows="False">
+
+                            <deg:DataEntryGrid.Columns>
+
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ErrorDeveloperManager.DeveloperColumnId}" Width="200" Header="Developer"/>
+
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ErrorDeveloperManager.DateFixedColumnId}" Width="150" Header="Date Fixed"/>
+
+                            </deg:DataEntryGrid.Columns>
+                        </deg:DataEntryGrid>
+                    </DockPanel>
+
+                </TabItem>
+                <TabItem Header="Testers">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Grid.Row="0" Grid.Column="0" Content="Testing Outline"/>
+
+                        <lc:AutoFillControl Grid.Row="0" Grid.Column="1" x:Name="TestingOutlineControl" Width="200" HorizontalAlignment="Left" Setup="{Binding TestingOutlineAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding TestingOutlineAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        <deg:DataEntryGrid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Manager="{Binding ErrorQaManager}" DataEntryCanUserAddRows="False" CanUserDeleteRows="False">
+
+                            <deg:DataEntryGrid.Columns>
+
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ErrorQaManager.TesterColumnId}" Width="200" Header="Tester"/>
+
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ErrorQaManager.NewStatusColumnId}" Width="200" Header="New Status"/>
+
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ErrorQaManager.DateChangedColumnId}" Width="150" Header="Date Changed"/>
+
+                            </deg:DataEntryGrid.Columns>
+                        </deg:DataEntryGrid>
+
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Support Tickets">
+                    <DockPanel>
+                        <deg:DataEntryGrid Manager="{Binding SupportTicketManager}">
+
+                            <deg:DataEntryGrid.Columns>
+
+                                <deg:DataEntryGridTextColumn Header="Support Ticket" Width="200" ColumnId="0"/>
+
+                            </deg:DataEntryGrid.Columns>
+
+                        </deg:DataEntryGrid>
+                    </DockPanel>
+                </TabItem>
+
+            </dec:DataEntryTabControl>
+        </Grid>
+
+    </DockPanel>
+
+</lc:DbMaintenanceUserControl>

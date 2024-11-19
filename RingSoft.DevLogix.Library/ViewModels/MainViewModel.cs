@@ -271,7 +271,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
             ErrorsCommand = new RelayCommand((() =>
             {
-                MainView.ShowDbMaintenanceWindow(AppGlobals.LookupContext.Errors);
+                MainView.ShowMaintenanceTab(AppGlobals.LookupContext.Errors);
             }));
 
             OutlinesCommand = new RelayCommand((() =>

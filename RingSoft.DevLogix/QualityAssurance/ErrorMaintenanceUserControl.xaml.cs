@@ -1,37 +1,48 @@
 ﻿using RingSoft.App.Controls;
+using System.Windows;
+using System.Windows.Controls;
+using RingSoft.DbLookup.Controls.WPF;
+using RingSoft.DbMaintenance;
 using RingSoft.DataEntryControls.WPF;
 using RingSoft.DbLookup;
-using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Lookup;
-using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels.QualityAssurance;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using Clipboard = System.Windows.Clipboard;
-using Control = System.Windows.Controls.Control;
-using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 
 namespace RingSoft.DevLogix.QualityAssurance
 {
-    /// <summary>
-    /// Interaction logic for ErrorMaintenanceWindow.xaml
-    /// </summary>
-    public partial class ErrorMaintenanceWindow : IErrorView
+    public class ErrorHeaderControl : DbMaintenanceCustomPanel
     {
-        public override Control MaintenanceButtonsControl => TopHeaderControl;
-        public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
-        public override string ItemText => "Error";
-        public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;
-        public override DbMaintenanceStatusBar DbStatusBar => StatusBar;
+        public DbMaintenanceButton PunchInButton { get; set; }
+
+        public DbMaintenanceButton RecalculateButton { get; set; }
+
+        static ErrorHeaderControl()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(ErrorHeaderControl), new FrameworkPropertyMetadata(typeof(ErrorHeaderControl)));
+        }
+
+        public override void OnApplyTemplate()
+        {
+            PunchInButton = GetTemplateChild(nameof(PunchInButton)) as DbMaintenanceButton;
+            RecalculateButton = GetTemplateChild(nameof(RecalculateButton)) as DbMaintenanceButton;
+
+            base.OnApplyTemplate();
+        }
+    }
+
+    /// <summary>
+    /// Interaction logic for ErrorMaintenanceUserControl.xaml
+    /// </summary>
+    public partial class ErrorMaintenanceUserControl : IErrorView
+    {
         public RecalcProcedure RecalcProcedure { get; set; }
 
         private VmUiControl _descriptionUiControl;
         private VmUiControl _resolutionUiControl;
 
-        public ErrorMaintenanceWindow()
+        public ErrorMaintenanceUserControl()
         {
             InitializeComponent();
             DetailsGrid.SizeChanged += DetailsGrid_SizeChanged;
@@ -42,7 +53,7 @@ namespace RingSoft.DevLogix.QualityAssurance
                     errorHeaderControl.PunchInButton.Command =
                         LocalViewModel.PunchInCommand;
                     errorHeaderControl.RecalculateButton.Command =
-                    LocalViewModel.RecalcCommand;
+                        LocalViewModel.RecalcCommand;
 
                     errorHeaderControl.PunchInButton.ToolTip.HeaderText = "Punch In (Alt + U)";
                     errorHeaderControl.PunchInButton.ToolTip.DescriptionText = "Punch into this Product Error. ";
@@ -75,6 +86,26 @@ namespace RingSoft.DevLogix.QualityAssurance
         {
             DescriptionTextBox.MaxWidth = DetailsGrid.ActualWidth / 2;
             ResolutionTextBox.MaxWidth = DetailsGrid.ActualWidth / 2;
+        }
+
+        protected override DbMaintenanceViewModelBase OnGetViewModel()
+        {
+            return LocalViewModel;
+        }
+
+        protected override Control OnGetMaintenanceButtons()
+        {
+            return TopHeaderControl;
+        }
+
+        protected override DbMaintenanceStatusBar OnGetStatusBar()
+        {
+            return StatusBar;
+        }
+
+        protected override string GetTitle()
+        {
+            return "Error";
         }
 
         public override void ResetViewForNewRecord()
@@ -130,7 +161,7 @@ namespace RingSoft.DevLogix.QualityAssurance
                 DateFieldToFilter = AppGlobals.LookupContext.Errors.GetFieldDefinition(p => p.ErrorDate),
             };
             var dateFilterWindow = new DateLookupFilterWindow(genericInput);
-            dateFilterWindow.Owner = this;
+            dateFilterWindow.Owner = OwnerWindow;
             dateFilterWindow.ShowInTaskbar = false;
             dateFilterWindow.ShowDialog();
             return dateFilterWindow.LocalViewModel.DialogReesult;
@@ -154,27 +185,6 @@ namespace RingSoft.DevLogix.QualityAssurance
             var progress = $"Recalculating Error {currentErrorText} {currentError} / {totalErrors}";
             RecalcProcedure.SplashWindow.SetProgress(progress);
 
-        }
-
-        protected override void OnPreviewKeyDown(KeyEventArgs e)
-        {
-            var ctrlKeyDown = Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl);
-            if (ctrlKeyDown)
-            {
-                switch (e.Key)
-                {
-                    case Key.T:
-                        TabControl.Focus();
-                        if (TabControl.SelectedItem is TabItem tabItem)
-                        {
-                            tabItem.Focus();
-                            e.Handled = true;
-                        }
-                        break;
-                }
-            }
-
-            base.OnPreviewKeyDown(e);
         }
 
         public override void SetControlReadOnlyMode(Control control, bool readOnlyValue)

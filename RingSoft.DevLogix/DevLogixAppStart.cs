@@ -151,6 +151,15 @@ namespace RingSoft.DevLogix
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
                 <ProductMaintenanceUserControl, Product>();
 
+            LookupControlsGlobals.WindowRegistry.RegisterUserControl
+                <ErrorMaintenanceUserControl, Error>();
+            LookupControlsGlobals.WindowRegistry.RegisterUserControl
+                <ErrorMaintenanceUserControl>(AppGlobals.LookupContext.ErrorTesters);
+            LookupControlsGlobals.WindowRegistry.RegisterUserControl
+                <ErrorMaintenanceUserControl>(AppGlobals.LookupContext.ErrorDevelopers);
+            LookupControlsGlobals.WindowRegistry.RegisterUserControl
+                <ErrorMaintenanceUserControl>(AppGlobals.LookupContext.ErrorUsers);
+
             AppGlobals.LookupContext.FormatSearchForEvent += (sender, args) =>
             {
                 if (args.SearchForHostId == DevLogixLookupContext.TimeSpentHostId)
