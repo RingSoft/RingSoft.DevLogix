@@ -8,23 +8,6 @@ using RingSoft.DbLookup;
 
 namespace RingSoft.DevLogix.QualityAssurance
 {
-    public class TestingTemplateHeaderControl : DbMaintenanceCustomPanel
-    {
-        public DbMaintenanceButton UpdateOutlinesButton { get; set; }
-
-        static TestingTemplateHeaderControl()
-        {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(TestingTemplateHeaderControl), new FrameworkPropertyMetadata(typeof(TestingTemplateHeaderControl)));
-        }
-
-        public override void OnApplyTemplate()
-        {
-            UpdateOutlinesButton = GetTemplateChild(nameof(UpdateOutlinesButton)) as DbMaintenanceButton;
-
-            base.OnApplyTemplate();
-        }
-    }
-
     /// <summary>
     /// Interaction logic for TestingTemplatesMaintenanceWindow.xaml
     /// </summary>
