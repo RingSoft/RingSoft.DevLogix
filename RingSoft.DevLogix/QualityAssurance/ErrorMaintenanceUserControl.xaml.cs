@@ -1,6 +1,7 @@
 ﻿using RingSoft.App.Controls;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbMaintenance;
 using RingSoft.DataEntryControls.WPF;
@@ -55,10 +56,10 @@ namespace RingSoft.DevLogix.QualityAssurance
                     errorHeaderControl.RecalculateButton.Command =
                         LocalViewModel.RecalcCommand;
 
-                    errorHeaderControl.PunchInButton.ToolTip.HeaderText = "Punch In (Alt + U)";
+                    errorHeaderControl.PunchInButton.ToolTip.HeaderText = "Punch In (Ctrl + E, Ctrl + U)";
                     errorHeaderControl.PunchInButton.ToolTip.DescriptionText = "Punch into this Product Error. ";
 
-                    errorHeaderControl.RecalculateButton.ToolTip.HeaderText = "Recalculate Cost (Alt + R)";
+                    errorHeaderControl.RecalculateButton.ToolTip.HeaderText = "Recalculate Cost (Ctrl + E, Ctrl + R)";
                     errorHeaderControl.RecalculateButton.ToolTip.DescriptionText =
                         "Recalculate the cost values for a range of product errors.";
 
@@ -80,6 +81,48 @@ namespace RingSoft.DevLogix.QualityAssurance
             RegisterFormKeyControl(ErrorIdControl);
             _descriptionUiControl = new VmUiControl(DescriptionTextBox, LocalViewModel.DescriptionUiCommand);
             _resolutionUiControl = new VmUiControl(ResolutionTextBox, LocalViewModel.ResolutionUiCommand);
+
+            var hotKey = new HotKey(LocalViewModel.PunchInCommand);
+            hotKey.AddKey(Key.E);
+            hotKey.AddKey(Key.U);
+            AddHotKey(hotKey);
+
+            hotKey = new HotKey(LocalViewModel.RecalcCommand);
+            hotKey.AddKey(Key.E);
+            hotKey.AddKey(Key.R);
+            AddHotKey(hotKey);
+
+            hotKey = new HotKey(LocalViewModel.ClipboardCopyCommand);
+            hotKey.AddKey(Key.E);
+            hotKey.AddKey(Key.C);
+            AddHotKey(hotKey);
+
+            hotKey = new HotKey(LocalViewModel.WriteOffCommand);
+            hotKey.AddKey(Key.E);
+            hotKey.AddKey(Key.W);
+            AddHotKey(hotKey);
+
+            hotKey = new HotKey(LocalViewModel.PassCommand);
+            hotKey.AddKey(Key.E);
+            hotKey.AddKey(Key.P);
+            AddHotKey(hotKey);
+
+            hotKey = new HotKey(LocalViewModel.FailCommand);
+            hotKey.AddKey(Key.E);
+            hotKey.AddKey(Key.F);
+            AddHotKey(hotKey);
+
+            FailButton.ToolTip.HeaderText = "Fail Error (Ctrl + E, Ctrl + F)";
+            FailButton.ToolTip.DescriptionText = "This shortcut allows the current User to fail this Error";
+
+            PassButton.ToolTip.HeaderText = "Pass Error (Ctrl + E, Ctrl + P)";
+            PassButton.ToolTip.DescriptionText = "This allows the current User to pass this Error";
+
+            WriteOffButton.ToolTip.HeaderText = "Write-Off Error (Ctrl + E, Ctrl + W)";
+            WriteOffButton.ToolTip.DescriptionText = "Write-off error as has been fixed by developer";
+
+            ClipboardButton.ToolTip.HeaderText = "Copy Error to Clipboard (Ctrl + E, Ctrl + C)";
+            ClipboardButton.ToolTip.DescriptionText = "Copy Error details to clipboard to paste into code";
         }
 
         private void DetailsGrid_SizeChanged(object sender, SizeChangedEventArgs e)
