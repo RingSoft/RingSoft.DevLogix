@@ -1,32 +1,44 @@
 ﻿using RingSoft.App.Controls;
+using System.Windows;
+using System.Windows.Controls;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
-using RingSoft.DataEntryControls.WPF.DataEntryGrid;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
-using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels.ProjectManagement;
-using System.Windows;
-using System.Windows.Controls;
+using RingSoft.DataEntryControls.WPF.DataEntryGrid;
 
 namespace RingSoft.DevLogix.ProjectManagement
 {
-    /// <summary>
-    /// Interaction logic for ProjectMaterialMaintenanceWindow.xaml
-    /// </summary>
-    public partial class ProjectMaterialMaintenanceWindow : IProjectMaterialView
+    public class ProjectMaterialHeaderControl : DbMaintenanceCustomPanel
     {
-        public override Control MaintenanceButtonsControl => TopHeaderControl;
-        public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
-        public override string ItemText => "Project Material";
-        public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;
-        public override DbMaintenanceStatusBar DbStatusBar => StatusBar;
+        public DbMaintenanceButton RecalcButton { get; set; }
+
+        public DbMaintenanceButton PostButton { get; set; }
+
+        static ProjectMaterialHeaderControl()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(ProjectMaterialHeaderControl), new FrameworkPropertyMetadata(typeof(ProjectMaterialHeaderControl)));
+        }
+
+        public override void OnApplyTemplate()
+        {
+            RecalcButton = GetTemplateChild(nameof(RecalcButton)) as DbMaintenanceButton;
+            PostButton = GetTemplateChild(nameof(PostButton)) as DbMaintenanceButton;
+
+            base.OnApplyTemplate();
+        }
+    }
+    /// <summary>
+    /// Interaction logic for ProjectMaterialMaintenanceUserControl.xaml
+    /// </summary>
+    public partial class ProjectMaterialMaintenanceUserControl : IProjectMaterialView
+    {
         public RecalcProcedure RecalcProcedure { get; set; }
 
-
-        public ProjectMaterialMaintenanceWindow()
+        public ProjectMaterialMaintenanceUserControl()
         {
             InitializeComponent();
             TopHeaderControl.Loaded += (sender, args) =>
@@ -59,11 +71,31 @@ namespace RingSoft.DevLogix.ProjectManagement
             RegisterFormKeyControl(KeyControl);
         }
 
+        protected override DbMaintenanceViewModelBase OnGetViewModel()
+        {
+            return LocalViewModel;
+        }
+
+        protected override Control OnGetMaintenanceButtons()
+        {
+            return TopHeaderControl;
+        }
+
+        protected override DbMaintenanceStatusBar OnGetStatusBar()
+        {
+            return StatusBar;
+        }
+
+        protected override string GetTitle()
+        {
+            return "Project Material";
+        }
+
         public bool GetNewLineType(string text, out PrimaryKeyValue materialPartPkValue, out MaterialPartLineTypes lineType)
         {
             var result = MaterialPartLineTypes.MaterialPart;
             var window = new ProjectMaterialPartSelectorWindow(text);
-            window.Owner = this;
+            window.Owner = OwnerWindow;
             window.ShowInTaskbar = false;
             window.ShowDialog();
             materialPartPkValue = window.ViewModel.NewMaterialPartPkValue;
@@ -74,7 +106,7 @@ namespace RingSoft.DevLogix.ProjectManagement
         public bool ShowCommentEditor(DataEntryGridMemoValue comment)
         {
             var memoEditor = new DataEntryGridMemoEditor(comment);
-            memoEditor.Owner = this;
+            memoEditor.Owner = OwnerWindow;
             memoEditor.Title = "Edit Comment";
             return memoEditor.ShowDialog();
         }
@@ -82,7 +114,7 @@ namespace RingSoft.DevLogix.ProjectManagement
         public bool DoPostCosts(Project project)
         {
             var postCostWindow = new ProjectMaterialPostWindow(project);
-            postCostWindow.Owner = this;
+            postCostWindow.Owner = OwnerWindow;
             postCostWindow.ShowInTaskbar = false;
             postCostWindow.ShowDialog();
             return true;
@@ -98,7 +130,7 @@ namespace RingSoft.DevLogix.ProjectManagement
                 ProcessText = "Recalculate"
             };
             var genericWindow = new GenericReportFilterWindow(genericInput);
-            genericWindow.Owner = this;
+            genericWindow.Owner = OwnerWindow;
             genericWindow.ShowInTaskbar = false;
             genericWindow.ShowDialog();
             return genericWindow.ViewModel.DialogReesult;

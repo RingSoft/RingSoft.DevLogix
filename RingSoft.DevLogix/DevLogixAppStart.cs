@@ -188,6 +188,9 @@ namespace RingSoft.DevLogix
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
                 <ProjectTaskMaintenanceUserControl>(AppGlobals.LookupContext.ProjectTaskDependency);
 
+            LookupControlsGlobals.WindowRegistry.RegisterUserControl
+                <ProjectMaterialMaintenanceUserControl, ProjectMaterial>();
+
             AppGlobals.LookupContext.FormatSearchForEvent += (sender, args) =>
             {
                 if (args.SearchForHostId == DevLogixLookupContext.TimeSpentHostId)
