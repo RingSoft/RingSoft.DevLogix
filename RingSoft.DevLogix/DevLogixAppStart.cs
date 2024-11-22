@@ -192,6 +192,8 @@ namespace RingSoft.DevLogix
                 <ProjectMaterialMaintenanceUserControl, ProjectMaterial>();
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
                 <LaborPartMaintenanceUserControl, LaborPart>();
+            LookupControlsGlobals.WindowRegistry.RegisterUserControl
+                <MaterialPartMaintenanceUserControl, MaterialPart>();
 
             AppGlobals.LookupContext.FormatSearchForEvent += (sender, args) =>
             {
