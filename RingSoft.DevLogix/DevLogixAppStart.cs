@@ -19,6 +19,7 @@ using System.Linq;
 using System.Windows;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
+using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 using RingSoft.DevLogix.DataAccess.Model.UserManagement;
 using TimeZone = RingSoft.DevLogix.DataAccess.Model.CustomerManagement.TimeZone;
@@ -174,6 +175,12 @@ namespace RingSoft.DevLogix
                 <TestingOutlineMaintenanceUserControl>(AppGlobals.LookupContext.TestingOutlineDetails);
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
                 <TestingOutlineMaintenanceUserControl>(AppGlobals.LookupContext.TestingOutlineTemplates);
+
+            LookupControlsGlobals.WindowRegistry.RegisterUserControl
+                <ProjectMaintenanceUserControl, Project>();
+            LookupControlsGlobals.WindowRegistry.RegisterUserControl
+                <ProjectMaintenanceUserControl>(AppGlobals.LookupContext.ProjectUsers);
+
 
             AppGlobals.LookupContext.FormatSearchForEvent += (sender, args) =>
             {

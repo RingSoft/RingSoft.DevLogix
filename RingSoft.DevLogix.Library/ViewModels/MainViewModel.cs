@@ -281,7 +281,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
             ProjectsCommand = new RelayCommand((() =>
             {
-                MainView.ShowDbMaintenanceWindow(AppGlobals.LookupContext.Projects);
+                MainView.ShowMaintenanceTab(AppGlobals.LookupContext.Projects);
             }));
 
             CustomersCommand = new RelayCommand((() =>

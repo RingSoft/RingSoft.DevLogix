@@ -1,0 +1,357 @@
+﻿<lc:DbMaintenanceUserControl x:Class="RingSoft.DevLogix.ProjectManagement.ProjectMaintenanceUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
+             xmlns:deg="clr-namespace:RingSoft.DataEntryControls.WPF.DataEntryGrid;assembly=RingSoft.DataEntryControls.WPF"
+             xmlns:lc="clr-namespace:RingSoft.DbLookup.Controls.WPF;assembly=RingSoft.DbLookup.Controls.WPF"
+             xmlns:ac="clr-namespace:RingSoft.App.Controls;assembly=RingSoft.App.Controls"
+             xmlns:vm="clr-namespace:RingSoft.DevLogix.Library.ViewModels.ProjectManagement;assembly=RingSoft.DevLogix.Library"
+             xmlns:lm="clr-namespace:RingSoft.DevLogix.DataAccess.LookupModel;assembly=RingSoft.DevLogix.DataAccess"
+             xmlns:plm="clr-namespace:RingSoft.DevLogix.DataAccess.LookupModel.ProjectManagement;assembly=RingSoft.DevLogix.DataAccess"
+             xmlns:local="clr-namespace:RingSoft.DevLogix.ProjectManagement"
+             xmlns:projectManagement="clr-namespace:RingSoft.DevLogix.DataAccess.LookupModel.ProjectManagement;assembly=RingSoft.DevLogix.DataAccess"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800" WindowWidth="800" WindowHeight="550">
+
+    <UserControl.Resources>
+        <Style TargetType="{x:Type local:ProjectHeaderControl}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type local:ProjectHeaderControl}">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+
+                            <Grid VerticalAlignment="Stretch">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <ac:DbMaintenanceButton Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" x:Name="RecalcButton" Content="_Recalculate" ImageSource="{StaticResource DecimalEditImage}" Style="{StaticResource SubButton}" HorizontalContentAlignment="Left"/>
+
+                                <ac:DbMaintenanceButton Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" x:Name="CalcDeadlineButton" Content="Ca_lculate Deadline" ImageSource="{StaticResource DecimalEditImage}" Style="{StaticResource SubButton}" HorizontalContentAlignment="Left"/>
+
+                            </Grid>
+
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="{x:Type ac:DbMaintenanceTopHeaderControl}" BasedOn="{StaticResource {x:Type ac:DbMaintenanceTopHeaderControl}}">
+
+            <Setter Property="CustomPanel">
+                <Setter.Value>
+                    <local:ProjectHeaderControl/>
+                </Setter.Value>
+            </Setter>
+
+        </Style>
+    </UserControl.Resources>
+
+    <UserControl.DataContext>
+        <vm:ProjectMaintenanceViewModel x:Name="LocalViewModel"/>
+    </UserControl.DataContext>
+
+    <DockPanel>
+
+        <ac:DbMaintenanceTopHeaderControl x:Name="TopHeaderControl" DockPanel.Dock="Top"/>
+        <lc:DbMaintenanceStatusBar x:Name="StatusBar" DockPanel.Dock="Bottom"/>
+
+        <Grid Margin="5">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Row="0" Grid.Column="0" Content="Project ID"/>
+
+            <dec:StringReadOnlyBox Grid.Row="0" Grid.Column="1" Text="{Binding Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="50" HorizontalAlignment="Left"/>
+
+            <Label Grid.Row="0" Grid.Column="2" Content="Project Name"/>
+
+            <lc:AutoFillControl Grid.Row="0" Grid.Column="3" x:Name="NameControl" Width="200" HorizontalAlignment="Left"/>
+
+            <TabControl Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="5" x:Name="TabControl">
+
+                <TabItem x:Name="DetailsTabItem" Header="Details" VerticalAlignment="Stretch">
+
+                    <DockPanel>
+
+                        <Grid>
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Label Grid.Row="0" Grid.Column="0" Content="Manager"/>
+
+                            <lc:AutoFillControl Grid.Row="0" Grid.Column="1" x:Name="ManagerControl" Setup="{Binding ManagerAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding ManagerAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left"/>
+
+                            <Label Grid.Row="0" Grid.Column="2" Content="Contract Cost"/>
+
+                            <dec:DecimalEditControl Grid.Row="0" Grid.Column="3" FormatType="Currency" Value="{Binding ContractCost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150" HorizontalAlignment="Left" TextAlignment="Left"/>
+
+                            <Label Grid.Row="1" Grid.Column="0" Content="Start Date"/>
+
+                            <StackPanel Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Horizontal">
+
+                                <dec:DateEditControl x:Name="StartDateControl" Value="{Binding StartDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" HorizontalAlignment="Left" DateFormatType="DateOnly" AllowNullValue="True"/>
+
+                                <Label Content="Deadline"/>
+
+                                <dec:DateEditControl x:Name="DeadlineControl" DateFormatType="DateOnly" HorizontalAlignment="Left" Width="100" Value="{Binding Deadline, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                            </StackPanel>
+
+                            <Label Grid.Row="1" Grid.Column="2" Content="Original Deadline"/>
+
+                            <dec:DateEditControl Grid.Row="1" Grid.Column="3" x:Name="OriginalDeadlineControl" DateFormatType="DateOnly" HorizontalAlignment="Left" Width="100" Value="{Binding OriginalDeadline, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+
+                            <Label Grid.Row="2" Grid.Column="0" Content="Product"/>
+
+                            <lc:AutoFillControl Grid.Row="2" Grid.Column="1" x:Name="ProductControl" Setup="{Binding ProductAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding ProductAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left"/>
+
+                            <CheckBox Grid.Row="2" Grid.Column="2" Content="Is Billable" IsChecked="{Binding IsBillable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                            <deg:DataEntryGrid Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Manager="{Binding ProjectTotalsManager}" DataEntryCanUserAddRows="False" HorizontalAlignment="Left" Margin="5">
+
+                                <deg:DataEntryGrid.Columns>
+
+                                    <deg:DataEntryGridTextColumn Header="Item Type" ColumnId="{x:Static vm:ProjectTotalsManager.TypeColumnId}" Width="100"/>
+
+                                    <deg:DataEntryGridTextColumn Header="Time" ColumnId="{x:Static vm:ProjectTotalsManager.TotalTimeColumnId}" Width="125"/>
+
+                                    <deg:DataEntryGridTextColumn Header="Cost" ColumnId="{x:Static vm:ProjectTotalsManager.TotalCostColumnId}" Width="150" Alignment="Right"/>
+
+                                </deg:DataEntryGrid.Columns>
+
+                                <deg:DataEntryGrid.DisplayStyles>
+
+                                    <deg:DataEntryGridDisplayStyle DisplayId="{x:Static vm:ProjectTotalsManager.NegativeDisplayStyleId}" ForegroundBrush="Red"/>
+
+                                    <deg:DataEntryGridDisplayStyle DisplayId="{x:Static vm:ProjectTotalsManager.PositiveDisplayStyleId}" ForegroundBrush="Green"/>
+
+                                </deg:DataEntryGrid.DisplayStyles>
+                            </deg:DataEntryGrid>
+
+                            <deg:DataEntryGrid Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Manager="{Binding ProjectDaysGridManager}" DataEntryCanUserAddRows="False" HorizontalAlignment="Left" Margin="5">
+
+                                <deg:DataEntryGrid.Columns>
+
+                                    <deg:DataEntryGridTextColumn Header="Day" ColumnId="{x:Static vm:ProjectDaysGridManager.DayColumnId}" Width="100"/>
+
+                                    <deg:DataEntryGridTextColumn Header="Standard Work&#10;Time" ColumnId="{x:Static vm:ProjectDaysGridManager.TimeColumnId}" Width="150"/>
+
+                                </deg:DataEntryGrid.Columns>
+                            </deg:DataEntryGrid>
+
+                        </Grid>
+
+                    </DockPanel>
+
+                </TabItem>
+                <TabItem Header="Users" x:Name="UsersTab" VerticalAlignment="Stretch">
+
+                    <DockPanel>
+
+                        <deg:DataEntryGrid x:Name="UsersGrid" Manager="{Binding UsersGridManager}" FrozenColumnCount="1">
+
+                            <deg:DataEntryGrid.Columns>
+
+                                <deg:DataEntryGridTextColumn Header="User" ColumnId="{x:Static vm:ProjectUsersGridManager.UserColumnId}" Width="200"/>
+
+                                <deg:DataEntryGridTextColumn Header="Time Spent" ColumnId="{x:Static vm:ProjectUsersGridManager.MinutesSpentColumnId}" Width="100"/>
+
+                                <deg:DataEntryGridTextColumn Header="Cost" ColumnId="{x:Static vm:ProjectUsersGridManager.CostColumnId}" Width="100" Alignment="Right"/>
+
+                                <deg:DataEntryGridCheckBoxColumn Header="Is&#10;Standard" ColumnId="{x:Static vm:ProjectUsersGridManager.IsStandardColumnId}" Width="75"/>
+
+                                <deg:DataEntryGridTextColumn Header="Sunday&#10;Time" ColumnId="{x:Static vm:ProjectUsersGridManager.SundayColumnId}" Width="100"/>
+
+                                <deg:DataEntryGridTextColumn Header="Monday&#10;Time" ColumnId="{x:Static vm:ProjectUsersGridManager.MondayColumnId}" Width="100"/>
+
+                                <deg:DataEntryGridTextColumn Header="Tuesday&#10;Time" ColumnId="{x:Static vm:ProjectUsersGridManager.TuesdayColumnId}" Width="100"/>
+
+                                <deg:DataEntryGridTextColumn Header="Wednesday&#10;Time" ColumnId="{x:Static vm:ProjectUsersGridManager.WednesdayColumnId}" Width="100"/>
+
+                                <deg:DataEntryGridTextColumn Header="Thursday&#10;Time" ColumnId="{x:Static vm:ProjectUsersGridManager.ThursdayColumnId}" Width="100"/>
+
+                                <deg:DataEntryGridTextColumn Header="Friday&#10;Time" ColumnId="{x:Static vm:ProjectUsersGridManager.FridayColumnId}" Width="100"/>
+
+                                <deg:DataEntryGridTextColumn Header="Saturday&#10;Time" ColumnId="{x:Static vm:ProjectUsersGridManager.SaturdayColumnId}" Width="100"/>
+                            </deg:DataEntryGrid.Columns>
+
+                        </deg:DataEntryGrid>
+
+                    </DockPanel>
+
+                </TabItem>
+                <TabItem Header="Tasks" x:Name="TasksTab" VerticalAlignment="Stretch">
+
+                    <Grid>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button Grid.Row="0" Grid.Column="0" x:Name="AddModifyButton" Content="Add/Modify" Command="{Binding TasksAddModifyCommand}"/>
+
+                        <lc:LookupControl  Grid.Row="0" Grid.Column="1" Grid.RowSpan="2"  LookupDefinition="{Binding TaskLookup}">
+
+                            <lc:LookupControl.LookupColumns>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf Name, Type={x:Type projectManagement:ProjectTaskLookup}}" Header="Task" Width="200"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf UserName, Type={x:Type projectManagement:ProjectTaskLookup}}" Header="User" Width="200"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf PercentComplete, Type={x:Type projectManagement:ProjectTaskLookup}}" Header="Percent Complete" TextAlignment="Right" Width="150"/>
+
+                            </lc:LookupControl.LookupColumns>
+
+                        </lc:LookupControl>
+
+                    </Grid>
+
+                </TabItem>
+                <TabItem Header="Materials" x:Name="MaterialsTab" VerticalAlignment="Stretch">
+
+                    <Grid>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button Grid.Row="0" Grid.Column="0" x:Name="MaterialsAddModifyButton" Content="Add/Modify" Command="{Binding MaterialsAddModifyCommand}"/>
+
+                        <lc:LookupControl  Grid.Row="0" Grid.Column="1" Grid.RowSpan="2"  LookupDefinition="{Binding MaterialLookup}">
+
+                            <lc:LookupControl.LookupColumns>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf Name, Type={x:Type projectManagement:ProjectMaterialLookup}}" Header="Material" Width="300"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf Cost, Type={x:Type projectManagement:ProjectMaterialLookup}}" Header="Cost" Width="150" TextAlignment="Right"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf ActualCost, Type={x:Type projectManagement:ProjectMaterialLookup}}" Header="Actual Cost" TextAlignment="Right" Width="150"/>
+
+                            </lc:LookupControl.LookupColumns>
+
+                        </lc:LookupControl>
+
+                    </Grid>
+
+                </TabItem>
+
+                <TabItem Header="Time Clocks" x:Name="TimeClockTab" VerticalAlignment="Stretch">
+
+                    <DockPanel>
+
+                        <lc:LookupControl LookupDefinition="{Binding TimeClockLookup}">
+
+                            <lc:LookupControl.LookupColumns>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf PunchInDate, Type={x:Type lm:TimeClockLookup}}" Header="Punch In Date" Width="150"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf UserName, Type={x:Type lm:TimeClockLookup}}" Header="User" Width="150"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf ProjectTask, Type={x:Type lm:TimeClockLookup}}" Header="Project Task" Width="150"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf MinutesSpent, Type={x:Type lm:TimeClockLookup}}" Header="Time Spent" TextAlignment="Right" Width="150"/>
+
+                            </lc:LookupControl.LookupColumns>
+
+                        </lc:LookupControl>
+
+                    </DockPanel>
+
+                </TabItem>
+
+                <TabItem Header="Material History" x:Name="HistoryTab" VerticalAlignment="Stretch">
+
+                    <DockPanel>
+
+                        <lc:LookupControl LookupDefinition="{Binding HistoryLookup}">
+
+                            <lc:LookupControl.LookupColumns>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf Date, Type={x:Type plm:ProjectMaterialHistoryLookup}}" Header="Date" Width="150"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf UserName, Type={x:Type plm:ProjectMaterialHistoryLookup}}" Header="User" Width="150"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf ProjectMaterial, Type={x:Type plm:ProjectMaterialHistoryLookup}}" Header="Material" Width="150"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf Quantity, Type={x:Type plm:ProjectMaterialHistoryLookup}}" Header="Quantity" TextAlignment="Right" Width="100"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf Cost, Type={x:Type plm:ProjectMaterialHistoryLookup}}" Header="Cost" TextAlignment="Right" Width="100"/>
+
+                            </lc:LookupControl.LookupColumns>
+
+                        </lc:LookupControl>
+
+                    </DockPanel>
+
+                </TabItem>
+
+                <dec:DataEntryMemoTabItem Header="Notes" VerticalAlignment="Stretch">
+                    <DockPanel>
+
+                        <dec:DataEntryMemoEditor Text="{Binding Path=Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    </DockPanel>
+                </dec:DataEntryMemoTabItem>
+
+
+
+            </TabControl>
+
+        </Grid>
+
+    </DockPanel>
+</lc:DbMaintenanceUserControl>

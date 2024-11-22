@@ -1,33 +1,45 @@
-﻿using RingSoft.App.Controls;
-using RingSoft.DbLookup;
+﻿using System;
+using RingSoft.App.Controls;
+using System.Windows;
+using System.Windows.Controls;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbMaintenance;
-using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels.ProjectManagement;
-using System;
-using System.Windows;
-using System.Windows.Controls;
+using RingSoft.DbLookup;
 
 namespace RingSoft.DevLogix.ProjectManagement
 {
+    public class ProjectHeaderControl : DbMaintenanceCustomPanel
+    {
+        public DbMaintenanceButton RecalcButton { get; set; }
 
+        public DbMaintenanceButton CalcDeadlineButton { get; set; }
+
+        static ProjectHeaderControl()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(ProjectHeaderControl), new FrameworkPropertyMetadata(typeof(ProjectHeaderControl)));
+        }
+
+        public override void OnApplyTemplate()
+        {
+            RecalcButton = GetTemplateChild(nameof(RecalcButton)) as DbMaintenanceButton;
+            CalcDeadlineButton = GetTemplateChild(nameof(CalcDeadlineButton)) as DbMaintenanceButton;
+
+            base.OnApplyTemplate();
+        }
+    }
 
     /// <summary>
-    /// Interaction logic for ProjectMaintenanceWindow.xaml
+    /// Interaction logic for ProjectMaintenanceUserControl.xaml
     /// </summary>
-    public partial class ProjectMaintenanceWindow : IProjectView
+    public partial class ProjectMaintenanceUserControl : IProjectView
     {
-        public override Control MaintenanceButtonsControl => TopHeaderControl;
-        public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
-        public override string ItemText => "Project";
-        public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;
-        public override DbMaintenanceStatusBar DbStatusBar => StatusBar;
         public RecalcProcedure RecalcProcedure { get; set; }
 
         private int _userFocus = -1;
 
-        public ProjectMaintenanceWindow()
+        public ProjectMaintenanceUserControl()
         {
             InitializeComponent();
             TopHeaderControl.Loaded += (sender, args) =>
@@ -65,6 +77,26 @@ namespace RingSoft.DevLogix.ProjectManagement
             RegisterFormKeyControl(NameControl);
         }
 
+        protected override DbMaintenanceViewModelBase OnGetViewModel()
+        {
+            return LocalViewModel;
+        }
+
+        protected override Control OnGetMaintenanceButtons()
+        {
+            return TopHeaderControl;
+        }
+
+        protected override DbMaintenanceStatusBar OnGetStatusBar()
+        {
+            return StatusBar;
+        }
+
+        protected override string GetTitle()
+        {
+            return "Project";
+        }
+
         public bool SetupRecalcFilter(LookupDefinitionBase lookupDefinition)
         {
             var genericInput = new GenericReportLookupFilterInput
@@ -75,7 +107,7 @@ namespace RingSoft.DevLogix.ProjectManagement
                 ProcessText = "Recalculate"
             };
             var genericWindow = new GenericReportFilterWindow(genericInput);
-            genericWindow.Owner = this;
+            genericWindow.Owner = OwnerWindow;
             genericWindow.ShowInTaskbar = false;
             genericWindow.ShowDialog();
             return genericWindow.ViewModel.DialogReesult;
@@ -112,7 +144,7 @@ namespace RingSoft.DevLogix.ProjectManagement
         public DateTime? GetDeadline()
         {
             var window = new ProjectScheduleWindow(LocalViewModel.Entity, DateTime.Today);
-            window.Owner = this;
+            window.Owner = OwnerWindow;
             window.ShowInTaskbar = false;
             window.ShowDialog();
             if (window.LocalViewModel.DialogResult)
