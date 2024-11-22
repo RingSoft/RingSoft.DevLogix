@@ -276,7 +276,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
             OutlinesCommand = new RelayCommand((() =>
             {
-                MainView.ShowDbMaintenanceWindow(AppGlobals.LookupContext.TestingOutlines);
+                MainView.ShowMaintenanceTab(AppGlobals.LookupContext.TestingOutlines);
             }));
 
             ProjectsCommand = new RelayCommand((() =>

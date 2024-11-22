@@ -1,44 +1,50 @@
 ﻿using RingSoft.App.Controls;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using RingSoft.DataEntryControls.Engine;
-using RingSoft.DataEntryControls.WPF;
+using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
-using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing;
-using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
-using RingSoft.DbLookup.Controls.WPF;
+using RingSoft.DataEntryControls.WPF;
 using RingSoft.DbLookup;
+using RingSoft.DevLogix.Library;
 
 namespace RingSoft.DevLogix.QualityAssurance
 {
-
-    /// <summary>
-    /// Interaction logic for TestingOutlineMaintenanceWindow.xaml
-    /// </summary>
-    public partial class TestingOutlineMaintenanceWindow : ITestingOutlineView
+    public class TestingOutlineHeaderControl : DbMaintenanceCustomPanel
     {
-        public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
-        public override string ItemText => "Testing Outline";
-        public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;
-        public override Control MaintenanceButtonsControl => TopHeaderControl;
-        public RecalcProcedure RecalcProcedure { get; set; }
-        public override DbMaintenanceStatusBar DbStatusBar => StatusBar;
+        public DbMaintenanceButton GenerateDetailsButton { get; set; }
 
-        public TestingOutlineMaintenanceWindow()
+        public DbMaintenanceButton RetestButton { get; set; }
+
+        public DbMaintenanceButton PunchInButton { get; set; }
+
+        public DbMaintenanceButton RecalcButton { get; set; }
+
+        static TestingOutlineHeaderControl()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(TestingOutlineHeaderControl), new FrameworkPropertyMetadata(typeof(TestingOutlineHeaderControl)));
+        }
+
+        public override void OnApplyTemplate()
+        {
+            GenerateDetailsButton = GetTemplateChild(nameof(GenerateDetailsButton)) as DbMaintenanceButton;
+            RetestButton = GetTemplateChild(nameof(RetestButton)) as DbMaintenanceButton;
+            PunchInButton = GetTemplateChild(nameof(PunchInButton)) as DbMaintenanceButton;
+            RecalcButton = GetTemplateChild(nameof(RecalcButton)) as DbMaintenanceButton;
+
+            base.OnApplyTemplate();
+        }
+    }
+    /// <summary>
+    /// Interaction logic for TestingOutlineMaintenanceUserControl.xaml
+    /// </summary>
+    public partial class TestingOutlineMaintenanceUserControl : ITestingOutlineView
+    {
+        public RecalcProcedure RecalcProcedure { get; set; }
+
+        public TestingOutlineMaintenanceUserControl()
         {
             InitializeComponent();
             RegisterFormKeyControl(NameControl);
@@ -84,6 +90,26 @@ namespace RingSoft.DevLogix.QualityAssurance
             };
         }
 
+        protected override DbMaintenanceViewModelBase OnGetViewModel()
+        {
+            return LocalViewModel;
+        }
+
+        protected override Control OnGetMaintenanceButtons()
+        {
+            return TopHeaderControl;
+        }
+
+        protected override DbMaintenanceStatusBar OnGetStatusBar()
+        {
+            return StatusBar;
+        }
+
+        protected override string GetTitle()
+        {
+            return "Testing Outline";
+        }
+
         public void PunchIn(TestingOutline testingOutline)
         {
             AppGlobals.MainViewModel.PunchIn(testingOutline);
@@ -99,7 +125,7 @@ namespace RingSoft.DevLogix.QualityAssurance
                 ProcessText = "Recalculate"
             };
             var genericWindow = new GenericReportFilterWindow(genericInput);
-            genericWindow.Owner = this;
+            genericWindow.Owner = OwnerWindow;
             genericWindow.ShowInTaskbar = false;
             genericWindow.ShowDialog();
             return genericWindow.ViewModel.DialogReesult;

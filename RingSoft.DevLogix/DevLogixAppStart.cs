@@ -163,6 +163,17 @@ namespace RingSoft.DevLogix
 
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
                 <TestingTemplatesMaintenanceUserControl, TestingTemplate>();
+            LookupControlsGlobals.WindowRegistry.RegisterUserControl
+                <TestingTemplatesMaintenanceUserControl>(AppGlobals.LookupContext.TestingTemplatesItems);
+
+            LookupControlsGlobals.WindowRegistry.RegisterUserControl
+                <TestingOutlineMaintenanceUserControl, TestingOutline>();
+            LookupControlsGlobals.WindowRegistry.RegisterUserControl
+                <TestingOutlineMaintenanceUserControl>(AppGlobals.LookupContext.TestingOutlineCosts);
+            LookupControlsGlobals.WindowRegistry.RegisterUserControl
+                <TestingOutlineMaintenanceUserControl>(AppGlobals.LookupContext.TestingOutlineDetails);
+            LookupControlsGlobals.WindowRegistry.RegisterUserControl
+                <TestingOutlineMaintenanceUserControl>(AppGlobals.LookupContext.TestingOutlineTemplates);
 
             AppGlobals.LookupContext.FormatSearchForEvent += (sender, args) =>
             {

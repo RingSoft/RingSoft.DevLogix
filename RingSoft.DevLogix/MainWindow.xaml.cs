@@ -382,7 +382,7 @@ namespace RingSoft.DevLogix
                     menuItem.Items.Add(new MenuItem()
                     {
                         Header = "Add/Edit Testing _Outlines...",
-                        Command = ViewModel.ShowMaintenanceWindowCommand,
+                        Command = ViewModel.ShowMaintenanceTabCommand,
                         CommandParameter = AppGlobals.LookupContext.TestingOutlines,
                     });
                 }
