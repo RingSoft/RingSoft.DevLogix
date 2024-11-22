@@ -181,6 +181,12 @@ namespace RingSoft.DevLogix
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
                 <ProjectMaintenanceUserControl>(AppGlobals.LookupContext.ProjectUsers);
 
+            LookupControlsGlobals.WindowRegistry.RegisterUserControl
+                <ProjectTaskMaintenanceUserControl, ProjectTask>();
+            LookupControlsGlobals.WindowRegistry.RegisterUserControl
+                <ProjectTaskMaintenanceUserControl>(AppGlobals.LookupContext.ProjectTaskLaborParts);
+            LookupControlsGlobals.WindowRegistry.RegisterUserControl
+                <ProjectTaskMaintenanceUserControl>(AppGlobals.LookupContext.ProjectTaskDependency);
 
             AppGlobals.LookupContext.FormatSearchForEvent += (sender, args) =>
             {

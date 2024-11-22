@@ -422,7 +422,7 @@ namespace RingSoft.DevLogix
                     menuItem.Items.Add(new MenuItem()
                     {
                         Header = "Add/Edit Project _Tasks...",
-                        Command = ViewModel.ShowMaintenanceWindowCommand,
+                        Command = ViewModel.ShowMaintenanceTabCommand,
                         CommandParameter = AppGlobals.LookupContext.ProjectTasks,
                     });
                 }

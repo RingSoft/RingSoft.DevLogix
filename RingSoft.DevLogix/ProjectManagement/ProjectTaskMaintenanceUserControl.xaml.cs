@@ -1,44 +1,55 @@
-﻿using System;
-using System.Linq;
-using RingSoft.App.Controls;
-using RingSoft.DataEntryControls.Engine;
+﻿using RingSoft.App.Controls;
+using System.Windows;
+using System.Windows.Controls;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
-using RingSoft.DataEntryControls.WPF.DataEntryGrid;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Lookup;
-using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
-using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels.ProjectManagement;
-using System.Windows;
-using System.Windows.Controls;
-using RingSoft.DevLogix.Library.ViewModels.UserManagement;
-using RingSoft.DevLogix.UserManagement;
+using RingSoft.DataEntryControls.Engine;
+using System.Linq;
+using RingSoft.DataEntryControls.WPF.DataEntryGrid;
+using RingSoft.DevLogix.Library;
+using System;
 
 namespace RingSoft.DevLogix.ProjectManagement
 {
-    /// <summary>
-    /// Interaction logic for ProjectTaskMaintenanceWindow.xaml
-    /// </summary>
-    public partial class ProjectTaskMaintenanceWindow : IProjectTaskView
+    public class ProjectTaskHeaderControl : DbMaintenanceCustomPanel
     {
-        public override Control MaintenanceButtonsControl => TopHeaderControl;
-        public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
-        public override string ItemText => "Project Task";
-        public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;
-        public override DbMaintenanceStatusBar DbStatusBar => StatusBar;
+        public DbMaintenanceButton PunchInButton { get; set; }
+
+        public DbMaintenanceButton RecalcButton { get; set; }
+
+        static ProjectTaskHeaderControl()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(ProjectTaskHeaderControl), new FrameworkPropertyMetadata(typeof(ProjectHeaderControl)));
+        }
+
+        public override void OnApplyTemplate()
+        {
+            PunchInButton = GetTemplateChild(nameof(PunchInButton)) as DbMaintenanceButton;
+            RecalcButton = GetTemplateChild(nameof(RecalcButton)) as DbMaintenanceButton;
+
+            base.OnApplyTemplate();
+        }
+    }
+
+    /// <summary>
+    /// Interaction logic for ProjectTaskMaintenanceUserControl.xaml
+    /// </summary>
+    public partial class ProjectTaskMaintenanceUserControl : IProjectTaskView
+    {
         public RecalcProcedure RecalcProcedure { get; set; }
 
         private bool _settingUserFocus;
         private int _dependencyRowFocus = -1;
         private int _laborPartRowFocus = -1;
-
-        public ProjectTaskMaintenanceWindow()
+        public ProjectTaskMaintenanceUserControl()
         {
             InitializeComponent();
-
+            RegisterFormKeyControl(KeyControl);
             TopHeaderControl.Loaded += (sender, args) =>
             {
                 if (TopHeaderControl.CustomPanel is ProjectTaskHeaderControl projectHeaderControl)
@@ -86,7 +97,7 @@ namespace RingSoft.DevLogix.ProjectManagement
                 };
             };
 
-            ProjectControl.PreviewLostKeyboardFocus += async (sender, args) => 
+            ProjectControl.PreviewLostKeyboardFocus += async (sender, args) =>
             {
                 if (!showingLookup && !await LocalViewModel.ValidateProjectChange())
                 {
@@ -127,33 +138,24 @@ namespace RingSoft.DevLogix.ProjectManagement
             };
         }
 
-        
-        protected override void OnLoaded()
+        protected override DbMaintenanceViewModelBase OnGetViewModel()
         {
-            RegisterFormKeyControl(KeyControl);
-            base.OnLoaded();
+            return LocalViewModel;
         }
 
-        public override void OnValidationFail(FieldDefinition fieldDefinition, string text, string caption)
+        protected override Control OnGetMaintenanceButtons()
         {
-            if (fieldDefinition == LocalViewModel.TableDefinition.GetFieldDefinition(p => p.ProjectId))
-            {
-                SetFocusToTab(DetailsTabItem);
-                ProjectControl.Focus();
-            }
-            else if (fieldDefinition == LocalViewModel.TableDefinition.GetFieldDefinition(p => p.UserId))
-            {
-                SetFocusToTab(DetailsTabItem);
-                _settingUserFocus = true;
-                UserControl.Focus();
-                _settingUserFocus = false;
-            }
-            else if (fieldDefinition == LocalViewModel.TableDefinition.GetFieldDefinition(p => p.Name))
-            {
-                KeyControl.Focus();
-            }
+            return TopHeaderControl;
+        }
 
-            base.OnValidationFail(fieldDefinition, text, caption);
+        protected override DbMaintenanceStatusBar OnGetStatusBar()
+        {
+            return StatusBar;
+        }
+
+        protected override string GetTitle()
+        {
+            return "Project Task";
         }
 
         private void SetFocusToTab(TabItem tabItem)
@@ -173,7 +175,7 @@ namespace RingSoft.DevLogix.ProjectManagement
         {
             var result = LaborPartLineTypes.LaborPart;
             var window = new TaskLaborPartLtSelectorWindow(text);
-            window.Owner = this;
+            window.Owner = OwnerWindow;
             window.ShowInTaskbar = false;
             window.ShowDialog();
             laborPartPkValue = window.ViewModel.NewLaborPartPkValue;
@@ -183,7 +185,7 @@ namespace RingSoft.DevLogix.ProjectManagement
         public bool ShowCommentEditor(DataEntryGridMemoValue comment)
         {
             var memoEditor = new DataEntryGridMemoEditor(comment);
-            memoEditor.Owner = this;
+            memoEditor.Owner = OwnerWindow;
             memoEditor.Title = "Edit Comment";
             return memoEditor.ShowDialog();
         }
@@ -214,7 +216,7 @@ namespace RingSoft.DevLogix.ProjectManagement
                 ProcessText = "Recalculate"
             };
             var genericWindow = new GenericReportFilterWindow(genericInput);
-            genericWindow.Owner = this;
+            genericWindow.Owner = OwnerWindow;
             genericWindow.ShowInTaskbar = false;
             genericWindow.ShowDialog();
             return genericWindow.ViewModel.DialogReesult;
