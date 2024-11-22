@@ -140,5 +140,27 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
             return true;
         }
+
+        //Peter Ringering - 11/22/2024 03:49:49 PM - E-64
+        public override bool IsDeleteOk(int rowIndex)
+        {
+            if (Rows[rowIndex] is ProjectUsersGridRow gridRow)
+            {
+                var context = SystemGlobals.DataRepository.GetDataContext();
+                var table = context.GetTable<ProjectTask>();
+                var existUser = table.FirstOrDefault(
+                    p => p.ProjectId == ViewModel.Id
+                    && p.UserId == gridRow.UserId);
+
+                if (existUser != null)
+                {
+                    //var message = $"User is assigned to the {existUser.Name} Task.  Delete Denied.";
+                    //var caption = "Delete Denied!";
+                    //ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
+                    return false;
+                }
+            }
+            return base.IsDeleteOk(rowIndex);
+        }
     }
 }
