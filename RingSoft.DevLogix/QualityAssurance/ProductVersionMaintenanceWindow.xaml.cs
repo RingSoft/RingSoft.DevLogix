@@ -16,6 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
+using RingSoft.DataEntryControls.WPF;
 using RingSoft.DbLookup;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.Library;
@@ -94,7 +95,8 @@ namespace RingSoft.DevLogix.QualityAssurance
                         productVersionHeaderControl.CreateVersionButton.Visibility = Visibility.Collapsed;
                     }
 
-                    productVersionHeaderControl.CreateVersionButton.ToolTip.HeaderText = "Create New Version (Alt + R)";
+                    productVersionHeaderControl.CreateVersionButton.ToolTip
+                        .HeaderText = "Create New Version (Ctrl + P, Ctrl + C)";
                     productVersionHeaderControl.CreateVersionButton.ToolTip.DescriptionText =
                         "Create a new Product Version.";
 
@@ -102,6 +104,36 @@ namespace RingSoft.DevLogix.QualityAssurance
                 }
             };
             RegisterFormKeyControl(DescriptionControl);
+
+            var hotKey = new HotKey(LocalViewModel.CreateVersionCommand);
+            hotKey.AddKey(Key.P);
+            hotKey.AddKey(Key.C);
+            WinProcessor.HotKeyProcessor.AddHotKey(hotKey);
+
+            hotKey = new HotKey(LocalViewModel.ArchiveCommand);
+            hotKey.AddKey(Key.P);
+            hotKey.AddKey(Key.A);
+            WinProcessor.HotKeyProcessor.AddHotKey(hotKey);
+
+            hotKey = new HotKey(LocalViewModel.GetVersionCommand);
+            hotKey.AddKey(Key.P);
+            hotKey.AddKey(Key.G);
+            WinProcessor.HotKeyProcessor.AddHotKey(hotKey);
+
+            hotKey = new HotKey(LocalViewModel.DeployCommand);
+            hotKey.AddKey(Key.P);
+            hotKey.AddKey(Key.D);
+            WinProcessor.HotKeyProcessor.AddHotKey(hotKey);
+
+            DeployButton.ToolTip.HeaderText = "Deploy This Product Version (Ctrl + P, Ctrl + D)";
+            DeployButton.ToolTip.DescriptionText = "Deploy this Product Version to Department's FTP Location";
+
+            GetVersionButton.ToolTip.HeaderText = "Get Product Version From Archive (Ctrl + P, Ctrl + G)";
+            GetVersionButton.ToolTip.DescriptionText = "Get and run this Product Version from Archive";
+
+            ArchiveButton.ToolTip.HeaderText = "Archive Product Version (Ctrl + P, Ctrl + A)";
+            ArchiveButton.ToolTip.DescriptionText =
+                "Copy Product Version Installer from Product install path to Product archive path.";
         }
 
         protected override void OnLoaded()

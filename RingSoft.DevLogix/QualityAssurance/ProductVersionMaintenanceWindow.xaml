@@ -35,7 +35,7 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
 
-                                <ac:DbMaintenanceButton Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" x:Name="CreateVersionButton" Content="C_reate Version" ImageSource="{StaticResource AfUpImage}" Style="{StaticResource SubButton}" HorizontalContentAlignment="Left"/>
+                                <ac:DbMaintenanceButton Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" x:Name="CreateVersionButton" Content="Create Version" ImageSource="{StaticResource AfUpImage}" Style="{StaticResource SubButton}" HorizontalContentAlignment="Left"/>
 
                             </Grid>
 
@@ -99,9 +99,9 @@
 
             <StackPanel Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Left">
 
-                <Button x:Name="ArchiveButton" Content="_Archive" Height="20" Command="{Binding ArchiveCommand}"/>
+                <dec:EnhancedButton x:Name="ArchiveButton" Content="Archive" Command="{Binding ArchiveCommand}"/>
 
-                <Button x:Name="GetVersionButton" Content="Get Version" Height="20" Command="{Binding GetVersionCommand}"/>
+                <dec:EnhancedButton x:Name="GetVersionButton" Content="Get Version" Command="{Binding GetVersionCommand}"/>
 
             </StackPanel>
 
@@ -109,7 +109,7 @@
 
             <lc:AutoFillControl Grid.Row="3" Grid.Column="1" x:Name="DeployControl" Width="200" Setup="{Binding DepartmentAutoFillSetup,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding DepartmentAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding DeployProductToDepartmentEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-            <Button Grid.Row="3" Grid.Column="2" x:Name="DeployButton" Content="Deploy" Height="20" Command="{Binding DeployCommand}"/>
+            <dec:EnhancedButton Grid.Row="3" Grid.Column="2" x:Name="DeployButton" Content="Deploy" Command="{Binding DeployCommand}"/>
 
             <TabControl Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="5" x:Name="TabControl">
 
