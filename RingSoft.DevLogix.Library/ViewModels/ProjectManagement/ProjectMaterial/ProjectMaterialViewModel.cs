@@ -262,6 +262,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         protected override void PopulatePrimaryKeyControls(ProjectMaterial newEntity, PrimaryKeyValue primaryKeyValue)
         {
             Id = newEntity.Id;
+
+            //Peter Ringering - 11/23/2024 07:15:52 PM - E-70
+            PostCommand.IsEnabled = true;
         }
 
         protected override void LoadFromEntity(ProjectMaterial entity)
