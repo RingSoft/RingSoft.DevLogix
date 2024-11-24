@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbMaintenance;
 using RingSoft.DataEntryControls.WPF;
@@ -39,6 +40,8 @@ namespace RingSoft.DevLogix.QualityAssurance
     public partial class ErrorMaintenanceUserControl : IErrorView
     {
         public RecalcProcedure RecalcProcedure { get; set; }
+        public RelayCommand SetFocusToTabCommand { get; }
+
 
         private VmUiControl _descriptionUiControl;
         private VmUiControl _resolutionUiControl;
@@ -78,6 +81,16 @@ namespace RingSoft.DevLogix.QualityAssurance
                 }
             };
 
+            //Peter Ringering - 11/23/2024 06:53:20 PM - E-69
+            SetFocusToTabCommand = new RelayCommand((() =>
+            {
+                if (TabControl.SelectedItem is TabItem tabItem)
+                {
+                    TabControl.Focus();
+                    tabItem.Focus();
+                }
+            }));
+
             RegisterFormKeyControl(ErrorIdControl);
             _descriptionUiControl = new VmUiControl(DescriptionTextBox, LocalViewModel.DescriptionUiCommand);
             _resolutionUiControl = new VmUiControl(ResolutionTextBox, LocalViewModel.ResolutionUiCommand);
@@ -111,6 +124,12 @@ namespace RingSoft.DevLogix.QualityAssurance
             hotKey.AddKey(Key.E);
             hotKey.AddKey(Key.F);
             AddHotKey(hotKey);
+
+            //Peter Ringering - 11/23/2024 06:53:20 PM - E-69
+            hotKey = new HotKey(SetFocusToTabCommand);
+            hotKey.AddKey(Key.T);
+            AddHotKey(hotKey);
+
 
             FailButton.ToolTip.HeaderText = "Fail Error (Ctrl + E, Ctrl + F)";
             FailButton.ToolTip.DescriptionText = "This shortcut allows the current User to fail this Error";
