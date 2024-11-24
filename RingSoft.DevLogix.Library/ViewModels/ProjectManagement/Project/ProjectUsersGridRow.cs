@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbLookup;
@@ -335,6 +336,26 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         {
             return SundayMinutes + MondayMinutes + TuesdayMinutes + WednesdayMinutes + ThursdayMinutes + FridayMinutes +
                    SaturdayMinutes;
+        }
+
+        //Peter Ringering - 11/23/2024 06:38:13 PM - E-64
+        public override bool OnDeletingRow()
+        {
+            var context = SystemGlobals.DataRepository.GetDataContext();
+            var table = context.GetTable<ProjectTask>();
+            var existUser = table.FirstOrDefault( 
+                p => p.ProjectId == Manager.ViewModel.Id
+                     && p.UserId == UserId);
+
+            if (existUser != null)
+            {
+                var message = $"User is assigned to the {existUser.Name} Task.  Delete Denied.";
+                var caption = "Delete Denied!";
+                ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
+                return false;
+            }
+
+            return base.OnDeletingRow();
         }
     }
 }
