@@ -723,10 +723,10 @@ namespace RingSoft.DevLogix
 
         public void ShowWindow(Window window)
         {
-            window.Owner = this;
+            //window.Owner = this;
             window.ShowInTaskbar = false;
             window.Closed += (sender, args) => Activate();
-            window.Show();
+            window.ShowDialog();
 
         }
 
