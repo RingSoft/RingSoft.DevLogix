@@ -168,9 +168,9 @@
 
                     <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" x:Name="QaButtonsPanel" Orientation="Horizontal" HorizontalAlignment="Center">
 
-                        <dec:EnhancedButton x:Name="PassButton" Content="Pa_ss" Width="100" IsTabStop="False" Command="{Binding PassCommand}"/>
+                        <dec:EnhancedButton x:Name="PassButton" Content="Pass" Width="100" IsTabStop="False" Command="{Binding PassCommand}"/>
 
-                        <dec:EnhancedButton x:Name="FailButton" Content="F_ail" Margin="5,0,0,0" Width="100" IsTabStop="False" Command="{Binding FailCommand}"/>
+                        <dec:EnhancedButton x:Name="FailButton" Content="Fail" Margin="5,0,0,0" Width="100" IsTabStop="False" Command="{Binding FailCommand}"/>
 
                     </StackPanel>
 
