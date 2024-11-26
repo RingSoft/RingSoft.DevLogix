@@ -1050,6 +1050,8 @@ namespace RingSoft.DevLogix.DataAccess
             ProjectTasks.GetFieldDefinition(p => p.PercentComplete).HasDecimalFieldType(DecimalFieldTypes.Percent);
 
             ProjectTaskLaborParts.PriorityLevel = 600;
+            ProjectTaskLaborParts.GetFieldDefinition(p => p.PercentComplete)
+                .HasDecimalFieldType(DecimalFieldTypes.Percent);
 
             ProjectTaskDependency.PriorityLevel = 600;
             //ProjectTaskDependency.GetFieldDefinition(p => p.ProjectTaskId).DoesAllowRecursion(false);
