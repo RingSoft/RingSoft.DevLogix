@@ -1,19 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-	  <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\RingSoft.DevLogix.DataAccess\RingSoft.DevLogix.DataAccess.csproj" />
     <ProjectReference Include="..\RingSoft.DevLogix.MasterData\RingSoft.DevLogix.MasterData.csproj" />
     <ProjectReference Include="..\RingSoft.DevLogix.Sqlite\RingSoft.DevLogix.Sqlite.csproj" />
     <ProjectReference Include="..\RingSoft.DevLogix.SqlServer\RingSoft.DevLogix.SqlServer.csproj" />
   </ItemGroup>
-
 </Project>
