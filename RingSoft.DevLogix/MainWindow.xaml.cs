@@ -20,6 +20,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using ScottPlot;
 using Customer = RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Customer;
 using Error = RingSoft.DevLogix.DataAccess.Model.Error;
 using SupportTicket = RingSoft.DevLogix.DataAccess.Model.CustomerManagement.SupportTicket;

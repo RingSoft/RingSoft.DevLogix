@@ -228,8 +228,12 @@ namespace RingSoft.DevLogix
                     _yLimit = barViewModel.Count;
                 }
             }
-            WpfPlot.Plot.SetAxisLimitsY(0, _yLimit * 1.2);
-            RefreshPlot();
+
+            if (_yLimit > 0)
+            {
+                WpfPlot.Plot.SetAxisLimitsY(0, _yLimit * 1.2);
+                RefreshPlot();
+            }
         }
 
         public void RefreshChart()
