@@ -8,6 +8,7 @@ using System.Windows.Input;
 using Microsoft.VisualBasic.Devices;
 using RingSoft.DataEntryControls.WPF;
 using RingSoft.DbLookup;
+using RingSoft.DbLookup.AdvancedFind;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DevLogix.DataAccess.Model;
@@ -170,8 +171,16 @@ namespace RingSoft.DevLogix
                 var index = BarPlot.Bars.IndexOf(newBar);
                 if (index >= 0)
                 {
-                    var viewModel = ViewModel.Bars[index];
-                    viewModel.ShowAddOnFly(Window.GetWindow(this));
+                    var chartBar = ViewModel.Bars[index];
+                    var advFindId = chartBar.ChartBar.AdvancedFindId;
+                    var advFind = new AdvancedFind
+                    {
+                        Id = advFindId,
+                    };
+                    var primaryKey = AppGlobals.LookupContext.AdvancedFinds.GetPrimaryKeyValueFromEntity(advFind);
+                    LookupControlsGlobals.TabControl.ShowAddView(primaryKey);
+                    //var viewModel = ViewModel.Bars[index];
+                    //viewModel.ShowAddOnFly(Window.GetWindow(this));
                 }
             }
 

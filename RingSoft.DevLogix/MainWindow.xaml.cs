@@ -524,7 +524,8 @@ namespace RingSoft.DevLogix
 
         public void ShowAdvancedFindWindow()
         {
-            ShowWindow(new AdvancedFindWindow());
+            //ShowWindow(new AdvancedFindWindow());
+            ShowMaintenanceTab(AppGlobals.LookupContext.AdvancedFinds);
         }
 
         private void ProcessButton(DbMaintenanceButton button, TableDefinitionBase tableDefinition)

@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using RingSoft.DbLookup.Controls.WPF;
+using RingSoft.DbLookup.Controls.WPF.AdvancedFind;
 using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
@@ -54,6 +55,8 @@ namespace RingSoft.DevLogix
             AppGlobals.AppSplashProgress += AppGlobals_AppSplashProgress;
 
             AppGlobals.Initialize();
+
+            LookupControlsGlobals.WindowRegistry.RegisterUserControl<AdvancedFindUserControl>(AppGlobals.LookupContext.AdvancedFinds);
 
             LookupControlsGlobals.WindowRegistry.RegisterWindow<DevLogixChartMaintenanceWindow>(AppGlobals.LookupContext.DevLogixCharts);
             LookupControlsGlobals.WindowRegistry.RegisterWindow<DevLogixChartMaintenanceWindow>(AppGlobals.LookupContext.DevLogixChartBars);
