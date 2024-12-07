@@ -11,6 +11,7 @@ using RingSoft.DbLookup;
 using RingSoft.DbLookup.AdvancedFind;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Lookup;
+using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels;
@@ -155,8 +156,7 @@ namespace RingSoft.DevLogix
                 }
                 if (index > 0 && index <= ViewModel.Bars.Count )
                 {
-                    var viewModel = ViewModel.Bars[index - 1];
-                    viewModel.ShowAddOnFly(Window.GetWindow(this));
+                    ShowAdvFindForBar(index - 1);
                 }
             }
         }
@@ -171,19 +171,22 @@ namespace RingSoft.DevLogix
                 var index = BarPlot.Bars.IndexOf(newBar);
                 if (index >= 0)
                 {
-                    var chartBar = ViewModel.Bars[index];
-                    var advFindId = chartBar.ChartBar.AdvancedFindId;
-                    var advFind = new AdvancedFind
-                    {
-                        Id = advFindId,
-                    };
-                    var primaryKey = AppGlobals.LookupContext.AdvancedFinds.GetPrimaryKeyValueFromEntity(advFind);
-                    LookupControlsGlobals.TabControl.ShowAddView(primaryKey);
-                    //var viewModel = ViewModel.Bars[index];
-                    //viewModel.ShowAddOnFly(Window.GetWindow(this));
+                    ShowAdvFindForBar(index);
                 }
             }
 
+        }
+
+        private void ShowAdvFindForBar(int index)
+        {
+            var chartBar = ViewModel.Bars[index];
+            var advFindId = chartBar.ChartBar.AdvancedFindId;
+            var advFind = new AdvancedFind
+            {
+                Id = advFindId,
+            };
+            var primaryKey = AppGlobals.LookupContext.AdvancedFinds.GetPrimaryKeyValueFromEntity(advFind);
+            LookupControlsGlobals.TabControl.ShowAddView(primaryKey);
         }
 
         public void UpdateBars()
