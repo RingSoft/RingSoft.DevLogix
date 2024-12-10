@@ -329,6 +329,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         public new IProductView View { get; set; }
 
+        private PrimaryKeyValue _productPrimaryKeyValue;
+
         public ProductViewModel()
         {
             VersionsAddModifyCommand = new RelayCommand(OnVersionsAddModify);
@@ -405,7 +407,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 }
             }
 
-            ProductVersionLookupDefinition.SetCommand(GetLookupCommand(LookupCommands.Refresh));
+            //Peter Ringering - 12/09/2024 08:18:50 PM - E-82
+            ProductVersionLookupDefinition
+                .SetCommand(GetLookupCommand(LookupCommands.Refresh
+                , _productPrimaryKeyValue));
         }
 
 
@@ -413,6 +418,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         {
             ProductVersionLookupDefinition.FilterDefinition.ClearFixedFilters();
             Id = newEntity.Id;
+            _productPrimaryKeyValue = primaryKeyValue;
         }
 
         protected override Product GetEntityFromDb(Product newEntity, PrimaryKeyValue primaryKeyValue)
@@ -486,6 +492,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             Id = 0;
             Notes = null;
             ProductVersionLookupDefinition.SetCommand(GetLookupCommand(LookupCommands.Clear));
+            _productPrimaryKeyValue = null;
             UpdateVersionsCommand.IsEnabled = false;
             InstallerFileName = ArchivePath = AppGuid = null;
             CreateDepartmentAutoFillValue = ArchiveDepartmentAutoFillValue = null; ;
