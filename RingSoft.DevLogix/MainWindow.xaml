@@ -68,32 +68,32 @@
                         <GradientStop Color="Black" Offset="0.85"/>
                     </LinearGradientBrush>
                 </StackPanel.Background>
-                <ac:DbMaintenanceButton x:Name="ExitButton"  Content="E_xit" Command="{Binding ExitCommand }" ImageSource="{StaticResource ExitImage}" />
+                <ac:DbMaintenanceButton x:Name="ExitButton"  Content="Exit" Command="{Binding ExitCommand }" ImageSource="{StaticResource ExitImage}" />
 
-                <ac:DbMaintenanceButton x:Name="ChangeOrgButton" Content="Change Organi_zation" ImageSource="{StaticResource OrganizationImage}" Command="{Binding ChangeOrgCommand}"/>
+                <ac:DbMaintenanceButton x:Name="ChangeOrgButton" Content="Change Organization" ImageSource="{StaticResource OrganizationImage}" Command="{Binding ChangeOrgCommand}"/>
 
-                <ac:DbMaintenanceButton x:Name="LogoutButton" Content="_Logout" ImageSource="{StaticResource LogoutImage}" Command="{Binding LogoutCommand}"/>
+                <ac:DbMaintenanceButton x:Name="LogoutButton" Content="Logout" ImageSource="{StaticResource LogoutImage}" Command="{Binding LogoutCommand}"/>
 
-                <ac:DbMaintenanceButton x:Name="UsersButton" Content="_Users" ImageSource="{StaticResource UsersImage}" Command="{Binding UsersCommand}"/>
+                <ac:DbMaintenanceButton x:Name="UsersButton" Content="Users" ImageSource="{StaticResource UsersImage}" Command="{Binding UsersCommand}"/>
 
-                <ac:DbMaintenanceButton x:Name="UserTrackerButton" Content="User T_racker" ImageSource="{StaticResource UserTrackerImage}" Command="{Binding UserTrackerCommand}"/>
+                <ac:DbMaintenanceButton x:Name="UserTrackerButton" Content="User Tracker" ImageSource="{StaticResource UserTrackerImage}" Command="{Binding UserTrackerCommand}"/>
 
-                <ac:DbMaintenanceButton x:Name="ProductsButton" Content="Pro_ducts" ImageSource="{StaticResource ProductImage}" Command="{Binding ProductsCommand}"/>
+                <ac:DbMaintenanceButton x:Name="ProductsButton" Content="Products" ImageSource="{StaticResource ProductImage}" Command="{Binding ProductsCommand}"/>
 
-				<ac:DbMaintenanceButton x:Name="ErrorsButton" Content="Product _Errors" ImageSource="{StaticResource ErrorsImage}" Command="{Binding ErrorsCommand}"/>
+				<ac:DbMaintenanceButton x:Name="ErrorsButton" Content="Product Errors" ImageSource="{StaticResource ErrorsImage}" Command="{Binding ErrorsCommand}"/>
 
-                <ac:DbMaintenanceButton x:Name="OutlinesButton" Content="_Testing Outlines" ImageSource="{StaticResource OutlinesImage}" Command="{Binding OutlinesCommand}"/>
+                <ac:DbMaintenanceButton x:Name="OutlinesButton" Content="Testing Outlines" ImageSource="{StaticResource OutlinesImage}" Command="{Binding OutlinesCommand}"/>
 
-                <ac:DbMaintenanceButton x:Name="ProjectsButton" Content="Pro_jects" ImageSource="{StaticResource ProjectsImage}" Command="{Binding ProjectsCommand}"/>
+                <ac:DbMaintenanceButton x:Name="ProjectsButton" Content="Projects" ImageSource="{StaticResource ProjectsImage}" Command="{Binding ProjectsCommand}"/>
 
-                <ac:DbMaintenanceButton x:Name="CustomersButton" Content="_Customers" ImageSource="{StaticResource CustomersImage}" Command="{Binding CustomersCommand}"/>
+                <ac:DbMaintenanceButton x:Name="CustomersButton" Content="Customers" ImageSource="{StaticResource CustomersImage}" Command="{Binding CustomersCommand}"/>
 
-                <ac:DbMaintenanceButton x:Name="OrdersButton" Content="_Orders" ImageSource="{StaticResource SalesImage}" Command="{Binding OrdersCommand}"/>
+                <ac:DbMaintenanceButton x:Name="OrdersButton" Content="Orders" ImageSource="{StaticResource SalesImage}" Command="{Binding OrdersCommand}"/>
 
-                <ac:DbMaintenanceButton x:Name="SupportTicketsButton" Content="S_upport Tickets" ImageSource="{StaticResource SupportImage}" Command="{Binding SupportTicketsCommand}"/>
-                <ac:DbMaintenanceButton x:Name="AdvancedFindButton" Content="_Advanced Find" ImageSource="{StaticResource FindImage}" Command="{Binding AdvancedFindCommand}"/>
+                <ac:DbMaintenanceButton x:Name="SupportTicketsButton" Content="Support Tickets" ImageSource="{StaticResource SupportImage}" Command="{Binding SupportTicketsCommand}"/>
+                <ac:DbMaintenanceButton x:Name="AdvancedFindButton" Content="Advanced Find" ImageSource="{StaticResource FindImage}" Command="{Binding AdvancedFindCommand}"/>
 
-                <ac:DbMaintenanceButton x:Name="ChartButton" Content="C_hart" ImageSource="{StaticResource ChartImage}" Command="{Binding ChartCommand}"/>
+                <ac:DbMaintenanceButton x:Name="ChartButton" Content="Chart" ImageSource="{StaticResource ChartImage}" Command="{Binding ChartCommand}"/>
 
             </StackPanel>
 			<StatusBar DockPanel.Dock="Bottom" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="Transparent">

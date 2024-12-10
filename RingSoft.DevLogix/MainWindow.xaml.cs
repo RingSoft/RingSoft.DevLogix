@@ -20,6 +20,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using RingSoft.DataEntryControls.Engine;
 using ScottPlot;
 using Customer = RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Customer;
 using Error = RingSoft.DevLogix.DataAccess.Model.Error;
@@ -35,6 +36,8 @@ namespace RingSoft.DevLogix
     /// </summary>
     public partial class MainWindow : IMainView, ICheckVersionView
     {
+        public HotKeyProcessor HotKeyProcessor { get; } = new HotKeyProcessor();
+
         public event EventHandler TimeClockClosed;
         private bool _isActive = true;
 
@@ -44,6 +47,8 @@ namespace RingSoft.DevLogix
 
             LookupControlsGlobals.SetTabSwitcherWindow(this, TabControl);
             TabControl.SetDestionationAsFirstTab = false;
+
+            SetupHotKeys();
 
             SetupToolbar();
 
@@ -74,17 +79,19 @@ namespace RingSoft.DevLogix
                 _isActive = false;
             };
 
-            KeyDown += (sender, args) =>
-            {
-                if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
-                {
-                    if (args.Key == Key.C)
-                    {
-                        ViewModel.PunchOut(true, AppGlobals.LoggedInUser);
-                        args.Handled = true;
-                    }
-                }
-            };
+            //Peter Ringering - 12/10/2024 01:08:28 PM - E-73
+            //KeyDown += (sender, args) =>
+            //{
+            //    if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+            //    {
+            //        if (args.Key == Key.C)
+            //        {
+            //            ViewModel.PunchOut(true, AppGlobals.LoggedInUser);
+            //            args.Handled = true;
+            //        }
+            //    }
+            //};
+
             //var bars = RedrawBars();
             //var barPlot = WpfPlot.Plot.AddBarSeries(bars);
             //WpfPlot.Plot.AxisAutoY();
@@ -118,7 +125,14 @@ namespace RingSoft.DevLogix
             //        MessageBox.Show(newBar.Position.ToString(), "");
             //    }
             //};
+        }
 
+        //Peter Ringering - 12/10/2024 01:08:28 PM - E-73
+        protected override void OnPreviewKeyDown(KeyEventArgs e)
+        {
+            HotKeyProcessor.OnKeyPressed(e);
+
+            base.OnPreviewKeyDown(e);
         }
 
         private static List<Bar> RedrawBars()
@@ -528,15 +542,20 @@ namespace RingSoft.DevLogix
             ShowMaintenanceTab(AppGlobals.LookupContext.AdvancedFinds);
         }
 
-        private void ProcessButton(DbMaintenanceButton button, TableDefinitionBase tableDefinition)
+        private void ProcessButton
+            (DbMaintenanceButton button
+                , TableDefinitionBase tableDefinition
+                , RelayCommand command)
         {
             if (tableDefinition.HasRight(RightTypes.AllowView))
             {
                 button.Visibility = Visibility.Visible;
+                command.IsEnabled = true;
             }
             else
             {
                 button.Visibility = Visibility.Collapsed;
+                command.IsEnabled = false;
             }
         }
 
@@ -635,13 +654,41 @@ namespace RingSoft.DevLogix
             });
         }
 
+        //Peter Ringering - 12/10/2024 01:08:28 PM - E-73
+        private void SetupHotKeys()
+        {
+            var hotkey = new HotKey(ViewModel.ExitCommand);
+            hotkey.AddKey(Key.M);
+            hotkey.AddKey(Key.X);
+            HotKeyProcessor.AddHotKey(hotkey);
+
+            hotkey = new HotKey(ViewModel.ChangeOrgCommand);
+            hotkey.AddKey(Key.M);
+            hotkey.AddKey(Key.Z);
+            HotKeyProcessor.AddHotKey(hotkey);
+
+            hotkey = new HotKey(ViewModel.LogoutCommand);
+            hotkey.AddKey(Key.M);
+            hotkey.AddKey(Key.L);
+            HotKeyProcessor.AddHotKey(hotkey);
+
+            hotkey = new HotKey(ViewModel.UsersCommand);
+            hotkey.AddKey(Key.M);
+            hotkey.AddKey(Key.U);
+            HotKeyProcessor.AddHotKey(hotkey);
+        }
+
         private void SetupToolbar()
         {
-            ChangeOrgButton.ToolTip.HeaderText = "Change Organization (Alt + Z)";
+            ExitButton.ToolTip.HeaderText = "Exit Application (Ctrl + M, Ctrl + X)";
+            ExitButton.ToolTip.DescriptionText =
+                "Shut down the application.";
+
+            ChangeOrgButton.ToolTip.HeaderText = "Change Organization (Ctrl + M, Ctrl + Z)";
             ChangeOrgButton.ToolTip.DescriptionText =
                 "Change to a different organization.";
 
-            LogoutButton.ToolTip.HeaderText = "Logout Current User (Alt + L)";
+            LogoutButton.ToolTip.HeaderText = "Logout Current User (Ctrl + M, Ctrl + L)";
             LogoutButton.ToolTip.DescriptionText =
                 "Log out of the current user and log into a different user.";
 
@@ -661,59 +708,59 @@ namespace RingSoft.DevLogix
                 return;
             }
 
-            ProcessButton(ProductsButton, AppGlobals.LookupContext.Products);
-            ProductsButton.ToolTip.HeaderText = "Show the Product Maintenance Window (Alt + D)";
+            ProcessButton(ProductsButton, AppGlobals.LookupContext.Products, ViewModel.ProductsCommand);
+            ProductsButton.ToolTip.HeaderText = "Show the Product Maintenance Window (Ctrl + M, Ctrl + P)";
             ProductsButton.ToolTip.DescriptionText =
                 "Add or edit Products.";
 
-            ProcessButton(ErrorsButton, AppGlobals.LookupContext.Errors);
-            ErrorsButton.ToolTip.HeaderText = "Show the Product Error Maintenance Window (Alt + E)";
+            ProcessButton(ErrorsButton, AppGlobals.LookupContext.Errors, ViewModel.ErrorsCommand);
+            ErrorsButton.ToolTip.HeaderText = "Show the Product Error Maintenance Window (Ctrl + M, Ctrl + E)";
             ErrorsButton.ToolTip.DescriptionText =
                 "Add or edit Product Errors.";
 
-            ProcessButton(OutlinesButton, AppGlobals.LookupContext.TestingOutlines);
-            OutlinesButton.ToolTip.HeaderText = "Show the Testing Outlines Maintenance Window (Alt + T)";
+            ProcessButton(OutlinesButton, AppGlobals.LookupContext.TestingOutlines, ViewModel.OutlinesCommand);
+            OutlinesButton.ToolTip.HeaderText = "Show the Testing Outlines Maintenance Window (Ctrl + M, Ctrl + O)";
             OutlinesButton.ToolTip.DescriptionText =
                 "Add or edit Testing Outlines.";
 
-            ProcessButton(ProjectsButton, AppGlobals.LookupContext.Projects);
-            ProjectsButton.ToolTip.HeaderText = "Show the Projects Maintenance Window (Alt + J)";
+            ProcessButton(ProjectsButton, AppGlobals.LookupContext.Projects, ViewModel.ProjectsCommand);
+            ProjectsButton.ToolTip.HeaderText = "Show the Projects Maintenance Window (Ctrl + M, Ctrl + J)";
             ProjectsButton.ToolTip.DescriptionText =
                 "Add or edit Projects.";
 
-            ProcessButton(UsersButton, AppGlobals.LookupContext.Users);
-            UsersButton.ToolTip.HeaderText = "Show the Users Maintenance Window (Alt + U)";
+            ProcessButton(UsersButton, AppGlobals.LookupContext.Users, ViewModel.UsersCommand);
+            UsersButton.ToolTip.HeaderText = "Show the Users Maintenance Window (Ctrl + M, Ctrl + U)";
             UsersButton.ToolTip.DescriptionText =
                 "Add or edit Users.";
 
-            ProcessButton(UserTrackerButton, AppGlobals.LookupContext.UserTracker);
-            UserTrackerButton.ToolTip.HeaderText = "Show the User Tracker Maintenance Window (Alt + R)";
+            ProcessButton(UserTrackerButton, AppGlobals.LookupContext.UserTracker, ViewModel.UserTrackerCommand);
+            UserTrackerButton.ToolTip.HeaderText = "Show the User Tracker Maintenance Window (Ctrl + M, Ctrl + R)";
             UserTrackerButton.ToolTip.DescriptionText =
                 "Add or edit User Trackers.";
 
-            ProcessButton(CustomersButton, AppGlobals.LookupContext.Customer);
-            CustomersButton.ToolTip.HeaderText = "Show the Customer Maintenance Window (Alt + C)";
+            ProcessButton(CustomersButton, AppGlobals.LookupContext.Customer, ViewModel.CustomersCommand);
+            CustomersButton.ToolTip.HeaderText = "Show the Customer Maintenance Window (Ctrl + M, Ctrl + S)";
             CustomersButton.ToolTip.DescriptionText =
                 "Add or edit Customers.";
 
-            ProcessButton(OrdersButton, AppGlobals.LookupContext.Order);
-            OrdersButton.ToolTip.HeaderText = "Show the Orders Window (Alt + O)";
+            ProcessButton(OrdersButton, AppGlobals.LookupContext.Order, ViewModel.OrdersCommand);
+            OrdersButton.ToolTip.HeaderText = "Show the Orders Window (Ctrl + M, Ctrl + D)";
             OrdersButton.ToolTip.DescriptionText =
                 "Add or edit Orders.";
 
-            ProcessButton(SupportTicketsButton, AppGlobals.LookupContext.SupportTicket);
-            SupportTicketsButton.ToolTip.HeaderText = "Show the Support Tickets Window (Alt + U)";
+            ProcessButton(SupportTicketsButton, AppGlobals.LookupContext.SupportTicket, ViewModel.SupportTicketsCommand);
+            SupportTicketsButton.ToolTip.HeaderText = "Show the Support Tickets Window (Ctrl + M, Ctrl + T)";
             SupportTicketsButton.ToolTip.DescriptionText =
                 "Add or edit Support Tickets.";
 
-            ProcessButton(AdvancedFindButton, AppGlobals.LookupContext.AdvancedFinds);
-            AdvancedFindButton.ToolTip.HeaderText = "Advanced Find (Alt + A)";
+            ProcessButton(AdvancedFindButton, AppGlobals.LookupContext.AdvancedFinds, ViewModel.AdvancedFindCommand);
+            AdvancedFindButton.ToolTip.HeaderText = "Advanced Find (Ctrl + M, Ctrl + A)";
             AdvancedFindButton.ToolTip.DescriptionText =
                 "Search any table in the database for information you're looking for.";
 
 
-            ProcessButton(ChartButton, AppGlobals.LookupContext.DevLogixCharts);
-            ChartButton.ToolTip.HeaderText = "Dashboard Charts (Alt + H)";
+            ProcessButton(ChartButton, AppGlobals.LookupContext.DevLogixCharts, ViewModel.ChartCommand);
+            ChartButton.ToolTip.HeaderText = "Dashboard Charts (Ctrl + M, Ctrl + H)";
             ChartButton.ToolTip.DescriptionText =
                 "Manage Charts that you can use as the program dashboard. Click on a chart bar to see its associated Advanced Find Lookup.";
         }
