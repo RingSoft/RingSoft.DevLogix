@@ -676,6 +676,56 @@ namespace RingSoft.DevLogix
             hotkey.AddKey(Key.M);
             hotkey.AddKey(Key.U);
             HotKeyProcessor.AddHotKey(hotkey);
+
+            hotkey = new HotKey(ViewModel.UserTrackerCommand);
+            hotkey.AddKey(Key.M);
+            hotkey.AddKey(Key.R);
+            HotKeyProcessor.AddHotKey(hotkey);
+
+            hotkey = new HotKey(ViewModel.ProductsCommand);
+            hotkey.AddKey(Key.M);
+            hotkey.AddKey(Key.P);
+            HotKeyProcessor.AddHotKey(hotkey);
+
+            hotkey = new HotKey(ViewModel.ErrorsCommand);
+            hotkey.AddKey(Key.M);
+            hotkey.AddKey(Key.E);
+            HotKeyProcessor.AddHotKey(hotkey);
+
+            hotkey = new HotKey(ViewModel.OutlinesCommand);
+            hotkey.AddKey(Key.M);
+            hotkey.AddKey(Key.O);
+            HotKeyProcessor.AddHotKey(hotkey);
+
+            hotkey = new HotKey(ViewModel.ProjectsCommand);
+            hotkey.AddKey(Key.M);
+            hotkey.AddKey(Key.J);
+            HotKeyProcessor.AddHotKey(hotkey);
+
+            hotkey = new HotKey(ViewModel.CustomersCommand);
+            hotkey.AddKey(Key.M);
+            hotkey.AddKey(Key.S);
+            HotKeyProcessor.AddHotKey(hotkey);
+
+            hotkey = new HotKey(ViewModel.OrdersCommand);
+            hotkey.AddKey(Key.M);
+            hotkey.AddKey(Key.D);
+            HotKeyProcessor.AddHotKey(hotkey);
+
+            hotkey = new HotKey(ViewModel.SupportTicketsCommand);
+            hotkey.AddKey(Key.M);
+            hotkey.AddKey(Key.T);
+            HotKeyProcessor.AddHotKey(hotkey);
+
+            hotkey = new HotKey(ViewModel.AdvancedFindCommand);
+            hotkey.AddKey(Key.M);
+            hotkey.AddKey(Key.A);
+            HotKeyProcessor.AddHotKey(hotkey);
+
+            hotkey = new HotKey(ViewModel.ChartCommand);
+            hotkey.AddKey(Key.M);
+            hotkey.AddKey(Key.H);
+            HotKeyProcessor.AddHotKey(hotkey);
         }
 
         private void SetupToolbar()
