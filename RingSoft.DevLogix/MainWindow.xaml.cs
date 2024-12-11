@@ -45,6 +45,7 @@ namespace RingSoft.DevLogix
         {
             InitializeComponent();
 
+            HotKeyProcessor.TopLevel = true;
             LookupControlsGlobals.SetTabSwitcherWindow(this, TabControl);
             TabControl.SetDestionationAsFirstTab = false;
 
