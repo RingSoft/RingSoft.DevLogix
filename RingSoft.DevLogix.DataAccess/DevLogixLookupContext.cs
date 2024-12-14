@@ -1048,6 +1048,8 @@ namespace RingSoft.DevLogix.DataAccess
             ProjectTasks.PriorityLevel = 500;
             ProjectTasks.GetFieldDefinition(p => p.Notes).IsMemo();
             ProjectTasks.GetFieldDefinition(p => p.PercentComplete).HasDecimalFieldType(DecimalFieldTypes.Percent);
+            ProjectTasks.GetFieldDefinition(p => p.MinutesSpent)
+                .HasSearchForHostId(TimeSpentHostId);
 
             ProjectTaskLaborParts.PriorityLevel = 600;
             ProjectTaskLaborParts.GetFieldDefinition(p => p.PercentComplete)
