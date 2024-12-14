@@ -17,6 +17,11 @@ namespace RingSoft.DevLogix
         {
         }
 
+        public override void SetValue(string value)
+        {
+            Control.Minutes = value.ToDecimal();
+        }
+
         protected virtual double? DefaultWidth { get; set; } = 100;
 
         protected override TimeControl ConstructControl()
@@ -50,6 +55,11 @@ namespace RingSoft.DevLogix
         {
         }
 
+        public override void SetValue(string value)
+        {
+            Control.Speed = value.ToDecimal();
+        }
+
         protected virtual double? DefaultWidth { get; set; } = 100;
 
         protected override SpeedControl ConstructControl()
@@ -81,6 +91,11 @@ namespace RingSoft.DevLogix
 
         public override void SelectAll()
         {
+        }
+
+        public override void SetValue(string value)
+        {
+            Control.Memory = value.ToDecimal();
         }
 
         protected virtual double? DefaultWidth { get; set; } = 100;
