@@ -131,7 +131,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
         public override bool ValidateRow()
         {
-            throw new System.NotImplementedException();
+            return true;
         }
 
         public override void SaveToEntity(TestingOutlineDetails entity, int rowIndex)
