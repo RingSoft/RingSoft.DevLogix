@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.Options;
 using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.EfCore;
 using RingSoft.DevLogix.DataAccess;
@@ -111,6 +113,8 @@ namespace RingSoft.DevLogix.SqlServer
             }
             else
                 optionsBuilder.UseSqlServer(ConnectionString);
+
+            optionsBuilder.ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning));
 
             base.OnConfiguring(optionsBuilder);
         }
