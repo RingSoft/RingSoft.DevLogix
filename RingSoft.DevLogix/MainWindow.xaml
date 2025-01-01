@@ -50,7 +50,7 @@
     </Window.DataContext>
     <DockPanel>
         <DockPanel>
-            <Menu x:Name="MainMenu" DockPanel.Dock="Top">
+            <Menu x:Name="MainMenu" DockPanel.Dock="Top" IsTabStop="False">
                 <MenuItem Header="E_xit..."/>
                 <!--<MenuItem Header="_User Management">
                     <MenuItem Header="Add/Edit _Users..." Command="{Binding UserMaintenanceCommand}"/>
