@@ -45,8 +45,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
                     return new DataEntryGridAutoFillCellProps(this, columnId, Manager.CompletedVersionAutoFillSetup,
                         CompletedVersionAutoFillValue);
                 case TestingOutlineDetailsColumns.Template:
-                    return new DataEntryGridAutoFillCellProps(this, columnId, TemplateAutoFillSetup,
-                        TemplateAutoFillValue);
+                    //Peter Ringering - 01/06/2025 01:45:24 PM - E-85
+                    if (TemplateAutoFillValue.IsValid())
+                    {
+                        return new DataEntryGridAutoFillCellProps(this, columnId, TemplateAutoFillSetup,
+                            TemplateAutoFillValue);
+                    }
+                    else
+                    {
+                        return new DataEntryGridTextCellProps(this, columnId, "");
+                    }
                 default:
                     throw new ArgumentOutOfRangeException();
             }
