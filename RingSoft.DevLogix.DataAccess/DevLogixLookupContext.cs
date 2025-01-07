@@ -1007,6 +1007,9 @@ namespace RingSoft.DevLogix.DataAccess
                 .HasDateType(DbDateTypes.DateTime)
                 .DoConvertToLocalTime();
 
+            TestingTemplates.PriorityLevel = 100;
+            TestingTemplates.GetFieldDefinition(p => p.Notes).IsMemo();
+
             TestingOutlineTemplates.PriorityLevel = 600;
 
             TimeClocks.PriorityLevel = 20000;
@@ -1060,9 +1063,6 @@ namespace RingSoft.DevLogix.DataAccess
             //ProjectTaskDependency.GetFieldDefinition(p => p.DependsOnProjectTaskId).DoesAllowRecursion(false);
 
             ProjectUsers.PriorityLevel = 500;
-
-            TestingTemplates.PriorityLevel = 100;
-            //TestingTemplates.GetFieldDefinition(p => p.BaseTemplateId).DoesAllowRecursion(false);
 
             Territory.PriorityLevel = 400;
 

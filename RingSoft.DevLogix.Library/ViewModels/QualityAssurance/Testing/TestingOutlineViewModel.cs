@@ -310,6 +310,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
         public AutoFillValue CurrentUserAutoFillValue { get; private set; }
 
+        private int _oldProductId;
+
         public TestingOutlineViewModel()
         {
             GenerateDetailsCommand = new RelayCommand(GenerateDetails);
@@ -396,6 +398,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
         protected override void LoadFromEntity(TestingOutline entity)
         {
+            _oldProductId = entity.ProductId;
             KeyAutoFillValue = entity.GetAutoFillValue();
             OldProductValue = ProductValue = entity.Product.GetAutoFillValue();
             CreatedByAutoFillValue = entity.CreatedByUser.GetAutoFillValue();
@@ -436,6 +439,28 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             {
                 result.AssignedToUserId = null;
             }
+
+            return result;
+        }
+
+        protected override KeyFilterData GetKeyFilterData()
+        {
+            var productId = ProductValue.GetEntity<Product>().Id;
+            var result = new KeyFilterData();
+            result.AddFilterItem(
+                TableDefinition.GetFieldDefinition(p => p.ProductId)
+                , Conditions.Equals, productId.ToString());
+            result.KeyFilterChanged = productId != _oldProductId;
+            return result;
+        }
+
+        protected override bool SaveEntity(TestingOutline entity)
+        {
+            var result = base.SaveEntity(entity);
+            if (result)
+            {
+                _oldProductId = ProductValue.GetEntity<Product>().Id;
+            }
             return result;
         }
 
@@ -443,6 +468,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
         {
             Id = 0;
             OldProductValue = ProductValue = DefaultProductAutoFillValue;
+            _oldProductId = ProductValue.GetEntity<Product>().Id;
             CreatedByAutoFillValue = CurrentUserAutoFillValue;
             AssignedToAutoFillValue = null;
             DueDate = null;
