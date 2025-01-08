@@ -346,6 +346,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             errorLookup.AddVisibleColumnDefinition(p => p.Date, p => p.ErrorDate);
 
             ErrorLookup = errorLookup;
+            //Peter Ringering - 01/07/2025 05:02:57 PM - E-87
+            ErrorLookup.InitialOrderByType = OrderByTypes.Descending;
 
             TimeClockLookup = AppGlobals.LookupContext.TimeClockTabLookup.Clone();
             TimeClockLookup.InitialOrderByType = OrderByTypes.Descending;
@@ -713,7 +715,23 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
         private void OnErrorAddModify()
         {
             if (ExecuteAddModifyCommand() == DbMaintenanceResults.Success)
-                ErrorLookup.SetCommand(GetLookupCommand(LookupCommands.AddModify));
+            {
+                var lookupData = TableDefinition.LookupDefinition
+                    .GetLookupDataMaui(TableDefinition.LookupDefinition, true);
+
+                var args = new LookupAddViewArgs(lookupData, true, LookupFormModes.View,
+                    string.Empty, null)
+                {
+                    ParentWindowPrimaryKeyValue = TableDefinition.GetPrimaryKeyValueFromEntity(Entity),
+                    LookupFormMode = LookupFormModes.Add,
+                };
+                SystemGlobals.TableRegistry.ShowAddOntheFlyWindow(
+                    AppGlobals.LookupContext.Errors, args);
+
+                var command = GetLookupCommand(LookupCommands.Refresh, args.ParentWindowPrimaryKeyValue);
+                
+                ErrorLookup.SetCommand(command);
+            }
         }
 
         public void RefreshTimeClockLookup()

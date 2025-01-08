@@ -1,6 +1,7 @@
 ﻿using RingSoft.App.Controls;
 using System.Windows;
 using System.Windows.Controls;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbMaintenance;
@@ -22,6 +23,8 @@ namespace RingSoft.DevLogix.QualityAssurance
 
         public DbMaintenanceButton RecalcButton { get; set; }
 
+        public DbMaintenanceButton AddErrorButton { get; set; }
+
         static TestingOutlineHeaderControl()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(TestingOutlineHeaderControl), new FrameworkPropertyMetadata(typeof(TestingOutlineHeaderControl)));
@@ -33,6 +36,7 @@ namespace RingSoft.DevLogix.QualityAssurance
             RetestButton = GetTemplateChild(nameof(RetestButton)) as DbMaintenanceButton;
             PunchInButton = GetTemplateChild(nameof(PunchInButton)) as DbMaintenanceButton;
             RecalcButton = GetTemplateChild(nameof(RecalcButton)) as DbMaintenanceButton;
+            AddErrorButton = GetTemplateChild(nameof(AddErrorButton)) as DbMaintenanceButton;
 
             base.OnApplyTemplate();
         }
@@ -61,6 +65,7 @@ namespace RingSoft.DevLogix.QualityAssurance
                     outlineHeaderControl.RetestButton.Command = LocalViewModel.RetestCommand;
                     outlineHeaderControl.PunchInButton.Command = LocalViewModel.PunchInCommand;
                     outlineHeaderControl.RecalcButton.Command = LocalViewModel.RecalcCommand;
+                    outlineHeaderControl.AddErrorButton.Command = LocalViewModel.ErrorAddModifyCommand;
 
                     outlineHeaderControl.PunchInButton.ToolTip.HeaderText = "Punch In (Alt + U)";
                     outlineHeaderControl.PunchInButton.ToolTip.DescriptionText = "Punch into this Testing Outline. ";

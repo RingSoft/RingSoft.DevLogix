@@ -623,7 +623,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                         AppGlobals.LookupContext.TestingOutlines.GetEntityFromPrimaryKeyValue(LookupAddViewArgs
                             .ParentWindowPrimaryKeyValue);
                     CurrentTestingOutlineAutoFillValue = outline.GetAutoFillValue();
-                    DefaultTestOutlineAutoFillValue =
+                    DefaultTestOutlineAutoFillValue = 
                         AppGlobals.LookupContext.OnAutoFillTextRequest(AppGlobals.LookupContext.TestingOutlines,
                             outline.Id.ToString());
                 }

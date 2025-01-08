@@ -32,6 +32,7 @@
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
 
                                 <ac:DbMaintenanceButton Grid.Row="0" Grid.Column="0" x:Name="GenerateDetailsButton" Content="_Generate Steps" ImageSource="{StaticResource AfUpImage}" Style="{StaticResource SubButton}" HorizontalContentAlignment="Left"/>
@@ -41,6 +42,8 @@
                                 <ac:DbMaintenanceButton Grid.Row="1" Grid.Column="0" x:Name="RetestButton" Content="_Retest" ImageSource="{StaticResource AfUpImage}" Style="{StaticResource SubButton}" HorizontalContentAlignment="Left"/>
 
                                 <ac:DbMaintenanceButton Grid.Row="1" Grid.Column="1" x:Name="RecalcButton" Content="R_ecalculate" ImageSource="{StaticResource DecimalEditImage}" Style="{StaticResource SubButton}" HorizontalContentAlignment="Left"/>
+
+                                <ac:DbMaintenanceButton Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" x:Name="AddErrorButton" Content="_Add Error" ImageSource="{StaticResource AfUpImage}" Style="{StaticResource SubButton}" HorizontalContentAlignment="Left"/>
 
                             </Grid>
 
