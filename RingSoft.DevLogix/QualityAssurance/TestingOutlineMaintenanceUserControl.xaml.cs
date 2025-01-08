@@ -65,7 +65,7 @@ namespace RingSoft.DevLogix.QualityAssurance
                     outlineHeaderControl.RetestButton.Command = LocalViewModel.RetestCommand;
                     outlineHeaderControl.PunchInButton.Command = LocalViewModel.PunchInCommand;
                     outlineHeaderControl.RecalcButton.Command = LocalViewModel.RecalcCommand;
-                    outlineHeaderControl.AddErrorButton.Command = LocalViewModel.ErrorAddModifyCommand;
+                    outlineHeaderControl.AddErrorButton.Command = LocalViewModel.AddNewErrorCommand;
 
                     outlineHeaderControl.PunchInButton.ToolTip.HeaderText = "Punch In (Alt + U)";
                     outlineHeaderControl.PunchInButton.ToolTip.DescriptionText = "Punch into this Testing Outline. ";

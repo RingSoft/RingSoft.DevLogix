@@ -302,6 +302,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
         public RelayCommand ErrorAddModifyCommand { get; private set; }
 
+        public RelayCommand AddNewErrorCommand { get; private set; }
+
         public double MinutesSpent { get; private set; }
 
         public AutoFillValue DefaultProductAutoFillValue { get; private set; }
@@ -319,6 +321,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             PunchInCommand = new RelayCommand(PunchIn);
             RecalcCommand = new RelayCommand(Recalculate);
             ErrorAddModifyCommand = new RelayCommand(OnErrorAddModify);
+            AddNewErrorCommand = new RelayCommand(OnAddError);
 
             ProductSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ProductId));
             CreatedByAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.CreatedByUserId));
@@ -716,20 +719,20 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
         {
             if (ExecuteAddModifyCommand() == DbMaintenanceResults.Success)
             {
-                var lookupData = TableDefinition.LookupDefinition
-                    .GetLookupDataMaui(TableDefinition.LookupDefinition, true);
+                var command = GetLookupCommand(LookupCommands.AddModify);
+                ErrorLookup.SetCommand(command);
+            }
+        }
 
-                var args = new LookupAddViewArgs(lookupData, true, LookupFormModes.View,
-                    string.Empty, null)
-                {
-                    ParentWindowPrimaryKeyValue = TableDefinition.GetPrimaryKeyValueFromEntity(Entity),
-                    LookupFormMode = LookupFormModes.Add,
-                };
-                SystemGlobals.TableRegistry.ShowAddOntheFlyWindow(
-                    AppGlobals.LookupContext.Errors, args);
+        private void OnAddError()
+        {
+            if (ExecuteAddModifyCommand() == DbMaintenanceResults.Success)
+            {
+                var parentPrimaryKey = TableDefinition.GetPrimaryKeyValueFromEntity(Entity);
 
-                var command = GetLookupCommand(LookupCommands.Refresh, args.ParentWindowPrimaryKeyValue);
-                
+                AppGlobals.LookupContext.Errors.AddNewRecord(parentPrimaryKey);
+
+                var command = GetLookupCommand(LookupCommands.Refresh, parentPrimaryKey);
                 ErrorLookup.SetCommand(command);
             }
         }
