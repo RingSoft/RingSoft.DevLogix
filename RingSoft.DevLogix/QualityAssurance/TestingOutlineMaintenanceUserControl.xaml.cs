@@ -97,7 +97,17 @@ namespace RingSoft.DevLogix.QualityAssurance
                     {
                         outlineHeaderControl.GenerateDetailsButton.Visibility = Visibility.Collapsed;
                         outlineHeaderControl.RetestButton.Visibility = Visibility.Collapsed;
+
+                        //Peter Ringering - 01/09/2025 02:22:41 PM - E-92
+                        outlineHeaderControl.RecalcButton.Visibility = Visibility.Collapsed;
+                        Grid.SetRowSpan(outlineHeaderControl.PunchInButton, 2);
                     }
+
+                    if (!AppGlobals.LookupContext.Errors.HasRight(RightTypes.AllowAdd))
+                    {
+                        outlineHeaderControl.AddErrorButton.Visibility = Visibility.Collapsed;
+                    }
+
                     outlineHeaderControl.GenerateDetailsButton.Command = LocalViewModel.GenerateDetailsCommand;
                     outlineHeaderControl.RetestButton.Command = LocalViewModel.RetestCommand;
                     outlineHeaderControl.PunchInButton.Command = LocalViewModel.PunchInCommand;

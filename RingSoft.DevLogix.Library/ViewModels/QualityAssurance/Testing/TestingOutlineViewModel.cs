@@ -327,6 +327,19 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             ErrorAddModifyCommand = new RelayCommand(OnErrorAddModify);
             AddNewErrorCommand = new RelayCommand(OnAddError);
 
+            if (!TableDefinition.HasRight(RightTypes.AllowEdit))
+            {
+                GenerateDetailsCommand.IsEnabled = false;
+                RetestCommand.IsEnabled = false;
+                RecalcCommand.IsEnabled = false;
+            }
+
+            if (!AppGlobals.LookupContext.Errors.HasRight(RightTypes.AllowAdd))
+            {
+                AddNewErrorCommand.IsEnabled = false;
+            }
+
+
             ProductSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ProductId));
             CreatedByAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.CreatedByUserId));
             AssignedToAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.AssignedToUserId));
