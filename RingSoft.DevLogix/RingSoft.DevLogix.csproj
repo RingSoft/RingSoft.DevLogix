@@ -9,6 +9,7 @@
     <ReferencePath>C:\Program Files (x86)\SAP BusinessObjects\Crystal Reports for .NET Framework 4.0\Common\SAP BusinessObjects Enterprise XI 4.0\win64_x64\dotnet\</ReferencePath>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Resources\Add.png" />
     <None Remove="Resources\bug_edit32.png" />
     <None Remove="Resources\calculator.png" />
     <None Remove="Resources\chart_bar32.png" />
@@ -21,9 +22,11 @@
     <None Remove="Resources\Organization.png" />
     <None Remove="Resources\outline32.png" />
     <None Remove="Resources\project32.png" />
+    <None Remove="Resources\Recycle.png" />
     <None Remove="Resources\RedAlert.ico" />
     <None Remove="Resources\SalesOrders.png" />
     <None Remove="Resources\software32.png" />
+    <None Remove="Resources\Steps.png" />
     <None Remove="Resources\Support.png" />
     <None Remove="Resources\user32.png" />
     <None Remove="Resources\UsersTrack.png" />
@@ -46,6 +49,7 @@
     <ProjectReference Include="..\RingSoft.DevLogix.Library\RingSoft.DevLogix.Library.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\Add.png" />
     <Resource Include="Resources\bug_edit32.png" />
     <Resource Include="Resources\calculator.png" />
     <Resource Include="Resources\chart_bar32.png" />
@@ -57,9 +61,11 @@
     <Resource Include="Resources\Organization.png" />
     <Resource Include="Resources\outline32.png" />
     <Resource Include="Resources\project32.png" />
+    <Resource Include="Resources\Recycle.png" />
     <Resource Include="Resources\RedAlert.ico" />
     <Resource Include="Resources\SalesOrders.png" />
     <Resource Include="Resources\software32.png" />
+    <Resource Include="Resources\Steps.png" />
     <Resource Include="Resources\Support.png" />
     <Resource Include="Resources\user32.png" />
     <Resource Include="Resources\UsersTrack.png" />

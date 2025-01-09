@@ -1,6 +1,7 @@
 ﻿using RingSoft.App.Controls;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Lookup;
@@ -52,6 +53,32 @@ namespace RingSoft.DevLogix.QualityAssurance
         {
             InitializeComponent();
             RegisterFormKeyControl(NameControl);
+
+            var hotKey = new HotKey(LocalViewModel.GenerateDetailsCommand);
+            hotKey.AddKey(Key.T);
+            hotKey.AddKey(Key.G);
+            AddHotKey(hotKey);
+
+            hotKey = new HotKey(LocalViewModel.RetestCommand);
+            hotKey.AddKey(Key.T);
+            hotKey.AddKey(Key.R);
+            AddHotKey(hotKey);
+
+            hotKey = new HotKey(LocalViewModel.PunchInCommand);
+            hotKey.AddKey(Key.T);
+            hotKey.AddKey(Key.U);
+            AddHotKey(hotKey);
+
+            hotKey = new HotKey(LocalViewModel.RecalcCommand);
+            hotKey.AddKey(Key.T);
+            hotKey.AddKey(Key.C);
+            AddHotKey(hotKey);
+
+            hotKey = new HotKey(LocalViewModel.AddNewErrorCommand);
+            hotKey.AddKey(Key.T);
+            hotKey.AddKey(Key.A);
+            AddHotKey(hotKey);
+
             TopHeaderControl.Loaded += (sender, args) =>
             {
                 if (TopHeaderControl.CustomPanel is TestingOutlineHeaderControl outlineHeaderControl)
@@ -67,20 +94,24 @@ namespace RingSoft.DevLogix.QualityAssurance
                     outlineHeaderControl.RecalcButton.Command = LocalViewModel.RecalcCommand;
                     outlineHeaderControl.AddErrorButton.Command = LocalViewModel.AddNewErrorCommand;
 
-                    outlineHeaderControl.PunchInButton.ToolTip.HeaderText = "Punch In (Alt + U)";
+                    outlineHeaderControl.PunchInButton.ToolTip.HeaderText = "Punch In (Ctrl + T, Ctrl + U)";
                     outlineHeaderControl.PunchInButton.ToolTip.DescriptionText = "Punch into this Testing Outline. ";
 
-                    outlineHeaderControl.RecalcButton.ToolTip.HeaderText = "Recalculate Cost (Alt + E)";
+                    outlineHeaderControl.RecalcButton.ToolTip.HeaderText = "Recalculate Cost (Ctrl + T, Ctrl + C)";
                     outlineHeaderControl.RecalcButton.ToolTip.DescriptionText =
                         "Recalculate the cost values for a range of Testing Outlines.";
 
-                    outlineHeaderControl.GenerateDetailsButton.ToolTip.HeaderText = "Generate Steps (Alt + G)";
+                    outlineHeaderControl.GenerateDetailsButton.ToolTip.HeaderText = "Generate Steps (Ctrl + T, Ctrl + G)";
                     outlineHeaderControl.GenerateDetailsButton.ToolTip.DescriptionText =
                         "Generate Steps from the attached Testing Templates.";
 
-                    outlineHeaderControl.RetestButton.ToolTip.HeaderText = "Retest Testing Outline (Alt + R)";
+                    outlineHeaderControl.RetestButton.ToolTip.HeaderText = "Retest Testing Outline (Ctrl + T, Ctrl + R)";
                     outlineHeaderControl.RetestButton.ToolTip.DescriptionText =
                         "Clear all completed values in the Steps grid.";
+
+                    outlineHeaderControl.AddErrorButton.ToolTip.HeaderText = "Add New Error (Ctrl + T, Ctrl + A)";
+                    outlineHeaderControl.AddErrorButton.ToolTip.DescriptionText =
+                        "Create and add a new Error.";
                 }
             };
             ProductControl.PreviewLostKeyboardFocus += async (sender, args) =>
