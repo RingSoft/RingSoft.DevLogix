@@ -6,6 +6,8 @@ using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 using System.Collections.Generic;
 using System.Linq;
 using RingSoft.DbLookup;
+using RingSoft.DataEntryControls.Engine;
+using RingSoft.DevLogix.Library.ViewModels.UserManagement;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 {

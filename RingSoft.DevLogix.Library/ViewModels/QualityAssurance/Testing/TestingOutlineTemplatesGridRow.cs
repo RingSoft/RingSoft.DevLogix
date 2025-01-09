@@ -3,6 +3,8 @@ using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
+using RingSoft.DevLogix.Sqlite.Migrations;
+using TestingTemplate = RingSoft.DevLogix.DataAccess.Model.QualityAssurance.TestingTemplate;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 {
@@ -13,6 +15,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
         public AutoFillSetup AutoFillSetup { get; }
 
         public AutoFillValue AutoFillValue { get; set; }
+
+        public int TemplateId { get; private set; }
 
         public TestingOutlineTemplatesGridRow(TestingOutlineTemplatesGridManager manager) : base(manager)
         {
@@ -31,6 +35,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             if (value is DataEntryGridAutoFillCellProps autoFillCellProps)
             {
                 AutoFillValue = autoFillCellProps.AutoFillValue;
+                TemplateId = AutoFillValue.GetEntity<TestingTemplate>().Id;
             }
             base.SetCellValue(value);
         }
@@ -38,6 +43,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
         public override void LoadFromEntity(TestingOutlineTemplate entity)
         {
             AutoFillValue = entity.TestingTemplate.GetAutoFillValue();
+            TemplateId = entity.TestingTemplate.Id;
         }
 
         public override void SaveToEntity(TestingOutlineTemplate entity, int rowIndex)
