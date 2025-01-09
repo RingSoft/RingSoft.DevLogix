@@ -1,4 +1,5 @@
-﻿using RingSoft.App.Controls;
+﻿using System.Media;
+using RingSoft.App.Controls;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -77,6 +78,15 @@ namespace RingSoft.DevLogix.QualityAssurance
             hotKey = new HotKey(LocalViewModel.AddNewErrorCommand);
             hotKey.AddKey(Key.T);
             hotKey.AddKey(Key.A);
+            AddHotKey(hotKey);
+
+            ErrorsAddModifyButton.ToolTip.HeaderText = "Add/Modify Error (Ctrl + T, Ctrl + M)";
+            ErrorsAddModifyButton.ToolTip.DescriptionText =
+                "Add or modify an error.";
+
+            hotKey = new HotKey(LocalViewModel.ErrorAddModifyCommand);
+            hotKey.AddKey(Key.T);
+            hotKey.AddKey(Key.M);
             AddHotKey(hotKey);
 
             TopHeaderControl.Loaded += (sender, args) =>
@@ -184,6 +194,16 @@ namespace RingSoft.DevLogix.QualityAssurance
         {
             var progress = $"Recalculating Testing Outline {currentOutlineText} {currentOutline} / {totalOutlines}";
             RecalcProcedure.SplashWindow.SetProgress(progress);
+        }
+
+        public bool IsErrorsTabSelected()
+        {
+            return TabControl.SelectedItem == ErrorsTabItem;
+        }
+
+        public void PlayExclSound()
+        {
+            SystemSounds.Asterisk.Play();
         }
     }
 }

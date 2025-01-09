@@ -123,5 +123,15 @@ namespace RingSoft.DevLogix.QualityAssurance
             var progress = $"Recalculating Testing Outline {currentOutlineText} {currentOutline} / {totalOutlines}";
             RecalcProcedure.SplashWindow.SetProgress(progress);
         }
+
+        public bool IsErrorsTabSelected()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void PlayExclSound()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

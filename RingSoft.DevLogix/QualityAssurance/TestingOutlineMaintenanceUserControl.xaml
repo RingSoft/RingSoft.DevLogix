@@ -95,7 +95,7 @@
 
             <lc:AutoFillControl Grid.Row="0" Grid.Column="3" x:Name="NameControl" Width="200"/>
 
-            <dec:DataEntryTabControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5">
+            <dec:DataEntryTabControl x:Name="TabControl" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5">
 
                 <TabItem Header="Details">
 
@@ -219,7 +219,7 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
-                        <Button Grid.Row="0" Grid.Column="0" x:Name="ErrorsAddModifyButton" Content="Add/Modify" Command="{Binding ErrorAddModifyCommand}"/>
+                        <dec:EnhancedButton Grid.Row="0" Grid.Column="0" x:Name="ErrorsAddModifyButton" Content="Add/Modify" Command="{Binding ErrorAddModifyCommand}"/>
 
                         <lc:LookupControl Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" x:Name="ErrorsLookupControl" LookupDefinition="{Binding ErrorLookup}">
 

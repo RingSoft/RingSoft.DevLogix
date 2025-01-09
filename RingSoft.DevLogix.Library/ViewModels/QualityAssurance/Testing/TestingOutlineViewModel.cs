@@ -26,6 +26,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
         string StartRecalcProcedure(LookupDefinitionBase lookup);
 
         void UpdateRecalcProcedure(int currentOutline, int totalOutlines, string currentOutlineText);
+
+        bool IsErrorsTabSelected();
+
+        void PlayExclSound();
     }
     public class TestingOutlineViewModel : DbMaintenanceViewModel<TestingOutline>
     {
@@ -717,6 +721,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
         private void OnErrorAddModify()
         {
+            if (!View.IsErrorsTabSelected())
+            {
+                View.PlayExclSound();
+                return;
+            }
+
             if (ExecuteAddModifyCommand() == DbMaintenanceResults.Success)
             {
                 var command = GetLookupCommand(LookupCommands.AddModify);
