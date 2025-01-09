@@ -337,6 +337,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             if (!AppGlobals.LookupContext.Errors.HasRight(RightTypes.AllowAdd))
             {
                 AddNewErrorCommand.IsEnabled = false;
+                ErrorAddModifyCommand.IsEnabled = false;
             }
 
 
