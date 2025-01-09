@@ -337,9 +337,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             if (!AppGlobals.LookupContext.Errors.HasRight(RightTypes.AllowAdd))
             {
                 AddNewErrorCommand.IsEnabled = false;
-                ErrorAddModifyCommand.IsEnabled = false;
             }
 
+            if (!AppGlobals.LookupContext.Errors.HasRight(RightTypes.AllowEdit))
+            {
+                ErrorAddModifyCommand.IsEnabled = false;
+            }
 
             ProductSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ProductId));
             CreatedByAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.CreatedByUserId));

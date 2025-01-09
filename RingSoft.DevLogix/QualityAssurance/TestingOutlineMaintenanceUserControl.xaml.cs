@@ -108,6 +108,12 @@ namespace RingSoft.DevLogix.QualityAssurance
                         outlineHeaderControl.AddErrorButton.Visibility = Visibility.Collapsed;
                     }
 
+                    //Peter Ringering - 01/09/2025 02:53:19 PM - E-93
+                    if (!AppGlobals.LookupContext.Errors.HasRight(RightTypes.AllowEdit))
+                    {
+                        ErrorsAddModifyButton.Visibility = Visibility.Collapsed;
+                    }
+
                     outlineHeaderControl.GenerateDetailsButton.Command = LocalViewModel.GenerateDetailsCommand;
                     outlineHeaderControl.RetestButton.Command = LocalViewModel.RetestCommand;
                     outlineHeaderControl.PunchInButton.Command = LocalViewModel.PunchInCommand;
