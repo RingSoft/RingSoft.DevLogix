@@ -17,6 +17,11 @@ using System.Threading.Tasks;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 {
+    public enum SetFocusTabs
+    {
+        Details = 1,
+        Templates = 2,
+    }
     public interface ITestingOutlineView : IDbMaintenanceView
     {
         void PunchIn(TestingOutline testingOutline);
@@ -30,6 +35,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
         bool IsErrorsTabSelected();
 
         void PlayExclSound();
+
+        void SelectTab(SetFocusTabs tab);
     }
     public class TestingOutlineViewModel : DbMaintenanceViewModel<TestingOutline>
     {

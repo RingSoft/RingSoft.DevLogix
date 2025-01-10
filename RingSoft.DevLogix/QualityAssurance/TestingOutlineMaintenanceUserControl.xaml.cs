@@ -1,4 +1,5 @@
-﻿using System.Media;
+﻿using System;
+using System.Media;
 using RingSoft.App.Controls;
 using System.Windows;
 using System.Windows.Controls;
@@ -220,6 +221,20 @@ namespace RingSoft.DevLogix.QualityAssurance
         public void PlayExclSound()
         {
             SystemSounds.Asterisk.Play();
+        }
+
+        public void SelectTab(SetFocusTabs tab)
+        {
+            switch (tab)
+            {
+                case SetFocusTabs.Details:
+                    break;
+                case SetFocusTabs.Templates:
+                    TabControl.SelectedItem = TemplatesTab;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(tab), tab, null);
+            }
         }
     }
 }

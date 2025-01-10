@@ -154,7 +154,7 @@
                         </deg:DataEntryGrid>
                     </DockPanel>
                 </TabItem>
-                <TabItem Header="Templates">
+                <TabItem x:Name="TemplatesTab" Header="Templates">
                     <DockPanel>
                         <deg:DataEntryGrid Manager="{Binding TemplatesGridManager}">
                             <deg:DataEntryGrid.Columns>

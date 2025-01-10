@@ -161,5 +161,19 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             return base.ValidateGrid();
         }
 
+        //Peter Ringering - 01/09/2025 03:42:55 PM - E-95
+        protected override void SelectRowForEntity(TestingOutlineTemplate entity)
+        {
+            var row = Rows.OfType<TestingOutlineTemplatesGridRow>()
+                .FirstOrDefault(p => p.TemplateId == entity.TestingTemplateId);
+
+            if (row != null)
+            {
+                ViewModel.View.SelectTab(SetFocusTabs.Templates);
+                GotoCell(row, 1);
+            }
+
+            base.SelectRowForEntity(entity);
+        }
     }
 }

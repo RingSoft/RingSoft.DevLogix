@@ -133,5 +133,10 @@ namespace RingSoft.DevLogix.QualityAssurance
         {
             throw new NotImplementedException();
         }
+
+        public void SelectTab(SetFocusTabs tab)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
