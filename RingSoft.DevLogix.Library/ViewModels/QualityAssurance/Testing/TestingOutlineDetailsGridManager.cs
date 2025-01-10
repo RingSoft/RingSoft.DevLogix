@@ -122,5 +122,20 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
                 || p.CompletedVersionAutoFillValue.IsValid()));
             return result;
         }
+
+        //Peter Ringering - 01/09/2025 03:42:55 PM - E-95
+        protected override void SelectRowForEntity(TestingOutlineDetails entity)
+        {
+            var row = Rows[entity.DetailId - 1];
+
+            if (row != null)
+            {
+                ViewModel.View.SelectTab(SetFocusTabs.Details);
+                GotoCell(row, StepColumnId);
+            }
+
+            base.SelectRowForEntity(entity);
+        }
+
     }
 }

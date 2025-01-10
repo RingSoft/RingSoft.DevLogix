@@ -21,6 +21,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
     {
         Details = 1,
         Templates = 2,
+        Cost = 3,
     }
     public interface ITestingOutlineView : IDbMaintenanceView
     {

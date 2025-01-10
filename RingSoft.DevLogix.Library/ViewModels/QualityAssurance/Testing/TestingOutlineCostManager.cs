@@ -66,5 +66,20 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             totalCost = rows.Sum(p => p.Cost);
         }
 
+        //Peter Ringering - 01/09/2025 03:42:55 PM - E-95
+        protected override void SelectRowForEntity(TestingOutlineCost entity)
+        {
+            var row = Rows.OfType<TestingOutlineCostRow>()
+                .FirstOrDefault(p => p.UserId == entity.UserId);
+
+            if (row != null)
+            {
+                ViewModel.View.SelectTab(SetFocusTabs.Cost);
+                GotoCell(row, UserColumnId);
+            }
+
+            base.SelectRowForEntity(entity);
+        }
+
     }
 }

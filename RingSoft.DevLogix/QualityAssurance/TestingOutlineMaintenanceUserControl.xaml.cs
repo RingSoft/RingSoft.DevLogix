@@ -228,9 +228,13 @@ namespace RingSoft.DevLogix.QualityAssurance
             switch (tab)
             {
                 case SetFocusTabs.Details:
+                    TabControl.SelectedItem = StepsTab;
                     break;
                 case SetFocusTabs.Templates:
                     TabControl.SelectedItem = TemplatesTab;
+                    break;
+                case SetFocusTabs.Cost:
+                    TabControl.SelectedItem = CostTab;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(tab), tab, null);

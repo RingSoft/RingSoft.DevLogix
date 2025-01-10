@@ -136,7 +136,7 @@
 
                     </Grid>
                 </TabItem>
-                <TabItem Header="Steps">
+                <TabItem x:Name="StepsTab" Header="Steps">
 
                     <DockPanel>
                         <deg:DataEntryGrid x:Name="DetailsGrid" Manager="{Binding DetailsGridManager}">
@@ -165,7 +165,7 @@
                         </deg:DataEntryGrid>
                     </DockPanel>
                 </TabItem>
-                <TabItem Header="Cost">
+                <TabItem x:Name="CostTab" Header="Cost">
                     <Grid>
 
                         <Grid.RowDefinitions>
