@@ -395,18 +395,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
                 View = testingOutlineView;
             }
             AppGlobals.MainViewModel.TestingOutlineViewModels.Add(this);
-            if (LookupAddViewArgs != null && LookupAddViewArgs.ParentWindowPrimaryKeyValue != null)
+
+            var defaultProduct = GetParentEntity<Product>();
+            if (defaultProduct != null)
             {
-                if (LookupAddViewArgs.ParentWindowPrimaryKeyValue.TableDefinition ==
-                    AppGlobals.LookupContext.Products)
-                {
-                    var product =
-                        AppGlobals.LookupContext.Products.GetEntityFromPrimaryKeyValue(LookupAddViewArgs
-                            .ParentWindowPrimaryKeyValue);
-                    DefaultProductAutoFillValue =
-                        AppGlobals.LookupContext.OnAutoFillTextRequest(AppGlobals.LookupContext.Products,
-                            product.Id.ToString());
-                }
+                DefaultProductAutoFillValue = defaultProduct.GetAutoFillValue();
             }
 
             base.Initialize();
