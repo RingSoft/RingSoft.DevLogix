@@ -984,6 +984,12 @@ namespace RingSoft.DevLogix.DataAccess
             TestingOutlines.GetFieldDefinition(p => p.Notes).IsMemo();
             TestingOutlines.GetFieldDefinition(p => p.PercentComplete).HasDecimalFieldType(DecimalFieldTypes.Percent);
 
+            //Peter Ringering - 01/09/2025 05:57:07 PM - E-98
+            TestingOutlines.GetFieldDefinition(p => p.MinutesSpent)
+                .HasDescription("Time Spent")
+                .HasSearchForHostId(TimeSpentHostId);
+            TestingOutlines.GetFieldDefinition(p => p.TotalCost).HasDecimalFieldType(DecimalFieldTypes.Currency);
+
             TestingOutlineDetails.PriorityLevel = 500;
 
             Errors.PriorityLevel = 450;
