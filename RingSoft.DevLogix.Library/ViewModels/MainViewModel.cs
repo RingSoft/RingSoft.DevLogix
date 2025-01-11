@@ -71,6 +71,8 @@ namespace RingSoft.DevLogix.Library.ViewModels
         void RepairDates();
 
         bool CloseAllTabs();
+
+        void Beep();
     }
 
     public class MainViewModel : INotifyPropertyChanged
@@ -354,14 +356,22 @@ namespace RingSoft.DevLogix.Library.ViewModels
             }));
             TimeClockCommand = new RelayCommand((() =>
             {
-                var timeClock = new TimeClock()
+                //Peter Ringering - 01/11/2025 03:22:34 PM - E-99
+                if (ActiveTimeClockId > 0)
                 {
-                    Id = ActiveTimeClockId,
-                };
-                var primaryKey = AppGlobals.LookupContext.TimeClocks.GetPrimaryKeyValueFromEntity(timeClock);
-                if (DbLookup.ExtensionMethods.IsValid(primaryKey))
+                    var timeClock = new TimeClock()
+                    {
+                        Id = ActiveTimeClockId,
+                    };
+                    var primaryKey = AppGlobals.LookupContext.TimeClocks.GetPrimaryKeyValueFromEntity(timeClock);
+                    if (DbLookup.ExtensionMethods.IsValid(primaryKey))
+                    {
+                        AppGlobals.LookupContext.TimeClockLookup.ShowAddOnTheFlyWindow(primaryKey);
+                    }
+                }
+                else
                 {
-                    AppGlobals.LookupContext.TimeClockLookup.ShowAddOnTheFlyWindow(primaryKey);
+                    MainView.Beep();
                 }
             }));
         }

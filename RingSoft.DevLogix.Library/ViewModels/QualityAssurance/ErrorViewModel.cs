@@ -604,6 +604,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         protected override void Initialize()
         {
+            ViewLookupDefinition.InitialOrderByField = TableDefinition.GetFieldDefinition(p => p.Id);
             AppGlobals.MainViewModel.ErrorViewModels.Add(this);
             
             if (base.View is IErrorView errorView)
@@ -628,8 +629,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                             outline.Id.ToString());
                 }
             }
-
-            ViewLookupDefinition.InitialOrderByField = TableDefinition.GetFieldDefinition(p => p.Id);
 
             base.Initialize();
         }

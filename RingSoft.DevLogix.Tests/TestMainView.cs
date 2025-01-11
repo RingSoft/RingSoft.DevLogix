@@ -143,5 +143,10 @@ namespace RingSoft.DevLogix.Tests
         {
             return true;
         }
+
+        public void Beep()
+        {
+            
+        }
     }
 }

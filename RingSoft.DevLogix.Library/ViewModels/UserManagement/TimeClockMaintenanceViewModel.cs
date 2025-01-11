@@ -471,7 +471,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         {
             _loading = true;
             ViewLookupDefinition.InitialOrderByField = TableDefinition.GetFieldDefinition(p => p.Id);
-
             NewButtonEnabled = false;
             var punchIn = false;
             _timer.Elapsed += (sender, args) =>

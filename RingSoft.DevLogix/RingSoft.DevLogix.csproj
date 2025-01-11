@@ -45,6 +45,7 @@
     <PackageReference Include="RingSoft.App.Controls" Version="9.4.1" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\RingSoft.DbLookup\RingSoft.DbLookup.Controls.WPF\RingSoft.DbLookup.Controls.WPF.csproj" />
     <ProjectReference Include="..\RingSoft.DevLogix.Library\RingSoft.DevLogix.Library.csproj" />
   </ItemGroup>
   <ItemGroup>

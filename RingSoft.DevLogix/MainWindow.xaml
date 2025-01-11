@@ -112,7 +112,7 @@
 
                 <StackPanel x:Name="TimeClockPanel" Orientation="Horizontal" Visibility="Collapsed">
 
-                    <Button Content="T_ime Clock" Command="{Binding TimeClockCommand}"/>
+                    <dec:EnhancedButton x:Name="TimeClockButton" Content="Time Clock" Command="{Binding TimeClockCommand}"/>
 
                     <Label Content="Elapsed Time"/>
 

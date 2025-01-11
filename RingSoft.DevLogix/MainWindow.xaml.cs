@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Media;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -727,6 +728,16 @@ namespace RingSoft.DevLogix
             hotkey.AddKey(Key.M);
             hotkey.AddKey(Key.H);
             HotKeyProcessor.AddHotKey(hotkey);
+
+            //Peter Ringering - 01/11/2025 03:16:49 PM - E-99
+            hotkey = new HotKey(ViewModel.TimeClockCommand);
+            hotkey.AddKey(Key.M);
+            hotkey.AddKey(Key.I);
+            HotKeyProcessor.AddHotKey(hotkey);
+
+            TimeClockButton.ToolTip.HeaderText = "Show Time Clock (Ctrl + M, Ctrl + I)";
+            TimeClockButton.ToolTip.DescriptionText =
+                "Show the active time clock entry.";
         }
 
         private void SetupToolbar()
@@ -1041,6 +1052,11 @@ namespace RingSoft.DevLogix
         public bool CloseAllTabs()
         {
             return TabControl.CloseAllTabs();
+        }
+
+        public void Beep()
+        {
+            SystemSounds.Exclamation.Play();
         }
     }
 }
