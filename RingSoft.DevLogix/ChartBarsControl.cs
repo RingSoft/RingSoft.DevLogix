@@ -68,6 +68,8 @@ namespace RingSoft.DevLogix
         static ChartBarsControl()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ChartBarsControl), new FrameworkPropertyMetadata(typeof(ChartBarsControl)));
+
+            IsTabStopProperty.OverrideMetadata(typeof(ChartBarsControl), new FrameworkPropertyMetadata(false));
         }
 
         public ChartBarsControl()

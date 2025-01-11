@@ -17,6 +17,7 @@ using System.Linq;
 using System.Net;
 using RingSoft.DbLookup.TableProcessing;
 using IDbContext = RingSoft.DevLogix.DataAccess.IDbContext;
+using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 {
@@ -214,6 +215,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         public event EventHandler<ProcedureStatusArgs> DeployErrorEvent;
 
         private int _originalProductId;
+        private int _oldProductId;
 
         public ProductVersionViewModel()
         {
@@ -323,6 +325,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         protected override void LoadFromEntity(ProductVersion entity)
         {
+            _oldProductId = entity.ProductId;
             ProductAutoFillValue =
                 AppGlobals.LookupContext.OnAutoFillTextRequest(AppGlobals.LookupContext.Products,
                     entity.ProductId.ToString());
@@ -337,6 +340,17 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 ArchiveDateTime = entity.ArchiveDateTime.Value.ToLocalTime();
             }
             CheckArchiveButtonState();
+        }
+
+        protected override KeyFilterData GetKeyFilterData()
+        {
+            var productId = ProductAutoFillValue.GetEntity<Product>().Id;
+            var result = new KeyFilterData();
+            result.AddFilterItem(
+                TableDefinition.GetFieldDefinition(p => p.ProductId)
+                , Conditions.Equals, productId.ToString());
+            result.KeyFilterChanged = productId != _oldProductId;
+            return result;
         }
 
         protected override ProductVersion GetEntityData()
@@ -372,6 +386,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         {
             Id = 0;
             ProductAutoFillValue = DefaultProductAutoFillValue;
+            _oldProductId = ProductAutoFillValue.GetEntity<Product>().Id;
             Notes = null;
             DepartmentAutoFillValue = null;
             ArchiveDateTime = null;
@@ -394,6 +409,17 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
             return base.ValidateEntity(entity);
         }
+
+        protected override bool SaveEntity(ProductVersion entity)
+        {
+            var result = base.SaveEntity(entity);
+            if (result)
+            {
+                _oldProductId = ProductAutoFillValue.GetEntity<Product>().Id;
+            }
+            return result;
+        }
+
 
         protected override bool DeleteEntity()
         {

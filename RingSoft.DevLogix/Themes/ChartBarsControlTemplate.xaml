@@ -21,7 +21,7 @@
                         <DockPanel DataContext="{DynamicResource ViewModel}">
 
                             <dec:StringReadOnlyBox DockPanel.Dock="Top" Text="Click on a chart bar to see its associated Advanced Find" FontSize="16" FontWeight="Bold"/>
-                            <sp:WpfPlot x:Name="WpfPlot"/>
+                            <sp:WpfPlot x:Name="WpfPlot" IsTabStop="False"/>
 
                         </DockPanel>
                     </Border>

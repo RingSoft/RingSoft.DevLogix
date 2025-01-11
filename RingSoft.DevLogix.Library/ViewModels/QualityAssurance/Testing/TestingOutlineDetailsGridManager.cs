@@ -131,7 +131,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             if (row != null)
             {
                 ViewModel.View.SelectTab(SetFocusTabs.Details);
-                GotoCell(row, StepColumnId);
+                if (row.GetCellStyle(StepColumnId).State != DataEntryGridCellStates.Enabled)
+                {
+                    GotoCell(row, CompleteColumnId);
+                }
+                else
+                {
+                    GotoCell(row, StepColumnId);
+                }
             }
 
             base.SelectRowForEntity(entity);
