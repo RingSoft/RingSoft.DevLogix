@@ -6,7 +6,10 @@ using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.Lookup;
+using RingSoft.DbLookup.QueryBuilder;
+using RingSoft.DbLookup.TableProcessing;
 using RingSoft.DevLogix.DataAccess.LookupModel;
+using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
@@ -19,7 +22,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
     public class RetestInput
     {
-        private LookupDefinition<TestingOutlineLookup, TestingOutline> LookupDefinition { get; }
+        public LookupDefinition<TestingOutlineLookup, TestingOutline> LookupDefinition { get; }
 
         public RetestInput()
         {
@@ -243,8 +246,143 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
         private void OnOk()
         {
+            Input.LookupDefinition.FilterDefinition.ClearFixedFilters();
+
+            var startOutlineId = StartOutlineAutoFillValue.GetEntity<TestingOutline>().Id;
+            var endOutlineId = EndOutlineAutoFillValue.GetEntity<TestingOutline>().Id;
+
+            var startProductId = StartProductAutoFillValue.GetEntity<Product>().Id;
+            var endProductId = EndProductAutoFillValue.GetEntity<Product>().Id;
+
+            switch (RetestFilterType)
+            {
+                case RetestFilterTypes.Outline:
+                    if (!ProcessOutlineFilters(startOutlineId, endOutlineId))
+                    {
+                        return;
+                    }
+                    break;
+                case RetestFilterTypes.Product:
+                    if (!ProcessProductFilters(startOutlineId, endOutlineId))
+                    {
+                        return;
+                    }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            //var param = GblMethods.GetParameterExpression<TestingOutline>();
+            //var expr = Input.LookupDefinition.FilterDefinition
+            //    .GetWhereExpresssion<TestingOutline>(param);
+            //var context = SystemGlobals.DataRepository.GetDataContext();
+            //var table = context.GetTable<TestingOutline>();
+            //var query = FilterItemDefinition.FilterQuery(table, param, expr);
+
             DialogResult = true;
             View.CloseWindow();
+        }
+
+        private bool ProcessOutlineFilters(int startOutlineId, int endOutlineId)
+        {
+            if (startOutlineId > 0 && startOutlineId == endOutlineId)
+            {
+                if (startOutlineId == endOutlineId)
+                {
+                    Input.LookupDefinition.FilterDefinition.AddFixedFilter(
+                        p => p.Id, Conditions.Equals, startOutlineId);
+                }
+            }
+            else
+            {
+                var codeDescription = "Testing Outline";
+                var startText = StartOutlineAutoFillValue.GetText();
+                var endText = EndOutlineAutoFillValue.GetText();
+
+                if (!ValidateFilter(endText, startText, codeDescription))
+                {
+                    return false;
+                }
+
+                if (!StartOutlineAutoFillValue.GetText().IsNullOrEmpty())
+                {
+                    Input.LookupDefinition.FilterDefinition.AddFixedFilter(
+                        p => p.Name
+                        , Conditions.GreaterThanEquals
+                        , StartOutlineAutoFillValue.Text);
+                }
+
+                if (!EndOutlineAutoFillValue.GetText().IsNullOrEmpty())
+                {
+                    Input.LookupDefinition.FilterDefinition.AddFixedFilter(
+                        p => p.Name
+                        , Conditions.LessThanEquals
+                        , EndOutlineAutoFillValue.Text);
+                }
+            }
+
+            return true;
+        }
+
+        private bool ProcessProductFilters(int startProductId, int endProductId)
+        {
+            if (startProductId > 0 && startProductId == endProductId)
+            {
+                if (startProductId == endProductId)
+                {
+                    Input.LookupDefinition.FilterDefinition.AddFixedFilter(
+                        p => p.Id, Conditions.Equals, startProductId);
+                }
+            }
+            else
+            {
+                var codeDescription = "Product";
+                var startText = StartProductAutoFillValue.GetText();
+                var endText = EndProductAutoFillValue.GetText();
+
+                if (!ValidateFilter(endText, startText, codeDescription))
+                {
+                    return false;
+                }
+
+                if (!StartProductAutoFillValue.GetText().IsNullOrEmpty())
+                {
+                    Input.LookupDefinition.FilterDefinition
+                        .Include(p => p.Product)
+                        .AddFixedFilter(p => p.Description
+                            , Conditions.GreaterThanEquals
+                            , StartProductAutoFillValue.Text);
+                }
+
+                if (!EndProductAutoFillValue.GetText().IsNullOrEmpty())
+                {
+                    Input.LookupDefinition.FilterDefinition
+                        .Include(p => p.Product)
+                        .AddFixedFilter(p => p.Description
+                            , Conditions.LessThanEquals
+                            , EndProductAutoFillValue.Text);
+                }
+            }
+
+            return true;
+        }
+
+
+        private bool ValidateFilter(string endText, string startText, string codeDescription)
+        {
+            var result = true;
+            var compare = endText.CompareTo(startText);
+
+            if (compare == -1)
+            {
+                var message =
+                    $"The Ending {codeDescription} cannot be greater than the Beginning {codeDescription}";
+
+                ControlsGlobals.UserInterface.ShowMessageBox(message, "Invalid Filter", RsMessageBoxIcons.Exclamation);
+                result = false;
+            }
+
+            return result;
         }
 
         private void OnCancel()
