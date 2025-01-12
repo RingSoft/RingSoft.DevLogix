@@ -597,7 +597,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
             if (timeClock.MinutesSpent != null)
                 OriginalMinutesSpent = timeClock.MinutesSpent.Value;
+
+            //Peter Ringering - 01/12/2025 01:34:16 AM - E-105
+            _setDirty = false;
             EnablePunchOut(timeClock);
+            _setDirty = true;
 
             return timeClock;
         }
@@ -700,7 +704,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
 
             EnablePunchOut(entity);
-
 
             Notes = entity.Notes;
             IsEdited = entity.AreDatesEdited;
