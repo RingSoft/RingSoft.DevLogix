@@ -194,14 +194,14 @@ namespace RingSoft.DevLogix.QualityAssurance
             return genericWindow.ViewModel.DialogReesult;
         }
 
-        public bool ProcessRetestLookupFilter(LookupDefinitionBase lookup)
+        public bool ProcessRetestLookupFilter(RetestInput input)
         {
-            var filterWindow = new TestingOutlineRetestFilterWindow();
+            var filterWindow = new TestingOutlineRetestFilterWindow(input);
             LookupControlsGlobals.WindowRegistry.ShowDialog(filterWindow);
-            return true;
+            return filterWindow.ViewModel.DialogResult;
         }
 
-        public string StartRetestProcedure(LookupDefinitionBase lookup)
+        public string StartRetestProcedure(RetestInput input)
         {
             return string.Empty;
         }

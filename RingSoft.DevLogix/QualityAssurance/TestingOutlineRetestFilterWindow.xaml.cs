@@ -1,18 +1,25 @@
-﻿namespace RingSoft.DevLogix.QualityAssurance
+﻿using RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing;
+
+namespace RingSoft.DevLogix.QualityAssurance
 {
     /// <summary>
     /// Interaction logic for TestingOutlineRetestFilterWindow.xaml
     /// </summary>
-    public partial class TestingOutlineRetestFilterWindow
+    public partial class TestingOutlineRetestFilterWindow : IRetestView
     {
-        public TestingOutlineRetestFilterWindow()
+        public TestingOutlineRetestFilterWindow(RetestInput input)
         {
             InitializeComponent();
 
             Loaded += (sender, args) =>
             {
-                ViewModel.Initialize();
+                ViewModel.Initialize(this, input);
             };
+        }
+
+        public void CloseWindow()
+        {
+            Close();
         }
     }
 }

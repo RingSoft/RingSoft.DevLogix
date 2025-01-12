@@ -106,12 +106,12 @@ namespace RingSoft.DevLogix.QualityAssurance
 
         }
 
-        public bool ProcessRetestLookupFilter(LookupDefinitionBase lookup)
+        public bool ProcessRetestLookupFilter(RetestInput input)
         {
             throw new NotImplementedException();
         }
 
-        public string StartRetestProcedure(LookupDefinitionBase lookup)
+        public string StartRetestProcedure(RetestInput input)
         {
             throw new NotImplementedException();
         }

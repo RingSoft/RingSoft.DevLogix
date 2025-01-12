@@ -29,9 +29,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
         bool ProcessRecalcLookupFilter(LookupDefinitionBase lookup);
 
-        bool ProcessRetestLookupFilter(LookupDefinitionBase lookup);
+        bool ProcessRetestLookupFilter(RetestInput input);
 
-        string StartRetestProcedure(LookupDefinitionBase lookup);
+        string StartRetestProcedure(RetestInput input);
 
         void UpdateRetestProcedure(int currentOutline, int totalOutlines, string currentOutlineText);
 
@@ -528,10 +528,17 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
         private void Retest()
         {
-            var lookupFilter = ViewLookupDefinition.Clone();
-            if (!View.ProcessRetestLookupFilter(lookupFilter))
+            var retestInput = new RetestInput();
+            if (!View.ProcessRetestLookupFilter(retestInput))
+            {
+                ControlsGlobals.UserInterface.ShowMessageBox("Cancelled", "Cancel", RsMessageBoxIcons.Information);
                 return;
-            var result = View.StartRetestProcedure(lookupFilter);
+            }
+
+            ControlsGlobals.UserInterface.ShowMessageBox("Processing", "Process", RsMessageBoxIcons.Information);
+
+
+            var result = View.StartRetestProcedure(retestInput);
             if (!result.IsNullOrEmpty())
             {
                 ControlsGlobals.UserInterface.ShowMessageBox(result, "Retest Error", RsMessageBoxIcons.Error);

@@ -5,6 +5,9 @@ using System.Runtime.CompilerServices;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
+using RingSoft.DbLookup.Lookup;
+using RingSoft.DevLogix.DataAccess.LookupModel;
+using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 {
@@ -12,6 +15,21 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
     {
         Outline = 0,
         Product = 1,
+    }
+
+    public class RetestInput
+    {
+        private LookupDefinition<TestingOutlineLookup, TestingOutline> LookupDefinition { get; }
+
+        public RetestInput()
+        {
+            LookupDefinition = AppGlobals.LookupContext.TestingOutlineLookup.Clone();
+        }
+    }
+
+    public interface IRetestView
+    {
+        void CloseWindow();
     }
 
     public class TestingOutlineRetestFilterViewModel : INotifyPropertyChanged
@@ -175,6 +193,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
         public UiCommand EndProductUiCommand { get; }
 
+        public RelayCommand OkCommand { get; }
+
+        public RelayCommand CancelCommand { get; }
+
+        public bool DialogResult { get; private set; }
+
+        public IRetestView View { get; private set; }
+
+        public RetestInput Input { get; private set; }
+
         public TestingOutlineRetestFilterViewModel()
         {
             StartOutlineUiCommand = new UiCommand();
@@ -193,10 +221,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
             EndProductAutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.ProductLookup);
             EndProductAutoFillSetup.AllowLookupAdd = EndProductAutoFillSetup.AllowLookupView = false;
+
+            OkCommand = new RelayCommand(OnOk);
+            CancelCommand = new RelayCommand(OnCancel);
         }
 
-        public void Initialize()
+        public void Initialize(IRetestView view, RetestInput input)
         {
+            View = view;
+            Input = input;
             SetVisuals();
         }
 
@@ -208,6 +241,17 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             EndProductUiCommand.IsEnabled = RetestFilterType == RetestFilterTypes.Product;
         }
 
+        private void OnOk()
+        {
+            DialogResult = true;
+            View.CloseWindow();
+        }
+
+        private void OnCancel()
+        {
+            DialogResult = false;
+            View.CloseWindow();
+        }
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
