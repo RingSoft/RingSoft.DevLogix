@@ -4,37 +4,18 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
-        xmlns:vm="clr-namespace:RingSoft.DevLogix.Library.ViewModels.QualityAssurance;assembly=RingSoft.DevLogix.Library"
+        xmlns:vm="clr-namespace:RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing;assembly=RingSoft.DevLogix.Library"
         xmlns:lc="clr-namespace:RingSoft.DbLookup.Controls.WPF;assembly=RingSoft.DbLookup.Controls.WPF"
         mc:Ignorable="d"
         Title="Retest Filter Window" SizeToContent="WidthAndHeight">
 
+    <Window.DataContext>
+        <vm:TestingOutlineRetestFilterViewModel x:Name="ViewModel"/>
+    </Window.DataContext>
+
     <StackPanel Orientation=" Vertical" Margin="5">
 
-        <RadioButton Content="Testing Outline Range"/>
-
-        <Grid Margin="0,10,0,10">
-
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-
-            <Label Grid.Row="0" Grid.Column="0" Content="Starting Testing Outline"/>
-
-            <lc:AutoFillControl Grid.Row="0" Grid.Column="1" Width="200"/>
-
-            <Label Grid.Row="1" Grid.Column="0" Content="Ending Testing Outline"/>
-
-            <lc:AutoFillControl Grid.Row="1" Grid.Column="1" Width="200"/>
-
-        </Grid>
-
-        <RadioButton Content="Product Range"/>
+        <RadioButton Content="Testing Outline Range" IsChecked="{Binding Path=RetestFilterType, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static vm:RetestFilterTypes.Outline}, Mode=TwoWay}"/>
 
         <Grid Margin="10,10,0,10">
 
@@ -47,13 +28,36 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <Label Grid.Row="0" Grid.Column="0" Content="Starting Product"/>
+            <Label Grid.Row="0" Grid.Column="0" x:Name="StartOutlineLabel" Content="Starting Testing Outline"/>
 
-            <lc:AutoFillControl Grid.Row="0" Grid.Column="1" Width="200"/>
+            <lc:AutoFillControl Grid.Row="0" Grid.Column="1" Width="200" UiCommand="{Binding StartOutlineUiCommand}" UiLabel="{Binding ElementName=StartOutlineLabel}" Setup="{Binding StartOutlineAutoFillSetup}" Value="{Binding StartOutlineAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-            <Label Grid.Row="1" Grid.Column="0" Content="Ending Product"/>
+            <Label Grid.Row="1" Grid.Column="0" x:Name="EndOutlineLabel" Content="Ending Testing Outline"/>
 
-            <lc:AutoFillControl Grid.Row="1" Grid.Column="1" Width="200"/>
+            <lc:AutoFillControl Grid.Row="1" Grid.Column="1" Width="200" UiCommand="{Binding EndOutlineUiCommand}" UiLabel="{Binding ElementName=EndOutlineLabel}"/>
+
+        </Grid>
+
+        <RadioButton Content="Product Range" IsChecked="{Binding Path=RetestFilterType, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static vm:RetestFilterTypes.Product}, Mode=TwoWay}"/>
+
+        <Grid Margin="10,10,0,10">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Row="0" Grid.Column="0" x:Name="StartProductLabel" Content="Starting Product"/>
+
+            <lc:AutoFillControl Grid.Row="0" Grid.Column="1" Width="200" UiCommand="{Binding StartProductUiCommand}" UiLabel="{Binding ElementName=StartProductLabel}"/>
+
+            <Label Grid.Row="1" Grid.Column="0" x:Name="EndProductLabel" Content="Ending Product"/>
+
+            <lc:AutoFillControl Grid.Row="1" Grid.Column="1" Width="200" UiCommand="{Binding EndProductUiCommand}" UiLabel="{Binding ElementName=EndProductLabel}"/>
 
         </Grid>
 
