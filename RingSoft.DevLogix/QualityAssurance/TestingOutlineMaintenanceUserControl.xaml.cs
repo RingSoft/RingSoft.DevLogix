@@ -192,7 +192,23 @@ namespace RingSoft.DevLogix.QualityAssurance
             genericWindow.ShowInTaskbar = false;
             genericWindow.ShowDialog();
             return genericWindow.ViewModel.DialogReesult;
+        }
 
+        public bool ProcessRetestLookupFilter(LookupDefinitionBase lookup)
+        {
+            var filterWindow = new TestingOutlineRetestFilterWindow();
+            LookupControlsGlobals.WindowRegistry.ShowDialog(filterWindow);
+            return true;
+        }
+
+        public string StartRetestProcedure(LookupDefinitionBase lookup)
+        {
+            return string.Empty;
+        }
+
+        public void UpdateRetestProcedure(int currentOutline, int totalOutlines, string currentOutlineText)
+        {
+            throw new NotImplementedException();
         }
 
         public string StartRecalcProcedure(LookupDefinitionBase lookup)

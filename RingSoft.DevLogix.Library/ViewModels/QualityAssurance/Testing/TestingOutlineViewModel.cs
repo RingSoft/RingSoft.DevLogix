@@ -29,6 +29,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
         bool ProcessRecalcLookupFilter(LookupDefinitionBase lookup);
 
+        bool ProcessRetestLookupFilter(LookupDefinitionBase lookup);
+
+        string StartRetestProcedure(LookupDefinitionBase lookup);
+
+        void UpdateRetestProcedure(int currentOutline, int totalOutlines, string currentOutlineText);
+
         string StartRecalcProcedure(LookupDefinitionBase lookup);
 
         void UpdateRecalcProcedure(int currentOutline, int totalOutlines, string currentOutlineText);
@@ -522,10 +528,19 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
         private void Retest()
         {
-            DetailsGridManager.Retest();
-            var details = DetailsGridManager.GetEntityList();
-            PercentComplete = AppGlobals.CalcPercentComplete(details);
-            RecordDirty = true;
+            var lookupFilter = ViewLookupDefinition.Clone();
+            if (!View.ProcessRetestLookupFilter(lookupFilter))
+                return;
+            var result = View.StartRetestProcedure(lookupFilter);
+            if (!result.IsNullOrEmpty())
+            {
+                ControlsGlobals.UserInterface.ShowMessageBox(result, "Retest Error", RsMessageBoxIcons.Error);
+            }
+
+            //DetailsGridManager.Retest();
+            //var details = DetailsGridManager.GetEntityList();
+            //PercentComplete = AppGlobals.CalcPercentComplete(details);
+            //RecordDirty = true;
         }
 
         private void PunchIn()
