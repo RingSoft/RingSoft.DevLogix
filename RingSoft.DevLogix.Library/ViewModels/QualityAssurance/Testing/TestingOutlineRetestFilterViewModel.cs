@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using RingSoft.DataEntryControls.Engine;
+using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
@@ -61,9 +62,43 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
                 _startOutlineAutoFillValue = value;
                 OnPropertyChanged();
+
+                if (!EndOutlineAutoFillValue.IsValid())
+                {
+                    EndOutlineAutoFillValue = StartOutlineAutoFillValue;
+                }
             }
         }
 
+        private AutoFillSetup _endOutlineAutoFillSetup;
+
+        public AutoFillSetup EndOutlineAutoFillSetup
+        {
+            get { return _endOutlineAutoFillSetup; }
+            set
+            {
+                if (_endOutlineAutoFillSetup == value)
+                    return;
+
+                _endOutlineAutoFillSetup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private AutoFillValue _endOutlineAutoFillValue;
+
+        public AutoFillValue EndOutlineAutoFillValue
+        {
+            get { return _endOutlineAutoFillValue; }
+            set
+            {
+                if (_endOutlineAutoFillValue == value)
+                    return;
+
+                _endOutlineAutoFillValue = value;
+                OnPropertyChanged();
+            }
+        }
 
         #endregion
 
@@ -84,6 +119,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
             StartOutlineAutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.TestingOutlineLookup);
             StartOutlineAutoFillSetup.AllowLookupAdd = StartOutlineAutoFillSetup.AllowLookupView = false;
+
+            EndOutlineAutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.TestingOutlineLookup);
+            EndOutlineAutoFillSetup.AllowLookupAdd = EndOutlineAutoFillSetup.AllowLookupView = false;
         }
 
         public void Initialize()

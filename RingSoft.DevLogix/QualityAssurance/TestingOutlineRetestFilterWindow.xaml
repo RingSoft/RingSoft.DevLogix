@@ -34,7 +34,7 @@
 
             <Label Grid.Row="1" Grid.Column="0" x:Name="EndOutlineLabel" Content="Ending Testing Outline"/>
 
-            <lc:AutoFillControl Grid.Row="1" Grid.Column="1" Width="200" UiCommand="{Binding EndOutlineUiCommand}" UiLabel="{Binding ElementName=EndOutlineLabel}"/>
+            <lc:AutoFillControl Grid.Row="1" Grid.Column="1" Width="200" UiCommand="{Binding EndOutlineUiCommand}" UiLabel="{Binding ElementName=EndOutlineLabel}" Setup="{Binding EndOutlineAutoFillSetup}" Value="{Binding EndOutlineAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
         </Grid>
 
