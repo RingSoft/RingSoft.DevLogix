@@ -53,11 +53,11 @@
 
             <Label Grid.Row="0" Grid.Column="0" x:Name="StartProductLabel" Content="Starting Product"/>
 
-            <lc:AutoFillControl Grid.Row="0" Grid.Column="1" Width="200" UiCommand="{Binding StartProductUiCommand}" UiLabel="{Binding ElementName=StartProductLabel}"/>
+            <lc:AutoFillControl Grid.Row="0" Grid.Column="1" Width="200" UiCommand="{Binding StartProductUiCommand}" UiLabel="{Binding ElementName=StartProductLabel}" Setup="{Binding StartProductAutoFillSetup}" Value="{Binding StartProductAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
             <Label Grid.Row="1" Grid.Column="0" x:Name="EndProductLabel" Content="Ending Product"/>
 
-            <lc:AutoFillControl Grid.Row="1" Grid.Column="1" Width="200" UiCommand="{Binding EndProductUiCommand}" UiLabel="{Binding ElementName=EndProductLabel}"/>
+            <lc:AutoFillControl Grid.Row="1" Grid.Column="1" Width="200" UiCommand="{Binding EndProductUiCommand}" UiLabel="{Binding ElementName=EndProductLabel}" Setup="{Binding EndProductAutoFillSetup}" Value="{Binding EndProductAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
         </Grid>
 

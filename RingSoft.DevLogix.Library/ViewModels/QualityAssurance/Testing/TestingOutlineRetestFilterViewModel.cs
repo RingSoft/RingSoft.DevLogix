@@ -100,6 +100,71 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             }
         }
 
+        private AutoFillSetup _startProductAutoFillSetup;
+
+        public AutoFillSetup StartProductAutoFillSetup
+        {
+            get { return _startProductAutoFillSetup; }
+            set
+            {
+                if (_startProductAutoFillSetup == value)
+                    return;
+
+                _startProductAutoFillSetup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private AutoFillValue _startProductAutoFillValue;
+
+        public AutoFillValue StartProductAutoFillValue
+        {
+            get { return _startProductAutoFillValue; }
+            set
+            {
+                if (_startProductAutoFillValue == value)
+                    return;
+
+                _startProductAutoFillValue = value;
+                OnPropertyChanged();
+
+                if (!EndProductAutoFillValue.IsValid())
+                {
+                    EndProductAutoFillValue = StartProductAutoFillValue;
+                }
+            }
+        }
+
+        private AutoFillSetup _endProductAutoFillSetup;
+
+        public AutoFillSetup EndProductAutoFillSetup
+        {
+            get { return _endProductAutoFillSetup; }
+            set
+            {
+                if (_endProductAutoFillSetup == value)
+                    return;
+
+                _endProductAutoFillSetup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private AutoFillValue _endProductAutoFillValue;
+
+        public AutoFillValue EndProductAutoFillValue
+        {
+            get { return _endProductAutoFillValue; }
+            set
+            {
+                if (_endProductAutoFillValue == value)
+                    return;
+
+                _endProductAutoFillValue = value;
+                OnPropertyChanged();
+            }
+        }
+
         #endregion
 
         public UiCommand StartOutlineUiCommand { get; }
@@ -122,6 +187,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
             EndOutlineAutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.TestingOutlineLookup);
             EndOutlineAutoFillSetup.AllowLookupAdd = EndOutlineAutoFillSetup.AllowLookupView = false;
+
+            StartProductAutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.ProductLookup);
+            StartProductAutoFillSetup.AllowLookupAdd = StartProductAutoFillSetup.AllowLookupView = false;
+
+            EndProductAutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.ProductLookup);
+            EndProductAutoFillSetup.AllowLookupAdd = EndProductAutoFillSetup.AllowLookupView = false;
         }
 
         public void Initialize()
