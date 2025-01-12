@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using RingSoft.DbLookup.ModelDefinition;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 {
@@ -531,12 +532,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             var retestInput = new RetestInput();
             if (!View.ProcessRetestLookupFilter(retestInput))
             {
-                ControlsGlobals.UserInterface.ShowMessageBox("Cancelled", "Cancel", RsMessageBoxIcons.Information);
                 return;
             }
-
-            ControlsGlobals.UserInterface.ShowMessageBox("Processing", "Process", RsMessageBoxIcons.Information);
-
 
             var result = View.StartRetestProcedure(retestInput);
             if (!result.IsNullOrEmpty())
@@ -544,10 +541,85 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
                 ControlsGlobals.UserInterface.ShowMessageBox(result, "Retest Error", RsMessageBoxIcons.Error);
             }
 
-            //DetailsGridManager.Retest();
-            //var details = DetailsGridManager.GetEntityList();
-            //PercentComplete = AppGlobals.CalcPercentComplete(details);
-            //RecordDirty = true;
+            foreach (var viewModelId in retestInput.ViewModelIds)
+            {
+                var testOutline = new TestingOutline();
+                testOutline.Id = viewModelId;
+                var gridTables = new List<TableDefinitionBase>();
+                gridTables.Add(AppGlobals.LookupContext.TestingOutlineDetails);
+                testOutline = testOutline.FillOutProperties(gridTables);
+
+                var viewModels = AppGlobals.MainViewModel.TestingOutlineViewModels
+                .Where(p => p.Id == viewModelId);
+
+                foreach (var viewModel in viewModels)
+                {
+                    viewModel.DetailsGridManager.LoadGrid(testOutline.Details);
+                }
+            }
+
+            ControlsGlobals.UserInterface.ShowMessageBox("Retest Complete", "Retest Complete"
+                , RsMessageBoxIcons.Information);
+        }
+
+        public string DoRetest(RetestInput input)
+        {
+            var result = string.Empty;
+            var lookupData = TableDefinition.LookupDefinition.GetLookupDataMaui(input.LookupDefinition, false);
+            var context = SystemGlobals.DataRepository.GetDataContext();
+            var outlinesTable = context.GetTable<TestingOutline>();
+
+            DbDataProcessor.DontDisplayExceptions = true;
+
+            var totalOutlines = lookupData.GetRecordCount();
+            var currentOutline = 1;
+
+            lookupData.PrintOutput += (sender, e) =>
+            {
+                foreach (var primaryKeyValue in e.Result)
+                {
+                    var outline = TableDefinition.GetEntityFromPrimaryKeyValue(primaryKeyValue);
+                    outline = outlinesTable
+                        .Include(p => p.Details)
+                        .FirstOrDefault(p => p.Id == outline.Id);
+
+                    if (outline != null)
+                    {
+                        foreach (var outlineDetail in outline.Details)
+                        {
+                            outlineDetail.IsComplete = false;
+                            outlineDetail.CompletedVersionId = null;
+
+                            if (!context.SaveNoCommitEntity(outlineDetail, "Saving Outline Detail"))
+                            {
+                                result = $"Error Retesting {outline.Name}.  \r\n\r\n {DbDataProcessor.LastException}";
+                                return;
+                            }
+                        }
+                        input.ViewModelIds.Add(outline.Id);
+
+                        if (!GblMethods.DoRecordLock(primaryKeyValue))
+                        {
+                            result = $"Record Locking Error for Testing Outline {outline.Name}.";
+                            return;
+                        }
+
+                        View.UpdateRetestProcedure(currentOutline, totalOutlines, outline.Name);
+                    }
+                }
+            };
+
+            lookupData.DoPrintOutput(10);
+            if (result.IsNullOrEmpty())
+            {
+                if (!context.Commit("Retesting Finished"))
+                {
+                    result = DbDataProcessor.LastException;
+                }
+            }
+
+            DbDataProcessor.DontDisplayExceptions = false;
+            return result;
         }
 
         private void PunchIn()
@@ -614,6 +686,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             if (!result.IsNullOrEmpty())
             {
                 ControlsGlobals.UserInterface.ShowMessageBox(result, "Error Recalculating", RsMessageBoxIcons.Error);
+            }
+            else
+            {
+                //Peter Ringering - 01/11/2025 11:16:47 PM - E-101
+                ControlsGlobals.UserInterface.ShowMessageBox("Recalculation Complete", "Recalculation Complete"
+                    , RsMessageBoxIcons.Information);
             }
         }
 

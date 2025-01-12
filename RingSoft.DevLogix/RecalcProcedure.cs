@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.DevLogix.Library;
 
 namespace RingSoft.DevLogix
@@ -25,6 +26,7 @@ namespace RingSoft.DevLogix
         {
             StartRecalculate?.Invoke(this, EventArgs.Empty);
             _splashWindow.CloseSplash();
+
             return true;
         }
 

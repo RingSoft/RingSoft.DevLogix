@@ -4,6 +4,7 @@ using RingSoft.App.Controls;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Lookup;
@@ -13,9 +14,39 @@ using RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing;
 using RingSoft.DataEntryControls.WPF;
 using RingSoft.DbLookup;
 using RingSoft.DevLogix.Library;
+using System.Linq;
 
 namespace RingSoft.DevLogix.QualityAssurance
 {
+    public class RetestProcedure : AppProcedure
+    {
+        private ProcessingSplashWindow _splashWindow;
+        private TestingOutlineViewModel _outlineViewModel;
+        private RetestInput _retestInput;
+
+        public RetestProcedure(TestingOutlineViewModel outlineViewModel, RetestInput input)
+        {
+            _outlineViewModel = outlineViewModel;
+            _retestInput = input;
+        }
+
+        protected override void ShowSplash()
+        {
+            _splashWindow = new ProcessingSplashWindow("Retesting");
+            _splashWindow.ShowDialog();
+        }
+
+        protected override bool DoProcess()
+        {
+            _outlineViewModel.DoRetest(_retestInput);
+            _splashWindow.CloseSplash();
+
+            return true;
+        }
+
+        public override ISplashWindow SplashWindow => _splashWindow;
+    }
+
     public class TestingOutlineHeaderControl : DbMaintenanceCustomPanel
     {
         public DbMaintenanceButton GenerateDetailsButton { get; set; }
@@ -50,6 +81,8 @@ namespace RingSoft.DevLogix.QualityAssurance
     public partial class TestingOutlineMaintenanceUserControl : ITestingOutlineView
     {
         public RecalcProcedure RecalcProcedure { get; set; }
+
+        private RetestProcedure _retestProcedure;
 
         public TestingOutlineMaintenanceUserControl()
         {
@@ -203,12 +236,16 @@ namespace RingSoft.DevLogix.QualityAssurance
 
         public string StartRetestProcedure(RetestInput input)
         {
-            return string.Empty;
+            var result = string.Empty;
+            _retestProcedure = new RetestProcedure(LocalViewModel, input);
+            _retestProcedure.Start();
+            return result;
         }
 
         public void UpdateRetestProcedure(int currentOutline, int totalOutlines, string currentOutlineText)
         {
-            throw new NotImplementedException();
+            var progress = $"Retesting Testing Outline {currentOutlineText} {currentOutline} / {totalOutlines}";
+            _retestProcedure.SplashWindow.SetProgress(progress);
         }
 
         public string StartRecalcProcedure(LookupDefinitionBase lookup)

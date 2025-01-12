@@ -24,9 +24,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
     {
         public LookupDefinition<TestingOutlineLookup, TestingOutline> LookupDefinition { get; }
 
+        public List<int> ViewModelIds { get; }
+
         public RetestInput()
         {
             LookupDefinition = AppGlobals.LookupContext.TestingOutlineLookup.Clone();
+            ViewModelIds = new List<int>();
         }
     }
 
