@@ -554,12 +554,18 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
                 foreach (var viewModel in viewModels)
                 {
-                    viewModel.DetailsGridManager.LoadGrid(testOutline.Details);
+                    viewModel.UpdateRetestChanges(testOutline);
                 }
             }
 
             ControlsGlobals.UserInterface.ShowMessageBox("Retest Complete", "Retest Complete"
                 , RsMessageBoxIcons.Information);
+        }
+
+        public void UpdateRetestChanges(TestingOutline outline)
+        {
+            PercentComplete = outline.PercentComplete;
+            DetailsGridManager.LoadGrid(outline.Details);
         }
 
         public string DoRetest(RetestInput input)
@@ -585,6 +591,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
                     if (outline != null)
                     {
+                        outline.PercentComplete = 0;
                         foreach (var outlineDetail in outline.Details)
                         {
                             outlineDetail.IsComplete = false;
@@ -596,6 +603,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
                                 return;
                             }
                         }
+
+                        if (!context.SaveNoCommitEntity(outline, "Saving Outline"))
+                        {
+                            result = $"Error Retesting {outline.Name}.  \r\n\r\n {DbDataProcessor.LastException}";
+                            return;
+                        }
+
                         input.ViewModelIds.Add(outline.Id);
 
                         if (!GblMethods.DoRecordLock(primaryKeyValue))
