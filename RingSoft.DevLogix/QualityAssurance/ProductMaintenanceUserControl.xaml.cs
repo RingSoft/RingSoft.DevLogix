@@ -1,8 +1,10 @@
 ﻿using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Input;
 using System.Windows.Media;
 using RingSoft.App.Controls;
 using RingSoft.DataEntryControls.Engine;
+using RingSoft.DataEntryControls.WPF;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Lookup;
@@ -19,6 +21,8 @@ namespace RingSoft.DevLogix.QualityAssurance
 
         public DbMaintenanceButton RecalculateButton { get; set; }
 
+        public DbMaintenanceButton GotoVersionsButton { get; set; }
+
         static ProductHeaderControl()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ProductHeaderControl), new FrameworkPropertyMetadata(typeof(ProductHeaderControl)));
@@ -28,6 +32,7 @@ namespace RingSoft.DevLogix.QualityAssurance
         {
             UpdateVersionsButton = GetTemplateChild(nameof(UpdateVersionsButton)) as DbMaintenanceButton;
             RecalculateButton = GetTemplateChild(nameof(RecalculateButton)) as DbMaintenanceButton;
+            GotoVersionsButton = GetTemplateChild(nameof(GotoVersionsButton)) as DbMaintenanceButton;
             ;
 
             base.OnApplyTemplate();
@@ -40,6 +45,7 @@ namespace RingSoft.DevLogix.QualityAssurance
     public partial class ProductMaintenanceUserControl : IProductView
     {
         public RecalcProcedure RecalcProcedure { get; set; }
+        private RelayCommand _gotoVersionsCommand;
 
         public ProductMaintenanceUserControl()
         {
@@ -63,6 +69,9 @@ namespace RingSoft.DevLogix.QualityAssurance
                     productHeaderControl.UpdateVersionsButton.ToolTip.HeaderText = "Update Department Versions (Alt + U)";
                     productHeaderControl.UpdateVersionsButton.ToolTip.DescriptionText = "Update Versions departments.";
 
+                    productHeaderControl.GotoVersionsButton.ToolTip.HeaderText = "Goto Versions List (Ctrl + P, Ctrl + G)";
+                    productHeaderControl.GotoVersionsButton.ToolTip.DescriptionText = "Goto the Versions list.";
+
                     productHeaderControl.RecalculateButton.ToolTip.HeaderText = "Recalculate Data (Alt + R)";
                     productHeaderControl.RecalculateButton.ToolTip.DescriptionText = "Recalculate Totals.";
 
@@ -81,6 +90,13 @@ namespace RingSoft.DevLogix.QualityAssurance
                 }
             };
             RegisterFormKeyControl(DescriptionControl);
+
+            _gotoVersionsCommand = new RelayCommand(GotoVersions);
+
+            var hotKey = new HotKey(_gotoVersionsCommand);
+            hotKey.AddKey(Key.P);
+            hotKey.AddKey(Key.G);
+            AddHotKey(hotKey);
         }
 
         protected override DbMaintenanceViewModelBase OnGetViewModel()
@@ -101,6 +117,13 @@ namespace RingSoft.DevLogix.QualityAssurance
         protected override string GetTitle()
         {
             return "Product";
+        }
+
+        //Peter Ringering - 01/15/2025 12:59:40 PM - E-107
+        private void GotoVersions()
+        {
+            TabControl.SelectedItem = VersionsTabItem;
+            VersionLookupControl.Focus();
         }
 
         public bool UpdateVersions(ProductViewModel viewModel)
