@@ -14,6 +14,7 @@ using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
@@ -329,6 +330,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         public new IProductView View { get; set; }
 
+        public UiCommand InstallerUiCommand { get; }
+
         private PrimaryKeyValue _productPrimaryKeyValue;
 
         public ProductViewModel()
@@ -354,6 +357,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             ProductVersionLookupDefinition = AppGlobals.LookupContext.ProductVersionLookup.Clone();
 
             RegisterLookup(TestingOutlineLookup);
+
+            InstallerUiCommand = new UiCommand();
+
+            MapFieldToUiCommand(InstallerUiCommand
+                , TableDefinition.GetFieldDefinition(p => p.InstallerFileName));
         }
 
         protected override void Initialize()
@@ -499,6 +507,26 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             Price = null;
             TotalRevenue = TotalCost = Difference = 0;
             View.RefreshView();
+        }
+
+        protected override bool ValidateEntity(Product entity)
+        {
+            var dirName = string.Empty;
+            var fileName = string.Empty;
+
+            if (!entity.InstallerFileName.IsNullOrEmpty())
+            {
+                var fileInfo = new FileInfo(entity.InstallerFileName);
+                if (!fileInfo.Exists)
+                {
+                    OnValidationFail(TableDefinition
+                            .GetFieldDefinition(p => p.InstallerFileName)
+                        , "The Installer Path/File Name is not valid.", "Incorrect Path/File Name");
+                    return false;
+                }
+
+            }
+            return base.ValidateEntity(entity);
         }
 
         protected override bool SaveEntity(Product entity)
