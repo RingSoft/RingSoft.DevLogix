@@ -41,6 +41,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
     public class TimeClockMaintenanceViewModel : DbMaintenanceViewModel<TimeClock>
     {
+        #region Properties
+
         private int _id;
 
         public int Id
@@ -362,6 +364,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
         }
 
+        #endregion
+
         public new ITimeClockView View { get; private set; }
 
         public double MinutesSpent { get; private set; }
@@ -390,6 +394,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         }
 
         public TimeClockModes TimeClockMode { get; private set; }
+
+        public UiCommand PunchInUiCommand { get; } = new UiCommand();
 
         public bool ManualPunchOut { get; set; }
 
@@ -437,7 +443,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 }
             }));
 
-        AppGlobals.MainViewModel.TimeClockMaintenanceViewModel = this;
+            AppGlobals.MainViewModel.TimeClockMaintenanceViewModel = this;
         }
 
         private void SetError(Error error)

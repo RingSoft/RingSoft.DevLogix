@@ -120,7 +120,7 @@
 
             <Label Grid.Row="5" Grid.Column="0" Content="Punch In Date"/>
 
-            <dec:DateEditControl Grid.Row="5" Grid.Column="1" x:Name="PunchInBox" Value="{Binding PunchInDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DateFormatType="DateTime" HorizontalAlignment="Left" Width="200"/>
+            <dec:DateEditControl Grid.Row="5" Grid.Column="1" x:Name="PunchInBox" Value="{Binding PunchInDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DateFormatType="DateTime" HorizontalAlignment="Left" Width="200" UiCommand="{Binding PunchInUiCommand}"/>
 
             <Label Grid.Row="5" Grid.Column="2" x:Name="PunchOutDateLabel" Content="Punch Out Date"/>
 
