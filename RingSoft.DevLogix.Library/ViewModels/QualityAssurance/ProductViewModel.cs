@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Microsoft.IdentityModel.Tokens;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 {
@@ -332,6 +333,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         public UiCommand InstallerUiCommand { get; }
 
+        public UiCommand ArchiveUiCommand { get; }
+
+        public UiCommand GuidUiCommand { get; }
+
         private PrimaryKeyValue _productPrimaryKeyValue;
 
         public ProductViewModel()
@@ -362,6 +367,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
             MapFieldToUiCommand(InstallerUiCommand
                 , TableDefinition.GetFieldDefinition(p => p.InstallerFileName));
+
+            ArchiveUiCommand = new UiCommand();
+
+            MapFieldToUiCommand(ArchiveUiCommand
+            , TableDefinition.GetFieldDefinition(p => p.ArchivePath));
+
+            GuidUiCommand = new UiCommand();
+
+            MapFieldToUiCommand(GuidUiCommand
+                , TableDefinition.GetFieldDefinition(p => p.AppGuid));
         }
 
         protected override void Initialize()
@@ -524,7 +539,18 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                         , "The Installer Path/File Name is not valid.", "Incorrect Path/File Name");
                     return false;
                 }
+            }
 
+            if (!entity.ArchivePath.IsNullOrEmpty())
+            {
+                var dirInfo = new DirectoryInfo(entity.ArchivePath);
+                if (!dirInfo.Exists)
+                {
+                    OnValidationFail(TableDefinition
+                            .GetFieldDefinition(p => p.ArchivePath)
+                        , "The Archive Path is not valid.", "Incorrect Path");
+                    return false;
+                }
             }
             return base.ValidateEntity(entity);
         }

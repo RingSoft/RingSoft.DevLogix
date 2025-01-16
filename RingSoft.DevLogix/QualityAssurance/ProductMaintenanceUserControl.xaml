@@ -208,7 +208,7 @@
 
                                 <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
 
-                                    <dec:StringEditControl Width="300" Text="{Binding ArchivePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <dec:StringEditControl Width="300" Text="{Binding ArchivePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" UiCommand="{Binding ArchiveUiCommand}"/>
 
                                     <Button Content="..." Width="25" Height="20" Command="{Binding ArchivePathCommand}"/>
 
@@ -218,7 +218,7 @@
 
                                 <StackPanel Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Horizontal">
 
-                                    <dec:StringEditControl Width="300" Text="{Binding AppGuid, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                    <dec:StringEditControl Width="300" Text="{Binding AppGuid, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" UiCommand="{Binding GuidUiCommand}"/>
 
                                     <Button Content="Generate GUID" Height="20" Command="{Binding GenerateGuidCommand}" />
 
