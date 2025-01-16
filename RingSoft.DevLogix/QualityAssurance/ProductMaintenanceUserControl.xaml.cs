@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -75,6 +76,14 @@ namespace RingSoft.DevLogix.QualityAssurance
                     productHeaderControl.RecalculateButton.ToolTip.HeaderText = "Recalculate Data (Alt + R)";
                     productHeaderControl.RecalculateButton.ToolTip.DescriptionText = "Recalculate Totals.";
 
+                    //Peter Ringering - 01/16/2025 04:04:59 PM - E-114
+                    if (!LocalViewModel.TableDefinition.HasRight(RightTypes.AllowEdit))
+                    {
+                        productHeaderControl.RecalculateButton.Visibility = Visibility.Collapsed;
+                        
+                        Grid.SetRow(productHeaderControl.GotoVersionsButton, 0);
+                        Grid.SetRowSpan(productHeaderControl.GotoVersionsButton, 2);
+                    }
                 }
             };
             Loaded += (sender, args) =>
