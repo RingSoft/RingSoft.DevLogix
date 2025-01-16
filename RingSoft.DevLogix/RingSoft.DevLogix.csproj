@@ -24,10 +24,12 @@
     <None Remove="Resources\project32.png" />
     <None Remove="Resources\Recycle.png" />
     <None Remove="Resources\RedAlert.ico" />
+    <None Remove="Resources\Right_Arrow.png" />
     <None Remove="Resources\SalesOrders.png" />
     <None Remove="Resources\software32.png" />
     <None Remove="Resources\Steps.png" />
     <None Remove="Resources\Support.png" />
+    <None Remove="Resources\Update.png" />
     <None Remove="Resources\user32.png" />
     <None Remove="Resources\UsersTrack.png" />
     <None Remove="Resources\UserTrack.png" />
@@ -62,10 +64,12 @@
     <Resource Include="Resources\project32.png" />
     <Resource Include="Resources\Recycle.png" />
     <Resource Include="Resources\RedAlert.ico" />
+    <Resource Include="Resources\Right_Arrow.png" />
     <Resource Include="Resources\SalesOrders.png" />
     <Resource Include="Resources\software32.png" />
     <Resource Include="Resources\Steps.png" />
     <Resource Include="Resources\Support.png" />
+    <Resource Include="Resources\Update.png" />
     <Resource Include="Resources\user32.png" />
     <Resource Include="Resources\UsersTrack.png" />
     <Resource Include="Resources\YellowAlert.ico" />

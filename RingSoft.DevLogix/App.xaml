@@ -38,6 +38,9 @@
             <BitmapImage x:Key="RecycleImage" UriSource="/RingSoft.DevLogix;component/Resources/Recycle.png" />
             <BitmapImage x:Key="AddImage" UriSource="/RingSoft.DevLogix;component/Resources/Add.png" />
 
+            <BitmapImage x:Key="RArrowImage" UriSource="/RingSoft.DevLogix;component/Resources/Right_Arrow.png" />
+            <BitmapImage x:Key="UpdateImage" UriSource="/RingSoft.DevLogix;component/Resources/Update.png" />
+
             <LinearGradientBrush x:Key="WindowBackgroundBrush" StartPoint="0.5,0" EndPoint="0.5,1">
                 <GradientStop Color="Gray" Offset="0"/>
                 <GradientStop Color="DarkGray" Offset="1"/>
