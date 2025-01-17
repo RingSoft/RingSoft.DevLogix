@@ -161,8 +161,8 @@ namespace RingSoft.DevLogix.UserManagement
 
                     timeClockHeaderControl.ManualPunchOutButton.Command =
                         LocalViewModel.ManualPunchOutCommand;
-                    timeClockHeaderControl.PunchOutButton.ToolTip.HeaderText = "Manual Punch Out (Ctrl + P, Ctrl + M)";
-                    timeClockHeaderControl.PunchOutButton.ToolTip.DescriptionText =
+                    timeClockHeaderControl.ManualPunchOutButton.ToolTip.HeaderText = "Manual Punch Out (Ctrl + P, Ctrl + M)";
+                    timeClockHeaderControl.ManualPunchOutButton.ToolTip.DescriptionText =
                         "Punch Out via Manual Time Entry.";
                 }
 
