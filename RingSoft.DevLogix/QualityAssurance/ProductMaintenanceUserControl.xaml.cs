@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Media;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Input;
@@ -115,6 +116,24 @@ namespace RingSoft.DevLogix.QualityAssurance
             hotKey = new HotKey(LocalViewModel.RecalcCommand);
             hotKey.AddKey(Key.P);
             hotKey.AddKey(Key.R);
+            AddHotKey(hotKey);
+
+            AddModifyButton.ToolTip.HeaderText = "Add/Modify Version (Ctrl + P, Ctrl + A)";
+            AddModifyButton.ToolTip.DescriptionText =
+                "Add or modify a product version.";
+
+            hotKey = new HotKey(LocalViewModel.VersionsAddModifyCommand);
+            hotKey.AddKey(Key.P);
+            hotKey.AddKey(Key.A);
+            AddHotKey(hotKey);
+
+            TestOutlinesAddModifyButton.ToolTip.HeaderText = "Add/Modify Testing Outline (Ctrl + P, Ctrl + A)";
+            TestOutlinesAddModifyButton.ToolTip.DescriptionText =
+                "Add or modify a testing outline.";
+
+            hotKey = new HotKey(LocalViewModel.TestOutlinesAddModifyCommand);
+            hotKey.AddKey(Key.P);
+            hotKey.AddKey(Key.M);
             AddHotKey(hotKey);
         }
 
@@ -250,6 +269,21 @@ namespace RingSoft.DevLogix.QualityAssurance
         {
             var progress = $"Recalculating Customer {currentProductText} {currentProduct} / {totalProducts}";
             RecalcProcedure.SplashWindow.SetProgress(progress);
+        }
+
+        public bool IsVersionsTabSelected()
+        {
+            return TabControl.SelectedItem == VersionsTabItem;
+        }
+
+        public bool IsOutlinesTabSelected()
+        {
+            return TabControl.SelectedItem == TestOutlinesTabItem;
+        }
+
+        public void PlayExclSound()
+        {
+            SystemSounds.Exclamation.Play();
         }
     }
 }

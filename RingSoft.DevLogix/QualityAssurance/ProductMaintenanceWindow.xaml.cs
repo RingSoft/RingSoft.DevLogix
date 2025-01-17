@@ -189,5 +189,19 @@ namespace RingSoft.DevLogix.QualityAssurance
             RecalcProcedure.SplashWindow.SetProgress(progress);
         }
 
+        public bool IsVersionsTabSelected()
+        {
+            return true;
+        }
+
+        public bool IsOutlinesTabSelected()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void PlayExclSound()
+        {
+            
+        }
     }
 }

@@ -37,6 +37,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         string StartRecalcProcedure(LookupDefinitionBase lookup);
 
         void UpdateRecalcProcedure(int currentProduct, int totalProducts, string currentProductText);
+
+        bool IsVersionsTabSelected();
+
+        bool IsOutlinesTabSelected();
+
+        void PlayExclSound();
+
     }
 
     public class ProductViewModel : DbMaintenanceViewModel<Product>
@@ -630,6 +637,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         private void OnVersionsAddModify()
         {
+            if (!View.IsVersionsTabSelected())
+            {
+                View.PlayExclSound();
+                return;
+            }
+
             if (ExecuteAddModifyCommand() == DbMaintenanceResults.Success)
                 ProductVersionLookupDefinition.SetCommand(GetLookupCommand(LookupCommands.AddModify));
 
@@ -637,6 +650,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         private void OnTestOutlineAddModify()
         {
+            if (!View.IsOutlinesTabSelected())
+            {
+                View.PlayExclSound();
+                return;
+            }
+
             if (ExecuteAddModifyCommand() == DbMaintenanceResults.Success)
                 TestingOutlineLookup.SetCommand(GetLookupCommand(LookupCommands.AddModify));
         }
