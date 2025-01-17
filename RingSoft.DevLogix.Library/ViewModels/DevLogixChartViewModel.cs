@@ -5,6 +5,7 @@ using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.Library.ViewModels.UserManagement;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbMaintenance;
 
 namespace RingSoft.DevLogix.Library.ViewModels
@@ -50,12 +51,16 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         public new IChartWindowView View { get; set; }
 
+        public RelayCommand RefreshChartCommand { get; }
+
         public ChartBarsViewModel ChartViewModel { get; set; }
 
         public DevLogixChartViewModel()
         {
             BarsManager = new DevLogixChartBarManager(this);
             TablesToDelete.Add(AppGlobals.LookupContext.DevLogixChartBars);
+
+            RefreshChartCommand = new RelayCommand(ManualRefresh);
         }
 
         protected override void Initialize()
@@ -78,6 +83,13 @@ namespace RingSoft.DevLogix.Library.ViewModels
             {
                 RefreshChart();
             }
+        }
+
+        public void ManualRefresh()
+        {
+            RefreshChart();
+            ControlsGlobals.UserInterface.ShowMessageBox("Refresh complete", "Refresh Complete",
+                RsMessageBoxIcons.Information);
         }
 
         public void RefreshChart()
