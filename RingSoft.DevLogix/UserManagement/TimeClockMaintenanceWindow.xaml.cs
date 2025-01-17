@@ -10,6 +10,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using RingSoft.DataEntryControls.WPF;
 using Customer = RingSoft.DevLogix.DataAccess.Model.CustomerManagement.Customer;
 using SupportTicket = RingSoft.DevLogix.DataAccess.Model.CustomerManagement.SupportTicket;
 
@@ -136,9 +137,11 @@ namespace RingSoft.DevLogix.UserManagement
                             {
                                 SupportTicketControl.ShowLookupWindow();
                             }
+                            args.Handled = true;
                             break;
-                        case Key.U:
+                        case Key.S:
                             UserControl.ShowLookupWindow();
+                            args.Handled = true;
                             break;
                     }
                 }
@@ -152,16 +155,26 @@ namespace RingSoft.DevLogix.UserManagement
                     TimeClockHeaderControl = timeClockHeaderControl;
                     timeClockHeaderControl.PunchOutButton.Command =
                         LocalViewModel.PunchOutCommand;
-                    timeClockHeaderControl.PunchOutButton.ToolTip.HeaderText = "Punch Out (Alt + P)";
+                    timeClockHeaderControl.PunchOutButton.ToolTip.HeaderText = "Punch Out (Ctrl P, Ctrl + U)";
                     timeClockHeaderControl.PunchOutButton.ToolTip.DescriptionText =
                         "Punch Out of the current Time Clock record.";
 
                     timeClockHeaderControl.ManualPunchOutButton.Command =
                         LocalViewModel.ManualPunchOutCommand;
-                    timeClockHeaderControl.PunchOutButton.ToolTip.HeaderText = "Manual Punch Out (Alt + M)";
+                    timeClockHeaderControl.PunchOutButton.ToolTip.HeaderText = "Manual Punch Out (Ctrl + P, Ctrl + M)";
                     timeClockHeaderControl.PunchOutButton.ToolTip.DescriptionText =
                         "Punch Out via Manual Time Entry.";
                 }
+
+                var hotKey = new HotKey(LocalViewModel.PunchOutCommand);
+                hotKey.AddKey(Key.P);
+                hotKey.AddKey(Key.U);
+                WinProcessor.HotKeyProcessor.AddHotKey(hotKey);
+
+                hotKey = new HotKey(LocalViewModel.ManualPunchOutCommand);
+                hotKey.AddKey(Key.P);
+                hotKey.AddKey(Key.M);
+                WinProcessor.HotKeyProcessor.AddHotKey(hotKey);
 
                 if (Processor is NewDbMaintProcessor processor)
                 {
@@ -234,7 +247,7 @@ namespace RingSoft.DevLogix.UserManagement
                 keyText = KeyLabel.Content.ToString();
             }
             var message = $"(Ctrl + L to Launch the {keyText} Lookup)\r\n";
-            message += "(Ctrl + U to Launch the User Lookup)";
+            message += "(Ctrl + S to Launch the User Lookup)";
             KeyShortcutLabel.Content = message;
         }
 
