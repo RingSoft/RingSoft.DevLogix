@@ -67,13 +67,13 @@ namespace RingSoft.DevLogix.QualityAssurance
                         productHeaderControl.UpdateVersionsButton.Visibility = Visibility.Collapsed;
                     }
 
-                    productHeaderControl.UpdateVersionsButton.ToolTip.HeaderText = "Update Department Versions (Alt + U)";
+                    productHeaderControl.UpdateVersionsButton.ToolTip.HeaderText = "Update Department Versions (Ctrl + P, Ctrl + U)";
                     productHeaderControl.UpdateVersionsButton.ToolTip.DescriptionText = "Update Versions departments.";
 
                     productHeaderControl.GotoVersionsButton.ToolTip.HeaderText = "Goto Versions List (Ctrl + P, Ctrl + G)";
                     productHeaderControl.GotoVersionsButton.ToolTip.DescriptionText = "Goto the Versions list.";
 
-                    productHeaderControl.RecalculateButton.ToolTip.HeaderText = "Recalculate Data (Alt + R)";
+                    productHeaderControl.RecalculateButton.ToolTip.HeaderText = "Recalculate Data (Ctrl + P, Ctrl + R)";
                     productHeaderControl.RecalculateButton.ToolTip.DescriptionText = "Recalculate Totals.";
 
                     //Peter Ringering - 01/16/2025 04:04:59 PM - E-114
@@ -102,9 +102,19 @@ namespace RingSoft.DevLogix.QualityAssurance
 
             _gotoVersionsCommand = new RelayCommand(GotoVersions);
 
-            var hotKey = new HotKey(_gotoVersionsCommand);
+            var hotKey = new HotKey(LocalViewModel.UpdateVersionsCommand);
+            hotKey.AddKey(Key.P);
+            hotKey.AddKey(Key.U);
+            AddHotKey(hotKey);
+
+            hotKey = new HotKey(_gotoVersionsCommand);
             hotKey.AddKey(Key.P);
             hotKey.AddKey(Key.G);
+            AddHotKey(hotKey);
+
+            hotKey = new HotKey(LocalViewModel.RecalcCommand);
+            hotKey.AddKey(Key.P);
+            hotKey.AddKey(Key.R);
             AddHotKey(hotKey);
         }
 
