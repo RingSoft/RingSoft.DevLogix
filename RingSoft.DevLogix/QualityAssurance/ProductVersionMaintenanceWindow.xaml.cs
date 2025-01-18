@@ -38,6 +38,8 @@ namespace RingSoft.DevLogix.QualityAssurance
         protected override void ShowSplash()
         {
             _splashWindow = new ProcessingSplashWindow("Deploying");
+            _splashWindow.Owner = WPFControlsGlobals.ActiveWindow;
+            _splashWindow.ShowInTaskbar = false;
             _splashWindow.ShowDialog();
 
         }
