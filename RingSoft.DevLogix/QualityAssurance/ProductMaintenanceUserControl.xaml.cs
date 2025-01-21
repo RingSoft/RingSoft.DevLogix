@@ -285,5 +285,14 @@ namespace RingSoft.DevLogix.QualityAssurance
         {
             SystemSounds.Exclamation.Play();
         }
+
+        public override void SetControlReadOnlyMode(Control control, bool readOnlyValue)
+        {
+            if (control == DeptFilterControl)
+            {
+                return;
+            }
+            base.SetControlReadOnlyMode(control, readOnlyValue);
+        }
     }
 }

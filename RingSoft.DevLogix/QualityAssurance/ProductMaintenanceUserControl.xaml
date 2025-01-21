@@ -133,7 +133,7 @@
 
                             <Label Content="Department Filter"/>
 
-                            <lc:AutoFillControl Setup="{Binding DepartmentFilterAutoFillSetup}" Value="{Binding DepartmentFilterAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" TabOutAfterLookupSelect="False"/>
+                            <lc:AutoFillControl x:Name="DeptFilterControl" Setup="{Binding DepartmentFilterAutoFillSetup}" Value="{Binding DepartmentFilterAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" TabOutAfterLookupSelect="False"/>
                         </StackPanel>
                     </Grid>
 
