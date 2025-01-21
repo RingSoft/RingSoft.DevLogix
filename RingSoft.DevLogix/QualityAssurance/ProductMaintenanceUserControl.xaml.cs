@@ -161,6 +161,8 @@ namespace RingSoft.DevLogix.QualityAssurance
         private void GotoVersions()
         {
             TabControl.SelectedItem = VersionsTabItem;
+            TabControl.UpdateLayout();
+            VersionsTabItem.UpdateLayout();
             VersionLookupControl.Focus();
         }
 
