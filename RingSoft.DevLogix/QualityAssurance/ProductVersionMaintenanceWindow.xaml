@@ -99,17 +99,17 @@
 
             <StackPanel Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Left">
 
-                <dec:EnhancedButton x:Name="ArchiveButton" Content="Archive" Command="{Binding ArchiveCommand}"/>
+                <dec:EnhancedButton x:Name="ArchiveButton" Content="Archive" Command="{Binding ArchiveCommand}" Margin="5"/>
 
-                <dec:EnhancedButton x:Name="GetVersionButton" Content="Get Version" Command="{Binding GetVersionCommand}"/>
+                <dec:EnhancedButton x:Name="GetVersionButton" Content="Get Version" Command="{Binding GetVersionCommand}" Margin="0,5"/>
 
             </StackPanel>
 
             <Label Grid.Row="3" Grid.Column="0" x:Name="DeployLabel" Content="Deploy to Department"/>
 
-            <lc:AutoFillControl Grid.Row="3" Grid.Column="1" x:Name="DeployControl" Width="200" Setup="{Binding DepartmentAutoFillSetup,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding DepartmentAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding DeployProductToDepartmentEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <lc:AutoFillControl Grid.Row="3" Grid.Column="1" x:Name="DeployControl" Width="200" Setup="{Binding DepartmentAutoFillSetup,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding DepartmentAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding DeployProductToDepartmentEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center"/>
 
-            <dec:EnhancedButton Grid.Row="3" Grid.Column="2" x:Name="DeployButton" Content="Deploy" Command="{Binding DeployCommand}"/>
+            <dec:EnhancedButton Grid.Row="3" Grid.Column="2" x:Name="DeployButton" Content="Deploy" Command="{Binding DeployCommand}" Margin="5,0,0,0"/>
 
             <TabControl Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="5" x:Name="TabControl">
 

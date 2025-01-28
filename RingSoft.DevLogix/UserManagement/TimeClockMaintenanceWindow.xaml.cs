@@ -155,7 +155,7 @@ namespace RingSoft.DevLogix.UserManagement
                     TimeClockHeaderControl = timeClockHeaderControl;
                     timeClockHeaderControl.PunchOutButton.Command =
                         LocalViewModel.PunchOutCommand;
-                    timeClockHeaderControl.PunchOutButton.ToolTip.HeaderText = "Punch Out (Ctrl P, Ctrl + U)";
+                    timeClockHeaderControl.PunchOutButton.ToolTip.HeaderText = "Punch Out (Ctrl + P, Ctrl + U)";
                     timeClockHeaderControl.PunchOutButton.ToolTip.DescriptionText =
                         "Punch Out of the current Time Clock record.";
 

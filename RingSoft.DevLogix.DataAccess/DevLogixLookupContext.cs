@@ -374,7 +374,7 @@ namespace RingSoft.DevLogix.DataAccess
                 .AddVisibleColumnDefinition(p => p.ProductVersion, "Product Version", p => p.Description, 33);
             ProductVersionDepartmentLookup.Include(p => p.Department)
                 .AddVisibleColumnDefinition(p => p.Department, "Department", p => p.Description, 34);
-            ProductVersionDepartmentLookup.AddVisibleColumnDefinition(p => p.ReleaseDate, "Date Released",
+            ProductVersionDepartmentLookup.AddVisibleColumnDefinition(p => p.ReleaseDate, "Release Date",
                 p => p.ReleaseDateTime, 33);
             ProductVersionDepartments.HasLookupDefinition(ProductVersionDepartmentLookup);
 
@@ -972,12 +972,14 @@ namespace RingSoft.DevLogix.DataAccess
                 .DoConvertToLocalTime();
             ProductVersions.GetFieldDefinition(p => p.VersionDate)
                 .HasDateType(DbDateTypes.Millisecond)
-                .DoConvertToLocalTime();
+                .DoConvertToLocalTime()
+                .HasDescription("Release Date");
 
             ProductVersionDepartments.PriorityLevel = 500;
             ProductVersionDepartments.SetHeaderEntity<ProductVersion>();
             ProductVersionDepartments.GetFieldDefinition(p => p.ReleaseDateTime)
-                .HasDateType(DbDateTypes.DateTime);
+                .HasDateType(DbDateTypes.DateTime)
+                .HasDescription("Release Date");
 
             TestingOutlines.PriorityLevel = 300;
             TestingOutlines.GetFieldDefinition(p => p.DueDate).HasDateType(DbDateTypes.DateTime).DoConvertToLocalTime(true);

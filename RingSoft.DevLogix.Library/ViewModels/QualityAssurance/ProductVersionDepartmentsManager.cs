@@ -58,5 +58,18 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
             return base.ValidateGrid();
         }
+
+        protected override void SelectRowForEntity(ProductVersionDepartment entity)
+        {
+            var row = Rows.OfType<ProductVersionDepartmentsRow>()
+                .FirstOrDefault(p => p.DepartmentId == entity.DepartmentId);
+
+            if (row != null)
+            {
+                GotoCell(row, DepartmentColumnId);
+            }
+
+            base.SelectRowForEntity(entity);
+        }
     }
 }
