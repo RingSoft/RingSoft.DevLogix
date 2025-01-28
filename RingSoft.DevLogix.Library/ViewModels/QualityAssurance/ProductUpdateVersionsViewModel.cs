@@ -29,6 +29,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
     }
     public class ProductUpdateVersionsViewModel : INotifyPropertyChanged
     {
+        #region Properties
+
         private AutoFillSetup _existingDepartmentSetup;
 
         public AutoFillSetup ExistingDepartmentSetup
@@ -122,6 +124,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             }
         }
 
+        #endregion
 
         public ProductViewModel ProductViewModel { get; private set; }
 

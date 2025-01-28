@@ -52,6 +52,8 @@ namespace RingSoft.DevLogix.QualityAssurance
         public ProductMaintenanceUserControl()
         {
             InitializeComponent();
+            _gotoVersionsCommand = new RelayCommand(GotoVersions);
+
             TopHeaderControl.Loaded += (sender, args) =>
             {
                 if (TopHeaderControl.CustomPanel is ProductHeaderControl productHeaderControl)
@@ -62,6 +64,8 @@ namespace RingSoft.DevLogix.QualityAssurance
                     productHeaderControl.RecalculateButton.Command =
                         LocalViewModel.RecalcCommand;
 
+                    productHeaderControl.GotoVersionsButton.Command =
+                        _gotoVersionsCommand;
 
                     if (!AppGlobals.LookupContext.ProductVersions.HasRight(RightTypes.AllowEdit))
                     {
@@ -100,8 +104,6 @@ namespace RingSoft.DevLogix.QualityAssurance
                 }
             };
             RegisterFormKeyControl(DescriptionControl);
-
-            _gotoVersionsCommand = new RelayCommand(GotoVersions);
 
             var hotKey = new HotKey(LocalViewModel.UpdateVersionsCommand);
             hotKey.AddKey(Key.P);
