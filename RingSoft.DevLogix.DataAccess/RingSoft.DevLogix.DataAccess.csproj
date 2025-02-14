@@ -4,6 +4,6 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="RingSoft.App.Library" Version="9.7.0" />
+    <PackageReference Include="RingSoft.App.Library" Version="9.7.1" />
   </ItemGroup>
 </Project>
