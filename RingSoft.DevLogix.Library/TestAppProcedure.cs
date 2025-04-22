@@ -17,6 +17,11 @@ namespace RingSoft.DevLogix.Library
 
         public override ISplashWindow SplashWindow => this;
 
+        public void InitAndShow(AppProcedure2 procedure)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public void SetProgress(string progressText)
         {
             
@@ -30,6 +35,16 @@ namespace RingSoft.DevLogix.Library
         public void ShowMessageBox(string message, string title, RsMessageBoxIcons icon)
         {
             
+        }
+
+        public bool ShowYesNoMessageBox(string message, string caption)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public MessageBoxButtonsResult ShowYesNoCancelMessageBox(string message, string caption)
+        {
+            throw new System.NotImplementedException();
         }
 
         public void CloseSplash()
