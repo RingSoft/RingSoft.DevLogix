@@ -55,7 +55,7 @@
 
             <Label Grid.Row="2" Grid.Column="0" Content="Order Date"/>
 
-            <dec:DateEditControl Grid.Row="2" Grid.Column="1" DateFormatType="DateTime" Width="200" HorizontalAlignment="Left" Value="{Binding OrderDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <dec:DateEditControl Grid.Row="2" Grid.Column="1" DateFormatType="DateTime" Width="200" HorizontalAlignment="Left" Value="{Binding OrderDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AllowNullValue="False"/>
 
             <dec:DataEntryTabControl Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="5">
 
