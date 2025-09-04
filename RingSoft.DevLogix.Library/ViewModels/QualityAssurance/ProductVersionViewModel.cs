@@ -18,12 +18,15 @@ using System.Net;
 using RingSoft.DbLookup.TableProcessing;
 using IDbContext = RingSoft.DevLogix.DataAccess.IDbContext;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
+using RingSoft.App.Library;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 {
     public interface IProductVersionView : IDbMaintenanceView
     {
         bool UploadFile(FileInfo file, Department department, Product product);
+
+        void CloseSplash();
 
         void SetFocusToGrid();
 
@@ -606,7 +609,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 }
             }
         }
-        public bool UploadFile(FileInfo file, Department department, Product product)
+        public bool UploadFile(FileInfo file, Department department, Product product, ISplashWindow splashWindow)
         {
             UpdateStatusEvent?.Invoke(this, new ProcedureStatusArgs{Status = "Copying File"});
             var archiveFile = GetArchiveFileName(product, file);
@@ -637,12 +640,29 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
             try
             {
+                var formatter = new DecimalEditControlSetup();
+                formatter.FormatType = DecimalEditFormatTypes.Percent;
+                formatter.Precision = 2;
+                
+                client.UploadProgressChanged += (sender, args) =>
+                {
+                    var percent = (double)args.BytesSent / fileToUpload.Length;
+                    var progress = $"Deploying File {percent.ToString(formatter.GetNumberFormatString())} Complete";
+                    splashWindow.SetProgress(progress);
+
+                };
+
+                client.UploadFileCompleted += (sender, args) =>
+                {
+                    File.Delete(fileToUpload.FullName);
+                    DeployJson(product, client, ftpAddress, fileToUpload, archiveFileInfo);
+                    View.CloseSplash();
+                };
                 UpdateStatusEvent?.Invoke(this, new ProcedureStatusArgs { Status = "Deploying File" });
                 var password = department.FtpPassword.Decrypt();
                 client.Credentials = new NetworkCredential(department.FtpUsername, password);
 
-                client.UploadFile($"{ftpAddress}{fileToUpload.Name}", WebRequestMethods.Ftp.UploadFile, fileToUpload.FullName);
-                File.Delete(fileToUpload.FullName);
+                client.UploadFileAsync( new Uri($"{ftpAddress}{fileToUpload.Name}"), WebRequestMethods.Ftp.UploadFile, fileToUpload.FullName);
             }
             catch (Exception e)
             {
@@ -650,6 +670,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 return false;
             }
 
+            return true;
+        }
+
+        private bool DeployJson(Product product, WebClient client, string ftpAddress, FileInfo fileToUpload,
+            FileInfo archiveFileInfo)
+        {
             UpdateStatusEvent?.Invoke(this, new ProcedureStatusArgs { Status = "Deploying Json File" });
             var ringSoftAppsFileName = "RingSoftApps.json";
             var ringSoftApps = new List<RingSoftApps>();

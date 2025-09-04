@@ -2,12 +2,10 @@
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AdvancedFind;
-using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model.UserManagement;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using Timer = System.Timers.Timer;

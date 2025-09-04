@@ -172,12 +172,16 @@ namespace RingSoft.DevLogix.QualityAssurance
             _deployProcedure = new DeployProcedure();
             _deployProcedure.DoProcessEvent += (sender, args) =>
             {
-                result = LocalViewModel.UploadFile(file, department, product);
+                result = LocalViewModel.UploadFile(file, department, product, _deployProcedure.SplashWindow);
             };
             _deployProcedure.Start();
+            return result;
+        }
+
+        public void CloseSplash()
+        {
             _deployProcedure.SplashWindow.CloseSplash();
             _deployProcedure = null;
-            return result;
         }
 
         public void SetFocusToGrid()
