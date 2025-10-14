@@ -19,6 +19,7 @@ using RingSoft.DbLookup.TableProcessing;
 using IDbContext = RingSoft.DevLogix.DataAccess.IDbContext;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 using RingSoft.App.Library;
+using RingSoft.DevLogix.MasterData;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 {
@@ -614,7 +615,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             UpdateStatusEvent?.Invoke(this, new ProcedureStatusArgs{Status = "Copying File"});
             var archiveFile = GetArchiveFileName(product, file);
             var archiveFileInfo = new FileInfo(archiveFile);
-            var fileText = $"{archiveFileInfo.DirectoryName}\\{file.Name}";
+            var dirToCopyTo = MasterDbContext.ProgramDataFolder;
+            if (!dirToCopyTo.EndsWith("\\"))
+            {
+                dirToCopyTo += "\\";
+            }
+            var fileText = $"{dirToCopyTo}{file.Name}";
             FileInfo fileToUpload = null;
             try
             {
@@ -655,7 +661,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 client.UploadFileCompleted += (sender, args) =>
                 {
                     File.Delete(fileToUpload.FullName);
-                    DeployJson(product, client, ftpAddress, fileToUpload, archiveFileInfo);
+                    DeployJson(product, client, ftpAddress, fileToUpload, archiveFileInfo, dirToCopyTo);
                     View.CloseSplash();
                 };
                 UpdateStatusEvent?.Invoke(this, new ProcedureStatusArgs { Status = "Deploying File" });
@@ -674,7 +680,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         }
 
         private bool DeployJson(Product product, WebClient client, string ftpAddress, FileInfo fileToUpload,
-            FileInfo archiveFileInfo)
+            FileInfo archiveFileInfo, string dirToCopyTo)
         {
             UpdateStatusEvent?.Invoke(this, new ProcedureStatusArgs { Status = "Deploying Json File" });
             var ringSoftAppsFileName = "RingSoftApps.json";
@@ -707,7 +713,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             var jsonText = JsonConvert.SerializeObject(ringSoftApps);
             try
             {
-                var jsonFile =  $"{archiveFileInfo.DirectoryName}\\{ringSoftAppsFileName}";
+                var jsonFile =  $"{dirToCopyTo}{ringSoftAppsFileName}";
                 File.WriteAllText(jsonFile, jsonText);
                 client.UploadFile($"{ftpAddress}{ringSoftAppsFileName}", WebRequestMethods.Ftp.UploadFile, jsonFile);
                 File.Delete(jsonFile);
