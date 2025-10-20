@@ -1073,8 +1073,10 @@ namespace RingSoft.DevLogix.DataAccess
             ProjectUsers.PriorityLevel = 500;
 
             Territory.PriorityLevel = 400;
+            Territory.GetFieldDefinition(p => p.Name).HasDescription("Description");
 
             TimeZone.PriorityLevel = 100;
+            TimeZone.GetFieldDefinition(p => p.Name).HasDescription("Description");
 
             CustomerStatus.PriorityLevel = 100;
 

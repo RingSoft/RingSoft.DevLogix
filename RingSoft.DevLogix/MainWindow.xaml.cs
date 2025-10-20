@@ -654,6 +654,14 @@ namespace RingSoft.DevLogix
                 Header = "Upgrade _Version...",
                 Command = ViewModel.UpgradeCommand,
             });
+
+            foreach (var mainMenuItem in MainMenu.Items)
+            {
+                if (mainMenuItem is MenuItem menuItem)
+                {
+                    menuItem.IsTabStop = false;
+                }
+            }
         }
 
         //Peter Ringering - 12/10/2024 01:08:28 PM - E-73

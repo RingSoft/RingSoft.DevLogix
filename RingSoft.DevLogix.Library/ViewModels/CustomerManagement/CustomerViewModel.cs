@@ -586,6 +586,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         public UiCommand ClickWebUiCommand { get; } = new UiCommand();
 
+        public UiCommand PhoneUiCommand { get; } = new UiCommand();
+
         public new ICustomerView View { get; private set; }
 
         private bool _loading;
@@ -638,6 +640,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             RegisterLookup(TimeClockLookup);
             RegisterLookup(ComputerLookup);
             RegisterLookup(SupportTicketLookup);
+
+            MapFieldToUiCommand(PhoneUiCommand
+            , TableDefinition.GetFieldDefinition(p => p.Phone));
         }
 
         protected override void Initialize()

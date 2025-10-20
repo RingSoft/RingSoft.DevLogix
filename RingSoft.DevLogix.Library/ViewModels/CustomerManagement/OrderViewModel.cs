@@ -507,6 +507,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             CustomerUiCommand.SetFocus();
         }
 
+        protected override bool ValidateEntity(Order entity)
+        {
+            if (!CustomerAutoFillValue.IsValid(true))
+            {
+                CustomerAutoFillSetup.HandleValFail();
+                return false;
+            }
+            return base.ValidateEntity(entity);
+        }
+
         protected override bool SaveEntity(Order entity)
         {
             var context = SystemGlobals.DataRepository.GetDataContext();

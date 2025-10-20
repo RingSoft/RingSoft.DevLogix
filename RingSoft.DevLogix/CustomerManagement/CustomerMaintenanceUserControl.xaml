@@ -94,7 +94,7 @@
 
             <Label Grid.Row="1" Grid.Column="0" Content="Phone Number"/>
 
-            <dec:StringEditControl Grid.Row="1" Grid.Column="1" Width="200" HorizontalAlignment="Left" Text="{Binding PhoneNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="50"/>
+            <dec:StringEditControl Grid.Row="1" Grid.Column="1" Width="200" HorizontalAlignment="Left" Text="{Binding PhoneNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="50" UiCommand="{Binding PhoneUiCommand}"/>
 
             <Label Grid.Row="1" Grid.Column="2" Content="Status"/>
 

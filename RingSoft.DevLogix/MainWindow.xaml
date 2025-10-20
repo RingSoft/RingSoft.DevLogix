@@ -51,7 +51,7 @@
     <DockPanel>
         <DockPanel>
             <Menu x:Name="MainMenu" DockPanel.Dock="Top" IsTabStop="False">
-                <MenuItem Header="E_xit..."/>
+                <MenuItem Header="E_xit..." IsTabStop="False"/>
                 <!--<MenuItem Header="_User Management">
                     <MenuItem Header="Add/Edit _Users..." Command="{Binding UserMaintenanceCommand}"/>
                     <MenuItem Header="Add/Edit _Groups..." Command="{Binding GroupsMaintenanceCommand}"/>
