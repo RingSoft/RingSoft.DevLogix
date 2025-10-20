@@ -859,7 +859,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         protected override void ClearData()
         {
             Id = 0;
-            KeyAutoFillValue = null;
             DepartmentAutoFillValue = DefaultDepartmentAutoFillValue;
             EmailAddress = null;
             PhoneNumber = null;

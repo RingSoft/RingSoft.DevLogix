@@ -751,6 +751,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 }
             }
 
+            var timeZoneId = TimeZoneAutoFillValue.GetEntity<TimeZone>().Id;
             var result = new Customer
             {
                 Id = Id,
@@ -764,7 +765,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 PostalCode = PostalCode,
                 Country = Country,
                 Phone = PhoneNumber,
-                TimeZoneId = TimeZoneAutoFillValue.GetEntity<TimeZone>().Id,
+                TimeZoneId = timeZoneId,
                 TerritoryId = TerritoryAutoFillValue.GetEntity<Territory>().Id,
                 EmailAddress = EmailAddress,
                 WebAddress = WebAddress,

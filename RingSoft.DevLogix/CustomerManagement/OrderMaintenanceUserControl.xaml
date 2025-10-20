@@ -105,7 +105,7 @@
 
                         <Label Grid.Row="0" Grid.Column="2" Content="Company Name"/>
 
-                        <dec:StringEditControl Grid.Row="0" Grid.Column="3" Width="200" HorizontalAlignment="Left" Text="{Binding CompanyName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="50"/>
+                        <dec:StringEditControl Grid.Row="0" Grid.Column="3" Width="200" HorizontalAlignment="Left" Text="{Binding CompanyName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="50" UiCommand="{Binding CompanyNameUiCommand}"/>
 
                         <Label Grid.Row="1" Grid.Column="0" Content="Contact Name"/>
 

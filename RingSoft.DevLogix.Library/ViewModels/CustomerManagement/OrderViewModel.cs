@@ -336,6 +336,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         public UiCommand CustomerUiCommand { get; }
 
+        public UiCommand CompanyNameUiCommand { get; }
+
         private bool _loading;
         private double _oldTotal;
 
@@ -353,6 +355,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             PrintProcessingHeader += OrderViewModel_PrintProcessingHeader;
 
             CustomerUiCommand = new UiCommand();
+
+            CompanyNameUiCommand = new UiCommand();
+
+            MapFieldToUiCommand(CompanyNameUiCommand
+            , TableDefinition.GetFieldDefinition(p => p.CompanyName));
         }
 
         protected override void Initialize()
@@ -434,10 +441,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         protected override Order GetEntityData()
         {
+            var customerId = CustomerAutoFillValue.GetEntity<Customer>().Id;
             var result = new Order
             {
                 Id = Id,
-                CustomerId = CustomerAutoFillValue.GetEntity<Customer>().Id,
+                CustomerId = customerId,
                 SalespersonId = SalespersonAutoFillValue.GetEntity<User>().Id,
                 OrderDate = OrderDate.ToUniversalTime(),
                 ShippedDate = ShippedDate.GetValueOrDefault().ToUniversalTime(),
