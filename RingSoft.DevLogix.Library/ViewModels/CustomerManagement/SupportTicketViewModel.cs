@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Timers;
 using IDbContext = RingSoft.DevLogix.DataAccess.IDbContext;
 using TimeZone = RingSoft.DevLogix.DataAccess.Model.CustomerManagement.TimeZone;
 
@@ -385,7 +386,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         public UiCommand CustomerUiCommand { get; }
 
+        public UiCommand PhoneUiCommand { get; }
+
         private bool _loading;
+        private Timer _customerTimer = new Timer(1000);
+        private Customer _currentCustomer;
 
         public SupportTicketViewModel()
         {
@@ -414,6 +419,17 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             PunchInCommand = new RelayCommand(PunchIn);
             RecalcCommand = new RelayCommand(Recalc);
             CustomerUiCommand = new UiCommand();
+            PhoneUiCommand = new UiCommand();
+            MapFieldToUiCommand(PhoneUiCommand
+            , AppGlobals.LookupContext.SupportTicket
+                .GetFieldDefinition(p => p.PhoneNumber));
+
+            _customerTimer.Elapsed += _customerTimer_Elapsed;
+        }
+
+        private void _customerTimer_Elapsed(object? sender, ElapsedEventArgs e)
+        {
+            UpdateCurrentCustomerTime(_currentCustomer);
         }
 
         protected override void Initialize()
@@ -510,6 +526,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         private void UpdateCurrentCustomerTime(Customer customer)
         {
+            _currentCustomer = customer;
             var timeZone = customer.TimeZone;
             if (timeZone == null)
             {
@@ -602,6 +619,27 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         public void RefreshTimeClockLookup()
         {
             TimeClockLookup.SetCommand(GetLookupCommand(LookupCommands.Refresh));
+        }
+
+        protected override bool ValidateEntity(SupportTicket entity)
+        {
+            var caption = "Validation Failure";
+            if (!CustomerAutoFillValue.IsValid(true))
+            {
+                CustomerAutoFillSetup.HandleValFail();
+                return false;
+            }
+
+            if (entity.PhoneNumber.IsNullOrEmpty())
+            {
+                var message = "Phone Number cannot be empty.";
+                OnValidationFail(AppGlobals.LookupContext
+                    .SupportTicket
+                    .GetFieldDefinition(p => p.PhoneNumber)
+                , message, caption);
+                return false;
+            }
+            return base.ValidateEntity(entity);
         }
 
         protected override bool SaveEntity(SupportTicket entity)
