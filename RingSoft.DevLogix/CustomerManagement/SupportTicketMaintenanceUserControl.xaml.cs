@@ -1,5 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using RingSoft.DataEntryControls.WPF;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Lookup;
@@ -25,10 +27,10 @@ namespace RingSoft.DevLogix.CustomerManagement
                     supportTicketHeaderControl.PunchInButton.Command =
                         LocalViewModel.PunchInCommand;
 
-                    supportTicketHeaderControl.PunchInButton.ToolTip.HeaderText = "Punch In (Alt + U)";
+                    supportTicketHeaderControl.PunchInButton.ToolTip.HeaderText = "Punch In (Ctrl + S, Ctrl + U)";
                     supportTicketHeaderControl.PunchInButton.ToolTip.DescriptionText = "Punch into this Ticket. ";
 
-                    supportTicketHeaderControl.RecalcButton.ToolTip.HeaderText = "Recalculate Cost (Alt + R)";
+                    supportTicketHeaderControl.RecalcButton.ToolTip.HeaderText = "Recalculate Cost (Ctrl + S, Ctrl + R)";
                     supportTicketHeaderControl.RecalcButton.ToolTip.DescriptionText =
                         "Recalculate the cost values for a range of support tickets.";
 
@@ -42,6 +44,16 @@ namespace RingSoft.DevLogix.CustomerManagement
                 }
             };
             RegisterFormKeyControl(TicketIdControl);
+
+            var punchInHotKey = new HotKey(LocalViewModel.PunchInCommand);
+            punchInHotKey.AddKey(Key.S);
+            punchInHotKey.AddKey(Key.U);
+            AddHotKey(punchInHotKey);
+
+            var recalcHotKey = new HotKey(LocalViewModel.RecalcCommand);
+            recalcHotKey.AddKey(Key.S);
+            recalcHotKey.AddKey(Key.R);
+            AddHotKey(recalcHotKey);
         }
 
         protected override DbMaintenanceViewModelBase OnGetViewModel()

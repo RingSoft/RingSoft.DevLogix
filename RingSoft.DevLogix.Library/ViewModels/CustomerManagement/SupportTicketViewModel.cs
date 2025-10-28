@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Timers;
+using RingSoft.DbLookup.ModelDefinition;
 using IDbContext = RingSoft.DevLogix.DataAccess.IDbContext;
 using TimeZone = RingSoft.DevLogix.DataAccess.Model.CustomerManagement.TimeZone;
 
@@ -125,7 +126,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                     return;
 
                 _currentCustomerTime = value;
-                OnPropertyChanged();
+                OnPropertyChanged(raiseDirtyFlag:false);
             }
         }
 
@@ -429,7 +430,26 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         private void _customerTimer_Elapsed(object? sender, ElapsedEventArgs e)
         {
-            UpdateCurrentCustomerTime(_currentCustomer);
+            if (_currentCustomer != null)
+            {
+                UpdateCurrentCustomerTime(_currentCustomer);
+            }
+        }
+
+        private void StartCurrentCustomerTimer(Customer customer = null)
+        {
+            if (customer != null)
+            {
+                _currentCustomer = customer;
+                _customerTimer.Enabled = true;
+                _customerTimer.Start();
+            }
+            else
+            {
+                _customerTimer.Enabled = false;
+                _customerTimer.Stop();
+                _currentCustomer = customer;
+            }
         }
 
         protected override void Initialize()
@@ -467,6 +487,26 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             base.Initialize();
         }
 
+        protected override SupportTicket GetEntityFromDb(SupportTicket newEntity, PrimaryKeyValue primaryKeyValue)
+        {
+            var context = SystemGlobals.DataRepository.GetDataContext();
+            var table = context.GetTable<SupportTicket>();
+            var result = table
+                .Include(p => p.Customer)
+                .ThenInclude(p => p.TimeZone)
+                .Include(p => p.Status)
+                .Include(p => p.CreateUser)
+                .Include(p => p.Product)
+                .Include(p => p.AssignedToUser)
+                .Include(p => p.SupportTicketUsers)
+                .ThenInclude(p => p.User)
+                .Include(p => p.Errors)
+                .ThenInclude(p => p.Error)
+                .FirstOrDefault(p => p.Id == newEntity.Id);
+
+            return result;
+        }
+
         protected override void PopulatePrimaryKeyControls(SupportTicket newEntity,
             PrimaryKeyValue primaryKeyValue)
         {
@@ -487,7 +527,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             _loading = true;
             StatusAutoFillValue = entity.Status.GetAutoFillValue();
             CustomerAutoFillValue = entity.Customer.GetAutoFillValue();
-            UpdateCurrentCustomerTime(entity.Customer);
+            StartCurrentCustomerTimer(entity.Customer);
             CreateDate = entity.CreateDate.ToLocalTime();
             CreateUserAutoFillValue = entity.CreateUser.GetAutoFillValue();
             ProductAutoFillValue = entity.Product.GetAutoFillValue();
@@ -513,31 +553,27 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                     .FirstOrDefault(p => p.Id == customer.Id);
                 if (customer != null)
                 {
-                    UpdateCurrentCustomerTime(customer);
+                    StartCurrentCustomerTimer(customer);
                     PhoneNumber = customer.Phone;
                     ContactName = customer.ContactName;
                 }
             }
             else
             {
+                StartCurrentCustomerTimer(null);
                 CurrentCustomerTime = string.Empty;
             }
         }
 
         private void UpdateCurrentCustomerTime(Customer customer)
         {
-            _currentCustomer = customer;
             var timeZone = customer.TimeZone;
             if (timeZone == null)
             {
-                var context = SystemGlobals.DataRepository.GetDataContext();
-                var table = context.GetTable<TimeZone>();
-                timeZone = table
-                    .FirstOrDefault(p => p.Id == customer.TimeZoneId);
+                return;
             }
-            var now = DateTime.UtcNow;
-            now = now.AddHours(timeZone.HourToGMT);
-            CurrentCustomerTime = now.ToLongTimeString();
+
+            CurrentCustomerTime = AppGlobals.GetCurrentTimezoneTime(timeZone);
         }
 
 

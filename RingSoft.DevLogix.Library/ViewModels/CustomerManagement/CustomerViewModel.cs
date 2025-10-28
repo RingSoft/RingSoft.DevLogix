@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Timers;
 using TimeZone = RingSoft.DevLogix.DataAccess.Model.CustomerManagement.TimeZone;
 
 namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
@@ -245,7 +246,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                     return;
 
                 _currentCustomerTime = value;
-                OnPropertyChanged();
+                OnPropertyChanged(raiseDirtyFlag:false);
             }
         }
 
@@ -591,6 +592,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         public new ICustomerView View { get; private set; }
 
         private bool _loading;
+        private TimeZone _currentTimeZone;
+        private Timer _timeZoneTimer = new Timer(1000);
 
         public CustomerViewModel()
         {
@@ -643,6 +646,33 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
             MapFieldToUiCommand(PhoneUiCommand
             , TableDefinition.GetFieldDefinition(p => p.Phone));
+
+            _timeZoneTimer.Elapsed += _timeZoneTimer_Elapsed;
+        }
+
+        private void _timeZoneTimer_Elapsed(object? sender, ElapsedEventArgs e)
+        {
+            if (_currentTimeZone != null)
+            {
+                CurrentCustomerTime = AppGlobals.GetCurrentTimezoneTime(_currentTimeZone);
+            }
+        }
+
+        private void StartCurrentCustomerTimer(TimeZone timeZone)
+        {
+            if (timeZone != null)
+            {
+                _currentTimeZone = timeZone;
+                _timeZoneTimer.Enabled = true;
+                _timeZoneTimer.Start();
+            }
+            else
+            {
+                _timeZoneTimer.Enabled = false;
+                _timeZoneTimer.Stop();
+                _currentTimeZone = timeZone;
+                CurrentCustomerTime = string.Empty;
+            }
         }
 
         protected override void Initialize()
@@ -659,19 +689,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         {
             if (TimeZoneAutoFillValue.IsValid())
             {
-                var timeZoneId = TimeZoneAutoFillValue.GetEntity<TimeZone>().Id;
-                var context = SystemGlobals.DataRepository.GetDataContext();
-                var table = context.GetTable<TimeZone>();
-                var timeZone = table
-                    .FirstOrDefault(p => p.Id == timeZoneId);
-
-                var now = DateTime.UtcNow;
-                now = now.AddHours(timeZone.HourToGMT);
-                CurrentCustomerTime = now.ToLongTimeString();
+                var timeZone = TimeZoneAutoFillValue.GetEntity<TimeZone>();
+                timeZone = timeZone.FillOutProperties(false);
+                StartCurrentCustomerTimer(timeZone);
             }
             else
             {
-                CurrentCustomerTime = string.Empty;
+                StartCurrentCustomerTimer(null);
             }
         }
 

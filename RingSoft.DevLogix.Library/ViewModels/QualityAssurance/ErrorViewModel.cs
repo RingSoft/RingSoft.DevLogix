@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Linq;
+using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 {
@@ -805,6 +806,24 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         protected override bool ValidateEntity(Error entity)
         {
+            if (!StatusAutoFillValue.IsValid(true))
+            {
+                StatusAutoFillSetup.HandleValFail();
+                return false;
+            }
+
+            if (!ProductAutoFillValue.IsValid(true))
+            {
+                ProductAutoFillSetup.HandleValFail();
+                return false;
+            }
+
+            if (!PriorityAutoFillValue.IsValid(true))
+            {
+                PriorityAutoFillSetup.HandleValFail();
+                return false;
+            }
+
             var result = base.ValidateEntity(entity);
 
             if (!result && MaintenanceMode == DbMaintenanceModes.AddMode)
@@ -813,7 +832,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             }
             return result;
         }
-
 
         protected override void ClearData()
         {

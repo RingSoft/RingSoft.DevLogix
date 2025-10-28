@@ -47,10 +47,10 @@ namespace RingSoft.DevLogix.CustomerManagement
                     customerHeaderControl.PunchInButton.Command =
                         LocalViewModel.PunchInCommand;
 
-                    customerHeaderControl.PunchInButton.ToolTip.HeaderText = "Punch In (Alt + U)";
+                    customerHeaderControl.PunchInButton.ToolTip.HeaderText = "Punch In (Ctrl + S, Ctrl + U)";
                     customerHeaderControl.PunchInButton.ToolTip.DescriptionText = "Punch into this Customer. ";
 
-                    customerHeaderControl.RecalcButton.ToolTip.HeaderText = "Recalculate Cost (Alt + R)";
+                    customerHeaderControl.RecalcButton.ToolTip.HeaderText = "Recalculate Cost (Ctrl + S, Ctrl + R)";
                     customerHeaderControl.RecalcButton.ToolTip.DescriptionText =
                         "Recalculate the cost values for a range of customers.";
 
@@ -64,6 +64,16 @@ namespace RingSoft.DevLogix.CustomerManagement
                 }
             };
             RegisterFormKeyControl(CompanyControl);
+
+            var punchInHotKey = new HotKey(LocalViewModel.PunchInCommand);
+            punchInHotKey.AddKey(Key.S);
+            punchInHotKey.AddKey(Key.U);
+            AddHotKey(punchInHotKey);
+
+            var recalcHotKey = new HotKey(LocalViewModel.RecalcCommand);
+            recalcHotKey.AddKey(Key.S);
+            recalcHotKey.AddKey(Key.R);
+            AddHotKey(recalcHotKey);
         }
 
         protected override DbMaintenanceViewModelBase OnGetViewModel()

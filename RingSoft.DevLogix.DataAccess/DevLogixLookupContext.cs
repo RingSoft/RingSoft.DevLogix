@@ -961,6 +961,7 @@ namespace RingSoft.DevLogix.DataAccess
 
             UsersGroups.PriorityLevel = 400;
 
+            Products.GetFieldDefinition(p => p.Description).HasDescription("Name");
             Products.GetFieldDefinition(p => p.Price).HasDecimalFieldType(DecimalFieldTypes.Currency);
             Products.GetFieldDefinition(p => p.Revenue).HasDecimalFieldType(DecimalFieldTypes.Currency);
             Products.GetFieldDefinition(p => p.Cost).HasDecimalFieldType(DecimalFieldTypes.Currency);

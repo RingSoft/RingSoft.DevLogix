@@ -23,6 +23,7 @@ using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbLookup.TableProcessing;
 using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
 using DbPlatforms = RingSoft.App.Library.DbPlatforms;
+using TimeZone = RingSoft.DevLogix.DataAccess.Model.CustomerManagement.TimeZone;
 
 namespace RingSoft.DevLogix.Library
 {
@@ -711,5 +712,15 @@ namespace RingSoft.DevLogix.Library
                 tableIndex++;
             }
         }
+
+        public static string GetCurrentTimezoneTime(TimeZone timeZone)
+        {
+            var result = string.Empty;
+            var now = DateTime.UtcNow;
+            now = now.AddHours(timeZone.HourToGMT);
+            result = now.ToLongTimeString();
+            return result;
+        }
+
     }
 }
