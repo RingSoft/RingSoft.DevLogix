@@ -975,6 +975,7 @@ namespace RingSoft.DevLogix.DataAccess
                 .HasDateType(DbDateTypes.Millisecond)
                 .DoConvertToLocalTime()
                 .HasDescription("Release Date");
+            ProductVersions.GetFieldDefinition(p => p.Description).HasDescription("Name");
 
             ProductVersionDepartments.PriorityLevel = 500;
             ProductVersionDepartments.SetHeaderEntity<ProductVersion>();

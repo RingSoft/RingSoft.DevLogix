@@ -824,6 +824,18 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 return false;
             }
 
+            if (!FoundVersionAutoFillValue.IsValid(true))
+            {
+                FoundVersionAutoFillSetup.HandleValFail();
+                return false;
+            }
+
+            if (!FixedVersionAutoFillValue.IsValid(true))
+            {
+                FixedVersionAutoFillSetup.HandleValFail();
+                return false;
+            }
+
             var result = base.ValidateEntity(entity);
 
             if (!result && MaintenanceMode == DbMaintenanceModes.AddMode)
