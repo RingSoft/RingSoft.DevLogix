@@ -787,7 +787,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         private async void ValidateFoundByUser(Error result)
         {
-            if (result.FoundByUserId == 0)
+            if (result.FoundByUserId == 0 
+                && (FoundUserAutoFillValue == null 
+                || FoundUserAutoFillValue.Text == string.Empty))
             {
                 result.FoundByUserId = null;
                 if (AppGlobals.LoggedInUser != null)
@@ -806,6 +808,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         protected override bool ValidateEntity(Error entity)
         {
+            var caption = "Validation Error";
             if (!StatusAutoFillValue.IsValid(true))
             {
                 StatusAutoFillSetup.HandleValFail();
@@ -830,19 +833,51 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 return false;
             }
 
-            if (!FixedVersionAutoFillValue.IsValid(true))
+            if (!FixedVersionAutoFillValue.IsValid(checkDb:true, valHasText:true))
             {
                 FixedVersionAutoFillSetup.HandleValFail();
                 return false;
             }
 
-            var result = base.ValidateEntity(entity);
-
-            if (!result && MaintenanceMode == DbMaintenanceModes.AddMode)
+            if (!FoundUserAutoFillValue.IsValid(true))
             {
-                KeyAutoFillValue = null;
+                FoundUserAutoFillSetup.HandleValFail();
+                return false;
             }
-            return result;
+
+            if (!AssignedDeveloperAutoFillValue.IsValid(checkDb:true, valHasText:true))
+            {
+                AssignedDeveloperAutoFillSetup.HandleValFail();
+                return false;
+            }
+
+            if (!AssignedQualityAssuranceAutoFillValue.IsValid(checkDb:true, valHasText:true))
+            {
+                AssignedQualityAssuranceAutoFillSetup.HandleValFail();
+                return false;
+            }
+
+            if (Description.IsNullOrEmpty())
+            {
+                var message = "Description must contain some text.";
+                OnValidationFail(TableDefinition.GetFieldDefinition(p => p.Description)
+                , message, caption);
+                return false;
+            }
+
+            if (!TestingOutlineAutoFillValue.IsValid(checkDb: true, valHasText: true))
+            {
+                TestingOutlineAutoFillSetup.HandleValFail();
+                return false;
+            }
+
+            //var result = base.ValidateEntity(entity);
+
+            //if (!result && MaintenanceMode == DbMaintenanceModes.AddMode)
+            //{
+            //    KeyAutoFillValue = null;
+            //}
+            return true;
         }
 
         protected override void ClearData()
