@@ -877,7 +877,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             //{
             //    KeyAutoFillValue = null;
             //}
-            return true;
+
+            var result = SupportTicketManager.ValidateGrid();
+            return result;
         }
 
         protected override void ClearData()

@@ -73,6 +73,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public void SaveToEntity(Project project)
         {
+            Grid?.CommitCellEdit();
             project.SundayMinutes = Sunday.WorkMinutes;
             project.MondayMinutes = Monday.WorkMinutes;
             project.TuesdayMinutes = Tuesday.WorkMinutes;

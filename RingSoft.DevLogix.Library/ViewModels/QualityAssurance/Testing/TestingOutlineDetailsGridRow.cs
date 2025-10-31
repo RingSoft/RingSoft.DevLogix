@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
@@ -82,6 +83,20 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
                         IsVisible = true,
                     };
                 case TestingOutlineDetailsColumns.CompleteVersion:
+                    if (IsComplete)
+                    {
+                        return new DataEntryGridCellStyle()
+                        {
+                            State = DataEntryGridCellStates.Enabled,
+                        };
+                    }
+                    else
+                    {
+                        return new DataEntryGridCellStyle()
+                        {
+                            State = DataEntryGridCellStates.Disabled,
+                        };
+                    }
                     break;
                 case TestingOutlineDetailsColumns.Template:
                     return new DataEntryGridCellStyle()
@@ -139,7 +154,20 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
 
         public override bool ValidateRow()
         {
-            return true;
+            if (IsComplete)
+            {
+                if (!CompletedVersionAutoFillValue.IsValid(checkDb:true))
+                {
+                    var message = SystemGlobals.GetValFailMessage("Completed Version", false);
+                    var caption = "Validation Failure";
+                    Manager?.Grid.GotoCell(this, TestingOutlineDetailsGridManager.CompleteVersionColumnId);
+                    ControlsGlobals.UserInterface.ShowMessageBox(message, caption,
+                        RsMessageBoxIcons.Exclamation);
+                    Manager?.Grid.HandleValFail();
+                    return false;
+                }
+            }
+            return base.ValidateRow();
         }
 
         public override void SaveToEntity(TestingOutlineDetails entity, int rowIndex)

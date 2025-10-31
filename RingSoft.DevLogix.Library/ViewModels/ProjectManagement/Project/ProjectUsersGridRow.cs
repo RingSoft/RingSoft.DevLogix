@@ -48,6 +48,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             UserAutoFillSetup =
                 new AutoFillSetup(AppGlobals.LookupContext.ProjectUsers.GetFieldDefinition(p => p.UserId));
             TimeSpent = AppGlobals.MakeTimeSpent(MinutesSpent);
+            SetStandardMinutes();
         }
 
         public override DataEntryGridCellProps GetCellProps(int columnId)
@@ -164,7 +165,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                             else
                             {
                                 UserId = userId;
-                                SetStandardMinutes();
                             }
                         }
                         else
