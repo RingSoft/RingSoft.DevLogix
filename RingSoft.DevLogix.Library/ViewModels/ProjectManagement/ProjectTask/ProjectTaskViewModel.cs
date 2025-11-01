@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbLookup;
@@ -20,6 +21,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
     {
         LaborPart = 1,
         Dependencies = 2,
+    }
+
+    public class UserLookup
+    {
+        public string ProjectUser { get; set; }
+
+        public string Department { get; set; }
     }
     public interface IProjectTaskView : IDbMaintenanceView
     {
@@ -103,7 +111,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 }
 
                 _projectAutoFillValue = value;
-                //SetUserFilter();
+                RefreshUserFilter();
                 OnPropertyChanged();
             }
         }
@@ -346,16 +354,21 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         private int _laborPartRowFocus = -1;
         private int _originalProjectId;
 
+        private LookupDefinition<UserLookup, ProjectUser> _userLookupDefinition
+            = new LookupDefinition<UserLookup, ProjectUser>(AppGlobals.LookupContext.ProjectUsers);
+
         public ProjectTaskViewModel()
         {
             PunchInCommand = new RelayCommand(PunchIn);
 
             RecalcCommand = new RelayCommand(Recalc);
 
-            UserAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.UserId))
-            {
-                AllowLookupAdd = false,
-            };
+            _userLookupDefinition.Include(p => p.User)
+                .AddVisibleColumnDefinition(p => p.ProjectUser
+                    , "Project User"
+                    , p => p.Name, 50);
+
+            UserAutoFillSetup = new AutoFillSetup(_userLookupDefinition);
             ProjectAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ProjectId));
 
             ProjectTotalsManager = new ProjectTotalsManager();
@@ -384,6 +397,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             UserUiCommand = new UiCommand();
         }
 
+        private void RefreshUserFilter()
+        {
+            if (ProjectAutoFillValue.IsValid())
+            {
+                _userLookupDefinition.FilterDefinition.ClearFixedFilters();
+                var project = ProjectAutoFillValue.GetEntity<Project>();
+                _userLookupDefinition.FilterDefinition
+                    .AddFixedFilter(p => p.ProjectId, Conditions.Equals, project.Id);
+            }
+        }
 
         protected override void Initialize()
         {
@@ -575,6 +598,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     var caption = "Invalid User";
                     UserUiCommand.SetFocus();
                     ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
+                    UserAutoFillSetup.Control.ShowLookupWindow();
                     return false;
                 }
             }

@@ -12,6 +12,7 @@ using RingSoft.DevLogix.DataAccess.LookupModel;
 using RingSoft.DevLogix.DataAccess.Model;
 using System;
 using System.Linq;
+using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using RingSoft.DevLogix.DataAccess.LookupModel.CustomerManagement;
 using RingSoft.DevLogix.DataAccess.LookupModel.ProjectManagement;
@@ -1174,6 +1175,25 @@ namespace RingSoft.DevLogix.DataAccess
                 return userAutoFill.UserAutoFill;
             }
             return base.GetUserAutoFill(userName);
+        }
+
+        public override AutoFillValue OnAutoFillTextRequest(TableDefinitionBase tableDefinition, string primaryKeyString,
+            LookupDefinitionBase lookupDefinition = null)
+        {
+            if (tableDefinition == ProjectUsers)
+            {
+                var primaryKey = new PrimaryKeyValue(ProjectUsers);
+                primaryKey.LoadFromPrimaryString(primaryKeyString);
+                var projectUser = ProjectUsers.GetEntityFromPrimaryKeyValue(primaryKey);
+                var user = new User
+                {
+                    Id = projectUser.UserId,
+                };
+                user = user.FillOutProperties(false);
+                var text = user.GetAutoFillValue().Text;
+                return new AutoFillValue(primaryKey, text);
+            }
+            return base.OnAutoFillTextRequest(tableDefinition, primaryKeyString, lookupDefinition);
         }
     }
 }
