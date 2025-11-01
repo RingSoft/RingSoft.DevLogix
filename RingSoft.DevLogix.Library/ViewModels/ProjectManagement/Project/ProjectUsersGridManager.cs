@@ -94,8 +94,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         public IEnumerable<ProjectUsersGridRow> GetStandardUsers()
         {
             return Rows.OfType<ProjectUsersGridRow>().Where(
-                p => !p.IsNew &&
-                p.IsStandard);
+                p => p.IsStandard);
         }
 
         public ProjectUsersGridRow GetProjectUsersGridRow(int userId)
