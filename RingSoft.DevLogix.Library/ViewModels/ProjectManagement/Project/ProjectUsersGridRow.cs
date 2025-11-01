@@ -301,19 +301,19 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             }
         }
 
-        public override bool ValidateRow()
-        {
-            if (UserId <= 0)
-            {
-                Manager.ViewModel.View.GotoGrid();
-                var message = "Invalid User";
-                ControlsGlobals.UserInterface.ShowMessageBox(message, message, RsMessageBoxIcons.Exclamation);
-                Manager.Grid?.GotoCell(this, ProjectUsersGridManager.UserColumnId);
-                return false;
-            }
+        //public override bool ValidateRow()
+        //{
+        //    if (UserId <= 0)
+        //    {
+        //        Manager.ViewModel.View.GotoGrid();
+        //        var message = "Invalid User";
+        //        ControlsGlobals.UserInterface.ShowMessageBox(message, message, RsMessageBoxIcons.Exclamation);
+        //        Manager.Grid?.GotoCell(this, ProjectUsersGridManager.UserColumnId);
+        //        return false;
+        //    }
 
-            return true;
-        }
+        //    return true;
+        //}
 
         public override void SaveToEntity(ProjectUser entity, int rowIndex)
         {
