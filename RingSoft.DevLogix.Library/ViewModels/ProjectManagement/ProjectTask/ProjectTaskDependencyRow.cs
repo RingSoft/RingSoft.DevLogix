@@ -99,9 +99,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             if (!DependencyAutoFillValue.IsValid())
             {
                 Manager.ViewModel.View.SetFocusToGrid(ProjectTaskGrids.Dependencies);
-                var message = "Invalid Task Dependency";
-                ControlsGlobals.UserInterface.ShowMessageBox(message, message, RsMessageBoxIcons.Exclamation);
-                Manager.Grid?.GotoCell(this, 1);
+                var message = SystemGlobals.GetValFailMessage("Task Dependency", true);
+                Manager.Grid?.GotoCell(this, 0);
+                ControlsGlobals.UserInterface.ShowMessageBox(message, "Invalid Task Dependency", RsMessageBoxIcons.Exclamation);
+                Manager.Grid?.HandleValFail();
                 return false;
             }
             return true;

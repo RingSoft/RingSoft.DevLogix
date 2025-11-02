@@ -9,6 +9,7 @@ using RingSoft.DbLookup.Lookup;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.Library.ViewModels.ProjectManagement;
 using RingSoft.DbLookup;
+using RingSoft.DevLogix.Library;
 
 namespace RingSoft.DevLogix.ProjectManagement
 {
@@ -174,6 +175,29 @@ namespace RingSoft.DevLogix.ProjectManagement
             TabControl.SelectedItem = TasksTab;
             TabControl.UpdateLayout();
             TasksTab.UpdateLayout();
+        }
+
+        public override void SetControlReadOnlyMode(Control control, bool readOnlyValue)
+        {
+            if (control == AddModifyTasksButton && readOnlyValue)
+            {
+                if (!AppGlobals.LookupContext.ProjectTasks.CanEditTabe)
+                {
+                    AddModifyTasksButton.Visibility = Visibility.Collapsed;
+                }
+                return;
+            }
+
+            if (control == MaterialsAddModifyButton && readOnlyValue)
+            {
+                if (!AppGlobals.LookupContext.ProjectMaterials.CanEditTabe)
+                {
+                    MaterialsAddModifyButton.Visibility = Visibility.Collapsed;
+                }
+                return;
+            }
+
+            base.SetControlReadOnlyMode(control, readOnlyValue);
         }
     }
 }

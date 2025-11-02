@@ -179,9 +179,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             if (!LaborPartAutoFillValue.IsValid())
             {
                 Manager.ViewModel.View.SetFocusToGrid(ProjectTaskGrids.LaborPart);
-                var message = "Invalid Labor Part";
-                ControlsGlobals.UserInterface.ShowMessageBox(message, message, RsMessageBoxIcons.Exclamation);
+                var message = SystemGlobals.GetValFailMessage("Labor Part", true);
                 Manager.Grid?.GotoCell(this, ProjectTaskLaborPartsManager.LaborPartColumnId);
+                ControlsGlobals.UserInterface.ShowMessageBox(message, "Invalid Labor Part", RsMessageBoxIcons.Exclamation);
+                Manager.Grid?.HandleValFail();
                 return false;
             }
             return true;

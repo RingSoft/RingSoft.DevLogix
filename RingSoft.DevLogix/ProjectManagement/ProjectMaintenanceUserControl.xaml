@@ -236,7 +236,7 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
-                        <Button Grid.Row="0" Grid.Column="0" x:Name="AddModifyButton" Content="Add/Modify" Command="{Binding TasksAddModifyCommand}"/>
+                        <Button Grid.Row="0" Grid.Column="0" x:Name="AddModifyTasksButton" Content="Add/Modify" Command="{Binding TasksAddModifyCommand}"/>
 
                         <lc:LookupControl  Grid.Row="0" Grid.Column="1" Grid.RowSpan="2"  LookupDefinition="{Binding TaskLookup}">
 

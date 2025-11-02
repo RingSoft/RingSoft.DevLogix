@@ -436,12 +436,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             {
                 View = projectTaskView;
             }
+
+            Project project = null;
             if (LookupAddViewArgs != null && LookupAddViewArgs.ParentWindowPrimaryKeyValue != null)
             {
                 if (LookupAddViewArgs.ParentWindowPrimaryKeyValue.TableDefinition ==
                     AppGlobals.LookupContext.Projects)
                 {
-                    var project =
+                    project =
                         AppGlobals.LookupContext.Projects.GetEntityFromPrimaryKeyValue(LookupAddViewArgs
                             .ParentWindowPrimaryKeyValue);
                     project = project.FillOutProperties(false);
@@ -452,6 +454,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             if (DefaultProjectAutoFillValue.IsValid())
             {
                 var defaultLookup = AppGlobals.LookupContext.ProjectTaskLookup.Clone();
+                defaultLookup.FilterDefinition.AddFixedFilter(p => p.ProjectId
+                    , Conditions.Equals, project.Id);
                 var taskColumn = defaultLookup.GetColumnDefinition(p => p.ProjectName);
                 defaultLookup.DeleteVisibleColumn(taskColumn);
                 FindButtonLookupDefinition = defaultLookup;
