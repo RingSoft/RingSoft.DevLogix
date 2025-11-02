@@ -18,6 +18,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         public ProjectMaterialPartNewRow(ProjectMaterialPartManager manager) : base(manager)
         {
             MaterialPartAutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.MaterialPartLookup);
+            AllowSave = false;
         }
 
         public override double GetExtendedCost()

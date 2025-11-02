@@ -156,12 +156,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public override bool ValidateRow()
         {
-            if (!MaterialPartAutoFillValue.IsValid())
+            if (!MaterialPartAutoFillValue.IsValid(true))
             {
-                //Manager.ViewModel.View.GotoGrid();
-                var message = "Invalid Task Dependency";
-                ControlsGlobals.UserInterface.ShowMessageBox(message, message, RsMessageBoxIcons.Exclamation);
-                Manager.GotoCell(this, ProjectMaterialPartManager.MaterialPartColumnId);
+                //Manager.ViewModel.View.SetFocusToGrid(ProjectTaskGrids.LaborPart);
+                var message = SystemGlobals.GetValFailMessage("Material Part", true);
+                Manager.Grid?.GotoCell(this, ProjectMaterialPartManager.MaterialPartColumnId);
+                ControlsGlobals.UserInterface.ShowMessageBox(message, "Invalid Material Part", RsMessageBoxIcons.Exclamation);
+                Manager.Grid?.HandleValFail();
                 return false;
             }
             return true;

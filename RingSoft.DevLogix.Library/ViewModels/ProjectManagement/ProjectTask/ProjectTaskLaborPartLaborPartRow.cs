@@ -176,7 +176,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public override bool ValidateRow()
         {
-            if (!LaborPartAutoFillValue.IsValid())
+            if (!LaborPartAutoFillValue.IsValid(true))
             {
                 Manager.ViewModel.View.SetFocusToGrid(ProjectTaskGrids.LaborPart);
                 var message = SystemGlobals.GetValFailMessage("Labor Part", true);
