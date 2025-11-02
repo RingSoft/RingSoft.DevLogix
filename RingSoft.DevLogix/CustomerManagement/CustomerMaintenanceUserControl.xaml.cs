@@ -19,6 +19,7 @@ using RingSoft.DbLookup;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbMaintenance;
+using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels.CustomerManagement;
 
 namespace RingSoft.DevLogix.CustomerManagement
@@ -191,6 +192,31 @@ namespace RingSoft.DevLogix.CustomerManagement
         {
             var progress = $"Recalculating Customer {currentCustomerText} {currentCustomer} / {totalCustomers}";
             RecalcProcedure.SplashWindow.SetProgress(progress);
+        }
+
+        public override void SetControlReadOnlyMode(Control control, bool readOnlyValue)
+        {
+            if (readOnlyValue)
+            {
+                if (control == AddModifyOrderButton && !AppGlobals.LookupContext.Order.CanEditTabe)
+                {
+                    AddModifyOrderButton.Visibility = Visibility.Collapsed;
+                    return;
+                }
+
+                if (control == AddModifyComputerButton && !AppGlobals.LookupContext.CustomerComputer.CanEditTabe)
+                {
+                    AddModifyComputerButton.Visibility = Visibility.Collapsed;
+                    return;
+                }
+
+                if (control == AddModifyTicketsButton && !AppGlobals.LookupContext.SupportTicket.CanEditTabe)
+                {
+                    AddModifyTicketsButton.Visibility = Visibility.Collapsed;
+                    return;
+                }
+            }
+            base.SetControlReadOnlyMode(control, readOnlyValue);
         }
     }
 }
