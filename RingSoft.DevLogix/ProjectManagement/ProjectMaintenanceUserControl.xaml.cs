@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Linq;
 using RingSoft.App.Controls;
 using System.Windows;
 using System.Windows.Controls;
+using RingSoft.DataEntryControls.WPF;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbMaintenance;
@@ -66,13 +68,18 @@ namespace RingSoft.DevLogix.ProjectManagement
 
             UsersGrid.Loaded += (sender, args) =>
             {
-                if (_userFocus >= 0)
+                if (_userFocus > 0)
                 {
                     TabControl.SelectedItem = UsersTab;
                     var row = LocalViewModel.UsersGridManager.GetProjectUsersGridRow(_userFocus);
                     UsersGrid.GotoCell(row, ProjectUsersGridManager.UserColumnId);
-                    _userFocus = -1;
                 }
+                if (LocalViewModel.UsersGridManager.GotoNewRow)
+                {
+                    LocalViewModel.UsersGridManager.GotoNewRow = false;
+                    GotoNewRow();
+                }
+                _userFocus = -1;
             };
             RegisterFormKeyControl(NameControl);
         }
@@ -139,6 +146,14 @@ namespace RingSoft.DevLogix.ProjectManagement
         public void GotoGrid()
         {
             TabControl.SelectedItem = UsersTab;
+            UsersGrid.Focus();
+        }
+
+        public void GotoNewRow()
+        {
+            TabControl.SelectedItem = UsersTab;
+            UsersGrid.Focus();
+            UsersGrid.GotoCell(LocalViewModel.UsersGridManager.Rows.LastOrDefault(), ProjectUsersGridManager.UserColumnId);
         }
 
         public DateTime? GetDeadline()

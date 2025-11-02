@@ -368,7 +368,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     , "Project User"
                     , p => p.Name, 50);
 
-            UserAutoFillSetup = new AutoFillSetup(_userLookupDefinition);
+            UserAutoFillSetup = new AutoFillSetup(_userLookupDefinition)
+            {
+                AllowLookupAdd = AppGlobals.LookupContext.Projects.CanAddToTable,
+                AllowLookupView = AppGlobals.LookupContext.Projects.CanViewTable,
+            };
+            UserAutoFillSetup.LookupAdd += UserAutoFillSetup_LookupAdd;
+            UserAutoFillSetup.LookupView += UserAutoFillSetup_LookupView;
             ProjectAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.ProjectId));
 
             ProjectTotalsManager = new ProjectTotalsManager();
@@ -395,6 +401,21 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             RegisterLookup(TimeClockLookup);
 
             UserUiCommand = new UiCommand();
+        }
+
+        private void UserAutoFillSetup_LookupView(object? sender, LookupAddViewArgs e)
+        {
+            e.FromLookupControl = true;
+        }
+
+        private void UserAutoFillSetup_LookupAdd(object? sender, LookupAddViewArgs e)
+        {
+            e.Handled = true;
+            var inputParam= new ProjectInputParameter
+            {
+                AddToUsersGrid = true,
+            };
+            SystemGlobals.TableRegistry.ShowEditAddOnTheFly(ProjectAutoFillValue.PrimaryKeyValue, inputParam, e);
         }
 
         private void RefreshUserFilter()
@@ -520,7 +541,17 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         {
             _loading = true;
             ProjectAutoFillValue = entity.Project.GetAutoFillValue();
-            UserAutoFillValue = entity.User.GetAutoFillValue();
+
+            //UserAutoFillValue = entity.User.GetAutoFillValue();
+            var projectUser = new ProjectUser
+            {
+                ProjectId = entity.ProjectId,
+                UserId = entity.UserId,
+            };
+            var primaryKey = AppGlobals.LookupContext.ProjectUsers.GetPrimaryKeyValueFromEntity(projectUser);
+            var text = entity.User.GetAutoFillValue().Text;
+            UserAutoFillValue = new AutoFillValue(primaryKey, text);
+
             MinutesCost = entity.MinutesCost;
             PercentComplete = entity.PercentComplete;
             Notes = entity.Notes;
@@ -555,7 +586,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 Id = Id,
                 Name = KeyAutoFillValue.Text,
                 ProjectId = ProjectAutoFillValue.GetEntity<Project>().Id,
-                UserId = UserAutoFillValue.GetEntity<User>().Id,
+                UserId = UserAutoFillValue.GetEntity<ProjectUser>().UserId,
                 MinutesCost = MinutesCost,
                 PercentComplete = PercentComplete,
                 HourlyRate = HourlyRate,
@@ -585,23 +616,29 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             {
                 return base.ValidateEntity(entity);
             }
-            var context = AppGlobals.DataRepository.GetDataContext();
-            var table = context.GetTable<ProjectUser>();
-            if (table != null)
+
+            if (!UserAutoFillValue.IsValid(true))
             {
-                var projectUser = table.FirstOrDefault(p => p.UserId == entity.UserId
-                  && p.ProjectId == ProjectAutoFillValue.GetEntity<Project>().Id);
-                if (projectUser == null)
-                {
-                    var message =
-                        "The Assigned To User you have chosen has not been added to the project. Please select a user that has been added to the project.";
-                    var caption = "Invalid User";
-                    UserUiCommand.SetFocus();
-                    ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
-                    UserAutoFillSetup.Control.ShowLookupWindow();
-                    return false;
-                }
+                UserAutoFillSetup.HandleValFail("Assigned To User");
+                return false;
             }
+            //var context = AppGlobals.DataRepository.GetDataContext();
+            //var table = context.GetTable<ProjectUser>();
+            //if (table != null)
+            //{
+            //    var projectUser = table.FirstOrDefault(p => p.UserId == entity.UserId
+            //      && p.ProjectId == ProjectAutoFillValue.GetEntity<Project>().Id);
+            //    if (projectUser == null)
+            //    {
+            //        var message =
+            //            "The Assigned To User you have chosen has not been added to the project. Please select a user that has been added to the project.";
+            //        var caption = "Invalid User";
+            //        UserUiCommand.SetFocus();
+            //        ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
+            //        UserAutoFillSetup.Control.ShowLookupWindow();
+            //        return false;
+            //    }
+            //}
 
             if (!ProjectTaskDependencyManager.ValidateGrid())
             {

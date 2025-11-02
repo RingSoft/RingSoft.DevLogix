@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
@@ -40,11 +41,20 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public new ProjectMaintenanceViewModel ViewModel { get; private set; }
 
+        public bool GotoNewRow { get; set; }
+
+        private bool _gotoNewRow;
+        private bool _loading;
+
         public ProjectUsersGridManager(ProjectMaintenanceViewModel viewModel) : base(viewModel)
         {
             ViewModel = viewModel;
         }
 
+        internal void IntGotoNewRow()
+        {
+            _gotoNewRow = true;
+        }
         protected override DataEntryGridRow GetNewRow()
         {
             var result = new ProjectUsersGridRow(this);
@@ -54,6 +64,25 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         protected override DbMaintenanceDataEntryGridRow<ProjectUser> ConstructNewRowFromEntity(ProjectUser entity)
         {
             return new ProjectUsersGridRow(this);
+        }
+
+        public override void LoadGrid(IEnumerable<ProjectUser> entityList)
+        {
+            _loading = true;
+            base.LoadGrid(entityList);
+            _loading = false;
+        }
+
+        protected override void OnRowsChanged(NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                if (!_loading && _gotoNewRow)
+                {
+                    GotoNewRow = true;
+                }
+            }
+            base.OnRowsChanged(e);
         }
 
         public void SetUserMinutes(double minutes, DayType dayType)
@@ -100,7 +129,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         public ProjectUsersGridRow GetProjectUsersGridRow(int userId)
         {
             var rows = Rows.OfType<ProjectUsersGridRow>();
-            return rows.FirstOrDefault(p => p.UserId == userId);
+            if (userId == 0)
+            {
+                return rows.FirstOrDefault(p => p.IsNew);
+            }
+            else
+            {
+                return rows.FirstOrDefault(p => p.UserId == userId);
+            }
         }
 
         public bool ValidateCalc()

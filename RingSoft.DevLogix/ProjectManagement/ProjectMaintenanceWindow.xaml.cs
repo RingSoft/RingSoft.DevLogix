@@ -109,6 +109,11 @@ namespace RingSoft.DevLogix.ProjectManagement
             TabControl.SelectedItem = UsersTab;
         }
 
+        public void GotoNewRow()
+        {
+            throw new NotImplementedException();
+        }
+
         public DateTime? GetDeadline()
         {
             var window = new ProjectScheduleWindow(LocalViewModel.Entity, DateTime.Today);

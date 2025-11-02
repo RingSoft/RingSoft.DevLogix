@@ -31,6 +31,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         DateTime? GetDeadline();
 
         void GotoTasksTab();
+
+        void GotoNewRow();
+    }
+
+    public class ProjectInputParameter
+    {
+        public bool AddToUsersGrid { get; set; }
     }
 
     public class ProjectMaintenanceViewModel : DbMaintenanceViewModel<Project>
@@ -462,6 +469,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 View = projectView;
             }
 
+            if (InputParameter is ProjectInputParameter projectInputParameter
+                && projectInputParameter.AddToUsersGrid)
+            {
+                UsersGridManager.IntGotoNewRow();
+                View.GotoGrid();
+            }
+
             AppGlobals.MainViewModel.ProjectViewModels.Add(this);
             RecalcCommand.IsEnabled = TableDefinition.HasRight(RightTypes.AllowEdit);
 
@@ -518,7 +532,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 View.SetExistRecordFocus(_userFocusId);
                 _userFocusId = -1;
             }
-
         }
 
         protected override Project GetEntityData()
