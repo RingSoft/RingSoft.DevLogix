@@ -469,9 +469,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                         AppGlobals.LookupContext.Customer.GetEntityFromPrimaryKeyValue(LookupAddViewArgs
                             .ParentWindowPrimaryKeyValue);
 
-                    var context = SystemGlobals.DataRepository.GetDataContext();
-                    var table = context.GetTable<Customer>();
-                    customer = table.FirstOrDefault(p => p.Id == customer.Id);
+                    customer = customer.FillOutProperties(false);
                     if (customer != null) DefaultCustomerAutoFillValue = customer.GetAutoFillValue();
                 }
             }

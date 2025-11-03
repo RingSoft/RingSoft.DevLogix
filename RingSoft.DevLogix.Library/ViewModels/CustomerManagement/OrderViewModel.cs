@@ -8,6 +8,7 @@ using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
+using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
@@ -365,18 +366,17 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         protected override void Initialize()
         {
             ViewLookupDefinition.InitialOrderByField = TableDefinition.GetFieldDefinition(p => p.Id);
+            Customer customer = null;
             if (LookupAddViewArgs != null && LookupAddViewArgs.ParentWindowPrimaryKeyValue != null)
             {
                 if (LookupAddViewArgs.ParentWindowPrimaryKeyValue.TableDefinition ==
                     AppGlobals.LookupContext.Customer)
                 {
-                    var customer =
+                    customer =
                         AppGlobals.LookupContext.Customer.GetEntityFromPrimaryKeyValue(LookupAddViewArgs
                             .ParentWindowPrimaryKeyValue);
 
-                    var context = SystemGlobals.DataRepository.GetDataContext();
-                    var table = context.GetTable<Customer>();
-                    customer = table.FirstOrDefault(p => p.Id == customer.Id);
+                    customer = customer.FillOutProperties(false);
                     DefaultCustomerAutoFillValue = customer.GetAutoFillValue();
                 }
             }
@@ -384,6 +384,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             if (DefaultCustomerAutoFillValue.IsValid())
             {
                 var defaultLookup = AppGlobals.LookupContext.OrderLookup.Clone();
+                defaultLookup.FilterDefinition.AddFixedFilter(
+                    p => p.CustomerId, Conditions.Equals, customer.Id);
                 var delkColumn = defaultLookup.GetColumnDefinition(p => p.Customer);
                 defaultLookup.DeleteVisibleColumn(delkColumn);
                 FindButtonLookupDefinition = defaultLookup;

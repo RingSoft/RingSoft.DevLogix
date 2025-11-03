@@ -229,17 +229,25 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 View = projectMaterialView;
             }
 
+            Project project = null;
             if (LookupAddViewArgs != null && LookupAddViewArgs.ParentWindowPrimaryKeyValue != null)
             {
                 if (LookupAddViewArgs.ParentWindowPrimaryKeyValue.TableDefinition ==
                     AppGlobals.LookupContext.Projects)
                 {
-                    var project =
+                    project =
                         AppGlobals.LookupContext.Projects.GetEntityFromPrimaryKeyValue(LookupAddViewArgs
                             .ParentWindowPrimaryKeyValue);
                     project = project.FillOutProperties(false);
                     DefaultProjectAutoFillValue = project.GetAutoFillValue();
                 }
+            }
+
+            if (DefaultProjectAutoFillValue.IsValid())
+            {
+                FindButtonLookupDefinition.FilterDefinition.AddFixedFieldFilter(
+                    TableDefinition
+                        .GetFieldDefinition(p => p.ProjectId), Conditions.Equals, project.Id.ToString());
             }
             AppGlobals.MainViewModel.MaterialViewModels.Add(this);
 
