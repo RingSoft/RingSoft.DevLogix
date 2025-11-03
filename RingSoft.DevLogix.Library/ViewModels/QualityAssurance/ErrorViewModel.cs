@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Linq;
+using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
@@ -687,12 +688,23 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 
         private static Error GetError(int errorId)
         {
-            Error newEntity;
-            var context = SystemGlobals.DataRepository.GetDataContext();
-            var errorTable = context.GetTable<Error>();
-            var result = errorTable.Include(p => p.Developers)
-                .FirstOrDefault(p => p.Id == errorId);
+            var error = new Error()
+            {
+                Id = errorId,
+            };
+
+            var result = error.FillOutProperties(new List<TableDefinitionBase>()
+            {
+                AppGlobals.LookupContext.ErrorDevelopers,
+            }, new List<TableDefinitionBase>
+            ());
             return result;
+
+            //var context = SystemGlobals.DataRepository.GetDataContext();
+            //var errorTable = context.GetTable<Error>();
+            //var result = errorTable.Include(p => p.Developers)
+            //    .FirstOrDefault(p => p.Id == errorId);
+            //return result;
         }
 
         protected override void LoadFromEntity(Error entity)
