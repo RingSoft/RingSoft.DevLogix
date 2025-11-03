@@ -2,6 +2,7 @@
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
 using System.Linq;
+using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbMaintenance;
 
 namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
@@ -241,10 +242,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                         AppGlobals.LookupContext.Customer.GetEntityFromPrimaryKeyValue(LookupAddViewArgs
                             .ParentWindowPrimaryKeyValue);
 
-                    var context = AppGlobals.DataRepository.GetDataContext();
-                    var table = context.GetTable<Customer>();
-                    customer = table.FirstOrDefault(p => p.Id == customer.Id);
+                    customer = customer.FillOutProperties(false);
                     DefaultCustomerAutoFillValue = customer.GetAutoFillValue();
+                    if (DefaultCustomerAutoFillValue.IsValid())
+                    {
+                        FindButtonLookupDefinition.FilterDefinition.AddFixedFieldFilter(
+                            TableDefinition.GetFieldDefinition(p => p.CustomerId)
+                            , Conditions.Equals, customer.Id.ToString());
+                    }
                 }
             }
 
