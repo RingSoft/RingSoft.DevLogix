@@ -67,5 +67,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             totalCost = rows.Sum(p => p.Cost);
         }
 
+        public override void LoadGrid(IEnumerable<SupportTicketUser> entityList)
+        {
+            base.LoadGrid(entityList);
+            ViewModel.GetTotals();
+        }
     }
 }

@@ -459,25 +459,28 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                 View = supportTicketView;
             }
 
+            Customer customer = null;
             if (LookupAddViewArgs != null && LookupAddViewArgs.ParentWindowPrimaryKeyValue != null)
             {
                 if (LookupAddViewArgs.ParentWindowPrimaryKeyValue.TableDefinition ==
                     AppGlobals.LookupContext.Customer)
                 {
-                    var customer =
+                    customer =
                         AppGlobals.LookupContext.Customer.GetEntityFromPrimaryKeyValue(LookupAddViewArgs
                             .ParentWindowPrimaryKeyValue);
 
                     var context = SystemGlobals.DataRepository.GetDataContext();
                     var table = context.GetTable<Customer>();
                     customer = table.FirstOrDefault(p => p.Id == customer.Id);
-                    DefaultCustomerAutoFillValue = customer.GetAutoFillValue();
+                    if (customer != null) DefaultCustomerAutoFillValue = customer.GetAutoFillValue();
                 }
             }
 
             if (DefaultCustomerAutoFillValue.IsValid())
             {
                 var defaultLookup = AppGlobals.LookupContext.SupportTicketLookup.Clone();
+                if (customer != null)
+                    defaultLookup.FilterDefinition.AddFixedFilter(p => p.CustomerId, Conditions.Equals, customer.Id);
                 var delkColumn = defaultLookup.GetColumnDefinition(p => p.Customer);
                 defaultLookup.DeleteVisibleColumn(delkColumn);
                 FindButtonLookupDefinition = defaultLookup;
@@ -538,7 +541,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             ContactName = entity.ContactName;
 
             _loading = false;
-            GetTotals();
+            //GetTotals();
         }
 
         private void LoadCustomer()
@@ -648,6 +651,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             LoadCustomer();
             MinutesSpent = 0;
             StatusAutoFillValue = null;
+            TicketUserGridManager.SetupForNewRecord();
             _loading = false;
             GetTotals();
         }
@@ -747,7 +751,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             GetTotals();
         }
 
-        private void GetTotals()
+        public void GetTotals()
         {
             TicketUserGridManager.GetTotals(out var minutesSpent, out var total);
             MinutesSpent = minutesSpent;
