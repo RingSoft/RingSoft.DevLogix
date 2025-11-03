@@ -11,8 +11,10 @@ using RingSoft.DevLogix.DataAccess.LookupModel.ProjectManagement;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using RingSoft.DbLookup.ModelDefinition;
 
 namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 {
@@ -541,7 +543,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             var result = new Project();
             if (Id != 0)
             {
-                result = table.FirstOrDefault(p => p.Id == Id);
+                var result1 = table.FirstOrDefault(p => p.Id == Id);
+                if (result1 != null)
+                {
+                    result = result1;
+                }
             }
 
             result.Id = Id;
@@ -621,10 +627,19 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     if (projectPrimaryKey.IsValid())
                     {
                         var project = TableDefinition.GetEntityFromPrimaryKeyValue(projectPrimaryKey);
-                        project = projectTable
+                        //project = project.FillOutProperties(new List<TableDefinitionBase>
+                        //{
+                        //    AppGlobals.LookupContext.ProjectUsers,
+                        //});
+                        var project1 = projectTable
                             .Include(p => p.ProjectUsers)
                             .ThenInclude(p => p.User)
                             .FirstOrDefault(p => p.Id == project.Id);
+
+                        if (project1 != null)
+                        {
+                            project = project1;
+                        }
 
                         View.UpdateRecalcProcedure(currentProject, recordCount, project.Name);
                         project.MinutesSpent = 0;
