@@ -696,8 +696,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             var result = error.FillOutProperties(new List<TableDefinitionBase>()
             {
                 AppGlobals.LookupContext.ErrorDevelopers,
-            }, new List<TableDefinitionBase>
-            ());
+            });
             return result;
 
             //var context = SystemGlobals.DataRepository.GetDataContext();

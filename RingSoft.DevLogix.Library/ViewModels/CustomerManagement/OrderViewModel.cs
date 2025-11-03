@@ -402,11 +402,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         private static Order? GetOrder(int orderId)
         {
-            var context = SystemGlobals.DataRepository.GetDataContext();
-            var table = context.GetTable<Order>();
-
-            var order = table
-                .FirstOrDefault(p => p.Id == orderId);
+            var order = new Order
+            {
+                Id = orderId,
+            };
+            order = order.FillOutProperties(false);
             return order;
         }
 

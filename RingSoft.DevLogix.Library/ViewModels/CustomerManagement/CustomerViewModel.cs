@@ -706,10 +706,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         private static Customer? GetCustomer(int customerId)
         {
-            var context = SystemGlobals.DataRepository.GetDataContext();
-            var table = context.GetTable<Customer>();
-            var result = table
-                .FirstOrDefault(p => p.Id == customerId);
+            var result = new Customer { Id = customerId, };
+            result = result.FillOutProperties(false);
             return result;
         }
 

@@ -490,20 +490,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         protected override SupportTicket GetEntityFromDb(SupportTicket newEntity, PrimaryKeyValue primaryKeyValue)
         {
-            var context = SystemGlobals.DataRepository.GetDataContext();
-            var table = context.GetTable<SupportTicket>();
-            var result = table
-                .Include(p => p.Customer)
-                .ThenInclude(p => p.TimeZone)
-                .Include(p => p.Status)
-                .Include(p => p.CreateUser)
-                .Include(p => p.Product)
-                .Include(p => p.AssignedToUser)
-                .Include(p => p.SupportTicketUsers)
-                .ThenInclude(p => p.User)
-                .Include(p => p.Errors)
-                .ThenInclude(p => p.Error)
-                .FirstOrDefault(p => p.Id == newEntity.Id);
+            var result = newEntity.FillOutProperties(new List<TableDefinitionBase>
+            {
+                AppGlobals.LookupContext.SupportTicketUser,
+                AppGlobals.LookupContext.SupportTicketError,
+            }, new List<TableDefinitionBase>
+            {
+                AppGlobals.LookupContext.Customer,
+            });
 
             return result;
         }
@@ -517,10 +511,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         public SupportTicket GetTicket(int ticketId)
         {
-            var context = SystemGlobals.DataRepository.GetDataContext();
-            var table = context.GetTable<SupportTicket>();
-            return table
-                .FirstOrDefault(p => p.Id == ticketId);
+            var ticket = new SupportTicket
+            {
+                Id = ticketId,
+            };
+            return ticket.FillOutProperties(false);
         }
 
         protected override void LoadFromEntity(SupportTicket entity)
