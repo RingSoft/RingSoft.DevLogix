@@ -45,9 +45,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     AddChildRow(commentRow);
                     commentRow.SetValue(materialPart.Comment);
                 }
-            }
 
-            SetCost(materialPart);
+                SetCost(materialPart);
+            }
         }
 
         private void SetCost(MaterialPart materialPart)

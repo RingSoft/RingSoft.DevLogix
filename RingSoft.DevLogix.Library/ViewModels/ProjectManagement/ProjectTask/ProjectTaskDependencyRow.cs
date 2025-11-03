@@ -116,7 +116,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         public ProjectTaskDependencyRow GetDependencyRowForTask(int taskId)
         {
             var rows = Manager.Rows.OfType<ProjectTaskDependencyRow>();
-            return rows.FirstOrDefault(p => p.DependencyTaskId == taskId);
+            var result =  rows.FirstOrDefault(p => p.DependencyTaskId == taskId);
+            return result;
         }
     }
 }

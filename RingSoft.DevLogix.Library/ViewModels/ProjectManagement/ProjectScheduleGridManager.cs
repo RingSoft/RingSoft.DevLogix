@@ -93,8 +93,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     {
                         var scheduleDependency = ScheduleData.FirstOrDefault(p =>
                             p.ProjectTask == projectTaskDependency.DependsOnProjectTask);
-                        scheduleDependency.Priority++;
-                        projectScheduleData.Priority = scheduleDependency.Priority + 1;
+                        if (scheduleDependency != null)
+                        {
+                            scheduleDependency.Priority++;
+                            projectScheduleData.Priority = scheduleDependency.Priority + 1;
+                        }
                     }
                 }
             }
@@ -171,7 +174,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             var dailyRemainingMinutes = ViewModel.GetMinutesForDay(date, projectUser);
 
             var userData = UserScheduleData.FirstOrDefault(p => p.ProjectUser.UserId == projectUser.UserId);
-            if (userData.NextScheduleDate != null && userData.NextScheduleDate > date)
+            if (userData?.NextScheduleDate != null && userData.NextScheduleDate > date)
             {
                 return remainingMinutes;
             }

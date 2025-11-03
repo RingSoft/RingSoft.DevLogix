@@ -527,7 +527,6 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         private ProjectTask? GetProjectTask(int taskId)
         {
-            ProjectTask newEntity;
             var context = AppGlobals.DataRepository.GetDataContext();
             var result = context.GetTable<ProjectTask>()
                 .Include(p => p.User)
@@ -538,6 +537,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 .Include(p => p.SourceDependencies)
                 .ThenInclude(p => p.DependsOnProjectTask)
                 .FirstOrDefault(p => p.Id == taskId);
+
+            if (result == null)
+            {
+                result = new ProjectTask
+                {
+                    Id = taskId,
+                };
+            }
+
             return result;
         }
 
@@ -723,8 +731,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         {
             var context = SystemGlobals.DataRepository.GetDataContext();
 
-            var entity = context.GetTable<ProjectTask>()
-                .FirstOrDefault(p => p.Id == Id);
+            var entity = new ProjectTask
+            {
+                Id = Id,
+            };
+            entity = entity.FillOutProperties(false);
+            //var entity = context.GetTable<ProjectTask>()
+            //    .FirstOrDefault(p => p.Id == Id);
 
             LaborPartsManager.DeleteNoCommitData(entity, context);
 

@@ -170,7 +170,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             View = view;
             var context = AppGlobals.DataRepository.GetDataContext();
             var table = context.GetTable<Project>();
-            project = table
+            var project1 = table
                 .Include(p => p.ProjectTasks)
                 .ThenInclude(p => p.SourceDependencies)
                 .Include(p => p.ProjectUsers)
@@ -178,17 +178,21 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 .ThenInclude(p => p.UserTimeOff)
                 .FirstOrDefault(p => p.Id == project.Id);
 
-            Project = project;
-            Users = project.ProjectUsers.ToList();
-            ProjectName = project.Name;
-            if (startDate == null)
+            if (project1 != null)
             {
-                startDate = DateTime.Today;
+                Project = project;
+                Users = project.ProjectUsers.ToList();
+                ProjectName = project.Name;
+                if (startDate == null)
+                {
+                    startDate = DateTime.Today;
+                }
+
+                StartDate = startDate.GetValueOrDefault();
+
+                ScheduleManager.SetupData(project);
             }
 
-            StartDate = startDate.GetValueOrDefault();
-            
-            ScheduleManager.SetupData(project);
             RemainingMinutes = ScheduleManager.ScheduleData.Sum(p => p.RemainingMinutes);
         }
 

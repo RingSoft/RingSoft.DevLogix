@@ -60,19 +60,20 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 .Include(p => p.SourceDependencies)
                 .FirstOrDefault(p => p.Id == dependencyId);
 
-            foreach (var dependencyTask in dependency.SourceDependencies)
-            {
-                if (circularList.IndexOf(dependencyTask.DependsOnProjectTaskId) != -1)
+            if (dependency != null)
+                foreach (var dependencyTask in dependency.SourceDependencies)
                 {
-                    var message = "Task Dependency circular reference found.";
-                    var caption = "Circular Reference Found";
-                    ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
-                    return false;
-                }
+                    if (circularList.IndexOf(dependencyTask.DependsOnProjectTaskId) != -1)
+                    {
+                        var message = "Task Dependency circular reference found.";
+                        var caption = "Circular Reference Found";
+                        ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
+                        return false;
+                    }
 
-                if (!ValidateCircular(circularList, dependencyTask.DependsOnProjectTaskId, table))
-                    return false;
-            }
+                    if (!ValidateCircular(circularList, dependencyTask.DependsOnProjectTaskId, table))
+                        return false;
+                }
 
             return true;
         }

@@ -52,11 +52,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
             var projectMaterialList = new List<ProjectMaterial>();
             var context = AppGlobals.DataRepository.GetDataContext();
-            var project = ViewModel.ProjectAutoFillValue.GetEntity<Project>();
-            project = context.GetTable<Project>()
+            var newProject = ViewModel.ProjectAutoFillValue.GetEntity<Project>();
+            var project = context.GetTable<Project>()
                 .Include(p => p.ProjectUsers)
                 .Include(p => p.Product)
-                .FirstOrDefault(p => p.Id == project.Id);
+                .FirstOrDefault(p => p.Id == newProject.Id);
+            if (project == null)
+            {
+                project = newProject;
+            }
+
             var table = context.GetTable<ProjectMaterial>();
 
             foreach (var projectMaterialPostRow in rows)
@@ -69,15 +74,18 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                 if (existingMaterial == null)
                 {
                     existingMaterial = table.FirstOrDefault(p => p.Id == projectMaterial.Id);
-                    projectMaterialList.Add(existingMaterial);
+                    if (existingMaterial != null) projectMaterialList.Add(existingMaterial);
                 }
                 var extendedCost = projectMaterialPostRow.Quantity * projectMaterialPostRow.Cost;
 
-                project.Product.Cost += extendedCost;
-
-                if (!context.SaveNoCommitEntity(project.Product, "Saving Product Cost"))
+                if (project != null && project.Product != null)
                 {
-                    return false;
+                    project.Product.Cost += extendedCost;
+
+                    if (!context.SaveNoCommitEntity(project.Product, "Saving Product Cost"))
+                    {
+                        return false;
+                    }
                 }
 
                 existingMaterial.ActualCost += extendedCost;
