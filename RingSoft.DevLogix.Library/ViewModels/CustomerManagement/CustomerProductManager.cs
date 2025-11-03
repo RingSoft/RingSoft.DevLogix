@@ -9,16 +9,13 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         Product = 1,
         ExpirationDate = 2,
     }
-    public class CustomerProductManager : DbMaintenanceDataEntryGridManager<CustomerProduct>
+    public class CustomerProductManager(CustomerViewModel viewModel)
+        : DbMaintenanceDataEntryGridManager<CustomerProduct>(viewModel)
     {
         public const int ProductColumnId = (int)CustomerProductColumns.Product;
         public const int ExpirationDateColumnId = (int)CustomerProductColumns.ExpirationDate;
 
-        public new CustomerViewModel ViewModel { get; }
-        public CustomerProductManager(CustomerViewModel viewModel) : base(viewModel)
-        {
-            ViewModel = viewModel;
-        }
+        public new CustomerViewModel ViewModel { get; } = viewModel;
 
         protected override DataEntryGridRow GetNewRow()
         {

@@ -13,18 +13,14 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         Cost = 3,
     }
 
-    public class CustomerCostManager : DbMaintenanceDataEntryGridManager<CustomerUser>
+    public class CustomerCostManager(CustomerViewModel viewModel)
+        : DbMaintenanceDataEntryGridManager<CustomerUser>(viewModel)
     {
         public const int UserColumnId = (int)CustomerUserColumns.User;
         public const int TimeSpentColumnId = (int)CustomerUserColumns.TimeSpent;
         public const int CostColumnId = (int)CustomerUserColumns.Cost;
 
-        public new CustomerViewModel ViewModel { get; }
-
-        public CustomerCostManager(CustomerViewModel viewModel) : base(viewModel)
-        {
-            ViewModel = viewModel;
-        }
+        public new CustomerViewModel ViewModel { get; } = viewModel;
 
         public void AddUserRow(CustomerUser user)
         {
@@ -63,8 +59,9 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         public void GetTotals(out double minutesSpent, out double totalCost)
         {
             var rows = Rows.OfType<CustomerCostRow>();
-            minutesSpent = rows.Sum(p => p.MinutesSpent);
-            totalCost = rows.Sum(p => p.Cost);
+            var customerCostRows = rows.ToList();
+            minutesSpent = customerCostRows.Sum(p => p.MinutesSpent);
+            totalCost = customerCostRows.Sum(p => p.Cost);
         }
 
     }

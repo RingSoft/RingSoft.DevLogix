@@ -1,9 +1,8 @@
 ﻿using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
-using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
-using System.Linq;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbMaintenance;
+using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
 
 namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 {
@@ -282,7 +281,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             return new CustomerComputer
             {
                 Id = Id,
-                Name = KeyAutoFillValue?.Text,
+                Name = KeyAutoFillValue.Text,
                 CustomerId = CustomerAutoFillValue.GetEntity<Customer>().Id,
                 Brand = Brand,
                 OperatingSystem = OperatingSystem,

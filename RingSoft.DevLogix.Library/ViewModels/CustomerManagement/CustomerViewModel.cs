@@ -593,7 +593,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         private bool _loading;
         private TimeZone _currentTimeZone;
-        private Timer _timeZoneTimer = new Timer(1000);
+        private readonly Timer _timeZoneTimer = new Timer(1000);
 
         public CustomerViewModel()
         {
@@ -652,10 +652,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         private void _timeZoneTimer_Elapsed(object? sender, ElapsedEventArgs e)
         {
-            if (_currentTimeZone != null)
-            {
-                CurrentCustomerTime = AppGlobals.GetCurrentTimezoneTime(_currentTimeZone);
-            }
+            CurrentCustomerTime = AppGlobals.GetCurrentTimezoneTime(_currentTimeZone);
         }
 
         private void StartCurrentCustomerTimer(TimeZone timeZone)
