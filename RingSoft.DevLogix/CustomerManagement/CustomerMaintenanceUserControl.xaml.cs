@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using RingSoft.App.Controls;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.WPF;
 using RingSoft.DbLookup;
@@ -24,6 +25,30 @@ using RingSoft.DevLogix.Library.ViewModels.CustomerManagement;
 
 namespace RingSoft.DevLogix.CustomerManagement
 {
+    public class CustomerHeaderControl : DbMaintenanceCustomPanel
+    {
+        public DbMaintenanceButton PunchInButton { get; set; }
+
+        public DbMaintenanceButton RecalcButton { get; set; }
+
+        static CustomerHeaderControl()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(CustomerHeaderControl), new FrameworkPropertyMetadata(typeof(CustomerHeaderControl)));
+        }
+
+        public CustomerHeaderControl()
+        {
+
+        }
+
+        public override void OnApplyTemplate()
+        {
+            PunchInButton = GetTemplateChild(nameof(PunchInButton)) as DbMaintenanceButton;
+            RecalcButton = GetTemplateChild(nameof(RecalcButton)) as DbMaintenanceButton;
+
+            base.OnApplyTemplate();
+        }
+    }
     /// <summary>
     /// Interaction logic for CustomerMaintenanceUserControl.xaml
     /// </summary>

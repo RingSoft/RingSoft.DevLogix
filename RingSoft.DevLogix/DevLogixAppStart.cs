@@ -96,11 +96,8 @@ namespace RingSoft.DevLogix
             LookupControlsGlobals.WindowRegistry.RegisterWindow<MaterialPartMaintenanceWindow>(AppGlobals.LookupContext.MaterialParts);
             LookupControlsGlobals.WindowRegistry.RegisterWindow<ProjectMaterialHistoryWindow>(AppGlobals.LookupContext.ProjectMaterialHistory);
 
-            LookupControlsGlobals.WindowRegistry.RegisterWindow<CustomerMaintenanceWindow>(AppGlobals.LookupContext.Customer);
-            LookupControlsGlobals.WindowRegistry.RegisterWindow<CustomerMaintenanceWindow>(AppGlobals.LookupContext.CustomerUser);
             LookupControlsGlobals.WindowRegistry.RegisterWindow<TimeZoneMaintenanceWindow>(AppGlobals.LookupContext.TimeZone);
             LookupControlsGlobals.WindowRegistry.RegisterWindow<TerritoryMaintenanceWindow>(AppGlobals.LookupContext.Territory);
-            LookupControlsGlobals.WindowRegistry.RegisterWindow<CustomerMaintenanceWindow>(AppGlobals.LookupContext.CustomerProduct);
             LookupControlsGlobals.WindowRegistry.RegisterWindow<OrderMaintenanceWindow>(AppGlobals.LookupContext.Order);
             LookupControlsGlobals.WindowRegistry.RegisterWindow<OrderMaintenanceWindow>(AppGlobals.LookupContext.OrderDetail);
             LookupControlsGlobals.WindowRegistry.RegisterWindow
