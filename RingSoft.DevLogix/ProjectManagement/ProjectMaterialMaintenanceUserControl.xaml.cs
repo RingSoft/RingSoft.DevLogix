@@ -1,7 +1,9 @@
 ﻿using RingSoft.App.Controls;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
+using RingSoft.DataEntryControls.WPF;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Lookup;
@@ -58,17 +60,26 @@ namespace RingSoft.DevLogix.ProjectManagement
                     projectMaterialHeaderControl.RecalcButton.Command = LocalViewModel.RecalcCommand;
                     projectMaterialHeaderControl.PostButton.Command = LocalViewModel.PostCommand;
 
-                    projectMaterialHeaderControl.RecalcButton.ToolTip.HeaderText = "Recalculate Cost";
+                    projectMaterialHeaderControl.RecalcButton.ToolTip.HeaderText = "Recalculate Cost (Ctrl + A, Ctrl + R)";
                     projectMaterialHeaderControl.RecalcButton.ToolTip.DescriptionText =
                         "Recalculate the cost values for a range of project materials.";
 
-                    projectMaterialHeaderControl.PostButton.ToolTip.HeaderText = "Post Costs";
+                    projectMaterialHeaderControl.PostButton.ToolTip.HeaderText = "Post Costs (Ctrl + A, Ctrl + P)";
                     projectMaterialHeaderControl.PostButton.ToolTip.DescriptionText =
                         "Post actual costs for this project material.";
-
                 }
             };
             RegisterFormKeyControl(KeyControl);
+
+            var hotKey = new HotKey(LocalViewModel.RecalcCommand);
+            hotKey.AddKey(Key.A);
+            hotKey.AddKey(Key.R);
+            AddHotKey(hotKey);
+
+            hotKey = new HotKey(LocalViewModel.PostCommand); 
+            hotKey.AddKey(Key.A);
+            hotKey.AddKey(Key.P);
+            AddHotKey(hotKey);
         }
 
         protected override DbMaintenanceViewModelBase OnGetViewModel()

@@ -1,6 +1,8 @@
 ﻿using RingSoft.App.Controls;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using RingSoft.DataEntryControls.WPF;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbMaintenance;
 using RingSoft.DbLookup;
@@ -42,10 +44,15 @@ namespace RingSoft.DevLogix.QualityAssurance
                         templateHeaderControl.UpdateOutlinesButton.Visibility = Visibility.Collapsed;
                     }
                     templateHeaderControl.UpdateOutlinesButton.Command = LocalViewModel.UpdateOutlinesCommand;
-                    templateHeaderControl.UpdateOutlinesButton.ToolTip.HeaderText = "Update Testing Outlines (Alt + U)";
+                    templateHeaderControl.UpdateOutlinesButton.ToolTip.HeaderText = "Update Testing Outlines (Ctrl + T,  Ctrl + U)";
                     templateHeaderControl.UpdateOutlinesButton.ToolTip.DescriptionText =
                         "Generate Steps for the attached Testing Outlines";
                 }
+
+                var hotKey = new HotKey(LocalViewModel.UpdateOutlinesCommand);
+                hotKey.AddKey(Key.T);
+                hotKey.AddKey(Key.U);
+                AddHotKey(hotKey);
             };
         }
 

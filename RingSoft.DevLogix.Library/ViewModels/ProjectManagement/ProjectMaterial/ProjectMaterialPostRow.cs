@@ -138,12 +138,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public bool Validate()
         {
-            if (!MaterialAutoFillValue.IsValid())
+            if (!MaterialAutoFillValue.IsValid(true))
             {
-                var message = $"The Material code is invalid.";
-                var caption = "Validation Error";
+                var message = SystemGlobals.GetValFailMessage("Material Code", true);
                 Manager.Grid?.GotoCell(this, (int)ProjectMaterialPostColumns.Material);
-                ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
+                ControlsGlobals.UserInterface.ShowMessageBox(message, "Invalid Material Code", RsMessageBoxIcons.Exclamation); 
+                Manager.Grid?.HandleValFail();
                 return false;
             }
             return true;

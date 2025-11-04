@@ -13,6 +13,8 @@ using System.Linq;
 using RingSoft.DataEntryControls.WPF.DataEntryGrid;
 using RingSoft.DevLogix.Library;
 using System;
+using System.Windows.Input;
+using RingSoft.DataEntryControls.WPF;
 
 namespace RingSoft.DevLogix.ProjectManagement
 {
@@ -57,10 +59,10 @@ namespace RingSoft.DevLogix.ProjectManagement
                     projectHeaderControl.PunchInButton.Command =
                         LocalViewModel.PunchInCommand;
 
-                    projectHeaderControl.PunchInButton.ToolTip.HeaderText = "Punch In (Alt + U)";
+                    projectHeaderControl.PunchInButton.ToolTip.HeaderText = "Punch In (Ctrl + T, Ctrl + + U)";
                     projectHeaderControl.PunchInButton.ToolTip.DescriptionText = "Punch into this Project Task. ";
 
-                    projectHeaderControl.RecalcButton.ToolTip.HeaderText = "Recalculate Cost (Alt + R)";
+                    projectHeaderControl.RecalcButton.ToolTip.HeaderText = "Recalculate Cost (Ctrl + T, Ctrl + R)";
                     projectHeaderControl.RecalcButton.ToolTip.DescriptionText =
                         "Recalculate the cost values for a range of project tasks.";
 
@@ -73,6 +75,15 @@ namespace RingSoft.DevLogix.ProjectManagement
                 }
             };
 
+            var hotKey = new HotKey(LocalViewModel.PunchInCommand);
+            hotKey.AddKey(Key.T);
+            hotKey.AddKey(Key.U);
+            AddHotKey(hotKey);
+
+            hotKey = new HotKey(LocalViewModel.RecalcCommand);
+            hotKey.AddKey(Key.T);
+            hotKey.AddKey(Key.R);
+            AddHotKey(hotKey);
 
             UserControl.GotFocus += (sender, args) =>
             {

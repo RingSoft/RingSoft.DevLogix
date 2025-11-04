@@ -3,6 +3,7 @@ using System.Linq;
 using RingSoft.App.Controls;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using RingSoft.DataEntryControls.WPF;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Lookup;
@@ -57,14 +58,24 @@ namespace RingSoft.DevLogix.ProjectManagement
                     projectHeaderControl.RecalcButton.Command = LocalViewModel.RecalcCommand;
                     projectHeaderControl.CalcDeadlineButton.Command = LocalViewModel.CalculateDeadlineCommand;
 
-                    projectHeaderControl.RecalcButton.ToolTip.HeaderText = "Recalculate Cost";
+                    projectHeaderControl.RecalcButton.ToolTip.HeaderText = "Recalculate Cost (Ctrl + P, Ctrl + R)";
                     projectHeaderControl.RecalcButton.ToolTip.DescriptionText =
                         "Recalculate the cost values for a range of projects.";
 
-                    projectHeaderControl.CalcDeadlineButton.ToolTip.HeaderText = "Calculate Deadline";
+                    projectHeaderControl.CalcDeadlineButton.ToolTip.HeaderText = "Calculate Deadline (Ctrl + P, Ctrl + C)";
                     projectHeaderControl.CalcDeadlineButton.ToolTip.DescriptionText =
                         "Calculate the projected deadline for the current project.";
                 }
+
+                var hotKey = new HotKey(LocalViewModel.RecalcCommand);
+                hotKey.AddKey(Key.P);
+                hotKey.AddKey(Key.R);
+                AddHotKey(hotKey);
+
+                hotKey = new HotKey(LocalViewModel.CalculateDeadlineCommand);
+                hotKey.AddKey(Key.P);
+                hotKey.AddKey(Key.C); 
+                AddHotKey(hotKey);
             };
 
             UsersGrid.Loaded += (sender, args) =>
