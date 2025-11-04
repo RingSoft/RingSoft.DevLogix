@@ -103,7 +103,6 @@ namespace RingSoft.DevLogix
             LookupControlsGlobals.WindowRegistry.RegisterWindow<CustomerMaintenanceWindow>(AppGlobals.LookupContext.CustomerProduct);
             LookupControlsGlobals.WindowRegistry.RegisterWindow<OrderMaintenanceWindow>(AppGlobals.LookupContext.Order);
             LookupControlsGlobals.WindowRegistry.RegisterWindow<OrderMaintenanceWindow>(AppGlobals.LookupContext.OrderDetail);
-            LookupControlsGlobals.WindowRegistry.RegisterWindow<CustomerComputerMaintenanceWindow>(AppGlobals.LookupContext.CustomerComputer);
             LookupControlsGlobals.WindowRegistry.RegisterWindow
                 <SupportTicketMaintenanceWindow>(AppGlobals.LookupContext.SupportTicket);
             LookupControlsGlobals.WindowRegistry.RegisterWindow
