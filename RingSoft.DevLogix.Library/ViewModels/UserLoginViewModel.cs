@@ -79,7 +79,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
             var context = AppGlobals.DataRepository.GetDataContext();
             var table = context.GetTable<User>();
             var user = table.FirstOrDefault(p => p.Id == userId);
-            if (userId > 0)
+            if (user != null)
             {
                 UserAutoFillValue = user.GetAutoFillValue();
             }
@@ -94,7 +94,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
             if (user.Id > 0)
             {
                 user = table.FirstOrDefault(p => p.Id == user.Id);
-                if (user.Password.IsNullOrEmpty())
+                if (user != null && user.Password.IsNullOrEmpty())
                 {
                     View.EnablePassword(false);
                 }

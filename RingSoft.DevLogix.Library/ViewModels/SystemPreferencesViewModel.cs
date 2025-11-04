@@ -68,8 +68,8 @@ namespace RingSoft.DevLogix.Library.ViewModels
                 .Include(p => p.Holidays)
                 .FirstOrDefault(p => p.Id == newEntity.Id);
 
-            return result;
-
+            if (result != null) return result;
+            return newEntity;
         }
 
         protected override void LoadFromEntity(SystemPreferences entity)

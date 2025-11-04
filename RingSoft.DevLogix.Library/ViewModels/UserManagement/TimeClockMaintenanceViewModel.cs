@@ -1322,7 +1322,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                     //    user.ClockDate = timeClock.PunchInDate;
                     //}
                     //context.SaveEntity(user, "Updating Clock Date");
-                    AppGlobals.ClockInUser(context, user);
+                    if (user != null) AppGlobals.ClockInUser(context, user);
                 }
 
                 MaintenanceMode = DbMaintenanceModes.EditMode;

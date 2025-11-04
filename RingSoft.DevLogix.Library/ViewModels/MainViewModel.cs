@@ -467,7 +467,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
             TimeClockModes? timeClockMode = null;
             if (timeClock != null)
             {
-                double? supportMinutesPurchased = null;
+                //double? supportMinutesPurchased = null;
                 if (timeClock.SupportTicket != null)
                 {
                     SupportMinutesPurchased = timeClock.SupportTicket.Customer.SupportMinutesPurchased;
@@ -582,8 +582,9 @@ namespace RingSoft.DevLogix.Library.ViewModels
                     supportMinutesPurchased = timeClock.SupportTicket.Customer.SupportMinutesPurchased;
                     timeClockMode = TimeClockModes.SupportTicket;
                 }
+
+                SetupTimer(timeClock, timeClockMode);
             }
-            SetupTimer(timeClock, timeClockMode);
         }
 
         public void SetupTimer(TimeClock timeClock, TimeClockModes? timeClockMode)
@@ -761,7 +762,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
                         enumTrans.LoadFromEnum<ClockOutReasons>();
                         var reasonItem = enumTrans.TypeTranslations
                             .FirstOrDefault(p => p.NumericValue == (int)user.ClockOutReason);
-                        activeTimeCard.ClockOutReason = reasonItem.TextValue;
+                        if (reasonItem != null) activeTimeCard.ClockOutReason = reasonItem.TextValue;
                         if (user.OtherClockOutReason != null)
                         {
                             activeTimeCard.ClockOutReason = user.OtherClockOutReason;
@@ -788,7 +789,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
             var table = context.GetTable<User>();
             var user = table.FirstOrDefault(p => p.Id == userId);
 
-            return PunchOut(clockOut, user, context);
+            return user != null && PunchOut(clockOut, user, context);
         }
 
         public async Task<bool> ValidateWindowClose()

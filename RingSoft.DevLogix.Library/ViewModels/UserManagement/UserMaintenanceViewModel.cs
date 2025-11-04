@@ -512,8 +512,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 {
                     var context = SystemGlobals.DataRepository.GetDataContext();
                     var user = context.GetTable<User>().FirstOrDefault(p => p.Id == Id);
-                    ClockDateTime = user.ClockDate.Value.ToLocalTime();
-                    PopulateClockReason(user);
+                    if (user != null)
+                    {
+                        ClockDateTime = user.ClockDate.Value.ToLocalTime();
+                        PopulateClockReason(user);
+                    }
+
                     RecordDirty = recordDirty;
                 }
             });
@@ -660,7 +664,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
             else
             {
-                if (result.Id == AppGlobals.LoggedInUser.Id || result.IsSupervisor())
+                if (result != null && (result.Id == AppGlobals.LoggedInUser.Id || result.IsSupervisor()))
                 {
                     ClockOutCommand.IsEnabled = true;
                 }
@@ -670,11 +674,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 }
             }
 
-            PopulateClockReason(result);
+            if (result != null)
+            {
+                PopulateClockReason(result);
 
-            _oldPassword = result.Password;
+                _oldPassword = result.Password;
 
-            return result;
+                return result;
+            }
+
+            return newEntity;
         }
 
         private void SetMasterMode(User newEntity)

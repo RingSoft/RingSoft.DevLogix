@@ -237,7 +237,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
             {
                 var table = context.GetTable<SystemMaster>();
                 var masterRecord = table.FirstOrDefault();
-                if (masterRecord.AppGuid != RingSoftAppGlobals.AppGuid)
+                if (masterRecord != null && masterRecord.AppGuid != RingSoftAppGlobals.AppGuid)
                 {
                     ShowInvalidDataBaseMsg();
                     return false;

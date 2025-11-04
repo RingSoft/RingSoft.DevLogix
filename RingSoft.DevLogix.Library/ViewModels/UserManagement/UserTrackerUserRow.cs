@@ -214,9 +214,15 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 var table = context.GetTable<TimeClock>();
                 if (table != null)
                 {
-                    TimeClock = table
+                    var timeClock1 = table
                         .FirstOrDefault(p => p.UserId == UserId
                                              && p.PunchOutDate == null);
+
+                    if (timeClock1 == null)
+                    {
+                        timeClock1 = new TimeClock();
+                    }
+                    TimeClock = timeClock1;
                     var now = GblMethods.NowDate().ToUniversalTime();
                     var userTable = context.GetTable<User>();
                     if (userTable != null)

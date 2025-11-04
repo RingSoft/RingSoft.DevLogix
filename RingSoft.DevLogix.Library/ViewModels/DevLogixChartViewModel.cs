@@ -117,6 +117,12 @@ namespace RingSoft.DevLogix.Library.ViewModels
             var result = query.Include(p => p.ChartBars)
                 .FirstOrDefault(p => p.Id == newEntity.Id);
             Id = newEntity.Id;//Peter Ringering - 07/05/2024 03:13:28 PM - E-60
+
+            if (result == null)
+            {
+                return newEntity;
+            }
+
             return result;
         }
 

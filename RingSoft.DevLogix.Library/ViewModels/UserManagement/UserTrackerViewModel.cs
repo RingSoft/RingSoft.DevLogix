@@ -236,6 +236,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 .ThenInclude(p => p.User)
                 .FirstOrDefault(p => p.Id == newEntity.Id);
 
+            if (result == null)
+            {
+                return newEntity;
+            }
+
             return result;
         }
 

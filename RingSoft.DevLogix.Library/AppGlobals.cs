@@ -127,7 +127,7 @@ namespace RingSoft.DevLogix.Library
             AppSplashProgress?.Invoke(null, new AppProgressArgs($"Migrating the {organization.Name} Database."));
             DbPlatform = (DbPlatforms)organization.Platform;
             LookupContext.SetProcessor(DbPlatform);
-            var context = GetNewDbContext();
+            IDevLogixDbContext? context = GetNewDbContext();
             context.SetLookupContext(LookupContext);
             LoadDataProcessor(organization);
             SystemMaster systemMaster = null;
@@ -619,7 +619,7 @@ namespace RingSoft.DevLogix.Library
                         productVersion = productVersions.FirstOrDefault();
                     }
 
-                    result = productVersion.ProductVersion.GetAutoFillValue();
+                    if (productVersion != null) result = productVersion.ProductVersion.GetAutoFillValue();
                 }
             }
             return result;
