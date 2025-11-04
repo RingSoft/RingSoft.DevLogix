@@ -57,7 +57,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
                 .Where(p => p.BaseTemplateId == ViewModel.Id);
 
             var templatesToProcess = new List<TestingTemplate>();
-            templatesToProcess.Add(template);
+            if (template != null) templatesToProcess.Add(template);
             templatesToProcess.AddRange(templates);
 
             var generatedData = new List<GenerateData>();
@@ -116,26 +116,30 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
                             .GetTable<TestingOutline>()
                             .Include(p => p.Details)
                             .FirstOrDefault(p => p.Id == generatedOutline.TestingOutline.Id);
-                        testingOutline.PercentComplete = AppGlobals.CalcPercentComplete(testingOutline.Details);
-                        context.SaveNoCommitEntity(testingOutline, "Saving Testing Outline");
-
-                        var outlineViewModels = AppGlobals.MainViewModel.TestingOutlineViewModels
-                            .Where(p => p.Id == testingOutline.Id);
-
-                        if (outlineViewModels.Any())
+                        if (testingOutline != null)
                         {
-                            foreach (var outlineViewModel in outlineViewModels)
+                            testingOutline.PercentComplete = AppGlobals.CalcPercentComplete(testingOutline.Details);
+                            context.SaveNoCommitEntity(testingOutline, "Saving Testing Outline");
+
+                            var outlineViewModels = AppGlobals.MainViewModel.TestingOutlineViewModels
+                                .Where(p => p.Id == testingOutline.Id);
+
+                            if (outlineViewModels.Any())
                             {
-                                outlineViewModel.PercentComplete = testingOutline.PercentComplete;
-                                outlineViewModel.UpdateDetails(generatedOutline.Details);
+                                foreach (var outlineViewModel in outlineViewModels)
+                                {
+                                    outlineViewModel.PercentComplete = testingOutline.PercentComplete;
+                                    outlineViewModel.UpdateDetails(generatedOutline.Details);
+                                }
                             }
-                        }
-                        else
-                        {
-                            var primaryKey =
-                                AppGlobals.LookupContext.TestingOutlines.GetPrimaryKeyValueFromEntity(testingOutline);
+                            else
+                            {
+                                var primaryKey =
+                                    AppGlobals.LookupContext.TestingOutlines.GetPrimaryKeyValueFromEntity(
+                                        testingOutline);
 
-                            GblMethods.DoRecordLock(primaryKey);
+                                GblMethods.DoRecordLock(primaryKey);
+                            }
                         }
                     }
                 }

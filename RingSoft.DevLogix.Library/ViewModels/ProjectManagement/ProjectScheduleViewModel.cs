@@ -165,20 +165,20 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             ApplyCommand.IsEnabled = false;
         }
 
-        public void Initialize(IProjectScheduleView view, Project project, DateTime? startDate)
+        public void Initialize(IProjectScheduleView view, Project project1, DateTime? startDate)
         {
             View = view;
             var context = AppGlobals.DataRepository.GetDataContext();
             var table = context.GetTable<Project>();
-            var project1 = table
+            var project = table
                 .Include(p => p.ProjectTasks)
                 .ThenInclude(p => p.SourceDependencies)
                 .Include(p => p.ProjectUsers)
                 .ThenInclude(p => p.User)
                 .ThenInclude(p => p.UserTimeOff)
-                .FirstOrDefault(p => p.Id == project.Id);
+                .FirstOrDefault(p => p.Id == project1.Id);
 
-            if (project1 != null)
+            if (project != null)
             {
                 Project = project;
                 Users = project.ProjectUsers.ToList();

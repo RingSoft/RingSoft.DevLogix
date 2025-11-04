@@ -464,6 +464,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 UpdateVersionsCommand.IsEnabled = true;
             }
 
+            if (result == null)
+            {
+                return newEntity;
+            }
             return result;
         }
 

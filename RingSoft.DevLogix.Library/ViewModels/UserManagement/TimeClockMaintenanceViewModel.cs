@@ -601,15 +601,20 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                 .ThenInclude(p => p.Customer)
                 .FirstOrDefault(p => p.Id == newEntity.Id);
 
-            if (timeClock.MinutesSpent != null)
+            if (timeClock != null && timeClock.MinutesSpent != null)
                 OriginalMinutesSpent = timeClock.MinutesSpent.Value;
 
             //Peter Ringering - 01/12/2025 01:34:16 AM - E-105
             _setDirty = false;
-            EnablePunchOut(timeClock);
-            _setDirty = true;
+            if (timeClock != null)
+            {
+                EnablePunchOut(timeClock);
+                _setDirty = true;
 
-            return timeClock;
+                return timeClock;
+            }
+
+            return newEntity;
         }
 
         private void EnablePunchOut(TimeClock timeClock)
@@ -814,7 +819,12 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             var saveChildren = entity.Id != 0;
             var context = AppGlobals.DataRepository.GetDataContext();
             var user = context.GetTable<User>().FirstOrDefault(p => p.Id == entity.UserId);
-            ProjectTask projectTask = null;
+            if (user == null)
+            {
+                return false;
+            }
+
+            ProjectTask? projectTask = null;
             if (makeName)
             {
                 entity.Name = Guid.NewGuid().ToString();
@@ -830,23 +840,27 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             {
                 if (entity.ProjectTaskId.HasValue)
                 {
-                    projectTask = context.GetTable<ProjectTask>()
+                    var projectTaskTable = context.GetTable<ProjectTask>();
+                    projectTask = projectTaskTable
                         .Include(p => p.Project)
                         .ThenInclude(p => p.ProjectUsers)
                         .Include(p => p.Project)
                         .ThenInclude(p => p.Product)
-                        .FirstOrDefault(p => p.Id == entity.ProjectTaskId.Value);
+                        .FirstOrDefault(p => p.Id == entity.ProjectTaskId.GetValueOrDefault());
                     if (projectTask != null)
                     {
                         projectTask.UtFillOutEntity();
-                        result = UpdateProjectTask(entity, projectTask, context, user);
-                        if (result && projectTask.Project.IsBillable)
+                        if (user != null)
                         {
-                            user.BillableProjectsMinutesSpent += GetNewMinutesSpent();
-                        }
-                        else
-                        {
-                            user.NonBillableProjectsMinutesSpent += GetNewMinutesSpent();
+                            result = UpdateProjectTask(entity, projectTask, context, user);
+                            if (result && projectTask.Project.IsBillable)
+                            {
+                                user.BillableProjectsMinutesSpent += GetNewMinutesSpent();
+                            }
+                            else
+                            {
+                                user.NonBillableProjectsMinutesSpent += GetNewMinutesSpent();
+                            }
                         }
                     }
                 }

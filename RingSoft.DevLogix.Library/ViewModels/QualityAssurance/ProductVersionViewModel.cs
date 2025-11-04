@@ -603,10 +603,16 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                     product = context.GetTable<Product>().FirstOrDefault(p => p.Id == product.Id);
                 }
 
-                var file = new FileInfo(product.InstallerFileName);
-                if (file != null)
+                if (product?.InstallerFileName != null)
                 {
-                    View.UploadFile(file, department, product);
+                    if (product?.InstallerFileName != null)
+                    {
+                        var file = new FileInfo(product.InstallerFileName);
+                        if (file != null)
+                        {
+                            if (department != null) View.UploadFile(file, department, product);
+                        }
+                    }
                 }
             }
         }

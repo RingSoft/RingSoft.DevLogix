@@ -1033,30 +1033,34 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                 .FirstOrDefault(p => p.Id == errorId);
 
             var detailsChunk = new List<PrintingInputDetailsRow>();
-            foreach (var errorDeveloper in error.Developers)
+            if (error != null)
             {
-                var detailRow = new PrintingInputDetailsRow();
-                detailRow.HeaderRowKey = e.HeaderRow.RowKey;
-                detailRow.TablelId = 1;
-                detailRow.StringField01 = errorDeveloper.Developer.Name;
-                detailRow.StringField02 = errorDeveloper.DateFixed.ToLocalTime()
-                    .FormatDateValue(DbDateTypes.DateTime, false);
-                detailsChunk.Add(detailRow);
-            }
-            PrintingInteropGlobals.DetailsProcessor.AddChunk(detailsChunk, e.PrinterSetup.PrintingProperties);
-            
-            detailsChunk.Clear();
+                foreach (var errorDeveloper in error.Developers)
+                {
+                    var detailRow = new PrintingInputDetailsRow();
+                    detailRow.HeaderRowKey = e.HeaderRow.RowKey;
+                    detailRow.TablelId = 1;
+                    detailRow.StringField01 = errorDeveloper.Developer.Name;
+                    detailRow.StringField02 = errorDeveloper.DateFixed.ToLocalTime()
+                        .FormatDateValue(DbDateTypes.DateTime, false);
+                    detailsChunk.Add(detailRow);
+                }
 
-            foreach (var errorTester in error.Testers)
-            {
-                var detailRow = new PrintingInputDetailsRow();
-                detailRow.HeaderRowKey = e.HeaderRow.RowKey;
-                detailRow.TablelId = 2;
-                detailRow.StringField01 = errorTester.Tester.Name;
-                detailRow.StringField02 = errorTester.NewErrorStatus.Description;
-                detailRow.StringField03 = errorTester.DateChanged.ToLocalTime()
-                    .FormatDateValue(DbDateTypes.DateTime, false);
-                detailsChunk.Add(detailRow);
+                PrintingInteropGlobals.DetailsProcessor.AddChunk(detailsChunk, e.PrinterSetup.PrintingProperties);
+
+                detailsChunk.Clear();
+
+                foreach (var errorTester in error.Testers)
+                {
+                    var detailRow = new PrintingInputDetailsRow();
+                    detailRow.HeaderRowKey = e.HeaderRow.RowKey;
+                    detailRow.TablelId = 2;
+                    detailRow.StringField01 = errorTester.Tester.Name;
+                    detailRow.StringField02 = errorTester.NewErrorStatus.Description;
+                    detailRow.StringField03 = errorTester.DateChanged.ToLocalTime()
+                        .FormatDateValue(DbDateTypes.DateTime, false);
+                    detailsChunk.Add(detailRow);
+                }
             }
 
             PrintingInteropGlobals.DetailsProcessor.AddChunk(detailsChunk, e.PrinterSetup.PrintingProperties);
@@ -1239,7 +1243,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             if (errorUserMinutes != null)
             {
                 errorUser.MinutesSpent = errorUserMinutes.Value;
-                errorUser.Cost = Math.Round((errorUser.MinutesSpent / 60) * user.HourlyRate, 2);
+                if (user != null) errorUser.Cost = Math.Round((errorUser.MinutesSpent / 60) * user.HourlyRate, 2);
             }
         }
 

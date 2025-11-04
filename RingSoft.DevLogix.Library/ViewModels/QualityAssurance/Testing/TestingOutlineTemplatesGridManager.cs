@@ -61,20 +61,24 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             }
 
             testingOutline = ViewModel.GetTestingOutline(ViewModel.Id, context);
-            testingOutline.PercentComplete = AppGlobals.CalcPercentComplete(testingOutline.Details);
-            context.SaveNoCommitEntity(testingOutline, "Saving Testing Outline");
-
-            if (context.Commit("Generating Details"))
+            if (testingOutline != null)
             {
-                foreach (var testingOutlineViewModel in AppGlobals.MainViewModel.TestingOutlineViewModels
-                             .Where(p => p.Id == ViewModel.Id))
+                testingOutline.PercentComplete = AppGlobals.CalcPercentComplete(testingOutline.Details);
+                context.SaveNoCommitEntity(testingOutline, "Saving Testing Outline");
+
+                if (context.Commit("Generating Details"))
                 {
-                    testingOutlineViewModel.UpdateDetails(details);
-                    testingOutlineViewModel.PercentComplete = testingOutline.PercentComplete;
+                    foreach (var testingOutlineViewModel in AppGlobals.MainViewModel.TestingOutlineViewModels
+                                 .Where(p => p.Id == ViewModel.Id))
+                    {
+                        testingOutlineViewModel.UpdateDetails(details);
+                        testingOutlineViewModel.PercentComplete = testingOutline.PercentComplete;
+                    }
+
+                    var message = $"{details.Count} Steps generated.";
+                    var caption = "Operation Complete";
+                    ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Information);
                 }
-                var message = $"{details.Count} Steps generated.";
-                var caption = "Operation Complete";
-                ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Information);
             }
         }
 
@@ -90,20 +94,17 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
                 .Include(p => p.Items)
                 .FirstOrDefault(p => p.Id == templateId);
 
-            if (template.BaseTemplateId.HasValue)
+            if (template != null && template.BaseTemplateId.HasValue)
             {
                 var baseDetails = GenerateDetails(
                     template.BaseTemplateId.Value
                     , context, table
                     , testingOutline
                     , startRowIndex);
-                if (baseDetails != null)
+                if (baseDetails.Any())
                 {
-                    if (baseDetails.Any())
-                    {
-                        startRowIndex = baseDetails.Max(p => p.DetailId) + 1;
-                        result.AddRange(baseDetails);
-                    }
+                    startRowIndex = baseDetails.Max(p => p.DetailId) + 1;
+                    result.AddRange(baseDetails);
                 }
             }
 

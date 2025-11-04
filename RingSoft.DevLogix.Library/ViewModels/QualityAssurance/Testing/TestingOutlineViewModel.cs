@@ -662,7 +662,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             }
 
             var testingOutline = GetTestingOutline(Id);
-            View.PunchIn(testingOutline);
+            if (testingOutline != null) View.PunchIn(testingOutline);
         }
 
         public void RefreshCost(List<TestingOutlineCost> users)
@@ -819,7 +819,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
             if (outlineUserMinutes != null)
             {
                 outlineUser.TimeSpent = outlineUserMinutes.Value;
-                outlineUser.Cost = Math.Round((outlineUserMinutes.Value / 60) * user.HourlyRate, 2);
+                if (user != null) outlineUser.Cost = Math.Round((outlineUserMinutes.Value / 60) * user.HourlyRate, 2);
             }
         }
 
