@@ -104,7 +104,6 @@ namespace RingSoft.DevLogix
                 <SupportTicketMaintenanceWindow>(AppGlobals.LookupContext.SupportTicket);
             LookupControlsGlobals.WindowRegistry.RegisterWindow
                 <SupportTicketMaintenanceWindow>(AppGlobals.LookupContext.SupportTicketUser);
-            LookupControlsGlobals.WindowRegistry.RegisterWindow<CustomerStatusMaintenanceWindow>(AppGlobals.LookupContext.CustomerStatus);
             LookupControlsGlobals.WindowRegistry.RegisterWindow<SupportTicketStatusMaintenanceWindow>(AppGlobals.LookupContext.SupportTicketStatus);
 
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
