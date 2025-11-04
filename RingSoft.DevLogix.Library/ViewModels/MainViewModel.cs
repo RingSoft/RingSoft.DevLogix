@@ -364,9 +364,15 @@ namespace RingSoft.DevLogix.Library.ViewModels
                         Id = ActiveTimeClockId,
                     };
                     var primaryKey = AppGlobals.LookupContext.TimeClocks.GetPrimaryKeyValueFromEntity(timeClock);
-                    if (DbLookup.ExtensionMethods.IsValid(primaryKey))
+                    if (primaryKey.IsValidDb())
                     {
                         AppGlobals.LookupContext.TimeClockLookup.ShowAddOnTheFlyWindow(primaryKey);
+                    }
+                    else
+                    {
+                        MainView.Beep();
+                        MainView.ShowTimeClock(false);
+
                     }
                 }
                 else
