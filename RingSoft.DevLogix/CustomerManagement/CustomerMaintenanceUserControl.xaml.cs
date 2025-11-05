@@ -1,19 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using RingSoft.App.Controls;
+﻿using RingSoft.App.Controls;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.WPF;
 using RingSoft.DbLookup;
@@ -22,6 +7,13 @@ using RingSoft.DbLookup.Lookup;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.Library;
 using RingSoft.DevLogix.Library.ViewModels.CustomerManagement;
+using System;
+using System.Diagnostics;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
 
 namespace RingSoft.DevLogix.CustomerManagement
 {
@@ -217,6 +209,21 @@ namespace RingSoft.DevLogix.CustomerManagement
         {
             var progress = $"Recalculating Customer {currentCustomerText} {currentCustomer} / {totalCustomers}";
             RecalcProcedure.SplashWindow.SetProgress(progress);
+        }
+
+        public void SelectGrid(CustomerGrids grid)
+        {
+            switch (grid)
+            {
+                case CustomerGrids.Products:
+                    TabControl.SelectedItem = ProductsTabItem;
+                    break;
+                case CustomerGrids.Sales:
+                    TabControl.SelectedItem = SalesTabItem;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(grid), grid, null);
+            }
         }
 
         public override void SetControlReadOnlyMode(Control control, bool readOnlyValue)

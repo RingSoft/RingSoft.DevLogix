@@ -1,4 +1,6 @@
-﻿using RingSoft.DataEntryControls.Engine.DataEntryGrid;
+﻿using System.Collections.Generic;
+using System.Linq;
+using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
 
@@ -25,6 +27,29 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         protected override DbMaintenanceDataEntryGridRow<CustomerProduct> ConstructNewRowFromEntity(CustomerProduct entity)
         {
             return new CustomerProductRow(this);
+        }
+
+        public CustomerProductRow? GetCustomerProductRow(int productId)
+        {
+            var result = Rows.OfType<CustomerProductRow>()
+                .FirstOrDefault(p => p.ProductId == productId);
+            return result;
+        }
+
+        protected override void SelectRowForEntity(CustomerProduct entity)
+        {
+            var productRow = GetCustomerProductRow(entity.ProductId);
+            if (productRow != null)
+            {
+                ViewModel.View.SelectGrid(CustomerGrids.Products);
+                GotoCell(productRow, ProductColumnId);
+            }
+            base.SelectRowForEntity(entity);
+        }
+
+        public override void LoadGrid(IEnumerable<CustomerProduct> entityList)
+        {
+            base.LoadGrid(entityList);
         }
     }
 }

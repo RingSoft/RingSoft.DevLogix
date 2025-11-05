@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbLookup;
@@ -18,6 +19,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         public AutoFillValue ProductAutoFillValue { get; set; }
 
         public DateTime? ExpirationDate { get; set; }
+
+        public int ProductId { get; private set; }
 
         public CustomerProductRow(CustomerProductManager manager) : base(manager)
         {
@@ -45,7 +48,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             }
         }
 
-        public override void SetCellValue(DataEntryGridEditingCellProps value)
+        public override async void SetCellValue(DataEntryGridEditingCellProps value)
         {
             var column = (CustomerProductColumns)value.ColumnId;
             switch (column)
@@ -54,6 +57,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
                     if (value is DataEntryGridAutoFillCellProps autoFillCellProps)
                     {
                         ProductAutoFillValue = autoFillCellProps.AutoFillValue;
+                        ProductId = ProductAutoFillValue.GetEntity<Product>().Id;
                     }
                     break;
                 case CustomerProductColumns.ExpirationDate:
@@ -71,6 +75,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         public override void LoadFromEntity(CustomerProduct entity)
         {
             ProductAutoFillValue = entity.Product.GetAutoFillValue();
+            ProductId = entity.ProductId;
             ExpirationDate = entity.ExpirationDate.ToLocalTime();
         }
 
@@ -78,6 +83,30 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         {
             entity.ProductId = ProductAutoFillValue.GetEntity<Product>().Id;
             entity.ExpirationDate = ExpirationDate.GetValueOrDefault().ToUniversalTime();
+        }
+
+        public override bool ValidateRow()
+        {
+            if (!base.ValidateRow())
+            {
+                return false;
+            }
+            if (!IsNew && ProductId != 0)
+            {
+                var rows = Manager.Rows.OfType<CustomerProductRow>();
+                var dupRows = rows.Where(p => p.ProductId == ProductId).ToList();
+                if (dupRows.Count > 1)
+                {
+                    var message = "Duplicate Products not allowed!";
+                    var caption = "Validation Fail";
+                    Manager.Grid?.GotoCell(this, CustomerProductManager.ProductColumnId);
+                    ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
+                    return false;
+                }
+
+            }
+            return true;
+
         }
     }
 }

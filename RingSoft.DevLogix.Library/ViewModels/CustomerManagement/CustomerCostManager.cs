@@ -64,5 +64,18 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             totalCost = customerCostRows.Sum(p => p.Cost);
         }
 
+        protected override void SelectRowForEntity(CustomerUser entity)
+        {
+            var userRow = Rows.OfType<CustomerCostRow>()
+                .FirstOrDefault(p => p.UserId == entity.UserId);
+
+            if (userRow != null)
+            {
+                ViewModel.View.SelectGrid(CustomerGrids.Sales);
+                GotoCell(userRow, UserColumnId);
+            }
+
+            base.SelectRowForEntity(entity);
+        }
     }
 }

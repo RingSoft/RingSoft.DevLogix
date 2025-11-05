@@ -20,6 +20,11 @@ using TimeZone = RingSoft.DevLogix.DataAccess.Model.CustomerManagement.TimeZone;
 
 namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 {
+    public enum CustomerGrids
+    {
+        Products = 0,
+        Sales = 1,
+    }
     public interface ICustomerView : IDbMaintenanceView
     {
         void RefreshView();
@@ -29,6 +34,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
         string StartRecalcProcedure(LookupDefinitionBase lookup);
 
         void UpdateRecalcProcedure(int currentCustomer, int totalCustomers, string currentCustomerText);
+
+        void SelectGrid(CustomerGrids grid);
     }
 
     public class CustomerViewModel : DbMaintenanceViewModel<Customer>

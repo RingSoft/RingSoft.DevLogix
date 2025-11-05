@@ -98,8 +98,6 @@ namespace RingSoft.DevLogix
 
             LookupControlsGlobals.WindowRegistry.RegisterWindow<TimeZoneMaintenanceWindow>(AppGlobals.LookupContext.TimeZone);
             LookupControlsGlobals.WindowRegistry.RegisterWindow<TerritoryMaintenanceWindow>(AppGlobals.LookupContext.Territory);
-            LookupControlsGlobals.WindowRegistry.RegisterWindow<OrderMaintenanceWindow>(AppGlobals.LookupContext.Order);
-            LookupControlsGlobals.WindowRegistry.RegisterWindow<OrderMaintenanceWindow>(AppGlobals.LookupContext.OrderDetail);
             LookupControlsGlobals.WindowRegistry.RegisterWindow
                 <SupportTicketMaintenanceWindow>(AppGlobals.LookupContext.SupportTicket);
             LookupControlsGlobals.WindowRegistry.RegisterWindow
@@ -113,8 +111,13 @@ namespace RingSoft.DevLogix
 
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
                 <CustomerMaintenanceUserControl, Customer>();
+            LookupControlsGlobals.WindowRegistry.RegisterUserControl<CustomerMaintenanceUserControl, CustomerProduct>();
+            LookupControlsGlobals.WindowRegistry.RegisterUserControl<CustomerMaintenanceUserControl, CustomerUser>();
+
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
                 <OrderMaintenanceUserControl, Order>();
+            LookupControlsGlobals.WindowRegistry.RegisterUserControl<OrderMaintenanceUserControl, OrderDetail>();
+
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
                 <TimeZoneMaintenanceUserControl, TimeZone>();
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
