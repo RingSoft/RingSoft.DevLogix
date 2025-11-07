@@ -128,6 +128,9 @@ namespace RingSoft.DevLogix
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
                 <SupportTicketMaintenanceUserControl, SupportTicketUser>();
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
+                <SupportTicketMaintenanceUserControl, SupportTicketError>();
+
+            LookupControlsGlobals.WindowRegistry.RegisterUserControl
                 <SupportTicketStatusMaintenanceUserControl, SupportTicketStatus>();
 
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
