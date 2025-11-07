@@ -14,13 +14,14 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbMaintenance;
+using RingSoft.DevLogix.Library.ViewModels.CustomerManagement;
 
 namespace RingSoft.DevLogix.CustomerManagement
 {
     /// <summary>
     /// Interaction logic for OrderMaintenanceUserControl.xaml
     /// </summary>
-    public partial class OrderMaintenanceUserControl
+    public partial class OrderMaintenanceUserControl : IOrderView
     {
         public OrderMaintenanceUserControl()
         {
@@ -56,6 +57,11 @@ namespace RingSoft.DevLogix.CustomerManagement
         protected override void ShowRecordTitle()
         {
             Host.ChangeTitle($"Order - {LocalViewModel.CustomerAutoFillValue.Text}");
+        }
+
+        public void GotoProductsTab()
+        {
+            TabControl.SelectedItem = ProductsTabItem;
         }
     }
 }

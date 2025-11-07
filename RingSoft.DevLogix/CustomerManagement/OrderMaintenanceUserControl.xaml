@@ -57,9 +57,9 @@
 
             <dec:DateEditControl Grid.Row="2" Grid.Column="1" DateFormatType="DateTime" Width="200" HorizontalAlignment="Left" Value="{Binding OrderDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AllowNullValue="False"/>
 
-            <dec:DataEntryTabControl Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="5">
+            <dec:DataEntryTabControl x:Name="TabControl" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="5">
 
-                <TabItem Header="Products">
+                <TabItem x:Name="ProductsTabItem" Header="Products">
 
                     <DockPanel>
 

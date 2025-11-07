@@ -17,6 +17,10 @@ using RingSoft.Printing.Interop;
 
 namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 {
+    public interface IOrderView : IDbMaintenanceView
+    {
+        void GotoProductsTab();
+    }
     public class OrderViewModel : DbMaintenanceViewModel<Order>
     {
         #region Properties
@@ -339,6 +343,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         public UiCommand CompanyNameUiCommand { get; }
 
+        public IOrderView View { get; private set; }
+
         private bool _loading;
         private double _oldTotal;
 
@@ -365,6 +371,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         protected override void Initialize()
         {
+            if (base.View is IOrderView orderView)
+            {
+                View = orderView;
+            }
             ViewLookupDefinition.InitialOrderByField = TableDefinition.GetFieldDefinition(p => p.Id);
             Customer customer = null;
             if (LookupAddViewArgs != null && LookupAddViewArgs.ParentWindowPrimaryKeyValue != null)

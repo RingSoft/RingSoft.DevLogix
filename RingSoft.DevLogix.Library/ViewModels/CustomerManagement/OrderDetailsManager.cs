@@ -55,5 +55,19 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             ViewModel.TotalDiscount = totalDiscount;
             ViewModel.Total = (subTotal + ViewModel.Freight) - totalDiscount;
         }
+
+        protected override void SelectRowForEntity(OrderDetail entity)
+        {
+            var detailRow = Rows.OfType<OrderDetailsRow>()
+                .FirstOrDefault(p => p.DetailId == entity.DetailId);
+
+            if (detailRow != null)
+            {
+                ViewModel.View.GotoProductsTab();
+                GotoCell(detailRow, ProductColumnId);
+            }
+
+            base.SelectRowForEntity(entity);
+        }
     }
 }

@@ -27,6 +27,8 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         public double Discount { get; set; }
 
+        public int DetailId { get; set; }
+
         private AutoFillValue _oldAutoFillValue;
 
         public OrderDetailsRow(OrderDetailsManager manager) : base(manager)
@@ -125,6 +127,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         public override void LoadFromEntity(OrderDetail entity)
         {
+            DetailId = entity.DetailId;
             ProductAutoFillValue = entity.Product.GetAutoFillValue();
             Quantity = entity.Quantity;
             UnitPrice = entity.UnitPrice;
