@@ -96,9 +96,6 @@ namespace RingSoft.DevLogix
             LookupControlsGlobals.WindowRegistry.RegisterWindow<MaterialPartMaintenanceWindow>(AppGlobals.LookupContext.MaterialParts);
             LookupControlsGlobals.WindowRegistry.RegisterWindow<ProjectMaterialHistoryWindow>(AppGlobals.LookupContext.ProjectMaterialHistory);
 
-            LookupControlsGlobals.WindowRegistry.RegisterWindow<TimeZoneMaintenanceWindow>(AppGlobals.LookupContext.TimeZone);
-            LookupControlsGlobals.WindowRegistry.RegisterWindow<TerritoryMaintenanceWindow>(AppGlobals.LookupContext.Territory);
-
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
                 <DevLogixChartMaintenanceUserControl, DevLogixChart>();
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
