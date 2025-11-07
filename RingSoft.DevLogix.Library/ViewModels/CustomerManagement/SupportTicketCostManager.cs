@@ -72,5 +72,18 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
             base.LoadGrid(entityList);
             ViewModel.GetTotals();
         }
+
+        protected override void SelectRowForEntity(SupportTicketUser entity)
+        {
+            var selRow = Rows.OfType<SupportTicketCostRow>()
+                .FirstOrDefault(p => p.UserId == entity.UserId);
+
+            if (selRow != null)
+            {
+                ViewModel.View.GotoTab(SupportTicketsTab.Costs);
+                GotoCell(selRow, UserColumnId);
+            }
+            base.SelectRowForEntity(entity);
+        }
     }
 }

@@ -21,6 +21,13 @@ using TimeZone = RingSoft.DevLogix.DataAccess.Model.CustomerManagement.TimeZone;
 
 namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 {
+    public enum SupportTicketsTab
+    {
+        Details = 0,
+        TimeClocks = 1,
+        Costs = 2,
+        Errors = 3,
+    }
     public interface ISupportTicketView : IDbMaintenanceView
     {
         bool SetupRecalcFilter(LookupDefinitionBase lookup);
@@ -29,6 +36,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.CustomerManagement
 
         void UpdateRecalcProcedure(int currentCustomer, int totalCustomers, string currentCustomerText);
 
+        void GotoTab(SupportTicketsTab tab);
     }
 
     public class SupportTicketViewModel : DbMaintenanceViewModel<SupportTicket>

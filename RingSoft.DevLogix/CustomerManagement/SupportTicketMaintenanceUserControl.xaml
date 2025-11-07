@@ -121,9 +121,9 @@
 
             <dec:StringReadOnlyBox Grid.Row="4" Grid.Column="1" Text="{Binding CurrentCustomerTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" HorizontalAlignment="Left"/>
 
-            <dec:DataEntryTabControl Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="5">
+            <dec:DataEntryTabControl x:Name="TabControl" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="5">
 
-                <TabItem Header="Details">
+                <TabItem x:Name="DetailsTab" Header="Details">
 
                     <Grid>
                         <Grid.RowDefinitions>
@@ -175,7 +175,7 @@
 
                 </TabItem>
 
-                <TabItem Header="Cost">
+                <TabItem x:Name="CostTab" Header="Cost">
 
                     <Grid>
 
@@ -215,7 +215,7 @@
                         </deg:DataEntryGrid>
                     </Grid>
                 </TabItem>
-                <TabItem Header="Errors">
+                <TabItem x:Name="ErrorsTab" Header="Errors">
                     <DockPanel>
                         <deg:DataEntryGrid Manager="{Binding TicketErrorGridManager}">
 

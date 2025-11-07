@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using RingSoft.App.Controls;
@@ -135,6 +136,27 @@ namespace RingSoft.DevLogix.CustomerManagement
         {
             var progress = $"Recalculating Support Ticket {currentSupportTicketText} {currentSupportTicket} / {totalSupportTickets}";
             RecalcProcedure.SplashWindow.SetProgress(progress);
+        }
+
+        public void GotoTab(SupportTicketsTab tab)
+        {
+            switch (tab)
+            {
+                case SupportTicketsTab.Details:
+                    TabControl.SelectedItem = DetailsTab;
+                    break;
+                case SupportTicketsTab.TimeClocks:
+                    TabControl.SelectedItem = TimeClockTab;
+                    break;
+                case SupportTicketsTab.Costs:
+                    TabControl.SelectedItem = CostTab;
+                    break;
+                case SupportTicketsTab.Errors:
+                    TabControl.SelectedItem = ErrorsTab;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(tab), tab, null);
+            }
         }
     }
 }
