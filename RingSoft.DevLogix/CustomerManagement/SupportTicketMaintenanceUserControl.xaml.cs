@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using RingSoft.App.Controls;
 using RingSoft.DataEntryControls.WPF;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.Controls.WPF;
@@ -10,6 +11,27 @@ using RingSoft.DevLogix.Library.ViewModels.CustomerManagement;
 
 namespace RingSoft.DevLogix.CustomerManagement
 {
+    public class SupportTicketHeaderControl : DbMaintenanceCustomPanel
+    {
+        public DbMaintenanceButton PunchInButton { get; set; }
+
+        public DbMaintenanceButton RecalcButton { get; set; }
+
+        static SupportTicketHeaderControl()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(SupportTicketHeaderControl),
+                new FrameworkPropertyMetadata(typeof(SupportTicketHeaderControl)));
+        }
+
+        public override void OnApplyTemplate()
+        {
+            PunchInButton = GetTemplateChild(nameof(PunchInButton)) as DbMaintenanceButton;
+            RecalcButton = GetTemplateChild(nameof(RecalcButton)) as DbMaintenanceButton;
+
+            base.OnApplyTemplate();
+        }
+    }
+
     /// <summary>
     /// Interaction logic for SupportTicketMaintenanceUserControl.xaml
     /// </summary>

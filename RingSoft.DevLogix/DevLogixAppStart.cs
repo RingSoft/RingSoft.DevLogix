@@ -98,10 +98,6 @@ namespace RingSoft.DevLogix
 
             LookupControlsGlobals.WindowRegistry.RegisterWindow<TimeZoneMaintenanceWindow>(AppGlobals.LookupContext.TimeZone);
             LookupControlsGlobals.WindowRegistry.RegisterWindow<TerritoryMaintenanceWindow>(AppGlobals.LookupContext.Territory);
-            LookupControlsGlobals.WindowRegistry.RegisterWindow
-                <SupportTicketMaintenanceWindow>(AppGlobals.LookupContext.SupportTicket);
-            LookupControlsGlobals.WindowRegistry.RegisterWindow
-                <SupportTicketMaintenanceWindow>(AppGlobals.LookupContext.SupportTicketUser);
             LookupControlsGlobals.WindowRegistry.RegisterWindow<SupportTicketStatusMaintenanceWindow>(AppGlobals.LookupContext.SupportTicketStatus);
 
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
