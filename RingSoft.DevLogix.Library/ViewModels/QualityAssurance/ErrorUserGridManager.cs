@@ -66,5 +66,18 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             minutesSpent = rows.Sum(p => p.MinutesSpent);
             totalCost = rows.Sum(p => p.Cost);
         }
+
+        protected override void SelectRowForEntity(ErrorUser entity)
+        {
+            var selRow = Rows.OfType<ErrorUserRow>()
+                .FirstOrDefault(p => p.UserId == entity.UserId);
+
+            if (selRow != null)
+            {
+                ViewModel.View.GotoGrid(ErrorGrids.User);
+                GotoCell(selRow, UserColumnId);
+            }
+            base.SelectRowForEntity(entity);
+        }
     }
 }
