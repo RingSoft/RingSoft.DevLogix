@@ -1,4 +1,5 @@
-﻿using RingSoft.DataEntryControls.Engine.DataEntryGrid;
+﻿using Microsoft.EntityFrameworkCore.Update.Internal;
+using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbMaintenance;
@@ -13,6 +14,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         public AutoFillSetup AutoFillSetup { get; set; }
 
         public AutoFillValue AutoFillValue { get; set; }
+
+        public int SupportTicketId { get; private set; }
 
         public ErrorSupportTicketRow(ErrorSupportTicketManager manager) : base(manager)
         {
@@ -36,6 +39,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             if (value is DataEntryGridAutoFillCellProps autoFillCellProps)
             {
                 AutoFillValue = autoFillCellProps.AutoFillValue;
+                SupportTicketId = AutoFillValue.GetEntity<SupportTicket>().Id;
             }
             base.SetCellValue(value);
         }
@@ -43,6 +47,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         public override void LoadFromEntity(SupportTicketError entity)
         {
             AutoFillValue = entity.SupportTicket.GetAutoFillValue();
+            SupportTicketId = entity.SupportTicketId;
         }
 
         public override void SaveToEntity(SupportTicketError entity, int rowIndex)
