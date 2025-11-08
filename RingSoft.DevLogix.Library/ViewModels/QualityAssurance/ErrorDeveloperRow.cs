@@ -61,7 +61,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
             entity.ErrorId = Manager.ViewModel.Id;
             entity.DeveloperId = DeveloperAutoFillValue.GetEntity(AppGlobals.LookupContext.Users).Id;
             entity.DateFixed = FixedDate.ToUniversalTime();
-            entity.Id = rowIndex;
+            entity.Id = RowId;
         }
 
         public void SetDeveloperProperties()
