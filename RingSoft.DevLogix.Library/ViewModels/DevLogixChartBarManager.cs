@@ -50,5 +50,19 @@ namespace RingSoft.DevLogix.Library.ViewModels
             }
             return result;
         }
+
+        protected override void SelectRowForEntity(DevLogixChartBar entity)
+        {
+            var selRow = Rows.OfType<DevLogixChartBarRow>()
+                .FirstOrDefault(p => p.BarId == entity.BarId);
+
+            if (selRow != null)
+            {
+                ViewModel.View.GotoGrid();
+                GotoCell(selRow, AdvFindColumnId);
+            }
+
+            base.SelectRowForEntity(entity);
+        }
     }
 }

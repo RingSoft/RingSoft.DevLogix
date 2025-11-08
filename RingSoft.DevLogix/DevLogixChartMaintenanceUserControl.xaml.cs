@@ -82,7 +82,7 @@ namespace RingSoft.DevLogix
             return "Chart";
         }
 
-        public void OnValGridFail()
+        public void GotoGrid()
         {
             TabControl.SelectedItem = BarsTab;
         }

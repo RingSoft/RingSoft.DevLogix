@@ -31,6 +31,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public EnumFieldTranslation EnumTranslation { get; private set; } = new EnumFieldTranslation();
 
+        public int DetailId { get; private set; }
+
         protected ProjectMaterialPartRow(ProjectMaterialPartManager manager) : base(manager)
         {
             Manager = manager;
@@ -85,7 +87,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
 
         public override void LoadFromEntity(ProjectMaterialPart entity)
         {
-            
+            DetailId = entity.DetailId;
         }
 
         protected IEnumerable<ProjectMaterialPart> GetDetailChildren(ProjectMaterialPart entity)

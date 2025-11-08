@@ -20,6 +20,8 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         public bool IsDisposed { get; private set; }
 
+        public int BarId { get; private set; }
+
         public DevLogixChartBarRow(DevLogixChartBarManager manager) : base(manager)
         {
             Manager = manager;
@@ -97,6 +99,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
         {
             AutoFillValue = AutoFillSetup.GetAutoFillValueForIdValue(entity.AdvancedFindId);
             Name = entity.Name;
+            BarId = entity.BarId;
         }
 
         public override bool ValidateRow()
@@ -107,7 +110,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
             }
             if (!AutoFillValue.IsValid())
             {
-                Manager.ViewModel.View.OnValGridFail();
+                Manager.ViewModel.View.GotoGrid();
 
                 var message = "Advanced Find contains an invalid value.";
                 var caption = "Validation Fail";
@@ -118,7 +121,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
             if (Name.IsNullOrEmpty())
             {
-                Manager.ViewModel.View.OnValGridFail();
+                Manager.ViewModel.View.GotoGrid();
 
                 var message = "Name must have a value.";
                 var caption = "Validation Fail";

@@ -12,7 +12,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
 {
     public interface IChartWindowView : IDbMaintenanceView
     {
-        public void OnValGridFail();
+        public void GotoGrid();
     }
 
     public class DevLogixChartViewModel : DbMaintenanceViewModel<DevLogixChart>
@@ -69,6 +69,7 @@ namespace RingSoft.DevLogix.Library.ViewModels
             {
                 View = view;
             }
+            RegisterGrid(BarsManager);
             base.Initialize();
         }
 

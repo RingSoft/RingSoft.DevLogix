@@ -84,5 +84,17 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             Details = entityList;
             base.LoadGrid(entityList);
         }
+
+        protected override void SelectRowForEntity(ProjectMaterialPart entity)
+        {
+            var selRow = Rows.OfType<ProjectMaterialPartRow>()
+                .FirstOrDefault(p => p.DetailId == entity.DetailId);
+            if (selRow != null)
+            {
+                ViewModel.View.GotoGrid();
+                GotoCell(selRow, MaterialPartColumnId);
+            }
+            base.SelectRowForEntity(entity);
+        }
     }
 }

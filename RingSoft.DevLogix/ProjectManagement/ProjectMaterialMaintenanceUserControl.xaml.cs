@@ -168,7 +168,7 @@ namespace RingSoft.DevLogix.ProjectManagement
         public void GotoGrid()
         {
             TabControl.SelectedItem = MaterialPartsTabItem;
-            MaterialPartsGrid.Focus();
+            //MaterialPartsGrid.Focus();
         }
     }
 }

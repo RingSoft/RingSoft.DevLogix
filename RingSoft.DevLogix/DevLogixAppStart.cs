@@ -86,8 +86,6 @@ namespace RingSoft.DevLogix
             LookupControlsGlobals.WindowRegistry.RegisterWindow<TestingOutlineMaintenanceWindow>(AppGlobals.LookupContext.TestingOutlineCosts);
             LookupControlsGlobals.WindowRegistry.RegisterWindow<TestingTemplatesMaintenanceWindow>(AppGlobals.LookupContext.TestingTemplatesItems);
 
-            LookupControlsGlobals.WindowRegistry.RegisterWindow<ProjectMaintenanceWindow>(AppGlobals.LookupContext.Projects);
-            LookupControlsGlobals.WindowRegistry.RegisterWindow<ProjectMaintenanceWindow>(AppGlobals.LookupContext.ProjectUsers);
             LookupControlsGlobals.WindowRegistry.RegisterWindow<ProjectTaskMaintenanceWindow>(AppGlobals.LookupContext.ProjectTasks);
             LookupControlsGlobals.WindowRegistry.RegisterWindow<ProjectTaskMaintenanceWindow>(AppGlobals.LookupContext.ProjectTaskLaborParts);
             LookupControlsGlobals.WindowRegistry.RegisterWindow<ProjectTaskMaintenanceWindow>(AppGlobals.LookupContext.ProjectTaskDependency);
@@ -184,6 +182,9 @@ namespace RingSoft.DevLogix
 
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
                 <ProjectMaterialMaintenanceUserControl, ProjectMaterial>();
+            LookupControlsGlobals.WindowRegistry.RegisterUserControl
+                <ProjectMaterialMaintenanceUserControl, ProjectMaterialPart>();
+
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
                 <LaborPartMaintenanceUserControl, LaborPart>();
             LookupControlsGlobals.WindowRegistry.RegisterUserControl

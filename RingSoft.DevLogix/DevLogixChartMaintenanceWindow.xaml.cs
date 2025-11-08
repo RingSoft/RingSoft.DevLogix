@@ -42,7 +42,7 @@ namespace RingSoft.DevLogix
             base.ResetViewForNewRecord();
         }
 
-        public void OnValGridFail()
+        public void GotoGrid()
         {
             TabControl.SelectedItem = BarsTab;
         }
