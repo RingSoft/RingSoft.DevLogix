@@ -1,4 +1,5 @@
-﻿using RingSoft.DataEntryControls.Engine.DataEntryGrid;
+﻿using System.Linq;
+using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model;
 using RingSoft.DevLogix.Library.ViewModels.QualityAssurance;
@@ -48,6 +49,19 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
                     Grid?.RefreshGridView();
                 }
             }
+        }
+
+        protected override void SelectRowForEntity(ErrorDeveloper entity)
+        {
+            var selRow = Rows.OfType<ErrorDeveloperRow>()
+                .FirstOrDefault(p => p.RowId == entity.Id);
+
+            if (selRow != null)
+            {
+                ViewModel.View.GotoGrid(ErrorGrids.Developers);
+                GotoCell(selRow, DeveloperColumnId);
+            }
+            base.SelectRowForEntity(entity);
         }
     }
 }

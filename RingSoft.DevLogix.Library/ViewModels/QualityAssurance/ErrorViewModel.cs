@@ -21,6 +21,14 @@ using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 
 namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
 {
+    public enum ErrorGrids
+    {
+        Developers = 0,
+        Qa = 1,
+        SupportTicket = 2,
+        User = 3,
+    }
+
     public interface IErrorView : IDbMaintenanceView
     {
         void SetFocusAfterText(string text, bool descrioption, bool setFocus);
@@ -32,6 +40,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance
         string StartRecalcProcedure(LookupDefinitionBase lookup);
 
         void UpdateRecalcProcedure(int currentError, int totalErrors, string currentErrorText);
+
+        void GotoGrid(ErrorGrids errorGrid);
     }
 
     public class ErrorViewModel :DbMaintenanceViewModel<Error>

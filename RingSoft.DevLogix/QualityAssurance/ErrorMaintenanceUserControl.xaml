@@ -227,7 +227,7 @@
 
                 </TabItem>
 
-                <TabItem Header="Cost">
+                <TabItem Header="Cost" x:Name="CostTab">
 
                     <Grid>
 
@@ -268,7 +268,7 @@
                     </Grid>
                 </TabItem>
 
-                <TabItem Header="Developers">
+                <TabItem Header="Developers" x:Name="DevelopersTab">
 
                     <DockPanel>
 
@@ -285,7 +285,7 @@
                     </DockPanel>
 
                 </TabItem>
-                <TabItem Header="Testers">
+                <TabItem Header="Testers" x:Name="TestersTab">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -316,7 +316,7 @@
 
                     </Grid>
                 </TabItem>
-                <TabItem Header="Support Tickets">
+                <TabItem Header="Support Tickets" x:Name="SupportTicketsTab">
                     <DockPanel>
                         <deg:DataEntryGrid Manager="{Binding SupportTicketManager}">
 

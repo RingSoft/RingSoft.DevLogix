@@ -30,5 +30,10 @@ namespace RingSoft.DevLogix.Tests.QualityAssurance
         {
             
         }
+
+        public void GotoGrid(ErrorGrids errorGrid)
+        {
+            
+        }
     }
 }

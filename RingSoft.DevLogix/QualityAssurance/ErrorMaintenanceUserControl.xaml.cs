@@ -1,4 +1,5 @@
-﻿using RingSoft.App.Controls;
+﻿using System;
+using RingSoft.App.Controls;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -247,6 +248,27 @@ namespace RingSoft.DevLogix.QualityAssurance
             var progress = $"Recalculating Error {currentErrorText} {currentError} / {totalErrors}";
             RecalcProcedure.SplashWindow.SetProgress(progress);
 
+        }
+
+        public void GotoGrid(ErrorGrids errorGrid)
+        {
+            switch (errorGrid)
+            {
+                case ErrorGrids.Developers:
+                    TabControl.SelectedItem = DevelopersTab;
+                    break;
+                case ErrorGrids.Qa:
+                    TabControl.SelectedItem = TestersTab;
+                    break;
+                case ErrorGrids.SupportTicket:
+                    TabControl.SelectedItem = SupportTicketsTab;
+                    break;
+                case ErrorGrids.User:
+                    TabControl.SelectedItem = CostTab;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(errorGrid), errorGrid, null);
+            }
         }
 
         public override void SetControlReadOnlyMode(Control control, bool readOnlyValue)

@@ -156,6 +156,11 @@ namespace RingSoft.DevLogix.QualityAssurance
 
         }
 
+        public void GotoGrid(ErrorGrids errorGrid)
+        {
+            
+        }
+
         protected override void OnPreviewKeyDown(KeyEventArgs e)
         {
             var ctrlKeyDown = Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl);
