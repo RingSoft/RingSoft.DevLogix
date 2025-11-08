@@ -165,5 +165,18 @@ namespace RingSoft.DevLogix.Library.ViewModels.QualityAssurance.Testing
                 ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Information);
             }
         }
+
+        protected override void SelectRowForEntity(TestingTemplateItem entity)
+        {
+            var selRow = Rows.OfType<TestingTemplateItemRow>()
+                .FirstOrDefault(p => p.Description == entity.Description);
+
+            if (selRow != null)
+            {
+                GotoCell(selRow, 0);
+            }
+
+            base.SelectRowForEntity(entity);
+        }
     }
 }

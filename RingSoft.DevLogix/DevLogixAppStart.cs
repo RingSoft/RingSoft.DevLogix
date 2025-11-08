@@ -65,6 +65,7 @@ namespace RingSoft.DevLogix
             LookupControlsGlobals.WindowRegistry.RegisterWindow<UserMaintenanceWindow>(AppGlobals.LookupContext.Users);
             LookupControlsGlobals.WindowRegistry.RegisterWindow<UserMaintenanceWindow>(AppGlobals.LookupContext.UsersTimeOff);
             LookupControlsGlobals.WindowRegistry.RegisterWindow<UserMaintenanceWindow>(AppGlobals.LookupContext.UseerMonthlySales);
+
             LookupControlsGlobals.WindowRegistry.RegisterWindow<GroupsMaintenanceWindow>(AppGlobals.LookupContext.Groups);
             LookupControlsGlobals.WindowRegistry.RegisterWindow<DepartmentMaintenanceWindow>(AppGlobals.LookupContext.Departments);
             LookupControlsGlobals.WindowRegistry.RegisterWindow<TimeClockMaintenanceWindow>(AppGlobals.LookupContext.TimeClocks);
@@ -132,11 +133,17 @@ namespace RingSoft.DevLogix
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
                 <UserMaintenanceUserControl, UserMonthlySales>();
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
+                <UserMaintenanceUserControl, UsersGroup>();
+
+            LookupControlsGlobals.WindowRegistry.RegisterUserControl
                 <GroupsMaintenanceUserControl, Group>();
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
                 <DepartmentMaintenanceUserControl, Department>();
+
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
                 <UserTrackerMaintenanceUserControl, UserTracker>();
+            LookupControlsGlobals.WindowRegistry.RegisterUserControl
+                <UserTrackerMaintenanceUserControl, UserTrackerUser>();
 
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
                 <ErrorStatusMaintenanceUserControl, ErrorStatus>();

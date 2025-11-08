@@ -895,6 +895,10 @@ namespace RingSoft.DevLogix.DataAccess
             //var chartAdvFindField = DevLogixChartBars.GetFieldDefinition(p => p.AdvancedFindId);
             //chartAdvFindField.SetParentField(advancedField, advancedField.PropertyName);
 
+            SystemPreferences.ShowInAdvFind(false);
+            SystemPreferencesHolidays.ShowInAdvFind(false);
+            SystemMaster.ShowInAdvFind(false);
+
             Groups.PriorityLevel = 100;
             Groups.GetFieldDefinition(p => p.Rights).DoSkipPrint().IsMemo();
 
