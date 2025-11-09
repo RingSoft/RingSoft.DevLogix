@@ -16,6 +16,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         public string Description { get; private set; }
 
+        public int RowId { get; private set; }
+
         public UserTimeOffRow(UserTimeOffGridManager manager) : base(manager)
         {
             Manager = manager;
@@ -78,6 +80,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 
         public override void LoadFromEntity(UserTimeOff entity)
         {
+            RowId = entity.RowId;
             StartDateTime = entity.StartDate.ToLocalTime();
             EndDateTime = entity.EndDate.ToLocalTime();
             Description = entity.Description;

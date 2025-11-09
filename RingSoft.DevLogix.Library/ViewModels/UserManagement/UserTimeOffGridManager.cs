@@ -1,4 +1,5 @@
-﻿using RingSoft.DataEntryControls.Engine.DataEntryGrid;
+﻿using System.Linq;
+using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.Model.UserManagement;
 
@@ -31,6 +32,20 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         protected override DbMaintenanceDataEntryGridRow<UserTimeOff> ConstructNewRowFromEntity(UserTimeOff entity)
         {
             return new UserTimeOffRow(this);
+        }
+
+        protected override void SelectRowForEntity(UserTimeOff entity)
+        {
+            var selRow = Rows.OfType<UserTimeOffRow>()
+                .FirstOrDefault(p => p.RowId == entity.RowId);
+
+            if (selRow != null)
+            {
+                ViewModel.View.GotoGrid(UserGrids.TimeOff);
+                GotoCell(selRow, StartDateColumnId);
+            }
+
+            base.SelectRowForEntity(entity);
         }
     }
 }
