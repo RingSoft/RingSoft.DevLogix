@@ -6,7 +6,6 @@ using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.Lookup;
-using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.DataAccess.LookupModel;
@@ -18,7 +17,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Linq;
-using IDbContext = RingSoft.DevLogix.DataAccess.IDbContext;
 
 namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
 {
@@ -53,6 +51,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         string GetPassword();
 
         void SetPassword(string password);
+
+        void GotoGrid(UserGrids grid);
     }
 
     public class BillabilityData

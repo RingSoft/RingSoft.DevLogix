@@ -213,6 +213,11 @@ namespace RingSoft.DevLogix.UserManagement
             PasswordBox.Password = password;
         }
 
+        public void GotoGrid(UserGrids grid)
+        {
+            
+        }
+
         public void SetMasterUserMode(bool value = true)
         {
             if (value)

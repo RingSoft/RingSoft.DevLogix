@@ -73,6 +73,11 @@ namespace RingSoft.DevLogix.Tests.UserManagement
             
         }
 
+        public void GotoGrid(UserGrids grid)
+        {
+            
+        }
+
         public void SetMasterUserMode(bool value = true)
         {
             

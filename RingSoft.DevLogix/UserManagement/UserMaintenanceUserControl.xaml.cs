@@ -240,6 +240,24 @@ namespace RingSoft.DevLogix.UserManagement
             PasswordBox.Password = password;
         }
 
+        public void GotoGrid(UserGrids grid)
+        {
+            switch (grid)
+            {
+                case UserGrids.Groups:
+                    if (GroupsTab.Visibility == Visibility.Visible)
+                    {
+                        TabControl.SelectedItem = GroupsTab;
+                    }
+                    break;
+                case UserGrids.TimeOff:
+                    TabControl.SelectedItem = TimeOffTab;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(grid), grid, null);
+            }
+        }
+
         public void SetMasterUserMode(bool value = true)
         {
             if (value)

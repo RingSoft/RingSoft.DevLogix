@@ -66,5 +66,18 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             }
             return result;
         }
+
+        protected override void SelectRowForEntity(UsersGroup entity)
+        {
+            var selRow = Rows.OfType<UsersGroupsRow>()
+                .FirstOrDefault(p => p.GroupId == entity.GroupId);
+
+            if (selRow != null)
+            {
+                ViewModel.View.GotoGrid(UserGrids.Groups);
+                GotoCell(selRow, 0);
+            }
+            base.SelectRowForEntity(entity);
+        }
     }
 }
