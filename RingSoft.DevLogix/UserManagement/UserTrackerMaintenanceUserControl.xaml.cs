@@ -1,6 +1,8 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using RingSoft.App.Controls;
+using RingSoft.DataEntryControls.WPF;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbMaintenance;
@@ -40,10 +42,15 @@ namespace RingSoft.DevLogix.UserManagement
                 if (TopHeaderControl.CustomPanel is UserTrackerHeaderControl userHeaderControl)
                 {
                     userHeaderControl.RefreshNowButton.Command = LocalViewModel.RefreshNowCommand;
-                    userHeaderControl.RefreshNowButton.ToolTip.HeaderText = "Refresh Now (Alt + R)";
+                    userHeaderControl.RefreshNowButton.ToolTip.HeaderText = "Refresh Now (Ctrl + U, Ctrl + R)";
                     userHeaderControl.RefreshNowButton.ToolTip.DescriptionText = "Refresh the data in the grid from the database.";
                 }
             };
+
+            var hotKey = new HotKey(LocalViewModel.RefreshNowCommand);
+            hotKey.AddKey(Key.U);
+            hotKey.AddKey(Key.R);
+            AddHotKey(hotKey);
 
             RegisterFormKeyControl(NameControl);
         }
