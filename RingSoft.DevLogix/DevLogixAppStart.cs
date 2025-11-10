@@ -90,7 +90,7 @@ namespace RingSoft.DevLogix
             LookupControlsGlobals.WindowRegistry.RegisterWindow<ProjectTaskMaintenanceWindow>(AppGlobals.LookupContext.ProjectTasks);
             LookupControlsGlobals.WindowRegistry.RegisterWindow<ProjectTaskMaintenanceWindow>(AppGlobals.LookupContext.ProjectTaskLaborParts);
             LookupControlsGlobals.WindowRegistry.RegisterWindow<ProjectTaskMaintenanceWindow>(AppGlobals.LookupContext.ProjectTaskDependency);
-            LookupControlsGlobals.WindowRegistry.RegisterWindow<ProjectMaterialMaintenanceWindow>(AppGlobals.LookupContext.ProjectMaterials);
+
             LookupControlsGlobals.WindowRegistry.RegisterWindow<ProjectMaterialHistoryWindow>(AppGlobals.LookupContext.ProjectMaterialHistory);
 
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
@@ -144,7 +144,6 @@ namespace RingSoft.DevLogix
                 <UserTrackerMaintenanceUserControl, UserTracker>();
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
                 <UserTrackerMaintenanceUserControl, UserTrackerUser>();
-
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
                 <ErrorStatusMaintenanceUserControl, ErrorStatus>();
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
