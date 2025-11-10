@@ -11,6 +11,8 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Input;
+using RingSoft.DataEntryControls.WPF;
 
 namespace RingSoft.DevLogix.UserManagement
 {
@@ -54,12 +56,12 @@ namespace RingSoft.DevLogix.UserManagement
             {
                 if (TopHeaderControl.CustomPanel is UserHeaderControl userHeaderControl)
                 {
-                    userHeaderControl.ClockOutButton.ToolTip.HeaderText = "Clock Out";
+                    userHeaderControl.ClockOutButton.ToolTip.HeaderText = "Clock Out (Ctrl + U, Ctrl + C)";
                     userHeaderControl.ClockOutButton.ToolTip.DescriptionText = "Clock out for a break or to go home.";
                     userHeaderControl.ClockOutButton.Command = UserMaintenanceViewModel.ClockOutCommand;
 
                     userHeaderControl.RecalcButton.Command = UserMaintenanceViewModel.RecalcCommand;
-                    userHeaderControl.RecalcButton.ToolTip.HeaderText = "Recalculate";
+                    userHeaderControl.RecalcButton.ToolTip.HeaderText = "Recalculate (Ctrl + U, Ctrl + R)";
                     userHeaderControl.RecalcButton.ToolTip.DescriptionText =
                         "Recalculate the billability and sales values for a range of users.";
 
@@ -69,6 +71,16 @@ namespace RingSoft.DevLogix.UserManagement
                     }
                 }
             };
+
+            var hotKey = new HotKey(UserMaintenanceViewModel.ClockOutCommand);
+            hotKey.AddKey(Key.U);
+            hotKey.AddKey(Key.C);
+            AddHotKey(hotKey);
+
+            hotKey = new HotKey(UserMaintenanceViewModel.RecalcCommand);
+            hotKey.AddKey(Key.U);
+            hotKey.AddKey(Key.R);
+            AddHotKey(hotKey);
 
             TimeOffGrid.Loaded += (sender, args) =>
             {
