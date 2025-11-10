@@ -89,5 +89,10 @@ namespace RingSoft.DevLogix.UserManagement
                 UsersGrid.RefreshGridView();
             });
         }
+
+        public void GotoGrid()
+        {
+            TabControl.SelectedItem = UsersTab;
+        }
     }
 }

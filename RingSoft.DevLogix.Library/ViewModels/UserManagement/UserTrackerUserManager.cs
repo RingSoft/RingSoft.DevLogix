@@ -112,5 +112,18 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
             base.LoadGrid(entityList);
             ViewModel.Refresh();
         }
+
+        protected override void SelectRowForEntity(UserTrackerUser entity)
+        {
+            var selRow = Rows.OfType<UserTrackerUserRow>()
+                .FirstOrDefault(p => p.UserId == entity.UserId);
+
+            if (selRow != null)
+            {
+                ViewModel.View.GotoGrid();
+                GotoCell(selRow, UserColumnId);
+            }
+            base.SelectRowForEntity(entity);
+        }
     }
 }

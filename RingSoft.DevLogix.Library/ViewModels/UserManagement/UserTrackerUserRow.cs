@@ -218,10 +218,10 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                         .FirstOrDefault(p => p.UserId == UserId
                                              && p.PunchOutDate == null);
 
-                    if (timeClock1 == null)
-                    {
-                        timeClock1 = new TimeClock();
-                    }
+                    //if (timeClock1 == null)
+                    //{
+                    //    timeClock1 = new TimeClock();
+                    //}
                     TimeClock = timeClock1;
                     var now = GblMethods.NowDate().ToUniversalTime();
                     var userTable = context.GetTable<User>();
@@ -257,7 +257,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
                                 var punchDate = now.ToUniversalTime();
                                 var timeClock = table
                                     .Where(p => p.UserId == UserId
-                                                && p.PunchOutDate != null)
+                                                && p.PunchOutDate != null
+                                                && p.PunchOutDate > user.ClockDate.GetValueOrDefault())
                                     .OrderBy(p => p.PunchOutDate)
                                     .LastOrDefault();
                                 if (timeClock == null)

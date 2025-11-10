@@ -17,6 +17,8 @@ namespace RingSoft.DevLogix.Library.ViewModels.UserManagement
         void SetAlertLevel(AlertLevels level, string message);
 
         void RefreshGrid();
+
+        void GotoGrid();
     }
     public class UserTrackerViewModel  : DbMaintenanceViewModel<UserTracker>
     {

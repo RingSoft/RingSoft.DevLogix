@@ -63,5 +63,10 @@ namespace RingSoft.DevLogix.UserManagement
                 UsersGrid.RefreshGridView();
             });
         }
+
+        public void GotoGrid()
+        {
+            
+        }
     }
 }
