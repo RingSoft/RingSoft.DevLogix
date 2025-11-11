@@ -74,9 +74,6 @@ namespace RingSoft.DevLogix
             LookupControlsGlobals.WindowRegistry.RegisterWindow<ProductVersionMaintenanceWindow>(AppGlobals.LookupContext.ProductVersions);
             LookupControlsGlobals.WindowRegistry.RegisterWindow<ProductVersionMaintenanceWindow>(AppGlobals.LookupContext.ProductVersionDepartments);
 
-            LookupControlsGlobals.WindowRegistry.RegisterWindow<TestingTemplatesMaintenanceWindow>(AppGlobals.LookupContext.TestingTemplates);
-            LookupControlsGlobals.WindowRegistry.RegisterWindow<TestingTemplatesMaintenanceWindow>(AppGlobals.LookupContext.TestingTemplatesItems);
-
             LookupControlsGlobals.WindowRegistry.RegisterWindow<ProjectMaterialHistoryWindow>(AppGlobals.LookupContext.ProjectMaterialHistory);
 
             LookupControlsGlobals.WindowRegistry.RegisterUserControl
