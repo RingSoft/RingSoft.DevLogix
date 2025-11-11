@@ -71,7 +71,6 @@ namespace RingSoft.DevLogix
             LookupControlsGlobals.WindowRegistry.RegisterWindow<TimeClockMaintenanceWindow>(AppGlobals.LookupContext.TimeClocks);
             LookupControlsGlobals.WindowRegistry.RegisterWindow<UserTrackerMaintenanceWindow>(AppGlobals.LookupContext.UserTracker);
 
-            LookupControlsGlobals.WindowRegistry.RegisterWindow<ProductMaintenanceWindow>(AppGlobals.LookupContext.Products);
             LookupControlsGlobals.WindowRegistry.RegisterWindow<ProductVersionMaintenanceWindow>(AppGlobals.LookupContext.ProductVersions);
             LookupControlsGlobals.WindowRegistry.RegisterWindow<ProductVersionMaintenanceWindow>(AppGlobals.LookupContext.ProductVersionDepartments);
 
