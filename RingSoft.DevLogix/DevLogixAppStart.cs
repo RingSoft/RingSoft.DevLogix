@@ -62,10 +62,6 @@ namespace RingSoft.DevLogix
             LookupControlsGlobals.WindowRegistry.RegisterWindow<DevLogixChartMaintenanceWindow>(AppGlobals.LookupContext.DevLogixChartBars);
             LookupControlsGlobals.WindowRegistry.RegisterWindow<SystemPreferencesWindow>(AppGlobals.LookupContext.SystemPreferences);
 
-            LookupControlsGlobals.WindowRegistry.RegisterWindow<UserMaintenanceWindow>(AppGlobals.LookupContext.Users);
-            LookupControlsGlobals.WindowRegistry.RegisterWindow<UserMaintenanceWindow>(AppGlobals.LookupContext.UsersTimeOff);
-            LookupControlsGlobals.WindowRegistry.RegisterWindow<UserMaintenanceWindow>(AppGlobals.LookupContext.UseerMonthlySales);
-
             LookupControlsGlobals.WindowRegistry.RegisterWindow<TimeClockMaintenanceWindow>(AppGlobals.LookupContext.TimeClocks);
             LookupControlsGlobals.WindowRegistry.RegisterWindow<UserTrackerMaintenanceWindow>(AppGlobals.LookupContext.UserTracker);
 
