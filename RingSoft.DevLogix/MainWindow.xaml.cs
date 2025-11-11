@@ -615,6 +615,15 @@ namespace RingSoft.DevLogix
                 var menuItem = new MenuItem() { Header = "_Tools" };
                 MainMenu.Items.Add(menuItem);
 
+                if (AppGlobals.LookupContext.AdvancedFinds.HasRight(RightTypes.AllowView))
+                {
+                    menuItem.Items.Add(new MenuItem()
+                    {
+                        Header = "Add/Edit _Advanced Finds...",
+                        Command = ViewModel.AdvancedFindCommand,
+                    });
+                }
+
                 if (AppGlobals.LookupContext.DevLogixCharts.HasRight(RightTypes.AllowView))
                 {
                     var categoryItem =
@@ -622,7 +631,7 @@ namespace RingSoft.DevLogix
                             p => p.TableDefinition == AppGlobals.LookupContext.DevLogixCharts);
                     menuItem.Items.Add(new MenuItem()
                     {
-                        Header = "_Charts",
+                        Header = "Add/Edit _Charts...",
                         Command = ViewModel.ShowMaintenanceTabCommand,
                         CommandParameter = AppGlobals.LookupContext.DevLogixCharts,
                     });
@@ -635,7 +644,7 @@ namespace RingSoft.DevLogix
                             p => p.TableDefinition == AppGlobals.LookupContext.SystemPreferences);
                     menuItem.Items.Add(new MenuItem()
                     {
-                        Header = "_System Preferences",
+                        Header = "_System Preferences...",
                         Command = ViewModel.ShowMaintenanceWindowCommand,
                         CommandParameter = AppGlobals.LookupContext.SystemPreferences,
                     });

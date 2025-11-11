@@ -91,9 +91,9 @@
                 <ac:DbMaintenanceButton x:Name="OrdersButton" Content="Orders" ImageSource="{StaticResource SalesImage}" Command="{Binding OrdersCommand}"/>
 
                 <ac:DbMaintenanceButton x:Name="SupportTicketsButton" Content="Support Tickets" ImageSource="{StaticResource SupportImage}" Command="{Binding SupportTicketsCommand}"/>
-                <ac:DbMaintenanceButton x:Name="AdvancedFindButton" Content="Advanced Find" ImageSource="{StaticResource FindImage}" Command="{Binding AdvancedFindCommand}"/>
+                <ac:DbMaintenanceButton x:Name="AdvancedFindButton" Content="Advanced Finds" ImageSource="{StaticResource FindImage}" Command="{Binding AdvancedFindCommand}"/>
 
-                <ac:DbMaintenanceButton x:Name="ChartButton" Content="Chart" ImageSource="{StaticResource ChartImage}" Command="{Binding ChartCommand}"/>
+                <ac:DbMaintenanceButton x:Name="ChartButton" Content="Charts" ImageSource="{StaticResource ChartImage}" Command="{Binding ChartCommand}"/>
 
             </StackPanel>
 			<StatusBar DockPanel.Dock="Bottom" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="Transparent">
