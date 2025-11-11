@@ -176,7 +176,7 @@ namespace RingSoft.DevLogix.QualityAssurance
             };
             ProductControl.PreviewLostKeyboardFocus += async (sender, args) =>
             {
-                if ((WPFControlsGlobals.ActiveWindow is TestingOutlineMaintenanceWindow))
+                //if ((WPFControlsGlobals.ActiveWindow is TestingOutlineMaintenanceWindow))
                 {
                     if (!await LocalViewModel.ChangeProduct())
                     {
