@@ -329,6 +329,11 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
             ChangeOrgCommand = new RelayCommand(( async () =>
             {
+                if (!MainView.CloseAllTabs())
+                {
+                    return;
+                }
+
                 if (AppGlobals.LoggedInUser.ClockOutReason == (byte)ClockOutReasons.ClockedIn)
                 {
                     var message = "Do you wish to clock out?";
@@ -341,11 +346,6 @@ namespace RingSoft.DevLogix.Library.ViewModels
                             return;
                         }
                     }
-                }
-
-                if (!MainView.CloseAllTabs())
-                {
-                    return;
                 }
 
                 ShowChartId(0);
@@ -499,6 +499,11 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         private async void Logout()
         {
+            if (!MainView.CloseAllTabs())
+            {
+                return;
+            }
+
             var cont = true;
             var context = AppGlobals.DataRepository.GetDataContext();
             if (context != null)
@@ -526,11 +531,6 @@ namespace RingSoft.DevLogix.Library.ViewModels
             if (cont)
             {
                 SetupTimer(null, null);
-
-                if (!MainView.CloseAllTabs())
-                {
-                    return;
-                }
 
                 if (MainView.LoginUser())
                 {
@@ -794,6 +794,10 @@ namespace RingSoft.DevLogix.Library.ViewModels
 
         public async Task<bool> ValidateWindowClose()
         {
+            if (!MainView.CloseAllTabs())
+            {
+                return false;
+            }
             if (AppGlobals.LoggedInUser == null)
             {
                 return true;

@@ -62,8 +62,11 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
                     , null
                     , false);
 
+                if (selectedPrimaryKey.IsValid())
                 {
-
+                    NewLaborPartPkValue = selectedPrimaryKey;
+                    NewLineType = LaborPartLineTypes.LaborPart;
+                    View.CloseWindow();
                 }
                 //var lookupDefinition = AppGlobals.LookupContext.LaborPartLookup.Clone();
                 //lookupDefinition.WindowClosed += (s, e) =>

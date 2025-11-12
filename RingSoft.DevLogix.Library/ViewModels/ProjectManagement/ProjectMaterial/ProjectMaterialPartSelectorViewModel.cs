@@ -53,14 +53,28 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         {
             AddNewMaterialPartCommand = new RelayCommand(() =>
             {
-                var lookupDefinition = AppGlobals.LookupContext.MaterialPartLookup.Clone();
-                lookupDefinition.WindowClosed += (s, e) =>
+                var selectedPrimaryKey = SystemGlobals.TableRegistry.ShowNewAddOnTheFly(
+                    AppGlobals.LookupContext.MaterialParts
+                    , null
+                    , KeyText
+                    , null
+                    , false);
+
+                if (selectedPrimaryKey.IsValid())
                 {
-                    NewMaterialPartPkValue = e.LookupData.SelectedPrimaryKeyValue;
+                    NewMaterialPartPkValue = selectedPrimaryKey;
                     NewLineType = MaterialPartLineTypes.MaterialPart;
                     View.CloseWindow();
-                };
-                lookupDefinition.ShowAddOnTheFlyWindow(KeyText, null);
+                }
+
+                //var lookupDefinition = AppGlobals.LookupContext.MaterialPartLookup.Clone();
+                //lookupDefinition.WindowClosed += (s, e) =>
+                //{
+                //    NewMaterialPartPkValue = e.LookupData.SelectedPrimaryKeyValue;
+                //    NewLineType = MaterialPartLineTypes.MaterialPart;
+                //    View.CloseWindow();
+                //};
+                //lookupDefinition.ShowAddOnTheFlyWindow(KeyText, null);
             });
             AddNewMiscRowCommand = new RelayCommand(() =>
             {
