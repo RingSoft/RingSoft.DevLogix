@@ -83,6 +83,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         {
             Details = entityList;
             base.LoadGrid(entityList);
+            CalculateTotalCost();
         }
 
         protected override void SelectRowForEntity(ProjectMaterialPart entity)

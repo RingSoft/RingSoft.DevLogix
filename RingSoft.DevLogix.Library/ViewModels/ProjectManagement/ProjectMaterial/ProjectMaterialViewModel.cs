@@ -283,7 +283,7 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
             ActualCost = entity.ActualCost;
             IsCostEdited = entity.IsCostEdited;
             Notes = entity.Notes;
-            ProjectMaterialPartManager.CalculateTotalCost();
+            //ProjectMaterialPartManager.CalculateTotalCost();
             _loading = false;
         }
 

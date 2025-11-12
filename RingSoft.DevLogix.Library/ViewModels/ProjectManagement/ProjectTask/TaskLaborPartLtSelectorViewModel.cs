@@ -55,14 +55,24 @@ namespace RingSoft.DevLogix.Library.ViewModels.ProjectManagement
         {
             AddNewLaborPartCommand = new RelayCommand(() =>
             {
-                var lookupDefinition = AppGlobals.LookupContext.LaborPartLookup.Clone();
-                lookupDefinition.WindowClosed += (s, e) =>
+                var selectedPrimaryKey = SystemGlobals.TableRegistry.ShowNewAddOnTheFly(
+                    AppGlobals.LookupContext.LaborParts
+                    , null
+                    , KeyText
+                    , null
+                    , false);
+
                 {
-                    NewLaborPartPkValue = e.LookupData.SelectedPrimaryKeyValue;
-                    NewLineType = LaborPartLineTypes.LaborPart;
-                    View.CloseWindow();
-                };
-                lookupDefinition.ShowAddOnTheFlyWindow(KeyText, null);
+
+                }
+                //var lookupDefinition = AppGlobals.LookupContext.LaborPartLookup.Clone();
+                //lookupDefinition.WindowClosed += (s, e) =>
+                //{
+                //    NewLaborPartPkValue = e.LookupData.SelectedPrimaryKeyValue;
+                //    NewLineType = LaborPartLineTypes.LaborPart;
+                //    View.CloseWindow();
+                //};
+                //lookupDefinition.ShowAddOnTheFlyWindow(KeyText, null);
             });
 
             AddNewMiscRowCommand = new RelayCommand(() =>
