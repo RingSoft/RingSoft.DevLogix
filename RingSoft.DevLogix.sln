@@ -17,12 +17,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.DevLogix.SqlServer
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.DevLogix.Tests", "RingSoft.DevLogix.Tests\RingSoft.DevLogix.Tests.csproj", "{FDE1961B-D5A5-415E-B34B-9B190893AF48}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RingSoft.DbLookup", "..\RingSoft.DbLookup\RingSoft.DbLookup\RingSoft.DbLookup.csproj", "{91CAF725-CDD6-4E70-A524-568746AAFB46}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RingSoft.DbMaintenance", "..\RingSoft.DbLookup\RingSoft.DbMaintenance\RingSoft.DbMaintenance.csproj", "{39913FD8-099A-4277-B1F2-DD702719612F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RingSoft.DbLookup.Controls.WPF", "..\RingSoft.DbLookup\RingSoft.DbLookup.Controls.WPF\RingSoft.DbLookup.Controls.WPF.csproj", "{50826765-D5E0-44F2-98B3-BCEE0F256523}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,18 +51,6 @@ Global
 		{FDE1961B-D5A5-415E-B34B-9B190893AF48}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FDE1961B-D5A5-415E-B34B-9B190893AF48}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FDE1961B-D5A5-415E-B34B-9B190893AF48}.Release|Any CPU.Build.0 = Release|Any CPU
-		{91CAF725-CDD6-4E70-A524-568746AAFB46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{91CAF725-CDD6-4E70-A524-568746AAFB46}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{91CAF725-CDD6-4E70-A524-568746AAFB46}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{91CAF725-CDD6-4E70-A524-568746AAFB46}.Release|Any CPU.Build.0 = Release|Any CPU
-		{39913FD8-099A-4277-B1F2-DD702719612F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{39913FD8-099A-4277-B1F2-DD702719612F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{39913FD8-099A-4277-B1F2-DD702719612F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{39913FD8-099A-4277-B1F2-DD702719612F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{50826765-D5E0-44F2-98B3-BCEE0F256523}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{50826765-D5E0-44F2-98B3-BCEE0F256523}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{50826765-D5E0-44F2-98B3-BCEE0F256523}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{50826765-D5E0-44F2-98B3-BCEE0F256523}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
