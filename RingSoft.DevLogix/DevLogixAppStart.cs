@@ -3,26 +3,25 @@ using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
+using RingSoft.DbLookup.Controls.WPF;
+using RingSoft.DbLookup.Controls.WPF.AdvancedFind;
 using RingSoft.DbLookup.Lookup;
-using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DevLogix.CustomerManagement;
 using RingSoft.DevLogix.DataAccess;
 using RingSoft.DevLogix.DataAccess.Model;
-using RingSoft.DevLogix.Library;
-using RingSoft.DevLogix.ProjectManagement;
-using RingSoft.DevLogix.QualityAssurance;
-using RingSoft.DevLogix.UserManagement;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows;
-using RingSoft.DbLookup.Controls.WPF;
-using RingSoft.DbLookup.Controls.WPF.AdvancedFind;
 using RingSoft.DevLogix.DataAccess.Model.CustomerManagement;
 using RingSoft.DevLogix.DataAccess.Model.ProjectManagement;
 using RingSoft.DevLogix.DataAccess.Model.QualityAssurance;
 using RingSoft.DevLogix.DataAccess.Model.UserManagement;
+using RingSoft.DevLogix.Library;
+using RingSoft.DevLogix.ProjectManagement;
+using RingSoft.DevLogix.QualityAssurance;
+using RingSoft.DevLogix.UserManagement;
+using System.Linq;
+using System.Windows;
+using System.Windows.Input;
+using Application = System.Windows.Application;
 using TimeZone = RingSoft.DevLogix.DataAccess.Model.CustomerManagement.TimeZone;
 
 namespace RingSoft.DevLogix
@@ -305,6 +304,36 @@ namespace RingSoft.DevLogix
         private void AppGlobals_AppSplashProgress(object? sender, AppProgressArgs e)
         {
             SetProgress(e.ProgressText);
+        }
+
+        public static void ProcessPartKeyDown(System.Windows.Input.KeyEventArgs e, RelayCommand command)
+        {
+            switch (e.Key)
+            {
+                case Key.D0:
+                case Key.D1:
+                case Key.D2:
+                case Key.D3:
+                case Key.D4:
+                case Key.D5:
+                case Key.D6:
+                case Key.D7:
+                case Key.D8:
+                case Key.D9:
+                case Key.NumPad1:
+                case Key.NumPad2:
+                case Key.NumPad3:
+                case Key.NumPad4:
+                case Key.NumPad5:
+                case Key.NumPad6:
+                case Key.NumPad7:
+                case Key.NumPad8:
+                case Key.NumPad9:
+                case Key.NumPad0:
+                    e.Handled = true;
+                    command.Execute(null);
+                    break;
+            }
         }
     }
 }

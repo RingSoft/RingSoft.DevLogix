@@ -8,7 +8,7 @@
              xmlns:ac="clr-namespace:RingSoft.App.Controls;assembly=RingSoft.App.Controls"
              xmlns:vm="clr-namespace:RingSoft.DevLogix.Library.ViewModels.ProjectManagement;assembly=RingSoft.DevLogix.Library"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800" WindowWidth="500" WindowHeight="300">
+             d:DesignHeight="450" d:DesignWidth="800" WindowWidth="500" WindowHeight="400">
 
     <UserControl.DataContext>
         <vm:MaterialPartViewModel x:Name="LocalViewModel"/>

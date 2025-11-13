@@ -148,6 +148,11 @@ namespace RingSoft.DevLogix
             StringEditControl = GetTemplateChild(nameof(StringEditControl)) as StringEditControl;
             Button = GetTemplateChild(nameof(Button)) as Button;
 
+            StringEditControl.KeyDown += (sender, args) =>
+            {
+                DevLogixAppStart.ProcessPartKeyDown(args, ViewModel.ShowPopupCommand);
+            };
+
             if (_setFocus)
             {
                 StringEditControl.Focus();
